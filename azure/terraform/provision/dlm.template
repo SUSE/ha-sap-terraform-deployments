@@ -1,0 +1,9 @@
+primitive dlm ocf:pacemaker:controld \
+	op start timeout=90 interval=0 \
+	op stop timeout=100 interval=0 \
+	op monitor timeout=20 interval=10 start_delay=0 \
+	meta target-role=Started
+group base-group dlm \
+	meta target-role=Started
+clone base-clone base-group \
+	meta target-role=Started

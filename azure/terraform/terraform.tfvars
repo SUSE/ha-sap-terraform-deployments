@@ -1,0 +1,33 @@
+# Admin user
+admin_user = "YOUR_USERNAME_HERE"
+
+# Admin user's private key location in local system
+private_key_location = "PATH_TO_PRIVATE_SSH_KEY"
+
+# Admin user's public key
+public_key = "STRING_OF_PUBLIC_SSH_KEY"
+
+# Installation master share
+instmaster = "SHARE_TO_INSTALLATION_MASTER"
+
+# Installation master's username (required to mount)
+instmaster_user = "USER_ACCOUNT_TO_ACCESS_THE_INSTMASTER_SHARE"
+
+# Installation master's password (required to mount)
+instmaster_pass = "PASSWORD_TO_ACCESS_THE_INSTMASTER_SHARE"
+
+# Blob URI of the image to use for the virtual machines
+image_uri = "URI_TO_BLOB_CONTAINING_OS_IMAGE_TO_USE"
+
+# VM size for the cluster nodes
+instancetype = "Standard_E4s_v3"
+
+# Number of nodes in the cluster
+ninstances = "2"
+
+# Region where to deploy the configuration
+az_region = "westeurope"
+
+# Variable for init-nodes.sh script
+init-type = "all"
+
