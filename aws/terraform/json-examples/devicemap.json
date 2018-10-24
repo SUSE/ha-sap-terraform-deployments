@@ -1,0 +1,15 @@
+[
+  {
+    "DeviceName": "/dev/sda1",
+    "VirtualName": "/dev/sda1",
+    "Ebs": {
+      "Encrypted": false,
+      "DeleteOnTermination": true,
+      "Iops": 100,
+      "SnapshotId": "snap-0a369f803b17037bb",
+      "VolumeSize": 40,
+      "VolumeType": "gp2"
+    },
+    "NoDevice": "/dev/sda1"
+  }
+]
