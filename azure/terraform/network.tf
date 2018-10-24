@@ -36,8 +36,16 @@ resource "azurerm_subnet" "mysubnet" {
   resource_group_name       = "${azurerm_resource_group.myrg.name}"
   virtual_network_name      = "${azurerm_virtual_network.mynet.name}"
   address_prefix            = "10.74.1.0/24"
+}
+
+resource "azurerm_subnet_network_security_group_association" "mysubnet" {
+  subnet_id                 = "${azurerm_subnet.mysubnet.id}"
   network_security_group_id = "${azurerm_network_security_group.mysecgroup.id}"
-  route_table_id            = "${azurerm_route_table.myroutes.id}"
+}
+
+resource "azurerm_subnet_route_table_association" "mysubnet" {
+  subnet_id      = "${azurerm_subnet.mysubnet.id}"
+  route_table_id = "${azurerm_route_table.myroutes.id}"
 }
 
 # Load Balancer
@@ -220,12 +228,18 @@ resource "azurerm_network_interface" "clusternodes" {
     private_ip_address_allocation           = "static"
     private_ip_address                      = "${element(var.clusternodes-ips, count.index)}"
     public_ip_address_id                    = "${element(azurerm_public_ip.clusternodes.*.id, count.index)}"
-    load_balancer_backend_address_pools_ids = ["${azurerm_lb_backend_address_pool.mylb.id}"]
   }
 
   tags {
     environment = "Terraform Demo"
   }
+}
+
+resource "azurerm_network_interface_backend_address_pool_association" "clusternodes" {
+  count                   = "${var.ninstances}"
+  network_interface_id    = "${element(azurerm_network_interface.clusternodes.*.id, count.index)}"
+  ip_configuration_name   = "MyNicConfiguration-${count.index}"
+  backend_address_pool_id = "${azurerm_lb_backend_address_pool.mylb.id}"
 }
 
 resource "azurerm_public_ip" "clusternodes" {
