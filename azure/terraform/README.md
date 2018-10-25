@@ -190,7 +190,18 @@ Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from stor
 
 ## How to use
 
-To use, copy the `*.tf`, `*.sh` and `terraform.tfvars` files into a directory, and edit the following files:
+To use, copy the `*.tf`, `*.sh` and `terraform.tfvars` files and the `provision` directory into your working directory.
+
+Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
+
+```
+ssh-keygen -t rsa -f provision/node0_id_rsa
+ssh-keygen -t rsa -f provision/node1_id_rsa
+```
+
+The key files need to be named `node0_id_rsa`, `node0_id_rsa.pub`, `node1_id_rsa` and `node1_id_rsa.pub` as the initialization scripts expect those names, so check for those files in the `provisioning` sub-directory after generating the keys.
+
+Following that edit the following files:
 
 * [terraform.tfvars](terraform.tfvars): add the URI of the image blob to test if using a private OS image; add the admin user, its private key location on the local machine and the SSH public key from that private key.
 * [provider.tf](provider.tf): add the subscription id, client id, client secret and tenant id from you Azure account.
@@ -205,11 +216,15 @@ terraform plan
 terraform apply
 ```
 
+**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image.
+
 It is also recommended to run the apply command with a timeout, as not all errors are easily detected by the terraform Azure provider, and you can run into a scenario where the infrastructure is apparently still being deployed for a long period (over 15 or 20 minutes), but it is actually broken or failing in the cloud.
 
 ```
 timeout 15m terraform apply
 ```
+
+Keep in mind that in the event of a timeout, there is a possibility that you will be required to remove the deployed infrastructure manually, as `terraform destroy` may not work.
 
 After an apply command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using ssh and the user defined in [terraform.tfvars](terraform.tfvars), for example:
 
