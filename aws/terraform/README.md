@@ -41,7 +41,24 @@ These are the relevant files and what each provides:
 
 ## How to use
 
-To use, copy the files `*.tf`, `*.tpl` and `terraform.tfvars` into a directory, and then run from the directory the following commands:
+To use, copy the `*.tf`, `*.tpl` and `terraform.tfvars` files and the `provision` directory into your working directory.
+
+Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
+
+```
+ssh-keygen -t rsa -f provision/node0_id_rsa
+ssh-keygen -t rsa -f provision/node1_id_rsa
+```
+
+The key files need to be named `node0_id_rsa`, `node0_id_rsa.pub`, `node1_id_rsa` and `node1_id_rsa.pub` as the initialization scripts expect those names, so check for those files in the `provisioning` sub-directory after generating the keys.
+
+Following that edit in the [terraform.tfvars](terraform.tfvars) file:
+
+* The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
+* The location of the private key associated with that public key.
+* The path to an S3 bucket where the SAP installation master is located.
+
+And then run from your working directory the following commands:
 
 ```
 terraform init
@@ -53,10 +70,7 @@ terraform apply
 
 This configuration uses the public **SUSE Linux Enterprise Server 12-SP3 BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
 
-If the use of a private image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit the following terraform files:
-
-* [terraform.tfvars](terraform.tfvars): the public SSH key to use to connect to the instances.
-* [variables.tf](variables.tf): the AMI id to use in the Build Validation (the one uploaded, imported and registered in the above steps)
+If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [variables.tf](variables.tf) file for your region of choice.
 
 And run the commands:
 
