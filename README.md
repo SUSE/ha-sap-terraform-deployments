@@ -4,7 +4,7 @@
 
 This project is organized in folders containing the Terraform configuration files per Public or Private Cloud providers, each also containing documentation relevant to the use of the configuration files and to the cloud provider itself.
 
-The documentation of terraform and the cloud providers included in this repository is not intended to be complete, so be sure to also check the [documentation](https://www.terraform.io/docs) provided by terraform and the cloud providers.
+The documentation of terraform and the cloud providers included in this repository is not intended to be complete, so be sure to also check the [documentation provided by terraform](https://www.terraform.io/docs) and the cloud providers.
 
 Also check the [Terraform Workspaces workflow](workspaces-workflow.md) document for a guide on how to use Terraform Workspaces when using shared remote Terraform state files in major public cloud providers.
 
