@@ -6,7 +6,6 @@ function install_hana()
     mkdir /root/sap_inst
     rm -f /var/tmp/hana.done
     aws s3 sync ${hana_inst} /root/sap_inst
-    chmod +x /tmp/debug.sh
     chmod +x /tmp/prepare_env.sh
     chmod +x /tmp/install_hana.sh
     chmod -R 755 /root/sap_inst
