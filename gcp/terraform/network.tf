@@ -40,59 +40,12 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
   }
 }
 
-resource "google_compute_firewall" "ha_firewall_allow_ssh" {
-  name    = "ha-firewall-allow-ssh"
+resource "google_compute_firewall" "ha_firewall_allow_tcp" {
+  name    = "ha-firewall-allow-tcp"
   network = "${google_compute_network.ha_network.name}"
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22", "80", "443", "7630"]
   }
 }
-
-resource "google_compute_firewall" "ha_firewall_allow_http" {
-  name    = "ha-firewall-allow-http"
-  network = "${google_compute_network.ha_network.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80"]
-  }
-}
-
-resource "google_compute_firewall" "ha_firewall_allow_https" {
-  name    = "ha-firewall-allow-https"
-  network = "${google_compute_network.ha_network.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-}
-
-resource "google_compute_firewall" "ha_firewall_allow_hawk" {
-  name    = "ha-firewall-allow-hawk"
-  network = "${google_compute_network.ha_network.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["7630"]
-  }
-}
-
-# data "google_dns_managed_zone" "env_dns_zone" {
-#   name     = "env-dns-zone"
-# }
-
-
-# resource "google_dns_record_set" "ha_dns" {
-#   name = "ha_dns.${data.google_dns_managed_zone.env_dns_zone.dns_name}"
-#   name = "ha-dns"
-#   type = "A"
-#   ttl  = 300
-# 
-#   managed_zone = "${data.google_dns_managed_zone.env_dns_zone.name}"
-# 
-#   rrdatas = ["${data.google_compute_address.ha_nodes.network_interface.0.access_config.0.assigned_nat_ip}"]
-# }
-
