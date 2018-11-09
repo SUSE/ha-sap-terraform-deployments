@@ -26,7 +26,7 @@ variable "date_of_the_day" {
 variable "sle_version" {
   description = "SLE OS version"
   type        = "string"
-  default = "12sp4"
+  default     = "12sp4"
 }
 
 variable "ip_cidr_range" {
@@ -38,37 +38,31 @@ variable "ip_cidr_range" {
 variable "node_list" {
   description = "List of SAP/HA nodes"
   type        = "list"
-  default     = ["node-1", "node-2"]
+  default     = ["node-0", "node-1"]
 }
 
 variable "node_count" {
   description = "Number of HA/SAP nodes"
   type        = "string"
-  default     = "2"                      # ${length(var.node_list)}"
+  default     = "2"
 }
 
 variable "machine_type_hana_node" {
   description = "Type of VM (vCPUs and RAM)"
   type        = "string"
-  default     = "n1-highmem-32"
-}
-
-variable "machine_type_iscsi_server" {
-  description = "Type of VM (vCPUs and RAM)"
-  type        = "string"
-  default     = "custom-1-2048"
+  default     = "n1-highmem-8"
 }
 
 variable "region" {
   description = "Resources' location"
   type        = "string"
-  default     = "europe-west3"
+  default     = "europe-west1"
 }
 
 variable "zone" {
   description = "Resources' zone"
   type        = "string"
-  default     = "europe-west3-a"
+  default     = "europe-west1-b"
 }
 
 variable "images_path" {
@@ -83,16 +77,10 @@ variable "images_path_bucket" {
   default     = "sle-image-store"
 }
 
-variable "sles_os_image_file" {
-  description = "Name of SLES image file"
-  type        = "string"
-  default     = "SLES12-SP4-GCE-BYOS.x86_64-0.9.3-Build1.26.tar.gz"
-}
-
 variable "sles4sap_os_image_file" {
   description = "Name of SLES4SAP image file"
   type        = "string"
-  default     = "SLES12-SP4-SAP-GCE-BYOS.x86_64-0.9.4-Build1.33.tar.gz"
+  default     = "SLES12-SP4-SAP-GCE.x86_64-0.9.5-Build1.20.tar.gz"
 }
 
 variable "storage_url" {
