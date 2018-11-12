@@ -35,7 +35,7 @@ sap_hana_sid = "HA0"
 sap_hana_sidadm_uid = "900"
 
 images_path_bucket = "sle-image-store"
-sles4sap_os_image_file = "SLES12-SP4-SAP-GCE.x86_64-0.9.5-Build1.20.tar.gz"
+sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
 
 # Specifies the URL location of a script to run after the deployment is complete.
 # The script should be hosted on a web server or in a GCS bucket.
