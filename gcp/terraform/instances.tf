@@ -1,15 +1,15 @@
 resource "google_compute_instance" "clusternodes" {
-  description             = "SAP/HA nodes"
-  machine_type            = "${var.machine_type_hana_node}"
+  machine_type            = "${var.machine_type}"
   metadata_startup_script = "${file("startup.sh")}"
-  count                   = "${var.node_count}"
-  name                    = "${element(var.node_list, count.index)}"
+  count                   = "2"
+  name                    = "${terraform.workspace}-${var.name}-node-${count.index}"
+  zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
 
   can_ip_forward = true
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-    network_ip = "10.0.1.${count.index}"
+    network_ip = "${cidrhost(var.ip_cidr_range, count.index+2)}"
 
     access_config {
       nat_ip = ""
@@ -43,28 +43,28 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    sshKeys = "root:${file(var.ssh_pub_key_file)}"
 
     # For a description of these:
     # https://storage.googleapis.com/sapdeploy/dm-templates/sap_hana_ha/template.yaml
-    post_deployment_script = ""
 
-    sap_deployment_debug       = "Yes"
+    post_deployment_script     = ""
+    sap_deployment_debug       = "${var.sap_deployment_debug}"
     sap_hana_backup_bucket     = ""
-    sap_hana_deployment_bucket = "sap_hana2"
-    sap_hana_instance_number   = "0"
-    sap_hana_sapsys_gid        = "79"
+    sap_hana_deployment_bucket = "${var.sap_hana_deployment_bucket}"
+    sap_hana_instance_number   = "${var.sap_hana_instance_number}"
+    sap_hana_sapsys_gid        = "${var.sap_hana_sapsys_gid}"
     sap_hana_scaleout_nodes    = "0"
-    sap_hana_sid               = "HA0"
-    sap_hana_sidadm_password   = "Linux_123"
-    sap_hana_sidadm_uid        = "900"
+    sap_hana_sid               = "${var.sap_hana_sid}"
+    sap_hana_sidadm_password   = "${var.sap_hana_sidadm_password}"
+    sap_hana_sidadm_uid        = "${var.sap_hana_sidadm_uid}"
     sap_hana_standby_nodes     = ""
-    sap_hana_system_password   = "Linux_123"
-    sap_primary_instance       = "node-0"
-    sap_primary_zone           = "europe-west1-b"
-    sap_secondary_instance     = "node-1"
-    sap_secondary_zone         = "europe-west1-c"
-    sap_vip                    = "10.0.0.250"
+    sap_hana_system_password   = "${var.sap_hana_system_password}"
+    sap_primary_instance       = "${terraform.workspace}-${var.name}-node-0"
+    sap_primary_zone           = "${data.google_compute_zones.available.names[0]}"
+    sap_secondary_instance     = "${terraform.workspace}-${var.name}-node-1"
+    sap_secondary_zone         = "${data.google_compute_zones.available.names[1]}"
+    sap_vip                    = "${cidrhost(var.ip_cidr_range, 250)}"
     sap_vip_secondary_range    = ""
   }
 
