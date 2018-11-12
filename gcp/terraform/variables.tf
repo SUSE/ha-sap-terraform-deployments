@@ -5,7 +5,6 @@ variable "name" {
 
 variable "gcp_credentials_file" {
   type    = "string"
-  default = "suse-css-qa.json"
 }
 
 variable "ssh_pub_key_file" {}
