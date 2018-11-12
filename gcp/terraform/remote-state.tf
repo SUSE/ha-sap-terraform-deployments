@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-state-suse-css-qa"
+    bucket = "terraform-state"
     prefix = "terraform/state"
   }
 }

@@ -1,7 +1,7 @@
-project     = "suse-css-qa"
+project     = "my-project"
 
 # Credentials file for GCP
-gcp_credentials_file = "suse-css-qa.json"
+gcp_credentials_file = "my-project.json"
 
 # Internal IPv4 range
 ip_cidr_range = "10.0.0.0/24"
@@ -10,7 +10,7 @@ ip_cidr_range = "10.0.0.0/24"
 machine_type = "n1-highmem-8"
 
 # SSH public key file
-ssh_pub_key_file = "ssh_pub.key"
+ssh_pub_key_file = "my-public.key"
 
 region = "europe-west1"
 
@@ -20,7 +20,7 @@ prefix = "${terraform.workspace}-${var.name}"
 sap_deployment_debug = "Yes"
 
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
-sap_hana_deployment_bucket = "sap_hana2"
+sap_hana_deployment_bucket = "MyHanaBucket"
 
 # The instance number, 0 to 99, of the SAP HANA system.
 sap_hana_instance_number = "0"
@@ -40,3 +40,4 @@ sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
 # Specifies the URL location of a script to run after the deployment is complete.
 # The script should be hosted on a web server or in a GCS bucket.
 post_deployment_script = ""
+

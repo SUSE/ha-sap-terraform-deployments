@@ -1,10 +1,10 @@
 resource "google_storage_bucket" "terraform-state" {
   # NOTE: The bucket name must be globally unique and conform to certain requirements described in:
   # https://cloud.google.com/storage/docs/naming#requirements
-  name = "terraform-state-suse-css-qa"
+  name = "terraform-state"
 
   location = "eu"
-  project  = "suse-css-qa"
+  project  = "my-project"
 
   versioning {
     enabled = true
