@@ -61,7 +61,7 @@ hdb::config_backup
 
 ## Setup HA
 ha::check_settings
-if [[ $HOSTNAME == node-0 ]] ; then
+if [[ $HOSTNAME =~ node-0$ ]] ; then
 	ha::install_secondary_sshkeys
 else
 	ha::install_primary_sshkeys
@@ -70,7 +70,7 @@ ha::download_scripts
 ha::create_hdb_user
 ha::hdbuserstore
 hdb::backup /hanabackup/data/pre_ha_config
-if [[ $HOSTNAME == node-0 ]] ; then
+if [[ $HOSTNAME =~ node-0$ ]] ; then
 	ha::enable_hsr
 	ha::ready
 	ha::config_pacemaker_primary

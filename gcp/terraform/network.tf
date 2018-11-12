@@ -1,18 +1,16 @@
 resource "google_compute_network" "ha_network" {
-  name                    = "ha-network"
+  name                    = "${terraform.workspace}-${var.name}-network"
   auto_create_subnetworks = "false"
-  routing_mode            = "REGIONAL"
 }
 
 resource "google_compute_subnetwork" "ha_subnet" {
-  name          = "ha-subnet"
-  description   = "Subnetwork for HA node"
-  ip_cidr_range = "${var.ip_cidr_range}"
+  name          = "${terraform.workspace}-${var.name}-subnet"
   network       = "${google_compute_network.ha_network.self_link}"
+  ip_cidr_range = "${var.ip_cidr_range}"
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
-  name          = "ha-firewall-allow-internal"
+  name          = "${terraform.workspace}-${var.name}-fw-internal"
   network       = "${google_compute_network.ha_network.name}"
   source_ranges = ["${var.ip_cidr_range}"]
 
@@ -32,7 +30,7 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
-  name    = "ha-firewall-allow-icmp"
+  name    = "${terraform.workspace}-${var.name}-fw-icmp"
   network = "${google_compute_network.ha_network.name}"
 
   allow {
@@ -41,7 +39,7 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
-  name    = "ha-firewall-allow-tcp"
+  name    = "${terraform.workspace}-${var.name}-fw-tcp"
   network = "${google_compute_network.ha_network.name}"
 
   allow {
