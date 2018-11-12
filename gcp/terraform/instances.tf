@@ -1,70 +1,27 @@
-#resource "google_compute_instance_template" "ha_node_template" {
-#  name         = "ha-node-template"
-#  machine_type = "${var.machine_type}"
-#  description  = "This template is used to create HA node server instances"
-#
-#  lifecycle {
-#    create_before_destroy = true
-#  }
-#
-#  network_interface {
-#    subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-#
-#    access_config {
-#      nat_ip = ""
-#    }
-#  }
-#
-#  scheduling {
-#    automatic_restart   = true
-#    on_host_maintenance = "MIGRATE"
-#    preemptible         = false
-#  }
-#
-#  disk {
-#    source_image = "${google_compute_image.sles4sap_bootable_image.self_link}"
-#    auto_delete  = true
-#    boot         = true
-#  }
-#
-#  metadata {
-#    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
-#  }
-#}
-
-#resource "google_compute_instance_group_manager" "ha_nodes_group" {
-#  name               = "ha-nodes-group"
-#  description        = "Create identical nodes based on a template"
-#  instance_template  = "${google_compute_instance_template.ha_node_template.self_link}"
-#  base_instance_name = "ha-nodes-group"
-#  update_strategy    = "RESTART"
-#  target_size        = "0"
-#}
-
 resource "google_compute_instance" "clusternodes" {
-  description             = "SAP/HA nodes"
-  machine_type            = "${var.machine_type_hana_node}"
-  metadata_startup_script = "${data.template_file.init_nodes.rendered}"
-  count                   = "${var.node_count}"
-  name                    = "${element(var.node_list, count.index)}"
+  machine_type            = "${var.machine_type}"
+  metadata_startup_script = "${file("startup.sh")}"
+  count                   = "2"
+  name                    = "${terraform.workspace}-${var.name}-node-${count.index}"
+  zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
 
-  # lifecycle {
-  #   create_before_destroy = true
-  # }
+  can_ip_forward = true
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-    network_ip = "10.0.1.${count.index}"
+    network_ip = "${cidrhost(var.ip_cidr_range, count.index+2)}"
 
     access_config {
       nat_ip = ""
     }
   }
+
   scheduling {
     automatic_restart   = true
     on_host_maintenance = "MIGRATE"
     preemptible         = false
   }
+
   boot_disk {
     initialize_params {
       image = "${google_compute_image.sles4sap_bootable_image.self_link}"
@@ -72,56 +29,46 @@ resource "google_compute_instance" "clusternodes" {
 
     auto_delete = true
   }
+
   attached_disk {
     source      = "${element(google_compute_disk.node_data.*.self_link, count.index)}"
     device_name = "${element(google_compute_disk.node_data.*.name, count.index)}"
     mode        = "READ_WRITE"
   }
-  metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
-  }
-}
-
-resource "google_compute_instance" "iscsisrv" {
-  name                    = "iscsisrv"
-  description             = "iSCSI server"
-  machine_type            = "${var.machine_type_iscsi_server}"
-  metadata_startup_script = "${data.template_file.init_iscsi.rendered}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  network_interface {
-    subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-    network_ip = "10.0.0.254"
-
-    access_config {
-      nat_ip = ""
-    }
-  }
-
-  scheduling {
-    automatic_restart   = true
-    on_host_maintenance = "MIGRATE"
-    preemptible         = false
-  }
-
-  boot_disk {
-    initialize_params {
-      image = "${google_compute_image.sles_bootable_image.self_link}"
-    }
-
-    auto_delete = true
-  }
 
   attached_disk {
-    source      = "${google_compute_disk.iscsi_data.self_link}"
-    device_name = "${google_compute_disk.iscsi_data.name}"
+    source      = "${element(google_compute_disk.backup.*.self_link, count.index)}"
+    device_name = "${element(google_compute_disk.backup.*.name, count.index)}"
     mode        = "READ_WRITE"
   }
 
   metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    sshKeys = "root:${file(var.ssh_pub_key_file)}"
+
+    # For a description of these:
+    # https://storage.googleapis.com/sapdeploy/dm-templates/sap_hana_ha/template.yaml
+
+    post_deployment_script     = ""
+    sap_deployment_debug       = "${var.sap_deployment_debug}"
+    sap_hana_backup_bucket     = ""
+    sap_hana_deployment_bucket = "${var.sap_hana_deployment_bucket}"
+    sap_hana_instance_number   = "${var.sap_hana_instance_number}"
+    sap_hana_sapsys_gid        = "${var.sap_hana_sapsys_gid}"
+    sap_hana_scaleout_nodes    = "0"
+    sap_hana_sid               = "${var.sap_hana_sid}"
+    sap_hana_sidadm_password   = "${var.sap_hana_sidadm_password}"
+    sap_hana_sidadm_uid        = "${var.sap_hana_sidadm_uid}"
+    sap_hana_standby_nodes     = ""
+    sap_hana_system_password   = "${var.sap_hana_system_password}"
+    sap_primary_instance       = "${terraform.workspace}-${var.name}-node-0"
+    sap_primary_zone           = "${data.google_compute_zones.available.names[0]}"
+    sap_secondary_instance     = "${terraform.workspace}-${var.name}-node-1"
+    sap_secondary_zone         = "${data.google_compute_zones.available.names[1]}"
+    sap_vip                    = "${cidrhost(var.ip_cidr_range, 250)}"
+    sap_vip_secondary_range    = ""
+  }
+
+  service_account {
+    scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
 }

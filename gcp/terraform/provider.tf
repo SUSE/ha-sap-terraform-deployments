@@ -1,6 +1,10 @@
 provider "google" {
   credentials = "${file("${var.gcp_credentials_file}")}"
-  project     = "suse-css-qa"
+  project     = "${var.project}"
   region      = "${var.region}"
-  zone        = "${var.zone}"
+}
+
+data "google_compute_zones" "available" {
+  region = "${var.region}"
+  status = "UP"
 }
