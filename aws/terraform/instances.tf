@@ -24,7 +24,7 @@ resource "aws_instance" "iscsisrv" {
   }
 
   tags {
-    Name        = "iSCSI Server"
+    Name = "iSCSI Server"
   }
 }
 
@@ -51,8 +51,8 @@ resource "aws_instance" "clusternodes" {
   }
 
   connection {
-    type = "ssh"
-    user = "ec2-user"
+    type        = "ssh"
+    user        = "ec2-user"
     private_key = "${file("${var.private_key_location}")}"
   }
 
@@ -67,6 +67,6 @@ resource "aws_instance" "clusternodes" {
   }
 
   tags {
-    Name        = "Node-${count.index}"
+    Name = "Node-${count.index}"
   }
 }
