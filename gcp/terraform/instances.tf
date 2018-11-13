@@ -64,7 +64,7 @@ resource "google_compute_instance" "clusternodes" {
     sap_primary_zone           = "${data.google_compute_zones.available.names[0]}"
     sap_secondary_instance     = "${terraform.workspace}-${var.name}-node-1"
     sap_secondary_zone         = "${data.google_compute_zones.available.names[1]}"
-    sap_vip                    = "${cidrhost(var.ip_cidr_range, 250)}"
+    sap_vip                    = "${var.sap_vip}"
     sap_vip_secondary_range    = ""
   }
 

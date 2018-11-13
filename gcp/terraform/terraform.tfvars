@@ -6,6 +6,9 @@ gcp_credentials_file = "my-project.json"
 # Internal IPv4 range
 ip_cidr_range = "10.0.0.0/24"
 
+# Virtual IP for HANA instances
+sap_vip = "10.0.0.250"
+
 # Type of VM (vCPUs and RAM)
 machine_type = "n1-highmem-8"
 
