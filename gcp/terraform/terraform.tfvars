@@ -6,6 +6,9 @@ gcp_credentials_file = "my-project.json"
 # Internal IPv4 range
 ip_cidr_range = "10.0.0.0/24"
 
+# Virtual IP for HANA instances
+sap_vip = "10.0.0.250"
+
 # Type of VM (vCPUs and RAM)
 machine_type = "n1-highmem-8"
 
@@ -13,8 +16,6 @@ machine_type = "n1-highmem-8"
 ssh_pub_key_file = "my-public.key"
 
 region = "europe-west1"
-
-prefix = "${terraform.workspace}-${var.name}"
 
 # Debug
 sap_deployment_debug = "Yes"
@@ -34,7 +35,8 @@ sap_hana_sid = "HA0"
 # The default value for the <sid>adm user ID is 900 to avoid user created groups conflicting with SAP HANA.
 sap_hana_sidadm_uid = "900"
 
-images_path_bucket = "sle-image-store"
+# GCP bucket with SLES images
+images_path_bucket = "sles-images"
 sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
 
 # Specifies the URL location of a script to run after the deployment is complete.
