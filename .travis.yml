@@ -1,0 +1,26 @@
+dist: xenial
+
+notifications:
+  email: false
+
+before_script:
+  - set -e
+  - curl https://www.terraform.io/downloads.html 2>/dev/null| sed -rn '/latest version/{$!{ N;s/.+\(([0-9\.]+)\).+/\1/;p}}' > /tmp/terraform.ver
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/$(cat /tmp/terraform.ver)/terraform_$(cat /tmp/terraform.ver)_linux_amd64.zip
+  - unzip /tmp/terraform -d /tmp
+  - chmod +x /tmp/terraform
+
+script:
+  - set -e
+  - for provider in aws azure gcp ; do
+      cd $provider/terraform ;
+      /tmp/terraform fmt -check ;
+      /tmp/terraform validate -check-variables=false ;
+      rm remote-state.tf ;
+      /tmp/terraform init ;
+      if [[ "$provider" == "gcp" ]]; then
+        /tmp/terraform validate -var-file=terraform.tfvars -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var ssh_pub_key_file=/dev/null ;
+      else
+        /tmp/terraform validate -var-file=terraform.tfvars -var private_key_location=/dev/null ;
+      cd ../.. ;
+    done
