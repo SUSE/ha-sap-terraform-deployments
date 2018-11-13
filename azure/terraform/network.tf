@@ -32,10 +32,10 @@ resource "azurerm_virtual_network" "mynet" {
 }
 
 resource "azurerm_subnet" "mysubnet" {
-  name                      = "mysubnet"
-  resource_group_name       = "${azurerm_resource_group.myrg.name}"
-  virtual_network_name      = "${azurerm_virtual_network.mynet.name}"
-  address_prefix            = "10.74.1.0/24"
+  name                 = "mysubnet"
+  resource_group_name  = "${azurerm_resource_group.myrg.name}"
+  virtual_network_name = "${azurerm_virtual_network.mynet.name}"
+  address_prefix       = "10.74.1.0/24"
 }
 
 resource "azurerm_subnet_network_security_group_association" "mysubnet" {
@@ -223,11 +223,11 @@ resource "azurerm_network_interface" "clusternodes" {
   network_security_group_id = "${azurerm_network_security_group.mysecgroup.id}"
 
   ip_configuration {
-    name                                    = "MyNicConfiguration-${count.index}"
-    subnet_id                               = "${azurerm_subnet.mysubnet.id}"
-    private_ip_address_allocation           = "static"
-    private_ip_address                      = "${element(var.clusternodes-ips, count.index)}"
-    public_ip_address_id                    = "${element(azurerm_public_ip.clusternodes.*.id, count.index)}"
+    name                          = "MyNicConfiguration-${count.index}"
+    subnet_id                     = "${azurerm_subnet.mysubnet.id}"
+    private_ip_address_allocation = "static"
+    private_ip_address            = "${element(var.clusternodes-ips, count.index)}"
+    public_ip_address_id          = "${element(azurerm_public_ip.clusternodes.*.id, count.index)}"
   }
 
   tags {

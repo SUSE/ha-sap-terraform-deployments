@@ -3,7 +3,7 @@
 # Variable for the image URI. Run as terraform apply -var image_uri https://blob.azure.microsoft.com/this/is/my/image.vhd
 
 variable "image_uri" {
-  type    = "string"
+  type = "string"
 }
 
 resource "azurerm_image" "custom" {
