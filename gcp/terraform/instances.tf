@@ -48,7 +48,7 @@ resource "google_compute_instance" "clusternodes" {
     # For a description of these:
     # https://storage.googleapis.com/sapdeploy/dm-templates/sap_hana_ha/template.yaml
 
-    post_deployment_script     = ""
+    post_deployment_script     = "${var.post_deployment_script}"
     sap_deployment_debug       = "${var.sap_deployment_debug}"
     sap_hana_backup_bucket     = ""
     sap_hana_deployment_bucket = "${var.sap_hana_deployment_bucket}"
