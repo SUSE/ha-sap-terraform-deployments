@@ -4,7 +4,7 @@ variable "name" {
 }
 
 variable "gcp_credentials_file" {
-  type    = "string"
+  type = "string"
 }
 
 variable "suse_regcode" {}
@@ -12,6 +12,8 @@ variable "suse_regcode" {}
 variable "ssh_pub_key_file" {}
 
 variable "ip_cidr_range" {}
+
+variable "sap_vip" {}
 
 variable "machine_type" {}
 
