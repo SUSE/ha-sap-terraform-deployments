@@ -33,4 +33,3 @@ variable "init-type" {
   type    = "string"
   default = "all"
 }
-
