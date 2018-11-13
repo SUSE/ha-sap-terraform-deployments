@@ -14,8 +14,6 @@ ssh_pub_key_file = "my-public.key"
 
 region = "europe-west1"
 
-prefix = "${terraform.workspace}-${var.name}"
-
 # Debug
 sap_deployment_debug = "Yes"
 
@@ -34,7 +32,8 @@ sap_hana_sid = "HA0"
 # The default value for the <sid>adm user ID is 900 to avoid user created groups conflicting with SAP HANA.
 sap_hana_sidadm_uid = "900"
 
-images_path_bucket = "sle-image-store"
+# GCP bucket with SLES images
+images_path_bucket = "sles-images"
 sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
 
 # Specifies the URL location of a script to run after the deployment is complete.
