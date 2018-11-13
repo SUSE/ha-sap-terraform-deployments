@@ -7,6 +7,8 @@ variable "gcp_credentials_file" {
   type    = "string"
 }
 
+variable "suse_regcode" {}
+
 variable "ssh_pub_key_file" {}
 
 variable "ip_cidr_range" {}
