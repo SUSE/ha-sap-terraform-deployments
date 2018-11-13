@@ -66,6 +66,7 @@ resource "google_compute_instance" "clusternodes" {
     sap_secondary_zone         = "${data.google_compute_zones.available.names[1]}"
     sap_vip                    = "${cidrhost(var.ip_cidr_range, 250)}"
     sap_vip_secondary_range    = ""
+    suse_regcode               = "${var.suse_regcode}"
   }
 
   service_account {

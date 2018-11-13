@@ -49,8 +49,6 @@ gsutil mb gs://sles-images
 
 `gsutil cp OS-Image-File-for-SLES4SAP-for-GCP.tar.gz gs://sles-images`
 
-Note: [BYOS images](https://www.suse.com/c/on-demand-byos-say-what/) are not supported yet.
-
 ## Relevant files
 
 These are the relevant files and what each provides:
