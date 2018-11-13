@@ -1,6 +1,6 @@
 # Google Cloud Platform deployment with Terraform
 
-This Terraform configuration deploys SAP HANA in a High-Availability Cluster on SUSE Linux Enterprise Server in the **Google Cloud Platform**.
+This Terraform configuration deploys SAP HANA in a High-Availability Cluster on SUSE Linux Enterprise Server for SAP Applications in the **Google Cloud Platform**.
 
 The infrastructure deployed includes:
 
