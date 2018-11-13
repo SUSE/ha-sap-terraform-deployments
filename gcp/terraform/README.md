@@ -1,26 +1,59 @@
 # Google Cloud Platform deployment with Terraform
 
-The terraform configuration files in this directory can be used to create the infrastructure required to perform the validation of the public cloud images for SLES for SAP Applications in the **Google Cloud Platform**.
+This Terraform configuration deploys SAP HANA in a High-Availability Cluster on SUSE Linux Enterprise Server for SAP Applications in the **Google Cloud Platform**.
 
 The infrastructure deployed includes:
 
-- A Virtual Network with a local subnet
-- A security group with rules for access to the instances created in the subnet. Only allowed external network traffic is for the protocols: SSH, HTTP, HTTPS, and for the HAWK service. Internally to the subnet, all traffic is allowed.
-- Public IP access for the virtual machines.
-- The definition of the image to use for the virtual machines (image has to be uploaded separately)
+- A virtual network with a local subnetwork.
+- Rules for access to the instances created.
+- Public IP access for the virtual machines via ssh.
+- The definition of the image to use in the virtual machines.
 - Virtual machines to deploy.
 
-By default, this configuration will create 3 virtual machines in the GCP: one for support services (mainly iSCSI as most other services are provided by GCP), and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+This configuration will create 2 cluster nodes: master & slave.
+
+## Prerequisites
+
+1. First, a GCP account with an active subscription is required.
+
+2. Install the GCloud SDK following the [documentation](https://cloud.google.com/sdk/docs/quickstart-linux)
+
+3. In the [web console](https://console.cloud.google.com/iam-admin/serviceaccounts) create a new personal key for the service account of your project and download the JSON file.
+
+4. Log in with `gcloud init`.
+
+Note: You must run this command to use the Gcloud SDK and to apply this Terraform configuration:
+
+`export GOOGLE_APPLICATION_CREDENTIALS=/path/to/<PROJECT-ID>-xxxxxxxxx.json`
+
+5. A Google Storage bucket must be created with the RAR compressed files containing the HANA installer. 
+
+The bucket may be created and populated with these commands:
+
+```
+gsutil mb gs://sap_hana2
+gsutil cp 51051635_part* gs://sap_hana2/
+```
+
+Note: In this bucket GCP will also store the logs for the deployment, available in the `logs` directory.
+
+Bucket names have more restrictions than object names and must be globally unique, because every bucket resides in a single Cloud Storage namespace. Also, bucket names can be used with a CNAME redirect, which means they need to conform to DNS naming conventions. For more information, see the [bucket naming guidelines](https://cloud.google.com/storage/docs/naming#requirements).
+
+6. A bucket for the images must be created to hold the SLES version to test. 
+
+```
+gsutil mb gs://sles-images
+```
+
+7. Upload the image you want to use with:
+
+`gsutil cp OS-Image-File-for-SLES4SAP-for-GCP.tar.gz gs://sles-images`
 
 ## Relevant files
 
 These are the relevant files and what each provides:
 
- - [disks.tf](disks.tf): definitions of the storage used for images and virtual machines
- 
- - [init-iscsi.tpl](init-iscsi.tpl): template code for the initialization script for the iSCSI server. This will partition the second device and set up the iSCSI targets.
- 
- - [init-nodes.tpl](init-nodes.tpl): template code for the initialization script for the cluster nodes. This will connect the cluster nodes to the iSCSI server, configure a wathdog for the cluster, issue a call to `ha-cluster-init` in the master and a call to `ha-cluster-join` in the slaves.
+ - [disks.tf](disks.tf): definitions of the storage used for images and virtual machines.
  
  - [instances.tf](instances.tf): definition of the GCP instances to create on deployment.
  
@@ -32,37 +65,59 @@ These are the relevant files and what each provides:
 
  - [ssh_pub.key](ssh_pub.key): SSH public key to connect to instances.
 
- - [templates.tf](templates.tf): definition of templates to use.
-
  - [remote_state.tf](remote_state.tf): definition of the backend to store the Terraform state file remotely. The bucket was created with this [Terraform configuration](create_remote_state/).  Make sure the bucket names match in both configurations.
 
- - [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, OS version, region, etc.
+ - [startup.sh](startup.sh): script to start up the instances.
 
-### Setup GCP account
+ - [variables.tf](variables.tf): definition of variables used in the configuration. 
+ 
+ - [terraform.tfvars](terraform.tfvars): defaults for the variables defined in [variables](variables.tf)
 
-First, a GCP account with an active subscription is required.
+## How to use
 
-Log in with `gcloud init`.
+1. Edit [terraform.tfvars](terraform.tfvars) to suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
 
-Generate JSON credentials file:
-  - Navigate to API Manger / Credentials / Create credentials / Service account key in the console.
-  - Select Compute Engine default service account and key type JSON
+- The `project` variable must contain the project name.
 
-### How to use
+- The `ip_cidr_range` variable must contain the internal IPv4 range.
 
-To use, copy the files `*.tf` and `*.tpl` into a directory, and then run from the directory the following commands:
+- The `sap_vip` variable must contain the virtual IP address for the HANA instances.
+
+- The `machine_type` variable must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types).
+
+- The `gcp_credentials_file` variable must contain the path to the JSON file with the GCP credentials created above.
+
+- The `ssh_pub_key_file` variable must contain the path to your SSH public key.
+
+- The `region` variable must contain the name of the desired region.
+
+- The `sap_deployment_debug` variable must be set to `Yes` if you want to debug the deployment.
+
+- The `sap_hana_deployment_bucket` variable must contain the name of the Google Storage bucket with the HANA installation files.
+
+- The `images_path_bucket` must contain the name of the Google Storage bucket with the SLES image.
+
+- The `sles4sap_os_image_file` must contain the name of the SLES image.
+
+- The `post_deployment_script` specifies the URL location of a script to run after the deployment is complete. This script should be hosted on a web server or in a GCS bucket.
+
+2. Deploy:
 
 ```
 terraform init
-terraform plan -var "date_of_the_day=$(date +%Y%m%d)"
-terraform apply -var "date_of_the_day=$(date +%Y%m%d)"
+terraform plan -var "name=testing"
+terraform apply -var "name=testing"
 ```
 
-### TODO
+3. Destroy:
 
-- Improve documentation
-- Remote Terraform state
+When you are done, run:
 
-## Extra info
+`terraform destroy -var "name=testing"`
 
-https://www.terraform.io/docs/providers/google/index.html
+## Notes
+
+- This configuration supports [Terraform workspaces](https://www.terraform.io/docs/state/workspaces.html). 
+- This Terraform configuration performs the same process described in the [official GCP documentation for deploying SAP HANA](https://cloud.google.com/solutions/partners/sap/sap-hana-ha-deployment-guide) with the following differences:
+  - No NAT configuration for the instances.
+  - The former SAP HANA primary is not automatically registered as secondary after takeover.  Edit [startup.sh](startup.sh) if you want to change this.

@@ -3,6 +3,9 @@ project     = "my-project"
 # Credentials file for GCP
 gcp_credentials_file = "my-project.json"
 
+# SUSE registration code
+suse_regcode = "xxxxxxxxxxxx"
+
 # Internal IPv4 range
 ip_cidr_range = "10.0.0.0/24"
 
