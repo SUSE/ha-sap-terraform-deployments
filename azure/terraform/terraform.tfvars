@@ -17,7 +17,7 @@ instmaster_user = "USER_ACCOUNT_TO_ACCESS_THE_INSTMASTER_SHARE"
 instmaster_pass = "PASSWORD_TO_ACCESS_THE_INSTMASTER_SHARE"
 
 # Blob URI of the image to use for the virtual machines
-image_uri = "URI_TO_BLOB_CONTAINING_OS_IMAGE_TO_USE"
+image_uri = "https://URI_TO_BLOB_CONTAINING_OS_IMAGE_TO_USE"
 
 # VM size for the cluster nodes
 instancetype = "Standard_E4s_v3"
