@@ -57,4 +57,3 @@ variable "init-type" {
 variable "hana_inst_master" {
   type = "string"
 }
-
