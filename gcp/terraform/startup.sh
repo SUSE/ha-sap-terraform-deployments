@@ -36,6 +36,11 @@ source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AU
 
 ### Base GCP and OS Configuration
 main::get_os_version
+
+if [[ -n ${VM_METADATA[suse_regcode]} ]]
+	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
+fi
+
 main::install_gsdk /usr/local
 main::set_boot_parameters
 main::install_packages
