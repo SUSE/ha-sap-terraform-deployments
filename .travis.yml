@@ -22,5 +22,6 @@ script:
         /tmp/terraform validate -var-file=terraform.tfvars -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var ssh_pub_key_file=/dev/null ;
       else
         /tmp/terraform validate -var-file=terraform.tfvars -var private_key_location=/dev/null ;
+      fi ;
       cd ../.. ;
     done
