@@ -11,6 +11,6 @@ resource "azurerm_storage_account" "mytfstorageacc" {
   account_tier             = "Standard"
 
   tags {
-    environment            = "Build Validation"
+    environment = "Build Validation"
   }
 }
