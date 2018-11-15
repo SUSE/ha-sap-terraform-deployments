@@ -9,10 +9,6 @@ function install_hana()
     chmod +x /tmp/prepare_env.sh
     chmod +x /tmp/install_hana.sh
     chmod -R 755 /root/sap_inst
-    mv /tmp/node0_id_rsa /tmp/$(hostname -s | sed -r 's/[0-9]+$//')0_id_rsa
-    mv /tmp/node0_id_rsa.pub /tmp/$(hostname -s | sed -r 's/[0-9]+$//')0_id_rsa.pub
-    mv /tmp/node1_id_rsa /tmp/$(hostname -s | sed -r 's/[0-9]+$//')1_id_rsa
-    mv /tmp/node1_id_rsa.pub /tmp/$(hostname -s | sed -r 's/[0-9]+$//')1_id_rsa.pub
     /tmp/prepare_env.sh xvdd /hana xfs
     cp /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_hostname0.conf /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
     sed -i 's/^hostname=.*/hostname='$(hostname -s)'/' /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
@@ -49,11 +45,6 @@ exec > /root/init-nodes.log 2>&1
 # Set $HOME as it's not automatically set by cloud init
 export HOME="/root"
 
-# Set root password and SSH connection
-echo "root:SECRET_PASSWORD" | chpasswd
-sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-systemctl restart sshd
-
 # Configure aws-cli
 mkdir ~/.aws
 echo "[default]" > ~/.aws/config
@@ -85,6 +76,9 @@ iscsiadm -m discovery -t st -p "${iscsiip}:3260" -l -o new
 while (! ls /dev/disk/by-path/ip-${iscsiip}:*-lun-9 ); do sleep 5; done
 ls /dev/disk/by-path/
 
+chmod +x /tmp/sshkeys.sh
+/tmp/sshkeys.sh
+
 # Check whether we should install HANA
 test "${init_type}" != "skip-hana" && install_hana
 
@@ -99,25 +93,12 @@ if [ "$(hostname)" == "ip-10-0-1-0" ]; then
     exit 1
 fi
 
-# Create expect script to handle password request in ha-cluster-join
-CLUSTERJOIN="/root/wrap-cluster-join"
-cat > $CLUSTERJOIN <<EOF
-set timeout 60
-set host [lrange \$argv 1 end]
-set password [lindex \$argv 0]
-eval spawn ha-cluster-join -yc \$host
-expect "password:"
-send "\$password\\r";
-expect "Done"
-close
-EOF
-
 # Wait and join cluster. Do so only if HAWK is already up in the master
 # Cluster master is 10.0.1.0. Check instances.tf to see why
 while (! timeout 10 bash -c 'cat < /dev/null > /dev/tcp/10.0.1.0/7630'); do echo "Waiting for Cluster Init"; sleep 5; done
 # Found HAWK on the master node. Wait 30 seconds for it to finish initialization before ha-cluster-join
 sleep 30
-expect $CLUSTERJOIN "SECRET_PASSWORD" "ip-10-0-1-0" || true
+ha-cluster-join -yc "ip-10-0-1-0" || true
 sleep 5
 systemctl is-active pacemaker || systemctl restart pacemaker
 if [[ "${init_type}" != "skip-hana" ]]; then
