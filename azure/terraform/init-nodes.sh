@@ -15,10 +15,6 @@ function install_hana()
     sudo mount -t cifs "\$1" /root/sap_inst -o vers=3.0,username=\$2,password=\$3,dir_mode=0777,file_mode=0777,sec=ntlmssp
     sudo chmod +x /tmp/prepare_env.sh
     sudo chmod +x /tmp/install_hana.sh
-    mv /tmp/node0_id_rsa /tmp/$(hostname -s | sed -r 's/[0-9]+$//')0_id_rsa
-    mv /tmp/node0_id_rsa.pub /tmp/$(hostname -s | sed -r 's/[0-9]+$//')0_id_rsa.pub
-    mv /tmp/node1_id_rsa /tmp/$(hostname -s | sed -r 's/[0-9]+$//')1_id_rsa
-    mv /tmp/node1_id_rsa.pub /tmp/$(hostname -s | sed -r 's/[0-9]+$//')1_id_rsa.pub
     sudo /tmp/prepare_env.sh sdc /hana xfs
     sudo cp /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_hostname0.conf /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
     sudo sed -i 's/^hostname=.*/hostname='$(hostname -s)'/' /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
@@ -55,11 +51,6 @@ exec > $HOME/init-nodes.log 2>&1
 # Show parameters
 echo \$@
 
-# Set root password and SSH connection
-echo "root:SECRET_PASSWORD" | sudo chpasswd
-sudo sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sudo systemctl restart sshd
-
 # Set unique initiator name
 IQN=\$(echo "iqn.\$(date +"%Y-%m").\$(grep search /etc/resolv.conf | awk -F. 'BEGIN {OFS="."} (\$1 = substr(\$1,8)) {print \$2,\$1}'):\$(sudo iscsi-iname|cut -d: -f2)")
 sudo sed -i -e '/^InitiatorName/d' /etc/iscsi/initiatorname.iscsi
@@ -89,6 +80,9 @@ sudo iscsiadm -m discovery -t st -p "\$iscsiip:3260" -l -o new
 while (! ls /dev/disk/by-path/ip-\$iscsiip:*-lun-9 ); do sleep 5; done
 ls /dev/disk/by-path/
 
+sudo chmod +x /tmp/sshkeys.sh
+sudo /tmp/sshkeys.sh
+
 # Check whether we should install HANA
 INSTOPT="\$1"
 shift
@@ -105,25 +99,12 @@ if [ "\$(hostname)" == "my-node-0" ]; then
     exit 1
 fi
 
-# Create expect script to handle password request in ha-cluster-join
-CLUSTERJOIN="$HOME/wrap-cluster-join"
-cat > \$CLUSTERJOIN <<EOF
-set timeout 60
-set host [lrange \\\$argv 1 end]
-set password [lindex \\\$argv 0]
-eval spawn ha-cluster-join -yc \\\$host
-expect "password:"
-send "\\\$password\\\\r";
-expect "Done"
-close
-EOF
-
 # Wait and join cluster. Do so only if HAWK is already up in the master
 # Cluster master is my-node-0. Check virtualmachines.tf to see why
 while (! timeout 10 bash -c 'cat < /dev/null > /dev/tcp/my-node-0/7630'); do echo "Waiting for Cluster Init"; sleep 5; done
 # Detected HAWK on the master node, so will give it a bit of time to finish ha-cluster-init
 sleep 30
-sudo expect \$CLUSTERJOIN "SECRET_PASSWORD" "my-node-0" || true
+sudo ha-cluster-join -yc "my-node-0" || true
 sleep 5
 sudo systemctl is-active pacemaker || sudo systemctl restart pacemaker
 if [[ "\$INSTOPT" != "skip-hana" ]]; then
