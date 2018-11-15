@@ -56,15 +56,4 @@ cat <<-END >> /root/.bashrc
     alias hins='cd /root/sap_inst; ./install_hana.sh'
 END
 
-# We move the ssh keys to the proper location.
-mkdir -p $HOME/.ssh
-mv /tmp/"$(hostname -s)"_id_rsa $HOME/.ssh/id_rsa
-mv /tmp/"$(hostname -s)"_id_rsa.pub $HOME/.ssh/id_rsa.pub
-chmod 600 $HOME/.ssh/id_rsa
-
-for i in $(ls /tmp/*.pub)
-do 
-  (cat "${i}"; echo) >>  $HOME/.ssh/authorized_keys
-done
-
 format_and_mount "$1" "$2" "$3"
