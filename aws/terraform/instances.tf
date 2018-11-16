@@ -5,7 +5,7 @@
 resource "aws_instance" "iscsisrv" {
   ami                         = "${lookup(var.sles4sap, var.aws_region)}"
   instance_type               = "t2.micro"
-  key_name                    = "mykey"
+  key_name                    = "${aws_key_pair.mykey.key_name}"
   associate_public_ip_address = true
   subnet_id                   = "${aws_subnet.local.id}"
   private_ip                  = "10.0.0.254"
@@ -24,7 +24,8 @@ resource "aws_instance" "iscsisrv" {
   }
 
   tags {
-    Name = "iSCSI Server"
+    Name      = "${terraform.workspace} - iSCSI Server"
+    Workspace = "${terraform.workspace}"
   }
 }
 
@@ -32,7 +33,7 @@ resource "aws_instance" "clusternodes" {
   count                       = "${var.ninstances}"
   ami                         = "${lookup(var.sles4sap, var.aws_region)}"
   instance_type               = "${var.instancetype}"
-  key_name                    = "mykey"
+  key_name                    = "${aws_key_pair.mykey.key_name}"
   associate_public_ip_address = true
   subnet_id                   = "${aws_subnet.local.id}"
   private_ip                  = "10.0.1.${count.index}"
@@ -67,6 +68,6 @@ resource "aws_instance" "clusternodes" {
   }
 
   tags {
-    Name = "Node-${count.index}"
+    Name = "${terraform.workspace} - Node-${count.index}"
   }
 }
