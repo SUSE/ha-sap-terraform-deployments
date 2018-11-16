@@ -37,7 +37,7 @@ source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AU
 ### Base GCP and OS Configuration
 main::get_os_version
 
-if [[ -n ${VM_METADATA[suse_regcode]} ]]
+if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
 	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION%-*}/x86_64 )
 fi
