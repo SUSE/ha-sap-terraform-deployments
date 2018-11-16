@@ -27,7 +27,7 @@ resource "azurerm_virtual_network" "mynet" {
   resource_group_name = "${azurerm_resource_group.myrg.name}"
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -60,6 +60,10 @@ resource "azurerm_lb" "mylb" {
     subnet_id                     = "${azurerm_subnet.mysubnet.id}"
     private_ip_address_allocation = "static"
     private_ip_address            = "10.74.1.5"
+  }
+
+  tags {
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -198,7 +202,7 @@ resource "azurerm_network_interface" "iscsisrv" {
   }
 
   tags {
-    environment = "Terraform Demo"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -207,11 +211,10 @@ resource "azurerm_public_ip" "iscsisrv" {
   location                     = "${var.az_region}"
   resource_group_name          = "${azurerm_resource_group.myrg.name}"
   public_ip_address_allocation = "Dynamic"
-  domain_name_label            = "my-iscsisrv"
   idle_timeout_in_minutes      = 30
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -231,7 +234,7 @@ resource "azurerm_network_interface" "clusternodes" {
   }
 
   tags {
-    environment = "Terraform Demo"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -249,10 +252,9 @@ resource "azurerm_public_ip" "clusternodes" {
   resource_group_name          = "${azurerm_resource_group.myrg.name}"
   public_ip_address_allocation = "Dynamic"
   idle_timeout_in_minutes      = 30
-  domain_name_label            = "my-node-${count.index}"
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -270,7 +272,7 @@ resource "azurerm_route_table" "myroutes" {
   }
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -354,6 +356,6 @@ resource "azurerm_network_security_group" "mysecgroup" {
   }
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
