@@ -17,14 +17,6 @@ output "iscsisrv_ip" {
   value = "${data.azurerm_public_ip.iscsisrv.ip_address}"
 }
 
-output "iscsisrv_name" {
-  value = "${data.azurerm_public_ip.iscsisrv.fqdn}"
-}
-
 output "cluster_nodes_ip" {
   value = ["${data.azurerm_public_ip.clusternodes.*.ip_address}"]
-}
-
-output "cluster_nodes_names" {
-  value = ["${data.azurerm_public_ip.clusternodes.*.fqdn}"]
 }
