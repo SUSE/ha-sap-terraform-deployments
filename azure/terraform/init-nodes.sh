@@ -27,17 +27,17 @@ function install_hana()
     sudo su -lc "hdbuserstore set backupkey5 $(hostname -s):30013@SYSTEMDB SYSTEM \$HANAPWD" prdadm
     sudo su -lc "hdbuserstore set backupkey4 $(hostname -s):30015 SYSTEM \$HANAPWD" prdadm
     echo "$(hostname -s)" > /var/tmp/hana.done
-    if [[ "$(hostname -s)" == "my-node-0" ]]; then
-        sudo bash -c "ssh-keyscan -H my-node-1 >> ~/.ssh/known_hosts"
-        while (! sudo ssh my-node-1 "cat /var/tmp/hana.done"); do sleep 10; done
+    if [[ "$(hostname -s)" == "node-0" ]]; then
+        sudo bash -c "ssh-keyscan -H node-1 >> ~/.ssh/known_hosts"
+        while (! sudo ssh node-1 "cat /var/tmp/hana.done"); do sleep 10; done
         sudo su -lc "hdbsql -u system -i 00 -d systemdb -p \$HANAPWD \"BACKUP DATA FOR FULL SYSTEM USING FILE ('backup')\"" prdadm
         sudo su -lc "hdbnsutil -sr_enable --name=MST" prdadm
         sleep 30
-        sudo scp /usr/sap/PRD/SYS/global/security/rsecssfs/data/SSFS_PRD.DAT my-node-1:/usr/sap/PRD/SYS/global/security/rsecssfs/data/SSFS_PRD.DAT
-        sudo scp /usr/sap/PRD/SYS/global/security/rsecssfs/key/SSFS_PRD.KEY my-node-1:/usr/sap/PRD/SYS/global/security/rsecssfs/key/SSFS_PRD.KEY
-        sudo ssh my-node-1 'su -lc "HDB stop" prdadm'
-        sudo ssh my-node-1 'su -lc "hdbnsutil -sr_register --name=SLV --remoteHost=my-node-0 --remoteInstance=00 --replicationMode=sync --operationMode=logreplay" prdadm'
-        sudo ssh my-node-1 'su -lc "HDB start" prdadm'
+        sudo scp /usr/sap/PRD/SYS/global/security/rsecssfs/data/SSFS_PRD.DAT node-1:/usr/sap/PRD/SYS/global/security/rsecssfs/data/SSFS_PRD.DAT
+        sudo scp /usr/sap/PRD/SYS/global/security/rsecssfs/key/SSFS_PRD.KEY node-1:/usr/sap/PRD/SYS/global/security/rsecssfs/key/SSFS_PRD.KEY
+        sudo ssh node-1 'su -lc "HDB stop" prdadm'
+        sudo ssh node-1 'su -lc "hdbnsutil -sr_register --name=SLV --remoteHost=node-0 --remoteInstance=00 --replicationMode=sync --operationMode=logreplay" prdadm'
+        sudo ssh node-1 'su -lc "HDB start" prdadm'
         # Wait for initialization to complete
         sleep 60
         sudo su -lc "HDBSettings.sh systemReplicationStatus.py" prdadm || true
@@ -65,7 +65,7 @@ sudo yast2 ntp-client enable
 sudo yast2 ntp-client add server=0.de.pool.ntp.org
 
 # Wait for iSCSI server
-host my-iscsisrv && iscsiip=\$(host my-iscsisrv | awk '{print \$NF}')
+host iscsisrv && iscsiip=\$(host iscsisrv | awk '{print \$NF}')
 # First test the iSCSI server is reachable for 5 minutes. If it's not, abort
 for ((i=1; i<=30; i++)); do ping -q -c 1 \$iscsiip && break; done || (echo "Aborting init script. Cannot reach iSCSI server" && exit 1)
 while (! timeout 10 bash -c "cat < /dev/null > /dev/tcp/\$iscsiip/3260"); do echo "Waiting for iSCSI"; sleep 5; done
@@ -91,26 +91,26 @@ test "\$INSTOPT" != "skip-hana" && install_hana \$@
 test "\$INSTOPT" == "skip-cluster" && exit 0
 
 # Initialize cluster on master and exit
-# Master node is my-node-0. Check instances.tf to see why
+# Master node is node-0. Check instances.tf to see why
 SBDDEV=\$(ls /dev/disk/by-path/ip-\$iscsiip:*-lun-9)
-if [ "\$(hostname)" == "my-node-0" ]; then
+if [ "\$(hostname)" == "node-0" ]; then
     sudo ha-cluster-init -y -u -s \$SBDDEV && exit 0
     echo "Failed to initialize cluster"
     exit 1
 fi
 
 # Wait and join cluster. Do so only if HAWK is already up in the master
-# Cluster master is my-node-0. Check virtualmachines.tf to see why
-while (! timeout 10 bash -c 'cat < /dev/null > /dev/tcp/my-node-0/7630'); do echo "Waiting for Cluster Init"; sleep 5; done
+# Cluster master is node-0. Check virtualmachines.tf to see why
+while (! timeout 10 bash -c 'cat < /dev/null > /dev/tcp/node-0/7630'); do echo "Waiting for Cluster Init"; sleep 5; done
 # Detected HAWK on the master node, so will give it a bit of time to finish ha-cluster-init
 sleep 30
-sudo ha-cluster-join -yc "my-node-0" || true
+sudo ha-cluster-join -yc "node-0" || true
 sleep 5
 sudo systemctl is-active pacemaker || sudo systemctl restart pacemaker
 if [[ "\$INSTOPT" != "skip-hana" ]]; then
     test -f /tmp/dlm.template && sudo crm configure load update /tmp/dlm.template
     sleep 5
-    sed -i -e 's/%NODE0%/my-node-0/g' -e 's/%NODE1%/my-node-1/g' -e 's/%HANAIP%/10.74.1.5/g' /tmp/hanasr.template
+    sed -i -e 's/%NODE0%/node-0/g' -e 's/%NODE1%/node-1/g' -e 's/%HANAIP%/10.74.1.5/g' /tmp/hanasr.template
     test -f /tmp/hanasr.template && sudo crm configure load update /tmp/hanasr.template
 fi
 EOP
