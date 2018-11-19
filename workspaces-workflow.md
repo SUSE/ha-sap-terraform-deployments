@@ -46,7 +46,3 @@ Get help:
 
 `terraform workspace help`
 `terraform workspace SUBCOMMAND help`
-
-## TODO
-
-- [ ] Add tags or labels prefixed with `${terraform.workspace}` to all resources that allow tags or labels.

@@ -17,4 +17,8 @@ resource "azurerm_image" "custom" {
     blob_uri = "${var.image_uri}"
     size_gb  = "32"
   }
+
+  tags {
+    workspace = "${terraform.workspace}"
+  }
 }
