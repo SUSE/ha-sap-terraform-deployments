@@ -5,18 +5,27 @@ resource "aws_vpc" "vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
+
+  tags = {
+    Workspace = "${terraform.workspace}"
+  }
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Network = "Public"
+    Network   = "Public"
+    Workspace = "${terraform.workspace}"
   }
 }
 
 resource "aws_route_table" "routetable" {
   vpc_id = "${aws_vpc.vpc.id}"
+
+  tags {
+    Workspace = "${terraform.workspace}"
+  }
 }
 
 resource "aws_route" "public" {
@@ -33,11 +42,19 @@ resource "aws_route_table_association" "public" {
 resource "aws_subnet" "local" {
   vpc_id     = "${aws_vpc.vpc.id}"
   cidr_block = "${aws_vpc.vpc.cidr_block}"
+
+  tags {
+    Workspace = "${terraform.workspace}"
+  }
 }
 
 resource "aws_security_group" "secgroup" {
   name   = "secgroup"
   vpc_id = "${aws_vpc.vpc.id}"
+
+  tags {
+    Workspace = "${terraform.workspace}"
+  }
 }
 
 resource "aws_security_group_rule" "outall" {

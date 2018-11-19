@@ -8,12 +8,16 @@ resource "azurerm_availability_set" "myas" {
   resource_group_name         = "${azurerm_resource_group.myrg.name}"
   platform_fault_domain_count = 2
   managed                     = "true"
+
+  tags {
+    workspace = "${terraform.workspace}"
+  }
 }
 
 # iSCSI server VM
 
 resource "azurerm_virtual_machine" "iscsisrv" {
-  name                  = "my-iscsisrv"
+  name                  = "${terraform.workspace}-iscsisrv"
   location              = "${var.az_region}"
   resource_group_name   = "${azurerm_resource_group.myrg.name}"
   network_interface_ids = ["${azurerm_network_interface.iscsisrv.id}"]
@@ -41,7 +45,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   os_profile {
-    computer_name  = "my-iscsisrv"
+    computer_name  = "iscsisrv"
     admin_username = "${var.admin_user}"
   }
 
@@ -78,7 +82,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }
 
@@ -86,7 +90,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
 resource "azurerm_virtual_machine" "clusternodes" {
   count                 = "${var.ninstances}"
-  name                  = "my-node-${count.index}"
+  name                  = "${terraform.workspace}-node-${count.index}"
   location              = "${var.az_region}"
   resource_group_name   = "${azurerm_resource_group.myrg.name}"
   network_interface_ids = ["${element(azurerm_network_interface.clusternodes.*.id, count.index)}"]
@@ -105,7 +109,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_data_disk {
-    name              = "my-node-data-disk-${count.index}"
+    name              = "node-data-disk-${count.index}"
     managed_disk_type = "Standard_LRS"
     create_option     = "Empty"
     lun               = 0
@@ -113,7 +117,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   os_profile {
-    computer_name  = "my-node-${count.index}"
+    computer_name  = "node-${count.index}"
     admin_username = "${var.admin_user}"
   }
 
@@ -155,6 +159,6 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   tags {
-    environment = "Build Validation"
+    workspace = "${terraform.workspace}"
   }
 }

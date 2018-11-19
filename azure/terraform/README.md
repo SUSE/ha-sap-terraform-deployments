@@ -294,9 +294,8 @@ In the file [terraform.tfvars](terraform.tfvars) there are a number of variables
 
 There are some fixed values used throughout the terraform configuration:
 
-- Currently this configuration creates a storage account named `mytfstorageacc`, but storage account names have to be unique to all Azure users, so it is possible to run into problems if more than 2 users attempt to deploy infrastructure with this configuration as is. It is recommended to check for the availability of the `mytfstorageacc` name before doing `terraform apply` and change the name in the [resources.tf](resources.tf) file if it is not available. To check the availability of the name, run the command: `az storage account check-name --name mytfstorageacc`.
-- The private IP address of the iSCSI server is set to 10.74.1.10 and its hostname is `my-iscsisrv`.
-- The cluster nodes are created with private IPs starting with 10.74.1.11 and finishing in 10.74.1.22. More addresses can be added to the array in [network.tf](network.tf). The hostnames of these virtual machines go from `my-node-0` to `my-node-11`. The virtual machine named `my-node-0` is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
+- The private IP address of the iSCSI server is set to 10.74.1.10 and its hostname is `iscsisrv`.
+- The cluster nodes are created with private IPs starting with 10.74.1.11 and finishing in 10.74.1.22. More addresses can be added to the array in [network.tf](network.tf). The hostnames of these virtual machines go from `node-0` to `node-11`. The virtual machine named `node-0` is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
 - The iSCSI server has a second disk volume that is being configured as the `/dev/sdc` block device.
 - The [init-iscsi.sh](init-iscsi.sh) script is partitioning this device in 10 1MB partitions, from `sdc1` to `sdc10` and then configuring this as LUNs 0 to 9 for iSCSI.
 - iSCSI LUN 9 is being used in the cluster as SBD device.

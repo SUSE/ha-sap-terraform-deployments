@@ -25,7 +25,7 @@ sudo parted --script "$iscsidev" mkpart primary 9217MiB 10239MiB
 
 # Get an IQN name
 IQN=$(echo "iqn.$(date +"%Y-%m").$(grep search /etc/resolv.conf | awk -F. 'BEGIN {OFS="."} ($1 = substr($1,8)) {print $2,$1}'):$(sudo iscsi-iname|cut -d: -f2)")
-MYIP=$(host my-iscsisrv | awk '{print $NF}')
+MYIP=$(host iscsisrv | awk '{print $NF}')
 
 # Load iSCSI target kernel module and wait a bit for the module to load
 sudo /bin/bash -c "echo target_core_mod > /etc/modules-load.d/target.conf"
