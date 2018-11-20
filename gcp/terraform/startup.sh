@@ -39,7 +39,7 @@ main::get_os_version
 
 if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
-	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION%-*}/x86_64 )
+	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION_ID%-*}/x86_64 )
 fi
 
 main::install_gsdk /usr/local
