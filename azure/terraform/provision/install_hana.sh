@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Summary: Script with functions to install HANA
+# Authors: Ilya Manyugin <ilya.manyugin@suse.com>
+
 # shellcheck disable=SC1091
 . /etc/os-release
 
