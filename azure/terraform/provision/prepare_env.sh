@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Summary: Script to format and mount the /hana partition
+#          and other environment tweaks.
+# Authors: Ilya Manyugin <ilya.manyugin@suse.com>
+
 source /etc/os-release
 
 function verlte()
