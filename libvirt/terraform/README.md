@@ -3,29 +3,54 @@
 This terraform module deploys a cluster running the SUSE Linux Enterprise Server
 High Availability Extension.
 
-## Submodules
+This project is mainly based in [sumaform](https://github.com/moio/sumaform)
 
-- **Network**: This submodule sets up an isolated network to enable all cluster
-  nodes and shared resources to communicate.
-- **Node**: This submodule sets up a machine with SUSE Linux Enterprise Server
-  as operating system.
-- **Cluster**: This submodule configures a cluster with the existing nodes by
-  using Salt. It has a submodule: **HANA**.
+## Pending improvements and fixes
+
+Currently this project is not totally operative due some terraform/libvirt current
+limitations:
+- https://github.com/dmacvicar/terraform-provider-libvirt/issues/500
+- https://github.com/dmacvicar/terraform-provider-libvirt/issues/441
+
+Due this issue, static IP assigment is not still working and this feature is
+mandatory for SAP HANA proper deployment.
+
+Besides that, there are many things still to be done:
+- Set the proper SLES4SAP hana images
+- Polish the not used variables (mainly copied from sumaform)
+- Test sbd current usage (and add iSCSI server option)
+- Install and enable HA Cluster functionalities
+
+## Main components
+
+- **modules**: Terraform modules to deploy a basic two nodes SAP HANA environment.
+- **salt**: Salt provisioning states to configure the deployed machines with the
+all required components.
 
 ## Relevant files
 
-- [variables.tf](variables.tf): In this file all variables for the basic
-  deployment are specified with default values. It is recommended to override
-  at least the cluster ID when deploying on a QEMU host with other machines to
-  prevent collisions.
+### Terraform modules
+- [base](modules/base): Base configuration of the cluster. The used SLES images, private
+network and generic data are managed here.
+- [host](modules/host): The generic SAP HANA node definition. This modules defines the most
+important features of the each node (attach used partitions, networks, OS parameters, etc).
+- [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it call the
+host module with some particular updates.
+- [sbd](modules/sbd): SBD device definition. Currently a shared disk.
+
+### Salt modules
+- [default](salt/default): Default configuration for each node. Install the most
+basic packages and apply basic configuration.
+- [hana_node](salt/hana_node): Apply SAP HANA nodes specific updates to install
+SAP HANA and enable system replication according [pillar](salt/hana_node/files/pillar/hana.sls)
+data.
 
 ## How to use
 
 ### System requirements
 
 1. You need to have Terraform, the Libvirt provider for Terraform
-   `terraform-libvirt-provider` and the Salt provider for Terraform
-   `terraform-provider-salt` installed. You also need to install Git.
+   `terraform-libvirt-provider`.
 1. You need at least 15 GB of free disk space and 512 MiB of free memory per
    node.
 1. You need to have a working libvirt setup and sufficient privileges to connect
@@ -48,39 +73,10 @@ applying the plan.**
 
 When you like to have different performance parameters or want to set up an SAP
 HANA System Replication, you need to alter the default values of the variables
-specified in the `variables.tf` file. For the latter
+specified in the `main.tf` file. For the latter
 your system requirements will change massively and you might even need a more
 powerful machine than your local one.
 
-##### Only overriding few variables
-
-In case you only want to change few values you can simply override them in the
-command line:
-
-```Bash
-terraform apply -var 'cluster_id=myname' -var 'qemu_uri=qemu:///remote.host'
-```
-
-```Bash
-TF_VAR_cluster_id="myname" TF_VAR_qemu_uri="qemu:///remote.host" terraform apply
-```
-
-**NOTICE** The variable `cluster_id` can only contain a maximum of 8 characters!
-
-However, passing values this way only works for string values.
-
-##### Overriding many variables
-
-When you have many values to override or the variables to be overridden are not
-just containing string values you better define the changes in a file. You can
-override all variables in the `variables.tf` file by creating a new file with
-the suffix `.tfvars`. You can load the file as follows:
-
-```Bash
-terraform apply -var_file="my_vars.tfvars"
-```
-
-The syntax of this file is the same like in the `variables.tf` file.
 
 ### Destroying the cluster
 
