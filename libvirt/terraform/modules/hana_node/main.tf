@@ -13,11 +13,11 @@ module "hana_node" {
 role: hana_node
 hana_disk_device: vdb
 sbd_disk_device: vdc
+sap_inst_media: ${var.sap_inst_media}
 
 EOF
 
   // Provider-specific variables
-  image = "${var.image}"
   memory = "${var.memory}"
   vcpu = "${var.vcpu}"
   running = "${var.running}"

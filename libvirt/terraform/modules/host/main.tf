@@ -10,7 +10,7 @@ terraform {
 
 resource "libvirt_volume" "main_disk" {
   name = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-main-disk"
-  base_volume_name = "${var.base_configuration["use_shared_resources"] ? "" : var.base_configuration["name_prefix"]}${var.image}"
+  base_volume_name = "${var.base_configuration["use_shared_resources"] ? "" : var.base_configuration["name_prefix"]}baseimage"
   pool = "${var.base_configuration["pool"]}"
   count = "${var.count}"
 }
@@ -50,7 +50,7 @@ resource "libvirt_domain" "domain" {
       merge(
         map(
           "wait_for_lease", false,
-          "network_id", var.base_configuration["additional_network_id"],
+          "network_id", var.base_configuration["isolated_network_id"],
           "hostname", "${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}"
         ),
         map("addresses", "${list(element(var.host_ips, count.index))}")
@@ -95,12 +95,12 @@ resource "libvirt_domain" "domain" {
 
 hostname: ${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}
 domain: ${var.base_configuration["domain"]}
-additional_network: ${var.base_configuration["additional_network"]}
 timezone: ${var.base_configuration["timezone"]}
 additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.base_configuration["ssh_key_path"]))},${trimspace(file(var.ssh_key_path))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+host_ip: ${element(var.host_ips, count.index)}
 
 ${var.grains}
 
@@ -112,6 +112,12 @@ EOF
   provisioner "remote-exec" {
     inline = [
       "sh /root/salt/deployment.sh"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sh /root/salt/formula.sh"
     ]
   }
 

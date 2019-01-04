@@ -7,13 +7,18 @@ This project is mainly based in [sumaform](https://github.com/moio/sumaform)
 
 ## Pending improvements and fixes
 
-Currently this project is not totally operative due some terraform/libvirt current
-limitations:
+Due some IP assignment issues between terraform, libvirt and suse distros, some
+workarounds have been done to assign the corresponding IP address to the 2nd
+network card (ip_workaround.sls and isolated_network is in "nat" mode).
+
 - https://github.com/dmacvicar/terraform-provider-libvirt/issues/500
 - https://github.com/dmacvicar/terraform-provider-libvirt/issues/441
 
-Due this issue, static IP assigment is not still working and this feature is
-mandatory for SAP HANA proper deployment.
+The best thing would be to fix those issues, and developt the salt network state
+for suse distros too manage the network configuration properly:
+
+- https://docs.saltstack.com/en/latest/ref/states/all/salt.states.network.html
+
 
 Besides that, there are many things still to be done:
 - Set the proper SLES4SAP hana images
@@ -58,24 +63,33 @@ data.
 
 ### Deployment
 
-#### Using default values
+To deploy the cluster only the parameters of two files should be changed: [main.tf](main.tf) and [hana.sls](salt/hana_node/files/pillar/hana.sls).
 
-When you meet the system requirements testing the deployment of a SUSE HA
-cluster on your local machine is very easy. Just clone this repository to a
-desired place, navigate in the subfolder `libvirt/terraform` of the project and
-run `terraform init` and `terraform apply`. You will be displayed a summary what
-terraform will do. After typing `yes` and pressing `enter` terraform will set up
-your cluster. Although this works for most people, **check the default values
-and the terraform plan whether it harmonizes with your libvirt setup before
-applying the plan.**
+After changing the values, run the terraform commands:
 
-#### Customize your cluster
+```bash
+terraform init
+terraform apply
+```
 
-When you like to have different performance parameters or want to set up an SAP
-HANA System Replication, you need to alter the default values of the variables
-specified in the `main.tf` file. For the latter
-your system requirements will change massively and you might even need a more
-powerful machine than your local one.
+#### main.tf
+
+**main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
+
+- **uri**: Uri of the libvirt provider.
+- **image**: The cluster nodes image is selected updating the *image* parameter in the *base* module. **Disclaimer**: Only the current image in the *main.tf* file has been tested. Other images may not work.
+- **iprange**: IP range addresses for the isolated network.
+- **name_prefix**: The prefix of our infrastructure components.
+- **network_name** and **bridge**: If the cluster is deployed locally, the *network_name* should match with a currently available virtual network. If the cluster is deployed remotely, leave the *network_name* empty and set the *bridge* value with remote machine bridge network interface.
+- **sap_inst_media**: Public media where SAPA installation files are stored.
+- **host_ips**: Each host IP address (sequential order).
+- **additional_repos**: Additional repos to add to the guest machines.
+
+If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
+
+#### hana.sls
+
+**hana.sls** is used to configure the SAP HANA cluster. Check the options in: [saphanabootstrap-formula](https://github.com/arbulu89/saphanabootstrap-formula)
 
 
 ### Destroying the cluster

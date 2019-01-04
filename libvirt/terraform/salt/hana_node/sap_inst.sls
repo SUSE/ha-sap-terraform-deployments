@@ -6,7 +6,7 @@ sap_inst_directory:
     - makedirs: True
   mount.mounted:
     - name: /root/sap_inst
-    - device: <update this value>
+    - device: {{grains['sap_inst_media']}}
     - fstype: nfs4
     - mkmnt: True
     - persist: True
