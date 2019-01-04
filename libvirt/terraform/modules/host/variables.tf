@@ -9,12 +9,12 @@ variable "name" {
 }
 
 variable "additional_repos" {
-  description = "extra repositories in the form {label = url}, see README_ADVANCED.md"
+  description = "extra repositories in the form {label = url}"
   default = {}
 }
 
 variable "additional_packages" {
-  description = "extra packages to install, see README_ADVANCED.md"
+  description = "extra packages to install"
   default = []
 }
 
@@ -29,14 +29,9 @@ variable "grains" {
 }
 
 variable "ssh_key_path" {
-  description = "path of additional pub ssh key you want to use to access VMs, see README_ADVANCED.md"
+  description = "path of additional pub ssh key you want to use to access VMs"
   default = "/dev/null"
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
-}
-
-variable "gpg_keys" {
-  description = "salt/ relative paths of gpg keys that you want to add to your VMs, see README_ADVANCED.md"
-  default = []
 }
 
 variable "hana_disk_size" {
@@ -50,11 +45,6 @@ variable "host_ips" {
 }
 
 // Provider-specific variables
-
-variable "image" {
-  description = "One of: opensuse423, sles11sp4, sles12, sles12sp1, sles12sp2, sles12sp3, sles15, centos7"
-  type = "string"
-}
 
 variable "memory" {
   description = "RAM memory in MiB"

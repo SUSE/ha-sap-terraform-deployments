@@ -44,12 +44,12 @@ variable "sbd_disk_id" {
   type = "string"
 }
 
-// Provider-specific variables
-
-variable "image" {
-  description = "One of: sles11sp4, sles12, sles12sp1, sles12sp2, sles12sp3, sles15, centos7"
+variable "sap_inst_media" {
+  description = "url to the media where SAP software is stored. This media shall be mounted in /root/sap_inst"
   type = "string"
 }
+
+// Provider-specific variables
 
 variable "memory" {
   description = "RAM memory in MiB"

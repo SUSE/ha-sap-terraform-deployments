@@ -4,19 +4,14 @@ provider "libvirt" {
 
 module "base" {
   source = "./modules/base"
-
-  images = ["sles12sp4"]
-
-  // optional parameters with defaults below
-  name_prefix = "xarbuluhana"
-  // pool = "default"
-  pool = "terraform"
-  // network_name = "default"
-  network_name = ""
-  bridge = "br0"
-  timezone = "Europe/Berlin"
-  additional_network = true
+  image = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles12sp4.x86_64.qcow2"
   iprange = "192.168.106.0/24"
+
+  // optional parameters below
+  name_prefix = "hana"
+  pool = "default"
+  network_name = "default"
+  timezone = "Europe/Berlin"
 }
 
 module "sbd_disk" {
@@ -31,10 +26,14 @@ module "hana_node" {
   // hana01 and hana02
 
   name = "hana"
-  image = "sles12sp4"
   count = 2
+
+  vcpu = 4
+  memory = 32678
+
+  sap_inst_media = <sap_inst_media>
   hana_disk_size = "68719476736"
-  host_ips = ["192.168.102.15", "192.168.102.16"]
+  host_ips = ["192.168.106.15", "192.168.106.16"]
   sbd_disk_id = "${module.sbd_disk.id}"
 
   additional_repos = {
