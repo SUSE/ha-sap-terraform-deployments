@@ -1,3 +1,6 @@
+nfs-client:
+  pkg.installed
+
 sap_inst_directory:
   file.directory:
     - name: /root/sap_inst
@@ -11,3 +14,5 @@ sap_inst_directory:
     - mkmnt: True
     - persist: True
     - opts: tcp
+    - required:
+      - nfs-client
