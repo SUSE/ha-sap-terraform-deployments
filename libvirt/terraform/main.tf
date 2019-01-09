@@ -1,16 +1,19 @@
 provider "libvirt" {
-  uri = "qemu:///system"
+  uri = "${var.qemu_uri}"
 }
 
 module "base" {
   source = "./modules/base"
-  image = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles12sp4.x86_64.qcow2"
-  iprange = "192.168.106.0/24"
+  image = "${var.base_image}"
+  iprange = "${var.iprange}"
 
   // optional parameters below
-  name_prefix = "hana"
-  pool = "default"
-  network_name = "default"
+  name_prefix = "${var.name_prefix}"
+  // pool = "default"
+  pool = "terraform"
+  // network_name = "default"
+  network_name = ""
+  bridge = "br0"
   timezone = "Europe/Berlin"
 }
 
@@ -31,14 +34,10 @@ module "hana_node" {
   vcpu = 4
   memory = 32678
 
-  sap_inst_media = <sap_inst_media>
+  sap_inst_media = "${var.sap_inst_media}"
   hana_disk_size = "68719476736"
-  host_ips = ["192.168.106.15", "192.168.106.16"]
+  host_ips = "${var.host_ips}"
   sbd_disk_id = "${module.sbd_disk.id}"
 
-  additional_repos = {
-    "SLE-12-SP4-x86_64-Update" = "http://download.suse.de/ibs/SUSE/Updates/SLE-SERVER/12-SP4/x86_64/update/"
-    "SLE-12-SP4-x86_64-Pool" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product/"
-    "SLE-12-SP4-x86_64-Source" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product_source/"
-  }
+  additional_repos = "${var.additional_repos}"
 }

@@ -11,7 +11,7 @@ resource "libvirt_volume" "base_image" {
 
 resource "libvirt_network" "isolated_network" {
   name = "${var.name_prefix}-isolated"
-  mode = "nat"
+  mode = "none"
   addresses = [ "${var.iprange}" ]
   dhcp { enabled = "false" }
   autostart = true
