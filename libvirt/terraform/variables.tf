@@ -5,7 +5,7 @@ variable "qemu_uri" {
 
 variable "base_image" {
   description = "Image of the sap hana nodes"
-  default = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles15.x86_64.qcow2"
+  default = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles12sp4.x86_64.qcow2"
 }
 
 variable "iprange" {
@@ -19,7 +19,7 @@ variable "name_prefix" {
 }
 
 variable "sap_inst_media" {
-  description = "url to the media where SAP software is stored. This media shall be mounted in /root/sap_inst"
+  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
   type = "string"
 }
 
@@ -31,8 +31,9 @@ variable "host_ips" {
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
   default = {
-    "SLE-15-x86_64-Update" = "http://download.suse.de/ibs/SUSE/Updates/SLE-Module-Basesystem/15/x86_64/update/"
-    "SLE-15-x86_64-Pool" = "http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product/"
-    "SLE-15-x86_64-Source" = "http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product_source/"
-  }
+    "SLE-12-SP4-x86_64-Update" = "http://download.suse.de/ibs/SUSE/Updates/SLE-SERVER/12-SP4/x86_64/update/"
+    "SLE-12-SP4-x86_64-Pool" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product/"
+    "SLE-12-SP4-x86_64-Source" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product_source/"
+		"SUSE_Updates_SLE-HA_12-SP4" =  "http://download.suse.de/ibs/SUSE/Products/SLE-HA/12-SP4/x86_64/product/"
+	}
 }

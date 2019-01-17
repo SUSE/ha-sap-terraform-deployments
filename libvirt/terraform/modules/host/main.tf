@@ -86,7 +86,7 @@ resource "libvirt_domain" "domain" {
   }
 
   provisioner "file" {
-    source = "salt"
+    source = "../../salt"
     destination = "/root"
   }
 

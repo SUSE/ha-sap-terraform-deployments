@@ -1,4 +1,5 @@
 include:
+  - default.setup
   - default.hostname
   - default.ip_workaround
 
