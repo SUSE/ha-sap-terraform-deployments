@@ -15,3 +15,7 @@
 /srv/pillar/hana.sls:
   file.copy:
     - source: /root/salt/hana_node/files/pillar/hana.sls
+
+/srv/pillar/cluster.sls:
+  file.copy:
+    - source: /root/salt/hana_node/files/pillar/cluster.sls
