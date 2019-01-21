@@ -35,6 +35,7 @@ module "hana_node" {
   memory = 32678
 
   sap_inst_media = "${var.sap_inst_media}"
+  ntp_server = "pool.ntp.org"
   hana_disk_size = "68719476736"
   host_ips = "${var.host_ips}"
   sbd_disk_id = "${module.sbd_disk.id}"

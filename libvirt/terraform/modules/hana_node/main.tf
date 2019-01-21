@@ -14,6 +14,7 @@ role: hana_node
 hana_disk_device: vdb
 sbd_disk_device: vdc
 sap_inst_media: ${var.sap_inst_media}
+ntp_server: ${var.ntp_server}
 
 EOF
 

@@ -21,7 +21,7 @@ op_defaults \
 
 primitive rsc_ip_{{ sid }}_HDB{{ instance }} ocf:heartbeat:IPaddr2 \
     params \
-    ip="{{ cluster_file.cluster.admin_ip_x }}" cidr_netmask="{{ cluster_file.cluster.admin_ip_mask }}" \
+    ip="{{ cluster_file.cluster.virtual_ip }}" cidr_netmask="{{ cluster_file.cluster.virtual_ip_mask }}" \
     op start timeout="20" op stop timeout="20" \
     op monitor interval="10" timeout="20"
 
