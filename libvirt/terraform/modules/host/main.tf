@@ -58,6 +58,10 @@ resource "libvirt_domain" "domain" {
     )}"
   ]
 
+  xml {
+    xslt = "${file("modules/host/shareable.xsl")}"
+  }
+
   connection {
     user = "root"
     password = "linux"

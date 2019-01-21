@@ -6,3 +6,5 @@ include:
   - hana_node.hana_packages
   - hana_node.cluster_packages
   - hana_node.formula
+  - hana_node.cluster_config
+  - hana_node.watchdog
