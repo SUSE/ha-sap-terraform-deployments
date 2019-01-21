@@ -34,6 +34,7 @@ variable "additional_repos" {
     "SLE-12-SP4-x86_64-Update" = "http://download.suse.de/ibs/SUSE/Updates/SLE-SERVER/12-SP4/x86_64/update/"
     "SLE-12-SP4-x86_64-Pool" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product/"
     "SLE-12-SP4-x86_64-Source" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product_source/"
-		"SUSE_Updates_SLE-HA_12-SP4" =  "http://download.suse.de/ibs/SUSE/Products/SLE-HA/12-SP4/x86_64/product/"
+		"SUSE_Updates_SLE-HA_12-SP3" =  "http://download.suse.de/ibs/SUSE/Products/SLE-HA/12-SP3/x86_64/product/"
+		"SAPHanaSR-Pool" =  "http://download.suse.de/ibs/SUSE:/SLE-12-SP3:/Update/standard/"
 	}
 }

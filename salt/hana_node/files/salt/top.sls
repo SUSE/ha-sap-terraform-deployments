@@ -1,4 +1,4 @@
 base:
   '*':
     - hana
-    #- cluster
+    - cluster
