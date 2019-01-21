@@ -28,6 +28,11 @@ variable "host_ips" {
   default = ["192.168.106.15", "192.168.106.16"]
 }
 
+variable "ntp_server" {
+  description = "ntp server address"
+  default = ""
+}
+
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
   default = {

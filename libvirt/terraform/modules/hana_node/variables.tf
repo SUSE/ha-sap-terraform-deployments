@@ -45,8 +45,13 @@ variable "sbd_disk_id" {
 }
 
 variable "sap_inst_media" {
-  description = "url to the media where SAP software is stored. This media shall be mounted in /root/sap_inst"
+  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
   type = "string"
+}
+
+variable "ntp_server" {
+  description = "ntp server address"
+  default = ""
 }
 
 // Provider-specific variables
