@@ -10,7 +10,7 @@ sap_inst_directory:
   mount.mounted:
     - name: /root/sap_inst
     - device: {{grains['sap_inst_media']}}
-    - fstype: nfs4
+    - fstype: nfs
     - mkmnt: True
     - persist: True
     - opts: tcp
