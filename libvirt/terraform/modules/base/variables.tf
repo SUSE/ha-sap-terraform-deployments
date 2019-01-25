@@ -47,5 +47,4 @@ variable "bridge" {
 
 variable "image" {
   description = "path or url of the base image"
-  default = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles15.x86_64.qcow2"
 }
