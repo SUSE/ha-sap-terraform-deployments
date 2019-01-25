@@ -68,7 +68,8 @@ terraform apply
 
 **Important**: when not using remote terraform states, the `terraform init` command will fail unless the file [remote-states.tf](remote-states.tf) is removed before initialization. When using remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
 
-This configuration uses the public **SUSE Linux Enterprise Server 12-SP3 BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
+This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** and **SUSE Linux Enterprise Server 12 SP4 for SAP Applications BYOS x86_64** images available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
+The first one is used for the cluster nodes and the second for the iSCSI server. AMI used for iSCSI server doesn't matter as long as it works, it's just a support services server.
 
 If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [variables.tf](variables.tf) file for your region of choice.
 
