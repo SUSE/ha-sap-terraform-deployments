@@ -54,6 +54,16 @@ variable "ntp_server" {
   default = ""
 }
 
+variable "cluster_ssh_pub" {
+  description = "path to a custom ssh public key to upload to the hana nodes"
+  default = ""
+}
+
+variable "cluster_ssh_key" {
+  description = "path to a custom ssh private key to upload to the hana nodes"
+  default = ""
+}
+
 // Provider-specific variables
 
 variable "memory" {

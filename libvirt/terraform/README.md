@@ -63,7 +63,7 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of two files should be changed: [main.tf](main.tf) and [hana.sls](salt/hana_node/files/pillar/hana.sls).
+To deploy the cluster only the parameters of two files should be changed: [main.tf](main.tf), [hana.sls](salt/hana_node/files/pillar/hana.sls) and [cluster.sls](salt/hana_node/files/pillar/cluster.sls).
 
 After changing the values, run the terraform commands:
 
