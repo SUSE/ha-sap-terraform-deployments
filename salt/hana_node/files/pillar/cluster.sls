@@ -15,4 +15,4 @@ cluster:
   virtual_ip_mask: '255.255.255.0'
   platform: 'libvirt'
   prefer_takeover: 'true'
-  auto_register: 'true'
+  auto_register: 'false'
