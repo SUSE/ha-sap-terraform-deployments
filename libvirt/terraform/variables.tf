@@ -6,7 +6,6 @@ variable "qemu_uri" {
 variable "base_image" {
   description = "Image of the sap hana nodes"
 	type = "string"
-  default = "http://download.suse.de/ibs/Devel:/Galaxy:/Terraform:/Images/images/sles12sp4.x86_64.qcow2"
 }
 
 variable "iprange" {
@@ -47,11 +46,4 @@ variable "cluster_ssh_key" {
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
 	type = "map"
-  default = {
-    "SLE-12-SP4-x86_64-Update" = "http://download.suse.de/ibs/SUSE/Updates/SLE-SERVER/12-SP4/x86_64/update/"
-    "SLE-12-SP4-x86_64-Pool" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product/"
-    "SLE-12-SP4-x86_64-Source" = "http://download.suse.de/ibs/SUSE/Products/SLE-SERVER/12-SP4/x86_64/product_source/"
-		"SUSE_Updates_SLE-HA_12-SP3" =  "http://download.suse.de/ibs/SUSE/Products/SLE-HA/12-SP3/x86_64/product/"
-		"SAPHanaSR-Pool" =  "http://download.suse.de/ibs/SUSE:/SLE-12-SP3:/Update/standard/"
-	}
 }
