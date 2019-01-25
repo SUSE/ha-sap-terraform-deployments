@@ -67,7 +67,7 @@ additional_repos = {
     "repo_1" = "url_repo1"
     "repo_1" = "url_repo1"
 }
-"cluster_ssh_pub = salt://hana_node/files/sshkeys/mye_key.id_rsa.pub"
+"cluster_ssh_pub = salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
 "cluster_ssh_key = salt://hana_node/files/sshkeys/my_key.id_rsa"
 ```
 
