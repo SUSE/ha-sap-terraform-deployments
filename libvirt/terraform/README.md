@@ -5,27 +5,6 @@ High Availability Extension.
 
 This project is mainly based in [sumaform](https://github.com/moio/sumaform)
 
-## Pending improvements and fixes
-
-Due some IP assignment issues between terraform, libvirt and suse distros, some
-workarounds have been done to assign the corresponding IP address to the 2nd
-network card (ip_workaround.sls and isolated_network is in "nat" mode).
-
-- https://github.com/dmacvicar/terraform-provider-libvirt/issues/500
-- https://github.com/dmacvicar/terraform-provider-libvirt/issues/441
-
-The best thing would be to fix those issues, and developt the salt network state
-for suse distros too manage the network configuration properly:
-
-- https://docs.saltstack.com/en/latest/ref/states/all/salt.states.network.html
-
-
-Besides that, there are many things still to be done:
-- Set the proper SLES4SAP hana images
-- Polish the not used variables (mainly copied from sumaform)
-- Test sbd current usage (and add iSCSI server option)
-- Install and enable HA Cluster functionalities
-
 ## Main components
 
 - **modules**: Terraform modules to deploy a basic two nodes SAP HANA environment.
@@ -39,7 +18,7 @@ all required components.
 network and generic data are managed here.
 - [host](modules/host): The generic SAP HANA node definition. This modules defines the most
 important features of the each node (attach used partitions, networks, OS parameters, etc).
-- [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it call the
+- [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
 host module with some particular updates.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
@@ -63,26 +42,59 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of two files should be changed: [main.tf](main.tf), [hana.sls](salt/hana_node/files/pillar/hana.sls) and [cluster.sls](salt/hana_node/files/pillar/cluster.sls).
+To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](salt/hana_node/files/pillar/hana.sls) and [cluster.sls](salt/hana_node/files/pillar/cluster.sls).
+Configure these files according the wanted cluster type.
+
+Find more information about the hana and cluster formulas in (check the pillar.example files):
+- https://github.com/SUSE/saphanabootstrap-formula
+- https://github.com/krig/habootstrap-formula
+
+
+In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (are use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
+
+The easiest way to customize the variables is using a *terraform.tfvars* file.
+Here an example:
+
+```bash
+qemu_uri = "qemu+ssh://root@your_machine/system"
+sap_inst_media = "path_to_nfs_server"
+base_image = "path_to_image"
+name_prefix = "demo"
+iprange = "192.168.101.0/24"
+host_ips = ["192.168.101.15", "192.168.101.16"]
+additional_repos = {
+    "repo_1" = "url_repo1"
+    "repo_1" = "url_repo1"
+    "repo_1" = "url_repo1"
+}
+"cluster_ssh_pub = salt://hana_node/files/sshkeys/mye_key.id_rsa.pub"
+"cluster_ssh_key = salt://hana_node/files/sshkeys/my_key.id_rsa"
+```
 
 After changing the values, run the terraform commands:
 
 ```bash
 terraform init
-terraform apply
+terraform apply -var-file=terraform.tfvars
 ```
+
+**Info**: If some package installation fails during the salt provisioning, the
+most possible thing is that some repository is missing. Add the new repository
+with the needed package and try again.
 
 #### main.tf
 
 **main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
 
-- **uri**: Uri of the libvirt provider.
-- **image**: The cluster nodes image is selected updating the *image* parameter in the *base* module. **Disclaimer**: Only the current image in the *main.tf* file has been tested. Other images may not work.
-- **iprange**: IP range addresses for the isolated network.
+- **qemu_uri**: Uri of the libvirt provider.
+- **base_image**: The cluster nodes image is selected updating the *image* parameter in the *base* module.
 - **name_prefix**: The prefix of our infrastructure components.
 - **network_name** and **bridge**: If the cluster is deployed locally, the *network_name* should match with a currently available virtual network. If the cluster is deployed remotely, leave the *network_name* empty and set the *bridge* value with remote machine bridge network interface.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
+- **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
+- **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
+- **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 - **additional_repos**: Additional repos to add to the guest machines.
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
@@ -90,6 +102,10 @@ If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deploymen
 #### hana.sls
 
 **hana.sls** is used to configure the SAP HANA cluster. Check the options in: [saphanabootstrap-formula](https://github.com/arbulu89/saphanabootstrap-formula)
+
+#### cluster.sls
+
+**cluster.sls** is used to configure the HA cluster. Check the options in: [habootstrap-formula](https://github.com/krig/habootstrap-formula)
 
 
 ### Destroying the cluster
