@@ -3,7 +3,7 @@
 # EC2 Instances
 
 resource "aws_instance" "iscsisrv" {
-  ami                         = "${lookup(var.sles4sap, var.aws_region)}"
+  ami                         = "${lookup(var.iscsi_srv, var.aws_region)}"
   instance_type               = "t2.micro"
   key_name                    = "${aws_key_pair.mykey.key_name}"
   associate_public_ip_address = true
