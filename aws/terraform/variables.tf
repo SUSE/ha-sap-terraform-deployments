@@ -19,6 +19,7 @@ variable "sles4sap" {
     "eu-west-3"    = "ami-00e70e3421f053648"
   }
 }
+
 # Map used for suse-sles-sap-12-sp4-byos-v20181212-hvm-ssd-x86_64
 # SLES4SAP 12SP4 in eu-central-1: ami-027ab92ac76584bfd
 # Used for iscsi server
