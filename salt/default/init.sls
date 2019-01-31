@@ -1,5 +1,8 @@
 include:
   - default.minimal
+{% if grains['os_family'] == 'Suse' %}
+  - default.registration
+{% endif %}
   - default.repos
   - default.pkgs
   {% if grains['ntp_server'] != ''%}

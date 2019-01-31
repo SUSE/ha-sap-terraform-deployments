@@ -43,6 +43,29 @@ variable "cluster_ssh_key" {
   default = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 }
 
+variable "reg_code" {
+  description = "If informed, register the product using SUSEConnect"
+  default = ""
+}
+
+variable "reg_email" {
+  description = "Email used for the registration"
+  default = ""
+}
+
+# The module format must follow SUSEConnect convention:
+# <module_name>/<product_version>/<architecture>
+# Example: Suggested modules for SLES for SAP 15
+# - sle-module-basesystem/15/x86_64 
+# - sle-module-desktop-applications/15/x86_64
+# - sle-module-server-applications/15/x86_64 
+# - sle-ha/15/x86_64 (Need the same regcode as SLES for SAP) 
+# - sle-module-sap-applications/15/x86_64
+variable "reg_additional_modules" {
+  description = "Map of the modules to be registered. Module name = Regcode, when needed."
+	type = "map"
+  default = {}
+}
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
 	type = "map"

@@ -44,6 +44,8 @@ module "hana_node" {
   # Copy custom files in salt/hana_node/file/sshkeys
   cluster_ssh_pub = "${var.cluster_ssh_pub}"
   cluster_ssh_key = "${var.cluster_ssh_key}"
-
+  reg_code = "${var.reg_code}"
+  reg_email = "${var.reg_email}"
+  reg_additional_modules = "${var.reg_additional_modules}"
   additional_repos = "${var.additional_repos}"
 }
