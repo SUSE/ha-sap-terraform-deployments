@@ -23,10 +23,10 @@ host module with some particular updates.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
-- [default](salt/default): Default configuration for each node. Install the most
+- [default](../../salt/default): Default configuration for each node. Install the most
 basic packages and apply basic configuration.
-- [hana_node](salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](salt/hana_node/files/pillar/hana.sls)
+- [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
+SAP HANA and enable system replication according [pillar](../../salt/hana_node/files/pillar/hana.sls)
 data.
 
 ## How to use
