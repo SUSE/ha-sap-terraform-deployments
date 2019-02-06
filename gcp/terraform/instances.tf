@@ -67,6 +67,7 @@ resource "google_compute_instance" "clusternodes" {
     sap_vip                    = "${var.sap_vip}"
     sap_vip_secondary_range    = ""
     suse_regcode               = "${var.suse_regcode}"
+    init_type                  = "${var.init_type}"
   }
 
   service_account {

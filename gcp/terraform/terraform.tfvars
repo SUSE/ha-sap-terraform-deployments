@@ -4,7 +4,7 @@ project     = "my-project"
 gcp_credentials_file = "my-project.json"
 
 # SUSE registration code
-suse_regcode = "xxxxxxxxxxxx"
+suse_regcode = ""
 
 # Internal IPv4 range
 ip_cidr_range = "10.0.0.0/24"
@@ -45,4 +45,7 @@ sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
 # Specifies the URL location of a script to run after the deployment is complete.
 # The script should be hosted on a web server or in a GCS bucket.
 post_deployment_script = ""
+
+# Variable for init-nodes.tpl script. Can be all, skip-hana or skip-cluster
+init_type = "all"
 
