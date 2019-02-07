@@ -36,6 +36,7 @@ source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AU
 
 ### Base GCP and OS Configuration
 main::get_os_version
+main::get_settings
 
 if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
@@ -46,7 +47,6 @@ main::install_gsdk /usr/local
 main::set_boot_parameters
 main::install_packages
 main::config_ssh
-main::get_settings
 main::create_static_ip
 
 ##prepare for SAP HANA
@@ -81,11 +81,13 @@ if [[ $HOSTNAME =~ node-0$ ]] ; then
 	ha::ready
 	ha::config_pacemaker_primary
 	ha::check_cluster
+	ha::pacemaker_maintenance true
 	ha::pacemaker_add_stonith
 	ha::pacemaker_add_vip
 	ha::pacemaker_config_bootstrap_hdb
 	ha::pacemaker_add_hana
 	ha::check_hdb_replication
+	ha::pacemaker_maintenance false
 else
 	ha::wait_for_primary
 	ha::copy_hdb_ssfs_keys
