@@ -31,10 +31,10 @@ module "hana_node" {
 
   // hana01 and hana02
 
-  name  = "hana"
-  count = 2
-  vcpu   = 4
-  memory = 32678
+  name           = "hana"
+  count          = 2
+  vcpu           = 4
+  memory         = 32678
   sap_inst_media = "${var.sap_inst_media}"
   hana_disk_size = "68719476736"
   host_ips = "${var.host_ips}"
