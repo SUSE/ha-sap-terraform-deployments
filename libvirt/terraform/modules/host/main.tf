@@ -1,5 +1,5 @@
 terraform {
-    required_version = "~> 0.11.7"
+  required_version = "~> 0.11.7"
 }
 
 // Names are calculated as follows:
@@ -9,25 +9,25 @@ terraform {
 //   name_prefix + name + "-" + index (if count > 1)
 
 resource "libvirt_volume" "main_disk" {
-  name = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-main-disk"
+  name             = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-main-disk"
   base_volume_name = "${var.base_configuration["use_shared_resources"] ? "" : var.base_configuration["name_prefix"]}baseimage"
-  pool = "${var.base_configuration["pool"]}"
-  count = "${var.count}"
+  pool             = "${var.base_configuration["pool"]}"
+  count            = "${var.count}"
 }
 
 resource "libvirt_volume" "hana_disk" {
-  name = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-hana-disk"
-  pool = "${var.base_configuration["pool"]}"
+  name  = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-hana-disk"
+  pool  = "${var.base_configuration["pool"]}"
   count = "${var.count}"
-  size = "${var.hana_disk_size}"
+  size  = "${var.hana_disk_size}"
 }
 
 resource "libvirt_domain" "domain" {
-  name = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}"
-  memory = "${var.memory}"
-  vcpu = "${var.vcpu}"
-  running = "${var.running}"
-  count = "${var.count}"
+  name       = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}"
+  memory     = "${var.memory}"
+  vcpu       = "${var.vcpu}"
+  running    = "${var.running}"
+  count      = "${var.count}"
   qemu_agent = true
 
   // base disk + additional disks if any
@@ -38,7 +38,6 @@ resource "libvirt_domain" "domain" {
     ),
     var.additional_disk
   )}"]
-
 
   network_interface = ["${list(
       map(
@@ -55,34 +54,33 @@ resource "libvirt_domain" "domain" {
         ),
         map("addresses", "${list(element(var.host_ips, count.index))}")
       )
-    )}"
-  ]
+    )}"]
 
   xml {
     xslt = "${file("modules/host/shareable.xsl")}"
   }
 
   connection {
-    user = "root"
+    user     = "root"
     password = "linux"
   }
 
   console {
-    type = "pty"
+    type        = "pty"
     target_port = "0"
     target_type = "serial"
   }
 
   console {
-      type = "pty"
-      target_type = "virtio"
-      target_port = "1"
+    type        = "pty"
+    target_type = "virtio"
+    target_port = "1"
   }
 
   graphics {
-    type = "spice"
+    type        = "spice"
     listen_type = "address"
-    autoport = true
+    autoport    = true
   }
 
   cpu {
@@ -90,7 +88,7 @@ resource "libvirt_domain" "domain" {
   }
 
   provisioner "file" {
-    source = "../../salt"
+    source      = "../../salt"
     destination = "/root"
   }
 
@@ -115,21 +113,20 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "sh /root/salt/deployment.sh"
+      "sh /root/salt/deployment.sh",
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sh /root/salt/formula.sh"
+      "sh /root/salt/formula.sh",
     ]
   }
-
 }
 
 output "configuration" {
   value {
-    id = "${join(",", libvirt_domain.domain.*.id)}"
+    id       = "${join(",", libvirt_domain.domain.*.id)}"
     hostname = "${var.name}${var.count > 1 ? "-1" : ""}.${var.base_configuration["domain"]}"
   }
 }
