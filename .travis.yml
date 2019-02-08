@@ -18,7 +18,7 @@ script:
   - find . -name \*.sh -exec bash -n {} \;
   - find . -name \*.tpl | while read f ; do head -1 "$f" | grep -qnE '^#! ?/bin/(ba)?sh' && bash -n "$f" ; done
   - find . -name \*.json -type f | while read f ; do cat "$f" | python -m json.tool >/dev/null ; done
-  - for provider in aws azure gcp ; do
+  - for provider in aws azure gcp libvirt ; do
       set -x ;
       cd $provider/terraform ;
       /tmp/terraform fmt -check ;
