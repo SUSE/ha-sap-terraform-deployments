@@ -23,10 +23,10 @@ host module with some particular updates.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
-- [default](salt/default): Default configuration for each node. Install the most
+- [default](../../salt/default): Default configuration for each node. Install the most
 basic packages and apply basic configuration.
-- [hana_node](salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](salt/hana_node/files/pillar/hana.sls)
+- [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
+SAP HANA and enable system replication according [pillar](../../salt/hana_node/files/pillar/hana.sls)
 data.
 
 ## How to use
@@ -42,7 +42,7 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](salt/hana_node/files/pillar/hana.sls) and [cluster.sls](salt/hana_node/files/pillar/cluster.sls).
+To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../salt/hana_node/files/pillar/hana.sls) and [cluster.sls](../../salt/hana_node/files/pillar/cluster.sls).
 Configure these files according the wanted cluster type.
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
@@ -50,7 +50,7 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 - https://github.com/krig/habootstrap-formula
 
 
-In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (are use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
+In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (or use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
 
 The easiest way to customize the variables is using a *terraform.tfvars* file.
 Here an example:
