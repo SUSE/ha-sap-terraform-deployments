@@ -8,6 +8,22 @@ variable "name" {
   type        = "string"
 }
 
+variable "reg_code" {
+  description = "If informed, register the product using SUSEConnect"
+  default     = ""
+}
+
+variable "reg_email" {
+  description = "Email used for the registration"
+  default     = ""
+}
+
+variable "reg_additional_modules" {
+  description = "Map of the modules to be registered. Module name = Regcode, when needed."
+  type        = "map"
+  default     = {}
+}
+
 variable "additional_repos" {
   description = "extra repositories in the form {label = url}"
   default     = {}
