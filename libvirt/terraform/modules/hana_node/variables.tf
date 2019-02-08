@@ -10,18 +10,18 @@ variable "name" {
 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
-  default = ""
+  default     = ""
 }
 
 variable "reg_email" {
   description = "Email used for the registration"
-  default = ""
+  default     = ""
 }
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-	type = "map"
-  default = {}
+  type        = "map"
+  default     = {}
 }
 
 variable "additional_repos" {
