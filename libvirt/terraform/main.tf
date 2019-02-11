@@ -41,7 +41,7 @@ module "hana_node" {
   host_ips       = "${var.host_ips}"
   sbd_disk_id    = "${module.sbd_disk.id}"
   // Set proper ssh file. The default files are public in github
-  // Copy custom files in salt/hana_node/file/sshkeys
+  // Copy custom files in salt/hana_node/files/sshkeys
   cluster_ssh_pub = "${var.cluster_ssh_pub}"
   cluster_ssh_key        = "${var.cluster_ssh_key}"
   reg_code               = "${var.reg_code}"
