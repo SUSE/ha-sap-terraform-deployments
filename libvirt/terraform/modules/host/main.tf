@@ -124,12 +124,17 @@ EOF
       "sh /root/salt/formula.sh"
     ]
   }
-
 }
 
 output "configuration" {
   value {
-    id = "${join(",", libvirt_domain.domain.*.id)}"
-    hostname = "${var.name}${var.count > 1 ? "-1" : ""}.${var.base_configuration["domain"]}"
+    id       = "${join(",", libvirt_domain.domain.*.id)}"
+    hostname = "${join(",", libvirt_domain.domain.*.name)}"
   }
+}
+
+output "addresses" {
+  // Returning only the addresses is not possible right now. Will be available in terraform 12
+  // https://bradcod.es/post/terraform-conditional-outputs-in-modules/
+  value = "${libvirt_domain.domain.*.network_interface}"
 }
