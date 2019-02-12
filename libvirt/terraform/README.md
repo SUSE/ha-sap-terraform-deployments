@@ -67,17 +67,17 @@ additional_repos = {
     "repo_1" = "url_repo1"
     "repo_1" = "url_repo1"
 }
-"cluster_ssh_pub = salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
-"cluster_ssh_key = salt://hana_node/files/sshkeys/my_key.id_rsa"
+cluster_ssh_pub = "salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
+cluster_ssh_key = "salt://hana_node/files/sshkeys/my_key.id_rsa"
 
 # Optional SUSE Customer Center Registration parameters
 reg_code = "<<REG_CODE>>"
 reg_email = "<<your email>>"
 reg_additional_modules = {
     "sle-module-adv-systems-management/12/x86_64" = ""
-   "sle-module-containers/12/x86_64" = ""
+    "sle-module-containers/12/x86_64" = ""
     "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-	} 
+}
 ```
 
 After changing the values, run the terraform commands:
