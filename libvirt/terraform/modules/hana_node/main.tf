@@ -34,7 +34,13 @@ EOF
 
 output "configuration" {
   value {
-    id = "${module.hana_node.configuration["id"]}"
-    hostname = "${module.hana_node.configuration["hostname"]}"
+    id        = "${module.hana_node.configuration["id"]}"
+    hostname  = "${module.hana_node.configuration["hostname"]}"
+  }
+}
+
+output "addresses" {
+  value {
+    addresses  = "${module.hana_node.addresses}"
   }
 }
