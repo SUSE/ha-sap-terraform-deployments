@@ -207,11 +207,11 @@ resource "azurerm_network_interface" "iscsisrv" {
 }
 
 resource "azurerm_public_ip" "iscsisrv" {
-  name                         = "iscsisrv-ip"
-  location                     = "${var.az_region}"
-  resource_group_name          = "${azurerm_resource_group.myrg.name}"
-  allocation_method            = "Dynamic"
-  idle_timeout_in_minutes      = 30
+  name                    = "iscsisrv-ip"
+  location                = "${var.az_region}"
+  resource_group_name     = "${azurerm_resource_group.myrg.name}"
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
 
   tags {
     workspace = "${terraform.workspace}"
@@ -246,12 +246,12 @@ resource "azurerm_network_interface_backend_address_pool_association" "clusterno
 }
 
 resource "azurerm_public_ip" "clusternodes" {
-  count                        = "${var.ninstances}"
-  name                         = "clusternodes-ip-${count.index}"
-  location                     = "${var.az_region}"
-  resource_group_name          = "${azurerm_resource_group.myrg.name}"
-  allocation_method            = "Dynamic"
-  idle_timeout_in_minutes      = 30
+  count                   = "${var.ninstances}"
+  name                    = "clusternodes-ip-${count.index}"
+  location                = "${var.az_region}"
+  resource_group_name     = "${azurerm_resource_group.myrg.name}"
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
 
   tags {
     workspace = "${terraform.workspace}"
