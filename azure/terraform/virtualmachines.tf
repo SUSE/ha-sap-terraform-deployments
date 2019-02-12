@@ -32,7 +32,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    id = "${azurerm_image.custom.id}"
+    id = "${azurerm_image.custom_iscsi.id}"
   }
 
   storage_data_disk {

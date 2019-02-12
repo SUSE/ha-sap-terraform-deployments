@@ -26,7 +26,7 @@ These are the relevant files and what each provides:
 
 * [resources.tf](resources.tf): definition of the resource group and storage account to use.
 
-* [image.tf](image.tf): definition of the custom image to use for the virtual machines. Edit this to add image blob to use.
+* [image.tf](image.tf): definition of the custom image(s) to use for the virtual machines. Edit this to add image blob to use.
 
 * [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
 
@@ -203,7 +203,7 @@ The key files need to be named `node0_id_rsa`, `node0_id_rsa.pub`, `node1_id_rsa
 
 Following that edit the following files:
 
-* [terraform.tfvars](terraform.tfvars): add the URI of the image blob to test if using a private OS image; add the admin user, its private key location on the local machine and the SSH public key from that private key.
+* [terraform.tfvars](terraform.tfvars): add the URI of the image(s) blob to test if using a private OS image; add the admin user, its private key location on the local machine and the SSH public key from that private key. You have the choice of adding the same URI for "image_uri" and "image_uri_iscsi_srv" or you can use a different image for the iscsi server.
 * [provider.tf](provider.tf): add the subscription id, client id, client secret and tenant id from you Azure account.
 
 When using local terraform state files, remove the [remote-state.tf](remote-state.tf) file from the directory before any terraform commands; otherwise, if using remote terraform state file and it is not defined in [remote-state.tf](remote-state.tf), run the script [create\_remote\_state.sh](create_remote_state.sh) and pay attention to the last line. Then run `export ARM_ACCESS_KEY=xxxxxxx` as instructed by the script.
@@ -285,6 +285,7 @@ In the file [terraform.tfvars](terraform.tfvars) there are a number of variables
 * **instmaster_user**: user to use to connect to the previous share.
 * **instmaster_pass**: password to use to connect to the previous share.
 * **image_uri**: URI to the BLOB where the VHD file of the image to use to launch the VMs is located. This is only used when deploying the virtual machines with a custom/private OS image. Check [elsewhere in this document](#how-to-upload-a-custom-image) for information on how to change the configuration in order to use a public image.
+* **image_uri_iscsi_srv**: Same as above, you have the choice of adding the same URI as "image_uri" or you can use a different one to have a dedicated image for the iscsi server.
 * **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **az_region**: Azure region where to deploy the configuration.

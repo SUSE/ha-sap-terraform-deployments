@@ -19,6 +19,10 @@ instmaster_pass = "PASSWORD_TO_ACCESS_THE_INSTMASTER_SHARE"
 # Blob URI of the image to use for the virtual machines
 image_uri = "https://URI_TO_BLOB_CONTAINING_OS_IMAGE_TO_USE"
 
+# Blob URI of the image to use for the iscsi server
+# if you need a different one
+image_uri_iscsi_srv = "https://URI_TO_BLOB_CONTAINING_OS_IMAGE_TO_USE_FOR_ISCSI"
+
 # VM size for the cluster nodes
 instancetype = "Standard_E4s_v3"
 
@@ -30,4 +34,3 @@ az_region = "westeurope"
 
 # Variable for init-nodes.sh script
 init-type = "all"
-
