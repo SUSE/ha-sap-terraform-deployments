@@ -1,13 +1,17 @@
 module "hana_node" {
   source = "../host"
 
-  base_configuration = "${var.base_configuration}"
-  name = "${var.name}"
-  count = "${var.count}"
-  additional_repos = "${var.additional_repos}"
-  additional_packages = "${var.additional_packages}"
-  ssh_key_path = "${var.ssh_key_path}"
-  host_ips = "${var.host_ips}"
+  base_configuration     = "${var.base_configuration}"
+  name                   = "${var.name}"
+  count                  = "${var.count}"
+  reg_code               = "${var.reg_code}"
+  reg_email              = "${var.reg_email}"
+  reg_additional_modules = "${var.reg_additional_modules}"
+  additional_repos       = "${var.additional_repos}"
+  additional_packages    = "${var.additional_packages}"
+  ssh_key_path           = "${var.ssh_key_path}"
+  host_ips               = "${var.host_ips}"
+
   grains = <<EOF
 
 role: hana_node
@@ -21,10 +25,10 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 EOF
 
   // Provider-specific variables
-  memory = "${var.memory}"
-  vcpu = "${var.vcpu}"
-  running = "${var.running}"
-  mac = "${var.mac}"
+  memory         = "${var.memory}"
+  vcpu           = "${var.vcpu}"
+  running        = "${var.running}"
+  mac            = "${var.mac}"
   hana_disk_size = "${var.hana_disk_size}"
 
   additional_disk = ["${map(
@@ -34,13 +38,13 @@ EOF
 
 output "configuration" {
   value {
-    id        = "${module.hana_node.configuration["id"]}"
-    hostname  = "${module.hana_node.configuration["hostname"]}"
+    id       = "${module.hana_node.configuration["id"]}"
+    hostname = "${module.hana_node.configuration["hostname"]}"
   }
 }
 
 output "addresses" {
   value {
-    addresses  = "${module.hana_node.addresses}"
+    addresses = "${module.hana_node.addresses}"
   }
 }

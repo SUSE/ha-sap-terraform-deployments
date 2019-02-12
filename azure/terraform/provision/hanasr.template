@@ -25,5 +25,5 @@ ms msl_SAPHana_PRD_HDB00 rsc_SAPHana_PRD_HDB00 \
 	meta master-node-max=1 master-max=1 clone-node-max=1 interleave=true is-managed=true
 clone cln_SAPHanaTopology_PRD_HDB00 rsc_SAPHanaTopology_PRD_HDB00 \
 	meta clone-node-max=1 interleave=true
-order TopFirst 1000: cln_SAPHanaTopology_PRD_HDB00 msl_SAPHana_PRD_HDB00
+order TopFirst Mandatory: cln_SAPHanaTopology_PRD_HDB00 msl_SAPHana_PRD_HDB00
 colocation col_ip_on_sr-primary 2000: rsc_ip_PRD:Started msl_SAPHana_PRD_HDB00:Master

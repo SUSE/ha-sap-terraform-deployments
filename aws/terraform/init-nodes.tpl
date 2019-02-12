@@ -12,7 +12,7 @@ function install_hana()
     /tmp/prepare_env.sh xvdd /hana xfs
     cp /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_hostname0.conf /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
     sed -i 's/^hostname=.*/hostname='$(hostname -s)'/' /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf
-    /tmp/install_hana.sh inst SPS02 PRD
+    /tmp/install_hana.sh inst SPS03 PRD
     local HANAPWD=$(grep ^master_password /root/sap_inst/hana_inst_config_PRD/hdblcm_hana2.0_$(hostname -s).conf | cut -d= -f2)
     su -lc "hdbuserstore set backupkey0 $(hostname -s) SYSTEM $HANAPWD" prdadm
     su -lc "hdbuserstore set backupkey1 $(hostname -s):30015 SYSTEM $HANAPWD" prdadm
