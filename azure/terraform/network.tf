@@ -210,7 +210,7 @@ resource "azurerm_public_ip" "iscsisrv" {
   name                         = "iscsisrv-ip"
   location                     = "${var.az_region}"
   resource_group_name          = "${azurerm_resource_group.myrg.name}"
-  public_ip_address_allocation = "Dynamic"
+  allocation_method            = "Dynamic"
   idle_timeout_in_minutes      = 30
 
   tags {
@@ -250,7 +250,7 @@ resource "azurerm_public_ip" "clusternodes" {
   name                         = "clusternodes-ip-${count.index}"
   location                     = "${var.az_region}"
   resource_group_name          = "${azurerm_resource_group.myrg.name}"
-  public_ip_address_allocation = "Dynamic"
+  allocation_method            = "Dynamic"
   idle_timeout_in_minutes      = 30
 
   tags {
