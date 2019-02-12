@@ -23,10 +23,10 @@ host module with some particular updates.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
-- [default](salt/default): Default configuration for each node. Install the most
+- [default](../../salt/default): Default configuration for each node. Install the most
 basic packages and apply basic configuration.
-- [hana_node](salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](salt/hana_node/files/pillar/hana.sls)
+- [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
+SAP HANA and enable system replication according [pillar](../../salt/hana_node/files/pillar/hana.sls)
 data.
 
 ## How to use
@@ -42,7 +42,7 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](salt/hana_node/files/pillar/hana.sls) and [cluster.sls](salt/hana_node/files/pillar/cluster.sls).
+To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../salt/hana_node/files/pillar/hana.sls) and [cluster.sls](../../salt/hana_node/files/pillar/cluster.sls).
 Configure these files according the wanted cluster type.
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
@@ -50,7 +50,7 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 - https://github.com/krig/habootstrap-formula
 
 
-In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (are use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
+In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (or use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
 
 The easiest way to customize the variables is using a *terraform.tfvars* file.
 Here an example:
@@ -67,8 +67,17 @@ additional_repos = {
     "repo_1" = "url_repo1"
     "repo_1" = "url_repo1"
 }
-"cluster_ssh_pub = salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
-"cluster_ssh_key = salt://hana_node/files/sshkeys/my_key.id_rsa"
+cluster_ssh_pub = "salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
+cluster_ssh_key = "salt://hana_node/files/sshkeys/my_key.id_rsa"
+
+# Optional SUSE Customer Center Registration parameters
+reg_code = "<<REG_CODE>>"
+reg_email = "<<your email>>"
+reg_additional_modules = {
+    "sle-module-adv-systems-management/12/x86_64" = ""
+    "sle-module-containers/12/x86_64" = ""
+    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+}
 ```
 
 After changing the values, run the terraform commands:
@@ -96,6 +105,21 @@ with the needed package and try again.
 - **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 - **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 - **additional_repos**: Additional repos to add to the guest machines.
+- **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
+- **reg_email**: Email to be associated with the system registration. This parameter is optional.
+- **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is the _module name_ and the value is the _registration code_. If the _registration code_ is not needed, set an empty string as value. The module format must follow SUSEConnect convention:
+    - `<module_name>/<product_version>/<architecture>`
+    - *Example:* Suggested modules for SLES for SAP 15
+          
+          
+          sle-module-basesystem/15/x86_64
+          sle-module-desktop-applications/15/x86_64
+          sle-module-server-applications/15/x86_64
+          sle-ha/15/x86_64 (use the same regcode as SLES for SAP) 
+          sle-module-sap-applications/15/x86_64
+
+For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
+          
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
 
