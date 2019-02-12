@@ -59,4 +59,5 @@ variable "reg_additional_modules" {
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
   type        = "map"
+  default     = {}
 }
