@@ -29,9 +29,9 @@ function install_salt_minion(){
     SUSEConnect -r "$regcode"
 
     # Register the modules accordingly with the SLE version.
-    if [[ $VERSION == *"12"* ]]; then    
+    if [[ $VERSION_ID =~ ^12\.? ]]; then    
       SUSEConnect -p sle-module-adv-systems-management/12/x86_64
-    elif [[ $VERSION == *"15"* ]]; then  
+    elif [[ $VERSION_ID =~ ^15\.? ]]; then  
       SUSEConnect -p sle-module-basesystem/$VERSION_ID/x86_64
     else 
       echo "SLE Product version not supported by this script. Please, use version 12 or higher." 
