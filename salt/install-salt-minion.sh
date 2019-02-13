@@ -60,7 +60,7 @@ while getopts ":hdr:" opt; do
         install_salt_minion "$OPTARG"
         exit 0 
         ;;
-    \?) echo "Invalid option -$OPTARG" >&2
+   *) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
 done
