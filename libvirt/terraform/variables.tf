@@ -35,12 +35,12 @@ variable "ntp_server" {
 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
-  default = ""
+  default     = ""
 }
 
 variable "reg_email" {
   description = "Email used for the registration"
-  default = ""
+  default     = ""
 }
 
 # The module format must follow SUSEConnect convention:
@@ -53,9 +53,10 @@ variable "reg_email" {
 # - sle-module-sap-applications/15/x86_64
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-	type = "map"
-  default = {}
+  type        = "map"
+  default     = {}
 }
+
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
   type        = "map"
