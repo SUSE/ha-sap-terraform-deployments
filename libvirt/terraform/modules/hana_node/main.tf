@@ -42,3 +42,9 @@ output "configuration" {
     hostname = "${module.hana_node.configuration["hostname"]}"
   }
 }
+
+output "addresses" {
+  value {
+    addresses = "${module.hana_node.addresses}"
+  }
+}
