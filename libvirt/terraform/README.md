@@ -110,16 +110,12 @@ with the needed package and try again.
 - **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is the _module name_ and the value is the _registration code_. If the _registration code_ is not needed, set an empty string as value. The module format must follow SUSEConnect convention:
     - `<module_name>/<product_version>/<architecture>`
     - *Example:* Suggested modules for SLES for SAP 15
-          
-          
           sle-module-basesystem/15/x86_64
           sle-module-desktop-applications/15/x86_64
           sle-module-server-applications/15/x86_64
-          sle-ha/15/x86_64 (use the same regcode as SLES for SAP) 
           sle-module-sap-applications/15/x86_64
 
 For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
-          
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
 
