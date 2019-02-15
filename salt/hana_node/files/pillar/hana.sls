@@ -7,9 +7,6 @@ hana:
       install:
         software_path: '/root/sap_inst/51052481'
         root_user: 'root'
-        root_password: 'linux'
-        system_user_password: 'Qwerty1234'
-        sapadm_password: 'Qwerty1234'
       primary:
         name: NUREMBERG
         backup:
@@ -31,9 +28,6 @@ hana:
       install:
         software_path: '/root/sap_inst/51052481'
         root_user: 'root'
-        root_password: 'linux'
-        system_user_password: 'Qwerty1234'
-        sapadm_password: 'Qwerty1234'
         extra_parameters:
           hostname: 'hana02'
       secondary:
@@ -50,8 +44,5 @@ hana:
       install:
         software_path: '/root/sap_inst/51052481'
         root_user: 'root'
-        root_password: 'linux'
-        system_user_password: 'Qwerty1234'
-        sapadm_password: 'Qwerty1234'
         extra_parameters:
           hostname: 'hana02'
