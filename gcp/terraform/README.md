@@ -95,11 +95,13 @@ These are the relevant files and what each provides:
 
 - The `sap_hana_deployment_bucket` variable must contain the name of the Google Storage bucket with the HANA installation files.
 
-- The `images_path_bucket` must contain the name of the Google Storage bucket with the SLES image.
+- The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 
-- The `sles4sap_os_image_file` must contain the name of the SLES image.
+- The `sles4sap_os_image_file` variable must contain the name of the SLES image.
 
-- The `post_deployment_script` specifies the URL location of a script to run after the deployment is complete. This script should be hosted on a web server or in a GCS bucket.
+- The `post_deployment_script` variable specifies the URL location of a script to run after the deployment is complete. This script should be hosted on a web server or in a GCS bucket.
+
+- The `init_type` variable controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster). Defaults to `all`.
 
 2. Deploy:
 

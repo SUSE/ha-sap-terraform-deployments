@@ -43,12 +43,19 @@ if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION_ID%-*}/x86_64 )
 fi
 
+if [[ ${VM_METADATA[init_type]} == "skip-all" ]] ; then
+￼ 	exit 0
+fi
+
 main::install_gsdk /usr/local
+if [[ ${VM_METADATA[init_type]} == all ]] ; then
 main::set_boot_parameters
+fi
 main::install_packages
 main::config_ssh
 main::create_static_ip
 
+if [[ ${VM_METADATA[init_type]} == all ]] ; then
 ##prepare for SAP HANA
 hdb::check_settings
 hdb::set_kernel_parameters
@@ -64,6 +71,7 @@ hdb::extract_media
 hdb::install
 hdb::upgrade
 hdb::config_backup
+fi
 
 ## Setup HA
 ha::check_settings
@@ -73,27 +81,35 @@ else
 	ha::install_primary_sshkeys
 fi
 ha::download_scripts
+if [[ ${VM_METADATA[init_type]} == all ]] ; then
 ha::create_hdb_user
 ha::hdbuserstore
 hdb::backup /hanabackup/data/pre_ha_config
+fi
 if [[ $HOSTNAME =~ node-0$ ]] ; then
+        if [[ ${VM_METADATA[init_type]} == all ]] ; then
 	ha::enable_hsr
+        fi
 	ha::ready
 	ha::config_pacemaker_primary
 	ha::check_cluster
 	ha::pacemaker_maintenance true
 	ha::pacemaker_add_stonith
 	ha::pacemaker_add_vip
+        if [[ ${VM_METADATA[init_type]} == all ]] ; then
 	ha::pacemaker_config_bootstrap_hdb
 	ha::pacemaker_add_hana
 	ha::check_hdb_replication
+        fi
 	ha::pacemaker_maintenance false
 else
 	ha::wait_for_primary
 	ha::copy_hdb_ssfs_keys
+        if [[ ${VM_METADATA[init_type]} == all ]] ; then
 	hdb::stop
 	ha::config_hsr
 	hdb::start_nowait
+        fi
 	ha::config_pacemaker_secondary
 fi
 
