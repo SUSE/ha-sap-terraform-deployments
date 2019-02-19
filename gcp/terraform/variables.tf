@@ -46,3 +46,8 @@ variable "storage_url" {
 }
 
 variable "post_deployment_script" {}
+
+variable "init_type" {
+  type    = "string"
+  default = "all"
+}
