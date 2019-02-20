@@ -47,6 +47,9 @@ if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
                 SUSEConnect -p sle-module-public-cloud/$VERSION_ID/x86_64
         fi
         )
+elif [[ ${VM_METADATA[init_type]} == all ]] ; then
+        echo "ERROR: You need a registration code if you want to install HANA" >&2
+        exit 1
 fi
 
 if [[ ${VM_METADATA[init_type]} == "skip-all" ]] ; then
