@@ -36,18 +36,27 @@ source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AU
 
 ### Base GCP and OS Configuration
 main::get_os_version
+main::install_gsdk /usr/local
 main::get_settings
 
 if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
-	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION_ID%-*}/x86_64 )
+	( . /etc/os-release
+        if [[ $VERSION_ID =~ ^12 ]] ; then
+                SUSEConnect -p sle-module-public-cloud/${VERSION_ID%.*}/x86_64
+        else
+                SUSEConnect -p sle-module-public-cloud/$VERSION_ID/x86_64
+        fi
+        )
+elif [[ ${VM_METADATA[init_type]} == all ]] ; then
+        echo "ERROR: You need a registration code if you want to install HANA" >&2
+        exit 1
 fi
 
 if [[ ${VM_METADATA[init_type]} == "skip-all" ]] ; then
 ￼ 	exit 0
 fi
 
-main::install_gsdk /usr/local
 if [[ ${VM_METADATA[init_type]} == all ]] ; then
 main::set_boot_parameters
 fi
