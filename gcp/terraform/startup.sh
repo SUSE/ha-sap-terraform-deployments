@@ -40,7 +40,13 @@ main::get_settings
 
 if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
 	SUSEConnect -r "${VM_METADATA[suse_regcode]}"
-	( . /etc/os-release ; SUSEConnect -p sle-module-public-cloud/${VERSION_ID%-*}/x86_64 )
+	( . /etc/os-release
+        if [[ $VERSION_ID =~ ^12 ]] ; then
+                SUSEConnect -p sle-module-public-cloud/${VERSION_ID%.*}/x86_64
+        else
+                SUSEConnect -p sle-module-public-cloud/$VERSION_ID/x86_64
+        fi
+        )
 fi
 
 if [[ ${VM_METADATA[init_type]} == "skip-all" ]] ; then
