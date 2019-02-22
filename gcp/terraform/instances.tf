@@ -1,3 +1,49 @@
+resource "google_compute_instance" "iscsisrv" {
+  name                    = "iscsisrv"
+  description             = "iSCSI server"
+  machine_type            = "${var.machine_type_iscsi_server}"
+  metadata_startup_script = "${data.template_file.init_iscsi.rendered}"
+  count                   = "${var.use_gcp_stonith == "true" ? 0 : 1}"
+  zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  network_interface {
+    subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
+    network_ip = "${var.iscsi_ip}"
+
+    access_config {
+      nat_ip = ""
+    }
+  }
+
+  scheduling {
+    automatic_restart   = true
+    on_host_maintenance = "MIGRATE"
+    preemptible         = false
+  }
+
+  boot_disk {
+    initialize_params {
+      image = "${google_compute_image.sles_bootable_image.self_link}"
+    }
+
+    auto_delete = true
+  }
+
+  attached_disk {
+    source      = "${google_compute_disk.iscsi_data.self_link}"
+    device_name = "${google_compute_disk.iscsi_data.name}"
+    mode        = "READ_WRITE"
+  }
+
+  metadata {
+    sshKeys = "root:${file(var.ssh_pub_key_file)}"
+  }
+}
+
 resource "google_compute_instance" "clusternodes" {
   machine_type            = "${var.machine_type}"
   metadata_startup_script = "${file("startup.sh")}"
@@ -68,6 +114,8 @@ resource "google_compute_instance" "clusternodes" {
     sap_vip_secondary_range    = ""
     suse_regcode               = "${var.suse_regcode}"
     init_type                  = "${var.init_type}"
+    iscsi_ip                   = "${var.iscsi_ip}"
+    use_gcp_stonith            = "${var.use_gcp_stonith}"
   }
 
   service_account {
