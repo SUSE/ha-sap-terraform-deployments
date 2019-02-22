@@ -15,7 +15,10 @@ variable "ip_cidr_range" {}
 
 variable "sap_vip" {}
 
+variable "iscsi_ip" {}
+
 variable "machine_type" {}
+variable "machine_type_iscsi_server" {}
 
 variable "region" {}
 variable "project" {}
@@ -39,6 +42,7 @@ variable "sap_hana_sid" {}
 
 variable "images_path_bucket" {}
 variable "sles4sap_os_image_file" {}
+variable "sles_os_image_file" {}
 
 variable "storage_url" {
   type    = "string"
@@ -50,4 +54,8 @@ variable "post_deployment_script" {}
 variable "init_type" {
   type    = "string"
   default = "all"
+}
+
+variable "use_gcp_stonith" {
+  type = "string"
 }

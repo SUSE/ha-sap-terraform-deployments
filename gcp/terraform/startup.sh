@@ -32,11 +32,14 @@ fi
 ## Import includes
 source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_main.sh)"
 source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_hdb.sh)"
-source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AUTOMATED_REGISTER)=true/\1=false/')"
+source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AUTOMATED_REGISTER)=\"true\"/\1=\"false\"/')"
 
 ### Base GCP and OS Configuration
 main::get_os_version
 main::install_gsdk /usr/local
+if [[ ${VM_METADATA[init_type]} == all ]] ; then
+main::set_boot_parameters
+fi
 main::get_settings
 
 if [[ -n ${VM_METADATA[suse_regcode]} ]] ; then
@@ -54,12 +57,40 @@ elif [[ ${VM_METADATA[init_type]} == all ]] ; then
 fi
 
 if [[ ${VM_METADATA[init_type]} == "skip-all" ]] ; then
-￼ 	exit 0
+	exit 0
 fi
 
-if [[ ${VM_METADATA[init_type]} == all ]] ; then
-main::set_boot_parameters
+setup_iscsi() {
+        iscsi_ip=${VM_METADATA[iscsi_ip]}
+        IQN=$(echo "iqn.$(date +"%Y-%m").$(grep search /etc/resolv.conf | awk -F. 'BEGIN {OFS="."} ($1 = substr($1,8)) {print $2,$1}'):$(iscsi-iname|cut -d: -f2)")
+        sed -i -e '/^InitiatorName/d' /etc/iscsi/initiatorname.iscsi
+        echo "InitiatorName=$IQN" >> /etc/iscsi/initiatorname.iscsi
+
+        # Add watchdog for HA
+        echo softdog > /etc/modules-load.d/softdog.conf
+        systemctl restart systemd-modules-load.service
+
+        # Wait for iSCSI server
+        # First test the iSCSI server is reachable for 5 minutes. If it's not, abort
+        for ((i=1; i<=30; i++)); do ping -q -c 1 ${iscsi_ip} && break; done || (echo "Aborting init script. Cannot reach iSCSI server" && exit 1)
+        while (! timeout 10 bash -c "cat < /dev/null > /dev/tcp/${iscsi_ip}/3260"); do echo "Waiting for iSCSI"; sleep 5; done
+
+        # Configure iSCSI initiator
+        systemctl stop iscsid
+        sed -i -r '/^node.startup/s/^node.startup = .+/node.startup = automatic/' /etc/iscsi/iscsid.conf
+        systemctl enable --now iscsid
+        iscsiadm -m discovery -t st -p "${iscsi_ip}:3260" -l -o new
+
+        # Wait for iSCSI devices
+        while (! ls /dev/disk/by-path/ip-${iscsi_ip}:*-lun-9 2>/dev/null); do sleep 5; done
+
+        SBDDEV=$(ls /dev/disk/by-path/ip-${iscsi_ip}:*-lun-9)
+}
+
+if [[ ${VM_METADATA[use_gcp_stonith]} != true ]] ; then
+        setup_iscsi
 fi
+
 main::install_packages
 main::config_ssh
 main::create_static_ip
@@ -100,13 +131,24 @@ if [[ $HOSTNAME =~ node-0$ ]] ; then
 	ha::enable_hsr
         fi
 	ha::ready
+	if [[ ${VM_METADATA[use_gcp_stonith]} != true ]] ; then
+		ha-cluster-init -y -w /dev/watchdog -s ${SBDDEV} sbd
+		#echo SBD_WATCHDOG=true >> /etc/sysconfig/sbd
+		systemctl enable sbd
+	fi
 	ha::config_pacemaker_primary
 	ha::check_cluster
 	ha::pacemaker_maintenance true
-	ha::pacemaker_add_stonith
-	ha::pacemaker_add_vip
+        if [[ ${VM_METADATA[use_gcp_stonith]} == true ]] ; then
+                ha::pacemaker_add_stonith
+	else
+		crm configure primitive stonith-sbd stonith:external/sbd params pcmk_delay_max=60s meta target-role=Started
+        fi
         if [[ ${VM_METADATA[init_type]} == all ]] ; then
+	ha::pacemaker_add_vip
+	fi
 	ha::pacemaker_config_bootstrap_hdb
+        if [[ ${VM_METADATA[init_type]} == all ]] ; then
 	ha::pacemaker_add_hana
 	ha::check_hdb_replication
         fi
@@ -119,6 +161,9 @@ else
 	ha::config_hsr
 	hdb::start_nowait
         fi
+	if [[ ${VM_METADATA[use_gcp_stonith]} != true ]] ; then
+		systemctl enable sbd
+	fi
 	ha::config_pacemaker_secondary
 fi
 
