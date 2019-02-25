@@ -1,0 +1,35 @@
+#Defaults
+{% import_yaml "iscsi/defaults.yaml" as defaults %}
+{% import_yaml "iscsi/initiator/defaults.yaml" as initiator %}
+{% import_yaml "iscsi/target/defaults.yaml" as target %}
+{% import_yaml "iscsi/isns/defaults.yaml" as isns %}
+{% import_yaml "iscsi/osfamilymap.yaml" as osfamilymap %}
+{% import_yaml "iscsi/codenamemap.yaml" as oscodenames %}
+
+# Merge site-specific data
+{% set iscsi = salt['grains.filter_by'](
+    defaults,
+    merge=salt['grains.filter_by'](
+        initiator,
+        merge=salt['grains.filter_by'](
+            target,
+            merge=salt['grains.filter_by'](
+                isns,
+                merge=salt['grains.filter_by'](
+                    osfamilymap,
+                    grain='os_family',
+                    merge=salt['grains.filter_by'](
+                        oscodenames,
+                        grain='oscodename',
+                        merge=salt['pillar.get']('iscsi', {}),
+                    ),
+                    base='iscsi',
+                ),
+                base='iscsi',
+            ),
+            base='iscsi',
+        ),
+        base='iscsi',
+    ),
+    base='iscsi',
+) %}

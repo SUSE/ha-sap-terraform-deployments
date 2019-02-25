@@ -1,4 +1,3 @@
-
 cluster:
   ssh_auth.present:
     - source: {{grains['cluster_ssh_pub']}}
@@ -18,3 +17,14 @@ cluster:
     - user: root
     - group: root
     - mode: 644
+
+/etc/ssh/sshd_config:
+  file.replace:
+    - pattern: 'PasswordAuthentication no'
+    - repl: 'PasswordAuthentication yes'
+    - append_if_not_found: True
+ 
+sshd:
+  service.running:
+    - watch:
+      - file : /etc/ssh/sshd_config

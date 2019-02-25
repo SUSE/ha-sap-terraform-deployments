@@ -1,0 +1,88 @@
+# vim: sts=2 ts=2 sw= et ai
+#
+iscsi:
+  user: iscsiuser      #not used unless archlinux
+  initiator:
+    iscsid:                           #FreeBSD Foundation
+      man5:
+        manpage: iscsi.conf(5)
+        vendor: FreeBSD Foundation
+        svcname: iscsid
+        kmodule: iscsi_initiator
+        modloadtext: iscsi_initiator_load="YES"
+        svcloadfile: /etc/rc.conf
+        svcloadtext: iscsictl_enable="YES"
+        config: /etc/iscsi.conf
+        format:
+          div: " = "
+          quote: ''
+          end: ';'
+          ucl:  True
+          json: False
+          html: False
+      myconf: {}
+
+    open-iscsi:                  #Open-iSCSI for Debian, etc
+      man5:
+        manpage: iscsid.conf(5)
+        vendor: Open-iSCSI
+        svcname: open-iscsi
+        kmodule: None
+        modloadtext: xxxxxxxxx="YES"
+        svcloadfile:
+        svcloadtext:
+        config: /etc/iscsi/iscsid.conf
+        format:
+          div: " = "
+          quote: ''
+          end: ''
+          ucl:  True
+          json: False
+          html: False
+      myconf:
+        #Reference: https://github.com/open-iscsi/open-iscsi/blob/master/etc/iscsid.conf
+        node.startup: manual
+        node.leading_login: No
+        node.session.timeo.replacement_timeout: 120
+        node.conn[0].timeo.login_timeout: 15
+        node.conn[0].timeo.logout_timeout: 15
+        node.conn[0].timeo.noop_out_interval: 5
+        node.conn[0].timeo.noop_out_timeout: 5
+        node.session.err_timeo.abort_timeout: 15
+        node.session.err_timeo.lu_reset_timeout: 30
+        node.session.err_timeo.tgt_reset_timeout: 30
+        node.session.initial_login_retry_max: 8
+        node.session.cmds_max: 128
+        node.session.queue_depth: 32
+        node.session.xmit_thread_priority: -20
+        node.session.iscsi.InitialR2T: No
+        node.session.iscsi.ImmediateData: Yes
+        node.session.iscsi.FirstBurstLength: 262144
+        node.session.iscsi.MaxBurstLength: 16776192
+        node.conn[0].iscsi.MaxRecvDataSegmentLength: 262144
+        node.conn[0].iscsi.MaxXmitDataSegmentLength: 0
+        discovery.sendtargets.iscsi.MaxRecvDataSegmentLength: 32768
+        node.session.nr_sessions: 1
+        node.session.iscsi.FastAbort: Yes
+        node.session.scan: auto
+
+    fcoe:                     #Fibre-channel over Ethernet interface
+      man5:
+        manpage:
+        vendor:
+        svcname: ['fcoe', 'lldpad',]
+        kmodule: None
+        modloadtext: xxxxxxxxx="YES"
+        svcloadfile:
+        svcloadtext:
+        targetconf: /etc/fcoe/cfg-ethx
+        targetifce: eth2
+        format:
+          div: ": "
+          quote: ''
+          end: ''
+          ucl:  False
+          json: True #?
+          html: False
+      myconf:
+        globals: {}
