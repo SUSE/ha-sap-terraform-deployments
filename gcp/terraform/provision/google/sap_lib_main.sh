@@ -149,7 +149,7 @@ main::install_packages() {
 		## Temporary fix fro SLES15 incompatible boto version
 		if [[ "${LINUX_VERSION}" = "15" ]]; then 
     	cat <<EOF > /etc/default/instance_configs.cfg.template
-InstanceSetup]
+[InstanceSetup]
 set_boto_config = false
 EOF
 			rm -f /etc/boto.cfg

@@ -19,6 +19,9 @@ iscsi_ip = "10.0.0.253"
 machine_type = "n1-highmem-8"
 machine_type_iscsi_server = "custom-1-2048"
 
+# SSH private key file
+ssh_key_file = "my-private.key"
+
 # SSH public key file
 ssh_pub_key_file = "my-public.key"
 

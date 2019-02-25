@@ -124,6 +124,12 @@ resource "google_compute_instance" "clusternodes" {
 
   provisioner "file" {
     source      = "./provision/"
-    destination = "/tmp/"
+    destination = "/root/provision/"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = "${file(var.ssh_key_file)}"
+    }
   }
 }

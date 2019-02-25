@@ -9,6 +9,7 @@ variable "gcp_credentials_file" {
 
 variable "suse_regcode" {}
 
+variable "ssh_key_file" {}
 variable "ssh_pub_key_file" {}
 
 variable "ip_cidr_range" {}

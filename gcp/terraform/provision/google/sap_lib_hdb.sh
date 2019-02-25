@@ -126,7 +126,7 @@ hdb::set_kernel_parameters(){
 
   main::errhandle_log_info "Preparing tuned/sapconf"
 
-  if [[ "${LINUX_DISTRO}" = "SLES" ]] && [[ "${LINUX_VERSION}" = "15" ]]; then 
+  if [[ "${LINUX_DISTRO}" = "SLES" ]] && [[ "${LINUX_VERSION}" =~ ^15 ]]; then
     systemctl start tuned
     systemctl enable tuned
     saptune daemon start

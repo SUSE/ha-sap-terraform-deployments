@@ -37,9 +37,9 @@ ha::download_scripts() {
   main::errhandle_log_info "Downloading pacemaker-gcp"
   mkdir -p /usr/lib/ocf/resource.d/gcp
   mkdir -p /usr/lib64/stonith/plugins/external
-  curl https://storage.googleapis.com/sapdeploy/pacemaker-gcp/alias -o /usr/lib/ocf/resource.d/gcp/alias
-  curl https://storage.googleapis.com/sapdeploy/pacemaker-gcp/route -o /usr/lib/ocf/resource.d/gcp/route
-  curl https://storage.googleapis.com/sapdeploy/pacemaker-gcp/gcpstonith -o /usr/lib64/stonith/plugins/external/gcpstonith
+  cp /root/provision/alias /usr/lib/ocf/resource.d/gcp/alias
+  cp /root/provision/route /usr/lib/ocf/resource.d/gcp/route
+  cp /root/provision/gcpstonith /usr/lib64/stonith/plugins/external/gcpstonith
   chmod +x /usr/lib/ocf/resource.d/gcp/alias
   chmod +x /usr/lib/ocf/resource.d/gcp/route
   chmod +x /usr/lib64/stonith/plugins/external/gcpstonith
