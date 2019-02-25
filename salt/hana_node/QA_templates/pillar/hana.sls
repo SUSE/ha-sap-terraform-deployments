@@ -1,17 +1,18 @@
 hana:
+  install_packages: false
   nodes:
-    - host: 'hana01'
+    - host: 'ip-10-0-1-0'
       sid: 'prd'
       instance: '"00"'
-      password: 'ENTER_YOUR_PASSWORD'
+      password: 'Qwerty1234'
       install:
         software_path: '/root/sap_inst/'
         root_user: 'root'
         root_password: ''
-        system_user_password: 'ENTER_YOUR_PASSWORD'
+        system_user_password: 'Qwerty1234'
+        sapadm_password: 'Qwerty1234'
         extra_parameters:
-          hostname: 'hana01'
-       sapadm_password: 'ENTER_YOUR_PASSWORD'
+          hostname: 'ip-10-0-1-0'
       primary:
         name: PRIMARY_SITE_NAME
         backup:
@@ -20,26 +21,26 @@ hana:
           file: 'backup'
         userkey:
           key_name: 'backupkey'
-          environment: 'hana01:30013'
+          environment: 'ip-10-0-1-0:30013'
           user_name: 'SYSTEM'
-          user_password: 'ENTER_YOUR_PASSWORD'
+          user_password: 'Qwerty1234'
           database: 'SYSTEMDB'
 
-    - host: 'hana02'
+    - host: 'ip-10-0-1-1'
       sid: 'prd'
       instance: '"00"'
-      password: 'ENTER_YOUR_PASSWORD'
+      password: 'Qwerty1234'
       install:
-        software_path: '/root/sap_inst/51052481'
+        software_path: '/root/sap_inst/'
         root_user: 'root'
         root_password: ''
-        system_user_password: 'ENTER_YOUR_PASSWORD'
-        sapadm_password: 'ENTER_YOUR_PASSWORD'
+        system_user_password: 'Qwerty1234'
+        sapadm_password: 'Qwerty1234'
         extra_parameters:
-          hostname: 'hana02'
+          hostname: 'ip-10-0-1-1'
       secondary:
         name: SECONDARY_SITE_NAME
-        remote_host: 'hana01'
+        remote_host: 'ip-10-0-1-0'
         remote_instance: '00'
         replication_mode: 'sync'
         operation_mode: 'logreplay'

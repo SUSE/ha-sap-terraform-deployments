@@ -1,3 +1,6 @@
+parted:
+  pkg.installed
+
 mklabel:
   module.run:
     - name: partition.mklabel
@@ -9,7 +12,6 @@ mkpart1:
     - name: partition.mkpart
     - device: {{ grains['hana_disk_device'] }}
     - part_type: primary
-    - fs_type: ext2
     - start: 0
     - end: 100%
 

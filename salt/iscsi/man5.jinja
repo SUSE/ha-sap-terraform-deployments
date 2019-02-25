@@ -1,0 +1,32 @@
+{%- if data and component and provider -%}
+
+{%- macro man5(outdict, format, spaces=0) -%}
+  {%- for key, value in outdict.items() -%}
+{{ man5conf(key, value, format, spaces, loop.last) }}
+  {%- endfor %}
+{%- endmacro -%}
+
+{%- macro man5conf(key, value, f, spaces=0, last=False) -%}
+  {%- set shift = spaces * ' ' -%}
+{%- if value is mapping %}
+{{shift}}{{ f.quote }}{{ key }}{{ f.quote }}{{ ": [" if (json and not ucl) and key|lower != 'attributes' else ':' if (json and not ucl) else '' }}
+{{shift}}{{ '{' if json or ucl else '' -}}
+{{ man5(value, f, spaces|int+4) }}
+{{ shift ~ '},' if (json or ucl) and key|lower == 'attributes' else shift ~ '}' if json or ucl else shift ~ '' }}
+{{ shift ~ ']\n' if last and (json and not ucl) else shift ~ '],\n' if (json and not ucl) and key|lower != 'attributes' else '' }}
+{%- elif value is string or value is number %}
+{{ shift }}{{ f.quote }}{{ key }}{{ f.quote }}{{ f.div }}{{ '' if value is number else f.quote  }}{{ value }}{{ '' if value is number else f.quote }}{{ '' if last and (json or ucl) else f.end }}
+{%- elif value is iterable and value is not string %}
+{{ shift }}{{ f.quote }}{{ key }}{{ f.quote }}{{ ' = {' if json or ucl else '' }}
+{%- for v in value %}
+{{ shift }}{{ shift }}{{ f.quote if v is not number else '' }}{{ v }}{{ f.quote if v is not number else '' }}{{ '' if loop.last and (json or ucl) else f.end }}
+{%- endfor %}
+{{ shift }}{{ "}" if json or ucl else '' }}
+{%- endif %}
+{%- endmacro -%}
+
+{%- set ucl = data['man5']['format']['ucl'] -%}
+{{ '{' if json and not ucl else '' -}}
+{{ man5(data['myconf'], data['man5']['format'], 8 if json and not ucl else 0) }}
+{{- '}' if json and not ucl else '' }}
+{%- endif -%}

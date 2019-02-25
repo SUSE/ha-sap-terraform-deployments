@@ -1,0 +1,149 @@
+# vim: sts=2 ts=2 sw= et ai
+#
+iscsi:
+  target:
+    port: 3260
+    tgtd:                      #TGT Project (userspace) RedHat/Debian/Arch/Gentoo
+      man5:
+        manpage: targets.conf(5)
+        vendor: tgt project
+        svcname: tgtd
+        kmodule: None
+        modloadtext: xxxxxxxxx="YES"
+        svcloadfile:
+        svcloadtext: 
+        config: /etc/tgt/conf.d/targets.conf
+        format:
+          div: " "
+          quote: ''
+          end: ''
+          ucl: False
+          json: False
+          html: True
+      myconf:
+        include: '/etc/tgt/salt/*.conf'
+        default-driver: iscsi
+        iSNSServerIP: 127.0.0.1
+        iSNSServerPort: 3205
+        iSNSAccessControl: Off
+        iSNS: Off
+        #ignore-errors: yes
+        targets: {}
+
+    ctld:                             #FreeBSD Foundation
+      man5:
+        manpage: ctl.conf(5)
+        vendor: FreeBSD Foundation
+        svcname: ctld            #CAM Target Layer/iSCSI target daemon
+        kmodule: cfiscsi
+        modloadtext: cfiscsi_load="YES"
+        svcloadfile: /etc/rc.conf
+        svcloadtext: 'iscsid_enable="YES"'
+        allowconf:
+        denyconf:
+        config: /etc/ctl.conf
+        format:
+          div: " "
+          quote: ''
+          end: ''
+          ucl: True
+          json: True  #compatible with ucl in theory (in practice?)
+          html: False
+      myconf:
+        debug: 0
+        maxproc: 0
+        pidfile: /var/run/ctld.pid
+        timeout: 60
+        isns-period: 900
+        isns-timeout: 5
+        auth-group: {}
+        portal-group: {}
+        lun: {}
+        target: {}
+
+    ietd:
+      #iSCSI Enterprise Target (IET) project
+      man5:
+        manpage: ietd.conf(5)
+        vendor: IET project
+        svcname: iscsitarget
+        kmodule: iscsi_trgt
+        modloadtext: iscsi_trgt
+        svcloadfile:
+        svcloadtext:
+        config: /etc/ietd.conf
+        allowconf: /etc/ietd/initiators.allow
+        denyconf: /etc/ietd/initiators.deny
+        format:
+          div: " "
+          quote: ''
+          end: ''
+          ucl: False
+          json: False
+          html: False
+      myconf:
+        HeaderDigest: None
+        DataDigest: None
+        MaxConnections: 1
+        MaxSessions: 0
+        InitialR2T: Yes
+        ImmediateData: No
+        MaxRecvDataSegmentLength: 8192
+        MaxXmitDataSegmentLength: 8192
+        MaxBurstLength: 262144
+        FirstBurstLength: 65536
+        DefaultTime2Wait: 2
+        DefaultTime2Retain: 0
+        MaxOutstandingR2T: 8
+        NOPInterval: 0
+        NOPTimeout: 0
+        DataPDUInOrder: Yes
+        DataSequenceInOrder: Yes
+        ErrorRecoveryLevel: 0
+        targets: {}
+      
+    lio:
+      man5:
+        manpage:
+        vendor: Kernel.org
+        svcname: target
+        kmodule: target_core_mod
+        modloadtext: target_core_mod
+        svcloadfile:
+        svcloadtext:
+        config: /etc/target/saveconfig.json
+        allowconf:
+        denyconf:
+        format:
+          div: ": "
+          quote: '"'
+          end: ','
+          ucl: False
+          json: True
+          html: False
+      myconf:
+        fabric_modules: {}
+        storage_objects: {}
+        targets: {}
+
+### FUTURE TODO
+    fcoe:                     #Fibre-Channel over Ethernet (FCoE) Target
+      man5:
+        manpage:
+        vendor:
+        svcname: fcoe-target
+        kmodule: fcoe_target
+        modloadtext: fcoe_target
+        svcloadfile:
+        svcloadtext:
+        config: ....
+        targetifce: eth2
+        format:
+          div: " = "
+          quote: ''
+          end: ''
+          ucl: False
+          json: False
+          html: False
+      myconf: {}
+

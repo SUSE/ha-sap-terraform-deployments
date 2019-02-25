@@ -1,0 +1,72 @@
+{% import_yaml "/root/salt/hana_node/QA_templates/pillar/cluster.sls" as cluster_file %}
+{% import_yaml "/root/salt/hana_node/QA_templates/pillar/hana.sls" as hana_file %}
+
+{% set sid = hana_file.hana.nodes[0].sid.upper() %}
+{% set instance = hana_file.hana.nodes[0].instance | replace('"', '') %}
+
+#
+# defaults
+#
+
+rsc_defaults \
+    resource-stickiness="1000" \
+    migration-threshold="5000"
+
+op_defaults \
+    timeout="600"
+
+#
+# production HANA
+#
+
+primitive rsc_ip_{{ sid }}_HDB{{ instance }} ocf:heartbeat:IPaddr2 \
+    params \
+    ip="10.0.0.250" cidr_netmask="255.255.0.0" \
+    op start timeout="20" op stop timeout="20" \
+    op monitor interval="10" timeout="20"
+
+primitive rsc_SAPHanaTopology_{{ sid }}_HDB{{ instance }} ocf:suse:SAPHanaTopology \
+    params \
+    SID="{{ sid }}" \
+    InstanceNumber="{{ instance }}" \
+    op monitor interval="10" timeout="600" \
+    op start interval="0" timeout="600" \
+    op stop interval="0" timeout="300"
+
+clone cln_SAPHanaTopology_{{ sid }}_HDB{{ instance }} rsc_SAPHanaTopology_{{ sid }}_HDB{{ instance }} \
+    meta is-managed="true" clone-node-max="1" interleave="true"
+
+primitive rsc_SAPHana_{{ sid }}_HDB{{ instance }} ocf:suse:SAPHana \
+    params \
+    SID="{{ sid }}" \
+    InstanceNumber="{{ instance }}" \
+    PREFER_SITE_TAKEOVER="{{ cluster_file.cluster.prefer_takeover }}" \
+    AUTOMATED_REGISTER="{{ cluster_file.cluster.auto_register }}" \
+    DUPLICATE_PRIMARY_TIMEOUT="7200" \
+    op start interval="0" timeout="3600" \
+    op stop interval="0" timeout="3600" \
+    op promote interval="0" timeout="3600" \
+    op monitor interval="60" role="Master" timeout="700" \
+    op monitor interval="61" role="Slave" timeout="700"
+
+ms msl_SAPHana_{{ sid }}_HDB{{ instance }} rsc_SAPHana_{{ sid }}_HDB{{ instance }} \
+    meta clone-max="2" clone-node-max="1" interleave="true"
+
+{% if cluster_file.cluster.platform == "azure" %}
+
+primitive rsc_nc_{{ sid }}_HDB{{ instance }} anything \
+  params binfile="/usr/bin/nc" cmdline_options="-l -k 62503" \
+  meta resource-stickiness=0 \
+  op monitor timeout="20" interval="10" depth="0"
+
+group g_ip_{{ sid }}_HDB{{ instance }} rsc_ip_{{ sid }}_HDB{{ instance }} rsc_nc_{{ sid }}_HDB{{ instance }}
+
+colocation col_saphana_ip_{{ sid }}_HDB{{ instance }} 2000: g_ip_{{ sid }}_HDB{{ instance }}:Started msl_SAPHana_{{ sid }}_HDB{{ instance }}:Master
+
+{% else %}
+
+colocation col_saphana_ip_{{ sid }}_HDB{{ instance }} 2000: rsc_ip_{{ sid }}_HDB{{ instance }}:Started msl_SAPHana_{{ sid }}_HDB{{ instance }}:Master
+
+{% endif %}
+
+order ord_SAPHana_{{ sid }}_HDB{{ instance }} Optional: cln_SAPHanaTopology_{{ sid }}_HDB{{ instance }} msl_SAPHana_{{ sid }}_HDB{{ instance }}

@@ -1,4 +1,8 @@
+{% if (grains['os_family'] == 'Suse') and (grains['osmajorrelease'] == '12') %}
 python-shaptools:
+{% else %}
+python3-shaptools:
+{% endif %}
   pkg.installed:
     - fromrepo: saphana
     - require:
@@ -16,6 +20,7 @@ saphanabootstrap-formula:
     - require:
       - add-saphana-repo
 
+{% if grains['test_usage'] is sameas false %}
 #required packages to install SAP HANA, maybe they are already installed in the
 #used SLES4SAP distros
 numactl:
@@ -27,3 +32,4 @@ libltdl7:
 #this package should be installed in saphanabootstrap-formula
 netcat-openbsd:
   pkg.installed
+{% endif %}

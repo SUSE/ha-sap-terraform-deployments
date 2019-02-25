@@ -1,0 +1,8 @@
+{
+     "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+     "Format": "raw",
+     "UserBucket": {
+         "S3Bucket": "instmasters",
+         "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
+     }
+}

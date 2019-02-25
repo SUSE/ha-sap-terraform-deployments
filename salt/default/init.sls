@@ -1,4 +1,5 @@
 include:
+{% if grains['provider'] != 'aws' %}
   - default.minimal
 {% if grains['os_family'] == 'Suse' %}
   - default.registration
@@ -46,3 +47,13 @@ authorized_keys:
 refresh_repos:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys refresh
+
+{% else %}
+
+{% if grains['os_family'] == 'Suse' %}
+  - default.registration
+{% endif %}
+  - default.repos
+  - default.pkgs
+{% endif %}
+
