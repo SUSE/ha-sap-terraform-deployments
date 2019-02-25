@@ -121,4 +121,9 @@ resource "google_compute_instance" "clusternodes" {
   service_account {
     scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
+
+  provisioner "file" {
+    source      = "./provision/"
+    destination = "/tmp/"
+  }
 }

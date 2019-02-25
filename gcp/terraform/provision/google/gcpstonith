@@ -1,0 +1,160 @@
+#!/bin/bash -x
+# ---------------------------------------------------------------------
+# Copyright 2016 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------
+# Description:	Google Cloud Platform - STONITH/Fencing agent
+# Version:			1.0.2
+# Date:					18/March/2018
+# ---------------------------------------------------------------------
+
+meta_data() {
+ cat <<EOF
+<parameters>
+ <parameter name="instance_name" unique="1" required="1">
+	 <longdesc lang="en">The instance name of the host to be managed by this STONITH device</longdesc>
+	 <shortdesc lang="en">Instance Name</shortdesc>
+	 <content type="string" default="" />
+ </parameter>
+ <parameter name="logging" unique="0" required="0">
+	 <longdesc lang="en">If enabled (set to true), IP failover logs will be posted to stackdriver logging</longdesc>
+	 <shortdesc lang="en">Stackdriver-logging support</shortdesc>
+	 <content type="boolean" default="" />
+ </parameter>
+ <parameter name="gcloud_path" unique="0" required="0">
+	 <longdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud - If this is left blank, the default path of /usr/bin/gcloud will be used</longdesc>
+	 <shortdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud</shortdesc>
+	 <content type="string" default="" />
+ </parameter>
+</parameters>
+EOF
+}
+
+
+get_zone() {
+  ZONE=$(${GCLOUDCMD} --quiet compute instances list --filter="name=('${1}')" --format 'csv[no-heading](zone)' --verbosity none || true)
+}
+
+
+log_info() {
+  echo "gcp:stonith - INFO - ${1}"
+  LOG="`hostname` gcp:stonith \"${1}\""
+  echo ${LOG}
+  if [[ -n ${logging} ]]; then
+    if [[ ${logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} --quiet logging write ${HOSTNAME} "${LOG}" --severity=INFO || true
+    fi
+  fi
+}
+
+
+log_error() {
+  echo "gcp:stonith - ERROR - ${1}"
+  LOG="`hostname` gcp:stonith \"${1}\""
+  if [[ -n ${logging} ]]; then
+    if [[ ${logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} --quiet logging write ${HOSTNAME} "${LOG}" --severity=ERROR || true
+    fi
+  fi
+}
+
+
+get_gcloud() {
+  ## if gcloud command isn't set, default to the default path
+  if [[ -n ${gcloud_path} ]]; then
+    GCLOUDCMD=${gcloud_path}
+  else
+    GCLOUDCMD="/usr/bin/gcloud"
+  fi
+
+  ## check gcloud command exists
+  if [[ ! -f ${GCLOUDCMD} ]]; then
+    log_error "gcloud command not found at ${GCLOUDCMD}"
+    exit 1
+  fi
+}
+
+
+## find the zone of the instance in question
+
+case ${1} in
+ on|poweron)
+    get_gcloud
+    get_zone ${instance_name}
+    log_info "Issuing poweron of ${instance_name} in zone ${ZONE}"
+  	${GCLOUDCMD} --quiet compute instances start ${instance_name} --zone=${ZONE} || true
+    log_info "Poweron of ${instance_name} in zone ${ZONE} complete"
+	;;
+
+	off|poweroff)
+    get_gcloud
+    get_zone ${instance_name}
+    log_info "Issuing poweroff of ${instance_name} in zone ${ZONE}"
+  	${GCLOUDCMD} --quiet compute instances stop ${instance_name} --zone=${ZONE} || true
+    log_info "Poweroff of ${instance_name} in zone ${ZONE} complete"
+	;;
+
+	reset|reboot)
+    get_gcloud
+    get_zone ${instance_name}
+    log_info "Issuing reset of ${instance_name} in zone ${ZONE}"
+  	${GCLOUDCMD} --quiet compute instances reset ${instance_name} --zone=${ZONE} || true
+    log_info "Reset of ${instance_name} in zone ${ZONE} complete"
+	;;
+
+	status)
+    get_gcloud
+    get_zone ${instance_name}
+    status=$(${GCLOUDCMD} --quiet compute instances list --filter="name=('${instance_name}')" --format 'csv[no-heading](status)' --verbosity none || true)
+
+    if [ "${status}" = "RUNNING" ]; then
+      exit 0
+    else
+      exit 1
+    fi
+	;;
+
+ gethosts)
+  	echo ${instance_name}
+	;;
+
+	getconfignames)
+ 		echo instance_name
+ 	;;
+
+ getinfo-xml|meta-data)
+ 		meta_data
+ ;;
+
+ getinfo-devid)
+ 		echo "Google Cloud Platform STONITH/Fencing device"
+ ;;
+
+ getinfo-devname)
+ 		echo "Google Cloud Platform STONITH/Fencing device"
+ ;;
+
+ getinfo-devdescr)
+ 		echo "Google Cloud Platform host reset/poweron/poweroff/move"
+ ;;
+
+ getinfo-devurl)
+ 		echo "http://cloud.google.com"
+ ;;
+
+ *)
+		echo "No such function: \"${1}\""
+  	exit 1
+ ;;
+
+esac

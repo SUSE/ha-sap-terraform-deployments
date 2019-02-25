@@ -1,0 +1,162 @@
+#!/bin/bash
+# ---------------------------------------------------------------------
+# Copyright 2016 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------
+# Description:	Google Cloud Platform - Floating IP Address (Route)
+# Version:			1.0.43
+# Date:					18/March/2018
+# ---------------------------------------------------------------------
+
+: ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
+. ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
+
+meta_data() {
+  cat <<EOF
+<?xml version="1.0"?>
+<!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
+<resource-agent name="gcp:vip">
+  <version>1.0</version>
+  <longdesc lang="en">Long</longdesc>
+  <shortdesc lang="en">Short</shortdesc>
+  <parameters>
+    <parameter name="route_name" unique="1" required="1">
+      <longdesc lang="en">The name of the GCP route.</longdesc>
+      <shortdesc lang="en">Route name</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="route_network" unique="1" required="1">
+      <longdesc lang="en">GCP network in which the route should be created.</longdesc>
+      <shortdesc lang="en">Network name</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="route_ip" unique="1" required="1">
+      <longdesc lang="en">IP Address to be routed through.</longdesc>
+      <shortdesc lang="en">IP Address</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="logging" unique="0" required="0">
+      <longdesc lang="en">If enabled (by setting to yes or true), IP failover logs will be posted to stackdriver logging</longdesc>
+      <shortdesc lang="en">Stackdriver-logging support</shortdesc>
+      <content type="boolean" default="" />
+    </parameter>
+    <parameter name="gcloud_path" unique="0" required="0">
+      <longdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud - If this is left blank, the default path of /usr/bin/gcloud will be used</longdesc>
+      <shortdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+  </parameters>
+  <actions>
+    <action name="start" timeout="300" />
+    <action name="stop" timeout="15" />
+    <action name="monitor" timeout="15" interval="10" depth="0" />
+    <action name="meta-data" timeout="5" />
+  </actions>
+</resource-agent>
+EOF
+}
+
+
+get_route() {
+  ROUTE=$(${GCLOUDCMD} --quiet compute routes describe ${OCF_RESKEY_route_name} --verbosity=none -q | grep nextHop | grep -o '[^/]*$')
+}
+
+
+get_my_zone() {
+  MYZONE=$(curl -sH'Metadata-Flavor: Google' "http://metadata.google.internal/computeMetadata/v1/instance/zone" | cut -d'/' -f4)
+}
+
+
+get_gcloud() {
+  ## if gcloud command isn't set, default to the default path
+  if [[ -n ${OCF_RESKEY_gcloud_path} ]]; then
+    GCLOUDCMD=${OCF_RESKEY_gcloud_path}
+  else
+    GCLOUDCMD="/usr/bin/gcloud"
+  fi
+
+  ## check gcloud command exists
+  if [[ ! -f ${GCLOUDCMD} ]]; then
+    log_error "gcloud command not found at ${GCLOUDCMD}"
+    exit 1
+  fi
+}
+
+
+log_info() {
+  echo "gcp:route - INFO - ${1}"
+  LOG="`hostname` ${OCF_RESOURCE_INSTANCE} \"${1}\""
+  echo ${LOG}
+  if [[ -n ${OCF_RESKEY_logging} ]]; then
+    if [[ ${OCF_RESKEY_logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} logging write ${HOSTNAME} "${LOG}" --severity=INFO || :
+    fi
+  fi
+}
+
+
+log_error() {
+  echo "gcp:route - ERROR - ${1}"
+  LOG="`hostname` ${OCF_RESOURCE_INSTANCE} \"${1}\""
+  if [[ -n ${OCF_RESKEY_logging} ]]; then
+    if [[ ${OCF_RESKEY_logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} logging write ${HOSTNAME} "${LOG}" --severity=ERROR || :
+    fi
+  fi
+}
+
+case ${1} in
+  start)
+    get_gcloud
+    get_my_zone
+    get_route
+
+    ## If I already have the IP, exit. If it has an alias IP that isn't the VIP, then remove it
+    if [ "${ROUTE}" = "${HOSTNAME}" ]; then
+      log_info "${OCF_RESKEY_route_name} is already routed to ${HOSTNAME}. No action required"
+      exit 0
+    fi
+    ## delete the current route
+    log_info "Deleting route '${OCF_RESKEY_route_name}'"
+    ${GCLOUDCMD} --quiet compute routes delete ${OCF_RESKEY_route_name} --verbosity=none
+
+    ## add a new route
+    log_info "Creating route '${OCF_RESKEY_route_name}' pointing to host ${HOSTNAME}"
+    ${GCLOUDCMD} --quiet compute routes create ${OCF_RESKEY_route_name} --priority=1000 --network=${OCF_RESKEY_route_network} --destination-range=${OCF_RESKEY_route_ip}/32 --next-hop-instance=${HOSTNAME} --next-hop-instance-zone=${MYZONE}
+    exit 0
+	;;
+
+	stop)
+		exit 0
+	;;
+
+	status|monitor)
+    get_gcloud
+    get_route
+    if [ "${ROUTE}" = "${HOSTNAME}" ]; then
+      log_info "Route '${OCF_RESKEY_route_name}' is correctly pointing to ${HOSTNAME}"
+      exit 0
+    else
+      exit 7
+    fi
+	;;
+
+  meta-data)
+    meta_data
+  ;;
+
+  *)
+    echo "no such function \"${1}\""
+    exit $OCF_ERR_UNIMPLEMENTED
+	;;
+esac
