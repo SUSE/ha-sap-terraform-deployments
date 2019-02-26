@@ -29,6 +29,11 @@ variable "additional_repos" {
   default     = {}
 }
 
+variable "ha_factory_repo" {
+  description = "Repository url used to install install HA/SAP deployment packages"
+  type        = "string"
+}
+
 variable "additional_packages" {
   description = "extra packages which should be installed"
   default     = []
@@ -64,21 +69,6 @@ variable "sbd_disk_id" {
 variable "sap_inst_media" {
   description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
   type        = "string"
-}
-
-variable "ntp_server" {
-  description = "ntp server address"
-  default     = ""
-}
-
-variable "cluster_ssh_pub" {
-  description = "path to a custom ssh public key to upload to the hana nodes"
-  default     = ""
-}
-
-variable "cluster_ssh_key" {
-  description = "path to a custom ssh private key to upload to the hana nodes"
-  default     = ""
 }
 
 // Provider-specific variables

@@ -31,21 +31,17 @@ module "hana_node" {
 
   // hana01 and hana02
 
-  name           = "hana"
-  count          = 2
-  vcpu           = 4
-  memory         = 32678
-  sap_inst_media = "${var.sap_inst_media}"
-  ntp_server     = "pool.ntp.org"
-  hana_disk_size = "68719476736"
-  host_ips       = "${var.host_ips}"
-  sbd_disk_id    = "${module.sbd_disk.id}"
-  // Set proper ssh file. The default files are public in github
-  // Copy custom files in salt/hana_node/files/sshkeys
-  cluster_ssh_pub = "${var.cluster_ssh_pub}"
-  cluster_ssh_key        = "${var.cluster_ssh_key}"
+  name                   = "hana"
+  count                  = 2
+  vcpu                   = 4
+  memory                 = 32678
+  sap_inst_media         = "${var.sap_inst_media}"
+  hana_disk_size         = "68719476736"
+  host_ips               = "${var.host_ips}"
+  sbd_disk_id            = "${module.sbd_disk.id}"
   reg_code               = "${var.reg_code}"
   reg_email              = "${var.reg_email}"
   reg_additional_modules = "${var.reg_additional_modules}"
   additional_repos       = "${var.additional_repos}"
+  ha_factory_repo        = "${var.ha_factory_repo}"
 }
