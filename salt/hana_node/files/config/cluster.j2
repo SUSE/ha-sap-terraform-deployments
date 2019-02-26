@@ -1,8 +1,6 @@
-{% import_yaml "/root/salt/hana_node/files/pillar/cluster.sls" as cluster_file %}
-{% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana_file %}
-
-{% set sid = hana_file.hana.nodes[0].sid.upper() %}
-{% set instance = hana_file.hana.nodes[0].instance | replace('"', '') %}
+{% set data = pillar.cluster.configure.template.parameters %}
+{% set sid = data.sid.upper() %}
+{% set instance = data.instance | replace('"', '') %}
 
 #
 # defaults
@@ -21,7 +19,7 @@ op_defaults \
 
 primitive rsc_ip_{{ sid }}_HDB{{ instance }} ocf:heartbeat:IPaddr2 \
     params \
-    ip="{{ cluster_file.cluster.virtual_ip }}" cidr_netmask="{{ cluster_file.cluster.virtual_ip_mask }}" \
+    ip="{{ data.virtual_ip }}" cidr_netmask="{{ data.virtual_ip_mask }}" \
     op start timeout="20" op stop timeout="20" \
     op monitor interval="10" timeout="20"
 
@@ -40,8 +38,8 @@ primitive rsc_SAPHana_{{ sid }}_HDB{{ instance }} ocf:suse:SAPHana \
     params \
     SID="{{ sid }}" \
     InstanceNumber="{{ instance }}" \
-    PREFER_SITE_TAKEOVER="{{ cluster_file.cluster.prefer_takeover }}" \
-    AUTOMATED_REGISTER="{{ cluster_file.cluster.auto_register }}" \
+    PREFER_SITE_TAKEOVER="{{ data.prefer_takeover }}" \
+    AUTOMATED_REGISTER="{{ data.auto_register }}" \
     DUPLICATE_PRIMARY_TIMEOUT="7200" \
     op start interval="0" timeout="3600" \
     op stop interval="0" timeout="3600" \
@@ -52,7 +50,7 @@ primitive rsc_SAPHana_{{ sid }}_HDB{{ instance }} ocf:suse:SAPHana \
 ms msl_SAPHana_{{ sid }}_HDB{{ instance }} rsc_SAPHana_{{ sid }}_HDB{{ instance }} \
     meta clone-max="2" clone-node-max="1" interleave="true"
 
-{% if cluster_file.cluster.platform == "azure" %}
+{% if data.platform == "azure" %}
 
 primitive rsc_nc_{{ sid }}_HDB{{ instance }} anything \
   params binfile="/usr/bin/nc" cmdline_options="-l -k 62503" \

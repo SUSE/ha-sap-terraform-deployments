@@ -1,5 +1,5 @@
-add-saphana-repo:
+ha-factory-repo:
   pkgrepo.managed:
-    - name: saphana
-    - baseurl: https://download.opensuse.org/repositories/home:xarbulu:sap-deployment/SLE_12_SP4/
+    - name: ha-factory
+    - baseurl: {{ grains['ha_factory_repo'] }}
     - gpgautoimport: True
