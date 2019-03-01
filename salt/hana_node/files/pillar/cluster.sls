@@ -16,11 +16,11 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /root/salt/hana_node/files/config/cluster.j2
+      source: /srv/salt/hana/templates/performance_optimized.j2
       parameters:
         sid: prd
         instance: "00"
-        virtual_ip: 192.168.106.50
+        virtual_ip: 192.168.107.50
         virtual_ip_mask: 255.255.255.0
         platform: libvirt'
         prefer_takeover: true
