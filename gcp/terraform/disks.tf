@@ -10,7 +10,7 @@ resource "google_compute_disk" "node_data" {
   count = "2"
   name  = "${terraform.workspace}-${var.name}-data-${count.index}"
   type  = "pd-standard"
-  size  = "1500"
+  size  = "${var.init_type == "all" ? 1500 : 50}"
   zone  = "${element(data.google_compute_zones.available.names, count.index)}"
 }
 
@@ -18,7 +18,7 @@ resource "google_compute_disk" "backup" {
   count = "2"
   name  = "${terraform.workspace}-${var.name}-backup-${count.index}"
   type  = "pd-standard"
-  size  = "500"
+  size  = "${var.init_type == "all" ? 500 : 10}"
   zone  = "${element(data.google_compute_zones.available.names, count.index)}"
 }
 
