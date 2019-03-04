@@ -45,6 +45,9 @@ sap_hana_sid = "HA0"
 # The default value for the <sid>adm user ID is 900 to avoid user created groups conflicting with SAP HANA.
 sap_hana_sidadm_uid = "900"
 
+# Overrides the backup volume size (2x machine memory size) and sets the size to the number of GB specified.
+sap_hana_backup_size = 500
+
 # GCP bucket with SLES images
 images_path_bucket = "sles-images"
 sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"

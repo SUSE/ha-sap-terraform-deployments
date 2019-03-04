@@ -40,6 +40,7 @@ variable "sap_hana_deployment_bucket" {}
 variable "sap_hana_sidadm_uid" {}
 variable "sap_hana_sapsys_gid" {}
 variable "sap_hana_sid" {}
+variable "sap_hana_backup_size" {}
 
 variable "images_path_bucket" {}
 variable "sles4sap_os_image_file" {}

@@ -101,6 +101,8 @@ These are the relevant files and what each provides:
 
 - The `sap_hana_deployment_bucket` variable must contain the name of the Google Storage bucket with the HANA installation files.
 
+- The `sap_hana_backup_size` variable set the size of the SAP HANA backup partition.
+
 - The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 
 - The `sles4sap_os_image_file` variable must contain the name of the SLES4SAP image.

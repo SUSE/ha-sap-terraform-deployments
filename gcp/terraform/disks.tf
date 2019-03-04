@@ -18,7 +18,7 @@ resource "google_compute_disk" "backup" {
   count = "2"
   name  = "${terraform.workspace}-${var.name}-backup-${count.index}"
   type  = "pd-standard"
-  size  = "${var.init_type == "all" ? 500 : 10}"
+  size  = "${var.init_type == "all" ? var.sap_hana_backup_size : 10}"
   zone  = "${element(data.google_compute_zones.available.names, count.index)}"
 }
 
