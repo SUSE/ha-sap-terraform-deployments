@@ -46,7 +46,7 @@ sap_hana_sid = "HA0"
 sap_hana_sidadm_uid = "900"
 
 # Overrides the backup volume size (2x machine memory size) and sets the size to the number of GB specified.
-sap_hana_backup_size = 500
+sap_hana_backup_size = 200
 
 # GCP bucket with SLES images
 images_path_bucket = "sles-images"
