@@ -5,9 +5,6 @@ include:
 {% endif %}
   - default.repos
   - default.pkgs
-  {% if grains['ntp_server'] != ''%}
-  - default.ntp
-  {% endif %}
 
 timezone_package:
   pkg.installed:
