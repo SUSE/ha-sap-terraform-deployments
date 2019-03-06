@@ -43,5 +43,5 @@ module "hana_node" {
   reg_email              = "${var.reg_email}"
   reg_additional_modules = "${var.reg_additional_modules}"
   additional_repos       = "${var.additional_repos}"
-  ha_factory_repo        = "${var.ha_factory_repo}"
+  ha_sap_deployment_repo        = "${var.ha_sap_deployment_repo}"
 }

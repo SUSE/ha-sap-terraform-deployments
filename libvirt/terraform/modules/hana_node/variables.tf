@@ -29,7 +29,7 @@ variable "additional_repos" {
   default     = {}
 }
 
-variable "ha_factory_repo" {
+variable "ha_sap_deployment_repo" {
   description = "Repository url used to install install HA/SAP deployment packages"
   type        = "string"
 }
