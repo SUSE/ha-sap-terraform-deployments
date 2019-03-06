@@ -1,17 +1,5 @@
 habootstrap-formula:
   pkg.installed:
-    - fromrepo: saphana
+    - fromrepo: ha-factory
     - require:
-      - add-saphana-repo
-
-crmsh:
-  pkg.installed
-
-ha-cluster-bootstrap:
-  pkg.installed
-
-hawk2:
-  pkg.installed
-
-SAPHanaSR:
-  pkg.installed
+      - ha-factory-repo
