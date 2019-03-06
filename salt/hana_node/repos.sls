@@ -1,5 +1,5 @@
 ha-factory-repo:
   pkgrepo.managed:
     - name: ha-factory
-    - baseurl: {{ grains['ha_factory_repo'] }}
+    - baseurl: {{ grains['ha_sap_deployment_repo'] }}
     - gpgautoimport: True
