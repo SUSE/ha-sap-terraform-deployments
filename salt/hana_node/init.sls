@@ -1,5 +1,4 @@
 include:
-
 {% if grains['provider'] == 'aws' %}
   - hana_node.add_credentials
   - hana_node.iscsi_initiator
@@ -10,7 +9,6 @@ include:
   - hana_node.sap_inst
   - hana_node.hosts
 {% endif %}
-  - hana_node.repos
   - hana_node.mount
   {% if grains['cluster_ssh_pub'] != '' and grains['cluster_ssh_key'] != '' %}
   - hana_node.ssh

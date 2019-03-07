@@ -1,8 +1,7 @@
 base:
   'role:hana_node':
     - match: grain
-    - default
-    - hana_node
+    - iscsi_initiator
 
   'role:iscsi_srv':
     - match: grain
