@@ -5,20 +5,14 @@ python3-shaptools:
 {% endif %}
   pkg.installed:
     - fromrepo: saphana
-    - require:
-      - add-saphana-repo
 
 salt-saphana:
   pkg.installed:
     - fromrepo: saphana
-    - require:
-      - add-saphana-repo
 
 saphanabootstrap-formula:
   pkg.installed:
     - fromrepo: saphana
-    - require:
-      - add-saphana-repo
 
 {% if grains['test_usage'] is sameas false %}
 #required packages to install SAP HANA, maybe they are already installed in the
