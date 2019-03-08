@@ -8,18 +8,10 @@ while [[ ! -d "/root/salt/" ]];do
   sleep 5
 done
 
-if [[ ${qa_mode} == "true" ]]; then
-  if grep -q 'role: "iscsi_srv"' /tmp/grains; then
-    sh /root/salt/install-salt-minion.sh -r ${qa_reg_code}
-  elif [[ ! -e /usr/bin/salt-minion ]]; then
-    sh /root/salt/install-salt-minion.sh -d -r ${qa_reg_code}
-  fi
-else
-  if grep -q 'role: "iscsi_srv"' /tmp/grains; then
-    sh /root/salt/install-salt-minion.sh -r ${regcode}
-  elif [[ ! -e /usr/bin/salt-minion ]]; then
-    sh /root/salt/install-salt-minion.sh -d -r ${regcode}
-  fi
+if grep -q 'role: "iscsi_srv"' /tmp/grains; then
+  sh /root/salt/install-salt-minion.sh -r ${regcode}
+elif [[ ! -e /usr/bin/salt-minion ]]; then
+  sh /root/salt/install-salt-minion.sh -d -r ${regcode}
 fi
  
 mkdir -p /etc/salt; mv /tmp/grains /etc/salt/

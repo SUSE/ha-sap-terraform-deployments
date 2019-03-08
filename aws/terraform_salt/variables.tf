@@ -151,9 +151,3 @@ variable "qa_mode" {
   type        = "string"
   default     = "false"
 }
-
-variable "qa_reg_code" {
-  description = "registrating code to install the salt minion"
-  type        = "string"
-  default     = "empty"
-}

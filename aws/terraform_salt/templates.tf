@@ -5,7 +5,6 @@ data "template_file" "init_server" {
   template = "${file("init-server.tpl")}"
 
  vars {
-   qa_reg_code = "${var.qa_reg_code}"
    regcode     = "${var.reg_code}"
    qa_mode     = "${var.qa_mode}"
  }
