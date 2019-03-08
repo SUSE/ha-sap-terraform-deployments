@@ -2,11 +2,13 @@ cluster:
   name: 'hacluster'
   init: 'hana01'
   interface: 'eth1'
-  watchdog: /dev/watchdog
+  watchdog:
+    module: 'softdog'
+    device: '/dev/watchdog'
   sbd:
     device: '/dev/vdc'
   join_timer: '20'
-{% if grains['init_type'] != 'skip-hana' %}
+{% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     method: 'update'
     url: '/tmp/cluster.config'

@@ -14,9 +14,10 @@ module "hana_node" {
 
   grains = <<EOF
 
+provider: libvirt
 role: hana_node
-hana_disk_device: vdb
-sbd_disk_device: vdc
+hana_disk_device: /dev/vdb
+sbd_disk_device: /dev/vdc
 sap_inst_media: ${var.sap_inst_media}
 ntp_server: ${var.ntp_server}
 cluster_ssh_pub: ${var.cluster_ssh_pub}
