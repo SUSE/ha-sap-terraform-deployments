@@ -9,9 +9,9 @@ hana:
         root_user: 'root'
         root_password: ''
         system_user_password: 'ENTER_YOUR_PASSWORD'
+        sapadm_password: 'ENTER_YOUR_PASSWORD'
         extra_parameters:
           hostname: 'hana01'
-       sapadm_password: 'ENTER_YOUR_PASSWORD'
       primary:
         name: PRIMARY_SITE_NAME
         backup:
