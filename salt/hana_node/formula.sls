@@ -1,4 +1,4 @@
-{% if grains['qa_mode'] is sameas false %}
+{% if grains['qa_mode']|default(false) is sameas false %}
   {% set directory = 'files' %}
 {% else %}
   {% set directory = 'QA_templates' %}

@@ -4,13 +4,13 @@ cluster:
   init: 'ip-10-0-1-0'
   interface: 'eth0'
   unicast: True
-  watchdog: 
+  watchdog:
     module: softdog
     device: /dev/watchdog
   sbd:
     device: '/dev/sda'
   join_timer: '20'
-{% if grains['init_type'] != 'skip-hana' %}
+{% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     method: 'update'
     url: '/tmp/cluster.config'
@@ -23,4 +23,3 @@ cluster:
   platform: 'libvirt'
   prefer_takeover: 'true'
   auto_register: 'false'
-

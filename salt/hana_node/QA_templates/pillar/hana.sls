@@ -11,8 +11,6 @@ hana:
         root_password: ''
         system_user_password: 'Qwerty1234'
         sapadm_password: 'Qwerty1234'
-        extra_parameters:
-          hostname: 'ip-10-0-1-0'
       primary:
         name: PRIMARY_SITE_NAME
         backup:
@@ -36,8 +34,6 @@ hana:
         root_password: ''
         system_user_password: 'Qwerty1234'
         sapadm_password: 'Qwerty1234'
-        extra_parameters:
-          hostname: 'ip-10-0-1-1'
       secondary:
         name: SECONDARY_SITE_NAME
         remote_host: 'ip-10-0-1-0'
