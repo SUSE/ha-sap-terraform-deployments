@@ -66,10 +66,6 @@ host_ips = ["10.0.1.0", "10.0.1.1"]
 
 # QA variables
 
-# If informed, register the product using SUSEConnect
-# Mandatory to download salt-minion if it isn't include in the image
-#qa_reg_code = "xxxxxxxxxxxxxxxx"
-
 # Define if the deployement is using for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
