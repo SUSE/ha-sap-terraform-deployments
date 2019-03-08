@@ -1,3 +1,33 @@
+{% if grains['provider'] == 'libvirt' %}
+parted:
+  pkg.installed
+
+hana_partition:
+  cmd.run:
+    - name: /usr/sbin/parted -s {{grains['hana_disk_device']}} mklabel msdos && /usr/sbin/parted -s {{grains['hana_disk_device']}} mkpart primary ext2 1M 100% && sleep 1 && /sbin/mkfs.ext4 {{grains['hana_disk_device']}}1
+    - unless: ls {{grains['hana_disk_device']}}1
+    - require:
+      - pkg: parted
+
+hana_directory:
+  file.directory:
+    - name: /hana
+    - user: root
+    - mode: 755
+    - makedirs: True
+  mount.mounted:
+    - name: /hana
+    - device: {{grains['hana_disk_device']}}1
+    - fstype: ext4
+    - mkmnt: True
+    - persist: True
+    - opts:
+      - defaults
+    - require:
+      - cmd: hana_partition
+
+{% else %}
+
 mklabel:
   module.run:
     - name: partition.mklabel
@@ -33,3 +63,5 @@ mount_hana_device:
     - opts: defaults
     - mkmnt: True
     - persist: True
+
+{% endif %}
