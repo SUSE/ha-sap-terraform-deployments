@@ -2,6 +2,7 @@ cluster:
   name: 'hacluster'
   init: 'ip-10-0-1-0'
   interface: 'eth0'
+  unicast: True
   watchdog:
     module: softdog
     device: /dev/watchdog
