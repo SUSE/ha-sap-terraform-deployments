@@ -55,6 +55,10 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 # example : host_ips = ["10.0.1.0", "10.0.1.1"]
 host_ips = ["10.0.1.0", "10.0.1.1"]
 
+# Repository url used to install install HA/SAP deployment packages (OS version must be ommited)"
+# Contains the salt formulas
+#ha_sap_deployment_repo = ""
+
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
