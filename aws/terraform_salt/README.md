@@ -87,6 +87,7 @@ iscsidev = "/dev/xvdd"
 cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 host_ips = ["10.0.1.0", "10.0.1.1"]
+ha_sap_deployment_repo: "ha_repository"
 reg_code = "<<REG_CODE>>"
 reg_email = "<<your email>>"
 reg_additional_modules = {
@@ -103,7 +104,7 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 -   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
 -   [https://github.com/krig/habootstrap-formula](https://github.com/krig/habootstrap-formula)
 
-As a good example, you can find the files used for QA in the folder provision/hana_node/files/pillar/QA_templates/ 
+As a good example, you can find the files used for QA in the folder provision/hana_node/files/pillar/QA_templates/
 These files **aren't ready for production deployment**, be careful to create your own files.
 
 ### QA usage
@@ -138,7 +139,7 @@ To define the custom AMI in terraform, you should use the terraform.tfvars file:
 iscsi_srv = {
     "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
 }
- 
+
  # Custom AMI for nodes
 sles4sap = {
     "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
@@ -203,7 +204,7 @@ All this means that basically the default command `terraform apply` and be also 
 ### Variables
 
  In the file [terraform.tfvars](terraform.tfvars) there are a number of variables that control what is deployed. Some of these variables are:
- 
+
  * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
  * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
  * **aws_region**: AWS region where to deploy the configuration.
@@ -217,6 +218,7 @@ All this means that basically the default command `terraform apply` and be also 
  * **iscsidev**: device used by the iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
+* **ha_sap_deployment_repo**: Repository with HA packages
 * **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: Email to be associated with the system registration. This parameter is optional.
 * **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
@@ -228,13 +230,13 @@ All this means that basically the default command `terraform apply` and be also 
           sle-module-server-applications/15/x86_64
           sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
           sle-module-sap-applications/15/x86_64
- 
+
  For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing    Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/              cha_register_sle.html) guide.
 
 * **additional_repos**: Additional repos to add to the guest machines.
  * **additional_packages**: Additional packages to add to the guest machines.
  * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
- 
+
  Specific QA variables
  * **qa_reg_code**: Registrating code to install the salt minion.
  * **qa_mode**: If set to true, it disables all extra packages that do not come from the image (for example, we use `true`to perform the Build Validation of a new AWS Public Cloud image).
@@ -377,7 +379,7 @@ Then, create a `role-policy.json` file with the following content:
          "Action":[
             "s3:GetBucketLocation",
             "s3:GetObject",
-            "s3:ListBucket" 
+            "s3:ListBucket"
          ],
          "Resource":[
             "arn:aws:s3:::instmasters",
@@ -404,7 +406,7 @@ Once the files have been created, run the following commands to create the `vmim
 
 ```
 aws iam create-role --role-name vmimport --assume-role-policy-document file://trust-policy.json
-aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document file://role-policy.json 
+aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document file://role-policy.json
 ```
 
 Check the output of the commands for any errors.
@@ -442,21 +444,21 @@ The output of the `aws ec2 import-image` should look like this:
 
 ```
 {
-    "Status": "active", 
-    "LicenseType": "BYOL", 
-    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-    "Progress": "2", 
+    "Status": "active",
+    "LicenseType": "BYOL",
+    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+    "Progress": "2",
     "SnapshotDetails": [
         {
             "UserBucket": {
-                "S3Bucket": "instmasters", 
+                "S3Bucket": "instmasters",
                 "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-            }, 
-            "DiskImageSize": 0.0, 
+            },
+            "DiskImageSize": 0.0,
             "Format": "RAW"
         }
-    ], 
-    "StatusMessage": "pending", 
+    ],
+    "StatusMessage": "pending",
     "ImportTaskId": "import-ami-0e6e37788ae2a340b"
 }
 ```
@@ -468,22 +470,22 @@ $ aws ec2 describe-import-image-tasks --import-task-ids import-ami-0e6e37788ae2a
 {
     "ImportImageTasks": [
         {
-            "Status": "active", 
-            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-            "Progress": "28", 
+            "Status": "active",
+            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+            "Progress": "28",
             "SnapshotDetails": [
                 {
-                    "Status": "active", 
+                    "Status": "active",
                     "UserBucket": {
-                        "S3Bucket": "instmasters", 
+                        "S3Bucket": "instmasters",
                         "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-                    }, 
-                    "DiskImageSize": 10737418240.0, 
-                    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+                    },
+                    "DiskImageSize": 10737418240.0,
+                    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
                     "Format": "RAW"
                 }
-            ], 
-            "StatusMessage": "converting", 
+            ],
+            "StatusMessage": "converting",
             "ImportTaskId": "import-ami-0e6e37788ae2a340b"
         }
     ]
@@ -524,18 +526,18 @@ The output of this command should look like this:
 ```
 {
     "SnapshotTaskDetail": {
-        "Status": "active", 
-        "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-        "Format": "RAW", 
-        "DiskImageSize": 0.0, 
-        "Progress": "3", 
+        "Status": "active",
+        "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+        "Format": "RAW",
+        "DiskImageSize": 0.0,
+        "Progress": "3",
         "UserBucket": {
-            "S3Bucket": "instmasters", 
+            "S3Bucket": "instmasters",
             "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-        }, 
+        },
         "StatusMessage": "pending"
-    }, 
-    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+    },
+    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
     "ImportTaskId": "import-snap-0fbbe899f2fd4bbdc"
 }
 ```
@@ -555,17 +557,17 @@ When the process is completed, the `describe-import-snapshot-tasks` command will
     "ImportSnapshotTasks": [
         {
             "SnapshotTaskDetail": {
-                "Status": "completed", 
-                "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-                "Format": "RAW", 
-                "DiskImageSize": 10737418240.0, 
-                "SnapshotId": "snap-0a369f803b17037bb", 
+                "Status": "completed",
+                "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+                "Format": "RAW",
+                "DiskImageSize": 10737418240.0,
+                "SnapshotId": "snap-0a369f803b17037bb",
                 "UserBucket": {
-                    "S3Bucket": "instmasters", 
+                    "S3Bucket": "instmasters",
                     "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
                 }
-            }, 
-            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+            },
+            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
             "ImportTaskId": "import-snap-0fbbe899f2fd4bbdc"
         }
     ]

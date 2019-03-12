@@ -144,6 +144,11 @@ variable "host_ips" {
   type        = "list"
 }
 
+variable "ha_sap_deployment_repo" {
+  description = "Repository url used to install install HA/SAP deployment packages (OS version must be ommited)"
+  type        = "string"
+}
+
 # Specific QA variables
 
 variable "qa_mode" {

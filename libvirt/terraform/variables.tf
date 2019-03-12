@@ -28,21 +28,6 @@ variable "host_ips" {
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 
-variable "ntp_server" {
-  description = "ntp server address. Let empty to not setup any ntp server"
-  default     = ""
-}
-
-variable "cluster_ssh_pub" {
-  description = "path to a custom ssh public key to upload to the hana nodes"
-  default     = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
-}
-
-variable "cluster_ssh_key" {
-  description = "path to a custom ssh private key to upload to the hana nodes"
-  default     = "salt://hana_node/files/sshkeys/cluster.id_rsa"
-}
-
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -71,4 +56,9 @@ variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
   type        = "map"
   default     = {}
+}
+
+variable "ha_sap_deployment_repo" {
+  description = "Repository url used to install install HA/SAP deployment packages (OS version must be ommited)"
+  type        = "string"
 }

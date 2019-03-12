@@ -46,6 +46,7 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
 additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
+ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 
 partitions:
   1:
@@ -122,6 +123,7 @@ resource "aws_instance" "clusternodes" {
     content = <<EOF
 provider: "aws"
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
@@ -136,6 +138,7 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
 additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
+ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
     destination = "/tmp/grains"
