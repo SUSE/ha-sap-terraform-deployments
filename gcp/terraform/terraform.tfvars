@@ -12,8 +12,12 @@ ip_cidr_range = "10.0.0.0/24"
 # Virtual IP for HANA instances
 sap_vip = "10.0.0.250"
 
+# IP for iSCSI server
+iscsi_ip = "10.0.0.253"
+
 # Type of VM (vCPUs and RAM)
 machine_type = "n1-highmem-8"
+machine_type_iscsi_server = "custom-1-2048"
 
 # SSH public key file
 ssh_pub_key_file = "my-public.key"
@@ -41,6 +45,7 @@ sap_hana_sidadm_uid = "900"
 # GCP bucket with SLES images
 images_path_bucket = "sles-images"
 sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
+sles_os_image_file = "OS-Image-File-for-SLES-for-GCP.tar.gz"
 
 # Specifies the URL location of a script to run after the deployment is complete.
 # The script should be hosted on a web server or in a GCS bucket.
@@ -48,3 +53,6 @@ post_deployment_script = ""
 
 # Variable for init-nodes.tpl script. Can be all, skip-hana or skip-all
 init_type = "all"
+
+# If set to false, will use iSCSI for fencing on SBD
+use_gcp_stonith = "false"

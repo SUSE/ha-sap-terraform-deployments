@@ -10,7 +10,10 @@ The documentation of terraform and the cloud providers included in this reposito
 
 Also check the [Terraform Workspaces workflow](workspaces-workflow.md) document for a guide on how to use Terraform Workspaces when using shared remote Terraform state files in major public cloud providers.
 
+## Deploying with Salt
+
+In order to execute the deployment with salt follow the instructions in [README](pillar_examples/README.md)
+
 ## Contributing
 
 If you are interested in contributing to this project, fork this repository, clone your fork, write your code and send a pull request.
-

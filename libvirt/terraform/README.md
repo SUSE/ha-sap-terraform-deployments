@@ -67,8 +67,7 @@ additional_repos = {
     "repo_1" = "url_repo1"
     "repo_1" = "url_repo1"
 }
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/my_key.id_rsa.pub"
-cluster_ssh_key = "salt://hana_node/files/sshkeys/my_key.id_rsa"
+ha_sap_deployment_repo = "repo_to_ha_packages"
 
 # Optional SUSE Customer Center Registration parameters
 reg_code = "<<REG_CODE>>"
@@ -102,24 +101,23 @@ with the needed package and try again.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
-- **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
-- **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
+- **ha_sap_deployment_repo**: Repository url used to install install HA/SAP deployment packages
 - **additional_repos**: Additional repos to add to the guest machines.
 - **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 - **reg_email**: Email to be associated with the system registration. This parameter is optional.
 - **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is the _module name_ and the value is the _registration code_. If the _registration code_ is not needed, set an empty string as value. The module format must follow SUSEConnect convention:
     - `<module_name>/<product_version>/<architecture>`
     - *Example:* Suggested modules for SLES for SAP 15
-          
-          
+
+
           sle-module-basesystem/15/x86_64
           sle-module-desktop-applications/15/x86_64
           sle-module-server-applications/15/x86_64
-          sle-ha/15/x86_64 (use the same regcode as SLES for SAP) 
+          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
           sle-module-sap-applications/15/x86_64
 
 For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
-          
+
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
 
