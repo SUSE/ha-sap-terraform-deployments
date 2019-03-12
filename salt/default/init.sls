@@ -1,5 +1,5 @@
 include:
-{% if grains['provider'] != 'aws' %}
+{% if grains['provider'] == 'libvirt' %}
   - default.minimal
 {% endif %}
 {% if grains['os_family'] == 'Suse' %}
@@ -7,10 +7,7 @@ include:
 {% endif %}
   - default.repos
   - default.pkgs
-{% if grains['provider'] != 'aws' %}
-{% if grains['ntp_server'] != ''%}
-  - default.ntp
-{% endif %}
+{% if grains['provider'] == 'libvirt' %}
   - default.timezone
   - default.auth_keys
 refresh_repos:

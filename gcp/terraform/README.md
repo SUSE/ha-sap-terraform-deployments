@@ -57,6 +57,8 @@ These are the relevant files and what each provides:
  
  - [instances.tf](instances.tf): definition of the GCP instances to create on deployment.
  
+ - [init-iscsi.tpl](init-iscsi.tpl): template code for the initialization script for the iSCSI server.
+
  - [network.tf](network.tf): definition of network resources used by the infrastructure and the firewall rules.
  
  - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
@@ -68,6 +70,8 @@ These are the relevant files and what each provides:
  - [remote_state.tf](remote_state.tf): definition of the backend to store the Terraform state file remotely. The bucket was created with this [Terraform configuration](create_remote_state/).  Make sure the bucket names match in both configurations.
 
  - [startup.sh](startup.sh): script to start up the instances.
+
+ - [templates.tf](templates.tf): definition of the templates used.
 
  - [variables.tf](variables.tf): definition of variables used in the configuration. 
  
@@ -83,7 +87,7 @@ These are the relevant files and what each provides:
 
 - The `sap_vip` variable must contain the virtual IP address for the HANA instances.
 
-- The `machine_type` variable must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types).
+- The `machine_type` variable must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types) for the SAP HANA nodes.
 
 - The `gcp_credentials_file` variable must contain the path to the JSON file with the GCP credentials created above.
 
@@ -97,11 +101,19 @@ These are the relevant files and what each provides:
 
 - The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 
-- The `sles4sap_os_image_file` variable must contain the name of the SLES image.
+- The `sles4sap_os_image_file` variable must contain the name of the SLES4SAP image.
 
 - The `post_deployment_script` variable specifies the URL location of a script to run after the deployment is complete. This script should be hosted on a web server or in a GCS bucket.
 
 - The `init_type` variable controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster). Defaults to `all`.
+
+- The `machine_type_iscsi_server` variable must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types) for the iSCSI server used for SBD stonith. Ignored if `use_gcp_stonith` is set to `"true"`.
+
+- The `sles_os_image_file` variable the name of the SLES image for the iSCSI server used for SBD stonith. Ignored if `use_gcp_stonith` is set to `"true"`.
+
+- The `iscsi_ip` variable must contain the IP address for the iSCSI server. Ignored if `use_gcp_stonith` is set to `"true"`.
+
+- The `use_gcp_stonith` variable specifies whether GCP-stonith must be used instead of SBD stonith.  Set to `"true"` (string, not boolean) if you want it.
 
 2. Deploy:
 

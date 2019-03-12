@@ -1,8 +1,6 @@
 iscsi-formula:
   pkg.installed:
-    - fromrepo: saphana
-    - require:
-      - add-saphana-repo
+    - fromrepo: ha-factory
 
 move-iscsi-folder:
   cmd.run:

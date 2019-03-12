@@ -10,10 +10,9 @@ include:
   - hana_node.hosts
 {% endif %}
   - hana_node.mount
-  {% if grains['cluster_ssh_pub'] != '' and grains['cluster_ssh_key'] != '' %}
+  {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
   - hana_node.ssh
   {% endif %}
   - hana_node.hana_packages
   - hana_node.cluster_packages
   - hana_node.formula
-  - hana_node.cluster_config

@@ -1,4 +1,4 @@
-{% if grains['qa_mode'] is sameas true %}
+{% if grains['qa_mode']|default(false) is sameas true %}
 /etc/target/saveconfig.json:
   file.managed:
     - source: salt://iscsi_srv/files/qa_conf/saveconfig.json
