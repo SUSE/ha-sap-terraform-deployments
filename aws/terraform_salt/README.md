@@ -40,7 +40,7 @@ These are the relevant files and what each provides:
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
-- [remote-state.tf](remote-state.tf): definition of the backend to [store the Terraform state file remotely](create_remote_state).
+- [remote-state.sample](remote-state.sample): sample file for the definition of the backend to [store the Terraform state file remotely](create_remote_state).
 
 - [terraform.tfvars](terraform.tfvars): file containing initialization values for variables used throughout the configuration. **Edit this file with your values before use**.
 

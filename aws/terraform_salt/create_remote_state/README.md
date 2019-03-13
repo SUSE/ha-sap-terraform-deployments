@@ -1,3 +1,4 @@
+
 ## Overview
 
 ### Store State Remotely in S3
@@ -28,13 +29,13 @@ It should output a XML with this content:
 2. Optionally edit the `dynamodb_name` variable in the [vars.tf](vars.tf) file.
 3. Run `terraform init`
 4. Run `terraform plan` to check whether the following command will succeed:
-5. Run `terraform apply`
-6. Add a [remote-state.tf](../remote-state.tf) file to your proyect.  Make sure that the values for the `bucket`, `dynamodb_table` and `region` are the same as the used in the [vars.tf](vars.tf) file.
-7. In your proyect directory, run the command `terraform init` to reset the state file.
-8. Run `terraform plan` to check whether the following command will succeed:
-9. Run `terraform apply`
-10. Check whether you can run `terraform destroy` from another directory or machine.
+5. Rename the [remote-state.sample](../remote-state.sample) file to remote-state.tf inside your project.  Make sure that the values for the `bucket`, `dynamodb_table` and `region` are the same as the used in the [vars.tf](vars.tf) file.
+6. In your project directory, run the command `terraform init` to reset the state file.
+7. Run `terraform plan` to check whether the following command will succeed:
+8. Run `terraform apply`
+9. Check whether you can run `terraform destroy` from another directory or machine.
 
 ## Resources
 - https://www.terraform.io/docs/backends/types/s3.html
 - https://medium.com/@jessgreb01/how-to-terraform-locking-state-in-s3-2dc9a5665cb6
+
