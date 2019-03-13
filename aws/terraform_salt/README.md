@@ -18,7 +18,7 @@ Once the infrastructure created by Terraform, the servers are provisioned with S
 
  ## Provisioning by Salt
  The cluster and HANA installation is done using Salt Formulas.
- To customize this provisioning, you have to change the configuration into the pillar files (cluster.sls and hana.sls) located in provision/hana_node/files/pillar/.
+ To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the pillar_examples folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
 ## Relevant files
 
@@ -55,7 +55,7 @@ mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_nod
 ```
 The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars) file.
 
-To deploy the cluster only the parameters of three files should be changed:  [terraform.tfvars](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/aws/terraform_salt/terraform.tfvars),  [hana.sls](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/salt/hana_node/files/pillar/hana.sls)  and  [cluster.sls](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/salt/hana_node/files/pillar/hana.sls). Configure these files according the wanted cluster type.
+To deploy the cluster only the parameters of three files should be changed:  [terraform.tfvars](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/aws/terraform_salt/terraform.tfvars),  hana.sls and cluster.sls. Configure these files according the wanted cluster type.
 
 ### The terraform.tfvars file
 The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here an example:
@@ -102,19 +102,15 @@ reg_additional_modules = {
 Find more information about the hana and cluster formulas in (check the pillar.example files):
 
 -   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
--   [https://github.com/krig/habootstrap-formula](https://github.com/krig/habootstrap-formula)
+-   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
 
-As a good example, you can find the files used for QA in the folder provision/hana_node/files/pillar/QA_templates/
-These files **aren't ready for production deployment**, be careful to create your own files.
+As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
+These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
 ### QA usage
-You may have noticed other variables as *qa_reg_code* or *qa_mode*, this project is also used for QA testing.
-
-**qa_reg_code** is used for register the system with a special QA registration code. It is mainly used to download the salt-minion package.
+You may have noticed the variable *qa_mode*, this project is also used for QA testing.
 
 **qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
-
-Don't forget to set these variables if QA is expected.
 
 ### Deployment execution
 And then, after customizing the configuration files, run from your working directory the following commands:
@@ -128,8 +124,7 @@ terraform apply
 **Important**: when not using remote terraform states, the `terraform init` command will fail unless the file [remote-states.tf](remote-states.tf) is removed before initialization. When using remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
 
 This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
- You can use a different AMI for the iSCSI server by editing the variable `iscsi_srv`.
- AMI used for iSCSI server doesn't matter as long as it works, it's just a support services server.
+ You can use a different AMI for the iSCSI server by editing the variable `iscsi_srv`, it must be at least a SLES 15 version for iSCSI server. Previous versions aren't compatible with the iSCSI formula.
 
 If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [variables.tf](variables.tf) file for your region of choice.
 
@@ -237,8 +232,7 @@ All this means that basically the default command `terraform apply` and be also 
  * **additional_packages**: Additional packages to add to the guest machines.
  * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
- Specific QA variables
- * **qa_reg_code**: Registrating code to install the salt minion.
+ Specific QA variable
  * **qa_mode**: If set to true, it disables all extra packages that do not come from the image (for example, we use `true`to perform the Build Validation of a new AWS Public Cloud image).
 
 ## Configure API access to AWS
@@ -597,4 +591,4 @@ Examples of the JSON files used in this document have been added to this repo.
 * Investigate if it is possible to upload the images directly with terraform
 * Check AWS documentation for Hana setup and add required resources. Current configuration works for build validation of new images, but lacks certain resources that are probably needed (Load Balancer, for example) for a complete setup of Hana in AWS.
 * Find if it's possible to create more than one device with iscsi-formula.
-* Improvement for set all the parameters only in one file (terraform.tfvars) instead hana.sls and cluster.sls pillar files.
+* Add SLES12 compatibility for iscsi-formula.

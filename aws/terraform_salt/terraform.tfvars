@@ -74,4 +74,4 @@ host_ips = ["10.0.1.0", "10.0.1.1"]
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false
-#qa_mode = "false"
+#qa_mode = "true"
