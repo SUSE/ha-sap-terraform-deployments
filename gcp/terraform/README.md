@@ -91,13 +91,17 @@ These are the relevant files and what each provides:
 
 - The `gcp_credentials_file` variable must contain the path to the JSON file with the GCP credentials created above.
 
-- The `ssh_pub_key_file` variable must contain the path to your SSH public key.
+- The `ssh_key_file` variable must contain the path to your SSH private key.  This is used by the provisioner.
+
+- The `ssh_pub_key_file` variable must contain the path to your SSH public key.  This is used to access the instances.
 
 - The `region` variable must contain the name of the desired region.
 
 - The `sap_deployment_debug` variable must be set to `Yes` if you want to debug the deployment.
 
 - The `sap_hana_deployment_bucket` variable must contain the name of the Google Storage bucket with the HANA installation files.
+
+- The `sap_hana_backup_size` variable set the size of the SAP HANA backup partition.
 
 - The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 

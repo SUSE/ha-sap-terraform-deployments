@@ -29,10 +29,13 @@ else
   readonly DEPLOY_URL="https://storage.googleapis.com/sapdeploy/dm-templates"
 fi
 
+# Wait for provisioner
+while [ ! -d /root/provision ] ; do sleep 5 ; done
+
 ## Import includes
-source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_main.sh)"
-source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_hdb.sh)"
-source /dev/stdin <<< "$(curl -s ${DEPLOY_URL}/lib/sap_lib_ha.sh | sed -r 's/(AUTOMATED_REGISTER)=\"true\"/\1=\"false\"/')"
+source /root/provision/sap_lib_main.sh
+source /root/provision/sap_lib_hdb.sh
+source /root/provision/sap_lib_ha.sh
 
 ### Base GCP and OS Configuration
 main::get_os_version
@@ -133,7 +136,6 @@ if [[ $HOSTNAME =~ node-0$ ]] ; then
 	ha::ready
 	if [[ ${VM_METADATA[use_gcp_stonith]} != true ]] ; then
 		ha-cluster-init -y -w /dev/watchdog -s ${SBDDEV} sbd
-		#echo SBD_WATCHDOG=true >> /etc/sysconfig/sbd
 		systemctl enable sbd
 	fi
 	ha::config_pacemaker_primary

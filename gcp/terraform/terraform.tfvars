@@ -19,6 +19,9 @@ iscsi_ip = "10.0.0.253"
 machine_type = "n1-highmem-8"
 machine_type_iscsi_server = "custom-1-2048"
 
+# SSH private key file
+ssh_key_file = "my-private.key"
+
 # SSH public key file
 ssh_pub_key_file = "my-public.key"
 
@@ -41,6 +44,9 @@ sap_hana_sid = "HA0"
 
 # The default value for the <sid>adm user ID is 900 to avoid user created groups conflicting with SAP HANA.
 sap_hana_sidadm_uid = "900"
+
+# Overrides the backup volume size (2x machine memory size) and sets the size to the number of GB specified.
+sap_hana_backup_size = 200
 
 # GCP bucket with SLES images
 images_path_bucket = "sles-images"
