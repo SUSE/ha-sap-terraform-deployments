@@ -1,9 +1,10 @@
 download_files:
   cmd.run:
     - name: "aws s3 sync {{ grains['hana_inst_master'] }}
-      {{ grains['hana_inst_folder'] }}"
+      {{ grains['hana_inst_folder'] }} --only-show-errors"
     - onlyif: "aws s3 sync --dryrun {{ grains['hana_inst_master'] }}
       {{ grains['hana_inst_folder'] }} | grep download"
+    - output_loglevel: quiet
 
 {{ grains['hana_inst_folder'] }}:
   file.directory:

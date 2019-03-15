@@ -5,6 +5,7 @@ include:
 {% if grains['os_family'] == 'Suse' %}
   - default.registration
 {% endif %}
+  - default.hostname
   - default.repos
   - default.pkgs
 {% if grains['provider'] == 'libvirt' %}

@@ -57,6 +57,11 @@ variable "aws_region" {
   type = "string"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = "string"
+}
+
 variable "public_key" {
   type = "string"
 }

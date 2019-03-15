@@ -88,7 +88,7 @@ resource "aws_instance" "clusternodes" {
   key_name                    = "${aws_key_pair.mykey.key_name}"
   associate_public_ip_address = true
   subnet_id                   = "${aws_subnet.local.id}"
-  private_ip                  = "10.0.1.${count.index}"
+  private_ip                  = "${element(var.host_ips, count.index)}"
   security_groups             = ["${aws_security_group.secgroup.id}"]
   user_data                   = "${data.template_file.init_server.rendered}"
 
@@ -123,6 +123,8 @@ resource "aws_instance" "clusternodes" {
     content = <<EOF
 provider: "aws"
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
+domain: "tf.local"
 sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}

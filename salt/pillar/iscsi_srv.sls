@@ -14,7 +14,7 @@ iscsi:
             emulate_write_cache: 0
             queue_depth: 64
             unmap_granularity: 0
-          dev: "/dev/xvdd1"
+          dev: "{{ grains['iscsidev'] }}1"
           name: "sda"
           plugin: "block"
         targets:
