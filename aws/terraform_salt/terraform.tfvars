@@ -28,6 +28,9 @@ private_key_location = "/path/to/your/private/ssh/key"
 # aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
 aws_credentials = "~/.aws/credentials"
 
+# Hostname, without the domain part
+name = "hana"
+
 # S3 bucket where HANA installation master is located
 hana_inst_master = "s3://path/to/your/hana/installation/master"
 

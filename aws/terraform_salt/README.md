@@ -1,4 +1,5 @@
 
+
 ## AWS Public Cloud deployment with terraform and Salt
 
 The terraform configuration files in this directory can be used to create the infrastructure required to perform the installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
@@ -79,6 +80,7 @@ aws_region = "eu-central-1"
 public_key = "ADD_YOUR_SSH_PUBLIC_KEY_HERE"
 private_key_location = "/path/to/your/private/ssh/key"
 aws_credentials = "~/.aws/credentials"
+name = "hana"
 hana_inst_master = "s3://path/to/your/hana/installation/master"
 hana_inst_folder = "/root/sap_inst/"
 hana_disk_device = "/dev/xvdd"
@@ -206,6 +208,7 @@ All this means that basically the default command `terraform apply` and be also 
  * **public_key**: SSH public key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
  * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
  * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
+ * **name**: hostname for the hana node without the domain part.
  * **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
  * **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
  * **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
@@ -214,9 +217,9 @@ All this means that basically the default command `terraform apply` and be also 
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA packages
-* **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
-* **reg_email**: Email to be associated with the system registration. This parameter is optional.
-* **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
+* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
+* **reg_email**: email to be associated with the system registration. This parameter is optional.
+* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
     - `<module_name>/<product_version>/<architecture>`
     - *Example:* Suggested modules for SLES for SAP 15
 
