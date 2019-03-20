@@ -13,12 +13,7 @@ aws_region = "eu-central-1"
 public_key = "ADD_YOUR_SSH_PUBLIC_KEY_HERE"
 
 # Private SSH Key location
-private_key_location = "/path/to/your/private/ssh/key"
-
-# Custom AMI for iscsi_srv
-#iscsi_srv = {
-#    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-#}
+private_key_location = "/home/juadk/.ssh/id_rsa_tf"
 
 # Custom AMI for nodes
 #sles4sap = {

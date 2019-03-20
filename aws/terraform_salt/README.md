@@ -1,5 +1,4 @@
 
-
 ## AWS Public Cloud deployment with terraform and Salt
 
 The terraform configuration files in this directory can be used to create the infrastructure required to perform the installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
@@ -19,7 +18,7 @@ Once the infrastructure created by Terraform, the servers are provisioned with S
 
  ## Provisioning by Salt
  The cluster and HANA installation is done using Salt Formulas.
- To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the pillar_examples folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
+ To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
 ## Relevant files
 
@@ -56,22 +55,10 @@ mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_nod
 ```
 The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars) file.
 
-To deploy the cluster only the parameters of three files should be changed:  [terraform.tfvars](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/aws/terraform_salt/terraform.tfvars),  hana.sls and cluster.sls. Configure these files according the wanted cluster type.
+To deploy the cluster only the parameters of three files should be changed:  [terraform.tfvars](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/aws/terraform_salt/terraform.tfvars),  hana.sls and cluster.sls. Configure these files according to the wanted cluster type.
 
 ### The terraform.tfvars file
-The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here an example:
-
-Following that edit in the [terraform.tfvars](terraform.tfvars) file:
-
-* The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
-* The location of the private key associated with that public key.
-* The path to an S3 bucket where the SAP installation master is located.
-* The folder (for cluster nodes) where HANA installation master will be downloaded from S3.
-* The device used by the cluster nodes where HANA will be installed.
-* The deployment target, you can just install HANA or cluster.
-* The registration code if you want to register your system, mandatory to download salt-minion if it isn't included in the image.
-
-This is a terraform.tfvars example file:
+The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here is an example:
 
 ```bash
 instancetype = "m4.2xlarge"
@@ -99,6 +86,16 @@ reg_additional_modules = {
 }
  ```
 
+Following that edit in the [terraform.tfvars](terraform.tfvars) file:
+
+* The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
+* The location of the private key associated with that public key.
+* The path to an S3 bucket where the SAP installation master is located.
+* The folder (for cluster nodes) where HANA installation master will be downloaded from S3.
+* The device used by the cluster nodes where HANA will be installed.
+* The deployment target (init_type variable), you can just install HANA or cluster.
+* The registration code if you want to register your system, mandatory to download salt-minion if it isn't included in the image.
+
 ### The pillar files hana.sls and cluster.sls
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
@@ -123,25 +120,18 @@ terraform plan
 terraform apply
 ```
 
-**Important**: when not using remote terraform states, the `terraform init` command will fail unless the file [remote-states.tf](remote-states.tf) is removed before initialization. When using remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
+**Important**: If you want to use remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
 
 This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
- You can use a different AMI for the iSCSI server by editing the variable `iscsi_srv`, it must be at least a SLES 15 version for iSCSI server. Previous versions aren't compatible with the iSCSI formula.
 
-If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [variables.tf](variables.tf) file for your region of choice.
+If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [terraform.tfvars](terraform.tfvars) file for your region of choice.
 
-To define the custom AMI in terraform, you should use the terraform.tfvars file:
+To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars) file:
 ```
-# Custom AMI for iscsi_srv
-iscsi_srv = {
-    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-}
-
  # Custom AMI for nodes
 sles4sap = {
     "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
 }
-
 ```
 
 And run the commands:
@@ -229,14 +219,14 @@ All this means that basically the default command `terraform apply` and be also 
           sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
           sle-module-sap-applications/15/x86_64
 
- For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing    Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/              cha_register_sle.html) guide.
+ For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
 * **additional_repos**: Additional repos to add to the guest machines.
  * **additional_packages**: Additional packages to add to the guest machines.
  * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
  Specific QA variable
- * **qa_mode**: If set to true, it disables all extra packages that do not come from the image (for example, we use `true`to perform the Build Validation of a new AWS Public Cloud image).
+* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
 
 ## Configure API access to AWS
 
@@ -304,10 +294,10 @@ There are some fixed values used throughout the terraform configuration:
 
 - The private IP address of the iSCSI server is set to 10.0.0.254.
 - The cluster nodes are created with private IPs starting with 10.0.1.0 and on. The instance running with 10.0.1.0 is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
-- The iSCSI server has a second disk volume that is being explicitly configured as the `/dev/xvdd` block device.
-- Salt is partitioning this device in 5 x 1MB partitions, from `xvdd1` to `xvdd5` and then configuring  just the LUN 0 for iSCSI (improvement is needed in iscsi-formula to create more than one device). **Until this improvement is added, an iscsi config file (/etc/target/saveconfig.json) is loaded when the qa_mode is set to true to configure 5 more LUN, mandatory for other tests like DRBD.**
+- The iSCSI server has a second disk volume that is being used as a shared device.
+- Salt is partitioning this device in 5 x 1MB partitions and then configuring just the LUN 0 for iSCSI (improvement is needed in iscsi-formula to create more than one device). **Until this improvement is added, an iscsi config file (/etc/target/saveconfig.json) is loaded when the qa_mode is set to true to configure 5 more LUN, mandatory for other tests like DRBD.**
 - iSCSI LUN 0 is being used in the cluster as SBD device.
-- The cluster nodes have a second disk volume that is being explicitly configured as the `/dev/xvdd` block device. This second disk is used for Hana.
+- The cluster nodes have a second disk volume that is being used for Hana installation.
 
 
 ## Logs
