@@ -42,7 +42,7 @@ These are the relevant files and what each provides:
 
 - [remote-state.sample](remote-state.sample): sample file for the definition of the backend to [store the Terraform state file remotely](create_remote_state).
 
-- [terraform.tfvars](terraform.tfvars): file containing initialization values for variables used throughout the configuration. **Edit this file with your values before use**.
+- [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used thoughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
 ## How to use
 

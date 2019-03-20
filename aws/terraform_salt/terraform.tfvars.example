@@ -13,7 +13,7 @@ aws_region = "eu-central-1"
 public_key = "ADD_YOUR_SSH_PUBLIC_KEY_HERE"
 
 # Private SSH Key location
-private_key_location = "/home/juadk/.ssh/id_rsa_tf"
+private_key_location = "/path/to/your/private/ssh/key"
 
 # Custom AMI for nodes
 #sles4sap = {
@@ -32,7 +32,7 @@ hana_inst_master = "s3://path/to/your/hana/installation/master"
 # Local folder where HANA installation master will be downloaded from S3
 hana_inst_folder = "/root/sap_inst/"
 
-# Device used by node where HANA will be installed 
+# Device used by node where HANA will be installed
 hana_disk_device = "/dev/xvdd"
 
 # Variable for init-nodes.tpl script. Can be all, skip-hana or skip-cluster
