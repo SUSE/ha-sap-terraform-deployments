@@ -1,45 +1,17 @@
 include:
+{% if grains['provider'] == 'libvirt' %}
   - default.minimal
+{% endif %}
 {% if grains['os_family'] == 'Suse' %}
   - default.registration
 {% endif %}
+  - default.hostname
   - default.repos
   - default.pkgs
-
-timezone_package:
-  pkg.installed:
-{% if grains['os_family'] == 'Suse' %}
-    - name: timezone
-{% else %}
-    - name: tzdata
-{% endif %}
-
-timezone_symlink:
-  file.symlink:
-    - name: /etc/localtime
-    - target: /usr/share/zoneinfo/{{ grains['timezone'] }}
-    - force: true
-    - require:
-      - pkg: timezone_package
-
-timezone_setting:
-  timezone.system:
-    - name: {{ grains['timezone'] }}
-    - utc: True
-    - require:
-      - file: timezone_symlink
-
-{% if grains['authorized_keys'] %}
-authorized_keys:
-  file.append:
-    - name: /root/.ssh/authorized_keys
-    - text:
-{% for key in grains['authorized_keys'] %}
-      - {{ key }}
-{% endfor %}
-    - makedirs: True
-{% endif %}
-
+{% if grains['provider'] == 'libvirt' %}
+  - default.timezone
+  - default.auth_keys
 refresh_repos:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys refresh
+{% endif %}

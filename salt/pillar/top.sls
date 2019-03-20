@@ -1,8 +1,9 @@
 base:
   'role:hana_node':
     - match: grain
-    - default
-    - hana_node
+    {% if grains['provider'] == 'aws' %}
+    - iscsi_initiator
+    {% endif %}
 
   'role:iscsi_srv':
     - match: grain

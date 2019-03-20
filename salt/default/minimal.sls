@@ -1,6 +1,5 @@
 include:
   - default.setup
-  - default.hostname
   - default.ip_workaround
 
 minimal_package_update:

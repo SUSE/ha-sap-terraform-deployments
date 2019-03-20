@@ -1,16 +1,13 @@
 cluster:
   name: 'hacluster'
-  init: 'hana01'
-  interface: 'eth1'
+  init: 'ip-10-0-1-0'
+  interface: 'eth0'
+  unicast: True
   watchdog:
     module: softdog
     device: /dev/watchdog
   sbd:
-    device: '/dev/vdc'
-  ntp: pool.ntp.org
-  sshkeys:
-    overwrite: true
-    password: linux
+    device: '/dev/sda'
   resource_agents:
     - SAPHanaSR
   configure:
@@ -19,9 +16,9 @@ cluster:
       source: /srv/salt/hana/templates/performance_optimized.j2
       parameters:
         sid: prd
-        instance: "00"
-        virtual_ip: 192.168.107.50
-        virtual_ip_mask: 255.255.255.0
-        platform: libvirt'
+        instance: 00
+        virtual_ip: 10.0.0.250
+        virtual_ip_mask: 255.255.0.0
+        platform: aws
         prefer_takeover: true
         auto_register: false

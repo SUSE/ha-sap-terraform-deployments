@@ -59,6 +59,6 @@ variable "additional_repos" {
 }
 
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install install HA/SAP deployment packages"
+  description = "Repository url used to install install HA/SAP deployment packages (OS version must be ommited)"
   type        = "string"
 }
