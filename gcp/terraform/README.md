@@ -75,11 +75,11 @@ These are the relevant files and what each provides:
 
  - [variables.tf](variables.tf): definition of variables used in the configuration.
 
- - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used thoughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
+ - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
 ## How to use
 
-1. Rename [terraform.tfvars.example](terraform.tfvars.example) to *terraform.tfvars* and edit suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
+1. Rename [terraform.tfvars.example](terraform.tfvars.example) to *terraform.tfvars* and edit to suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
 
 - The `project` variable must contain the project name.
 

@@ -38,7 +38,7 @@ These are the relevant files and what each provides:
 
 * [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
-* [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used thoughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
+* [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
 * [create\_remote\_state.sh](create_remote_state.sh): script used to create a remote Terraform remote state & remote-state.tf
 
