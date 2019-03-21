@@ -1,7 +1,12 @@
 **/.terraform
 **/terraform.tfstate
 **/terraform.tfstate.backup
+
 azure/terraform/provision/node0_id_rsa
 azure/terraform/provision/node0_id_rsa.pub
 azure/terraform/provision/node1_id_rsa
 azure/terraform/provision/node1_id_rsa.pub
+
+salt/hana_node/files/sshkeys
+salt/hana_node/files/pillar/*
+!salt/hana_node/files/pillar/top.sls
