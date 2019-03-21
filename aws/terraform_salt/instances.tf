@@ -122,6 +122,8 @@ resource "aws_instance" "clusternodes" {
   provisioner "file" {
     content = <<EOF
 provider: "aws"
+role: "hana_node"
+name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
 domain: "tf.local"
@@ -130,7 +132,6 @@ hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
 iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
-role: "hana_node"
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}

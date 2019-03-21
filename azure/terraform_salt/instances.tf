@@ -168,7 +168,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   os_profile {
-    computer_name  = "node-${count.index}"
+    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
     admin_username = "${var.admin_user}"
   }
 
@@ -206,10 +206,11 @@ resource "azurerm_virtual_machine" "clusternodes" {
     content = <<EOF
 provider: "azure"
 role: "hana_node"
+name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
 domain: "tf.local"
-sbd_disk_device: /dev/sda
+sbd_disk_device: /dev/sdd
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
