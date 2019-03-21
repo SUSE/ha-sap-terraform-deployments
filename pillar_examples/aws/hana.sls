@@ -1,7 +1,7 @@
 hana:
   # install_packages: false # disable pre defined pacakge installation
   nodes:
-    - host: 'ip-10-0-1-0'
+    - host: 'hana01'
       sid: 'prd'
       instance: 00
       password: 'SET YOUR PASSWORD'
@@ -19,12 +19,12 @@ hana:
           file: 'backup'
         userkey:
           key_name: 'backupkey'
-          environment: 'ip-10-0-1-0:30013'
+          environment: 'hana01:30013'
           user_name: 'SYSTEM'
           user_password: 'SET YOUR PASSWORD'
           database: 'SYSTEMDB'
 
-    - host: 'ip-10-0-1-1'
+    - host: 'hana02'
       sid: 'prd'
       instance: 00
       password: 'SET YOUR PASSWORD'
@@ -36,7 +36,7 @@ hana:
         sapadm_password: 'SET YOUR PASSWORD'
       secondary:
         name: SECONDARY_SITE_NAME
-        remote_host: 'ip-10-0-1-0'
+        remote_host: 'hana01'
         remote_instance: 00
         replication_mode: 'sync'
         operation_mode: 'logreplay'
