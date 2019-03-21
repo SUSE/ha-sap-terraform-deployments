@@ -7,7 +7,7 @@ cluster:
     module: softdog
     device: /dev/watchdog
   sbd:
-    device: '/dev/sdc'
+    device: '/dev/sdd'
   resource_agents:
     - SAPHanaSR
   configure:
