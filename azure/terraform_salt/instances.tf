@@ -32,10 +32,11 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    publisher = "SUSE"
-    offer     = "SLES-SAP-BYOS"
-    sku       = "15"
-    version   = "2018.08.20"
+    id        = "${var.iscsi_srv_uri != "" ? join(",",azurerm_image.iscsi_srv.*.id) : ""}"
+    publisher = "${var.iscsi_srv_public["publisher"]}"
+    offer     = "${var.iscsi_srv_public["offer"]}"
+    sku       = "${var.iscsi_srv_public["sku"]}"
+    version   = "${var.iscsi_srv_public["version"]}"
   }
 
   storage_data_disk {
@@ -153,10 +154,11 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_image_reference {
-    publisher = "SUSE"
-    offer     = "SLES-SAP-BYOS"
-    sku       = "12-sp4"
-    version   = "2019.03.06"
+    id        = "${var.sles4sap_uri != "" ? join(",",azurerm_image.sles4sap.*.id) : ""}"
+    publisher = "${var.sles4sap_public["publisher"]}"
+    offer     = "${var.sles4sap_public["offer"]}"
+    sku       = "${var.sles4sap_public["sku"]}"
+    version   = "${var.sles4sap_public["version"]}"
   }
 
   storage_data_disk {
