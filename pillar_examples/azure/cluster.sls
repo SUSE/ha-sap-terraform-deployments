@@ -17,7 +17,7 @@ cluster:
       parameters:
         sid: prd
         instance: 00
-        virtual_ip: 10.74.1.50
+        virtual_ip: 10.74.1.5 # This value must match with the load balancer address: frontend_ip_configuration
         virtual_ip_mask: 255.255.255.0
         platform: azure
         prefer_takeover: true
