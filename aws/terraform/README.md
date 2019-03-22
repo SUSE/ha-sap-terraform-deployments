@@ -37,7 +37,7 @@ These are the relevant files and what each provides:
 
 - [remote-state.tf](remote-state.tf): definition of the backend to [store the Terraform state file remotely](create_remote_state).
 
-- [terraform.tfvars](terraform.tfvars): file containing initialization values for variables used thoughout the configuration. **Edit this file with your values before use**.
+- [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
 ## How to use
 
@@ -278,7 +278,7 @@ Then, create a `role-policy.json` file with the following content:
          "Action":[
             "s3:GetBucketLocation",
             "s3:GetObject",
-            "s3:ListBucket" 
+            "s3:ListBucket"
          ],
          "Resource":[
             "arn:aws:s3:::instmasters",
@@ -305,7 +305,7 @@ Once the files have been created, run the following commands to create the `vmim
 
 ```
 aws iam create-role --role-name vmimport --assume-role-policy-document file://trust-policy.json
-aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document file://role-policy.json 
+aws iam put-role-policy --role-name vmimport --policy-name vmimport --policy-document file://role-policy.json
 ```
 
 Check the output of the commands for any errors.
@@ -343,21 +343,21 @@ The output of the `aws ec2 import-image` should look like this:
 
 ```
 {
-    "Status": "active", 
-    "LicenseType": "BYOL", 
-    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-    "Progress": "2", 
+    "Status": "active",
+    "LicenseType": "BYOL",
+    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+    "Progress": "2",
     "SnapshotDetails": [
         {
             "UserBucket": {
-                "S3Bucket": "instmasters", 
+                "S3Bucket": "instmasters",
                 "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-            }, 
-            "DiskImageSize": 0.0, 
+            },
+            "DiskImageSize": 0.0,
             "Format": "RAW"
         }
-    ], 
-    "StatusMessage": "pending", 
+    ],
+    "StatusMessage": "pending",
     "ImportTaskId": "import-ami-0e6e37788ae2a340b"
 }
 ```
@@ -369,22 +369,22 @@ $ aws ec2 describe-import-image-tasks --import-task-ids import-ami-0e6e37788ae2a
 {
     "ImportImageTasks": [
         {
-            "Status": "active", 
-            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-            "Progress": "28", 
+            "Status": "active",
+            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+            "Progress": "28",
             "SnapshotDetails": [
                 {
-                    "Status": "active", 
+                    "Status": "active",
                     "UserBucket": {
-                        "S3Bucket": "instmasters", 
+                        "S3Bucket": "instmasters",
                         "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-                    }, 
-                    "DiskImageSize": 10737418240.0, 
-                    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+                    },
+                    "DiskImageSize": 10737418240.0,
+                    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
                     "Format": "RAW"
                 }
-            ], 
-            "StatusMessage": "converting", 
+            ],
+            "StatusMessage": "converting",
             "ImportTaskId": "import-ami-0e6e37788ae2a340b"
         }
     ]
@@ -425,18 +425,18 @@ The output of this command should look like this:
 ```
 {
     "SnapshotTaskDetail": {
-        "Status": "active", 
-        "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-        "Format": "RAW", 
-        "DiskImageSize": 0.0, 
-        "Progress": "3", 
+        "Status": "active",
+        "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+        "Format": "RAW",
+        "DiskImageSize": 0.0,
+        "Progress": "3",
         "UserBucket": {
-            "S3Bucket": "instmasters", 
+            "S3Bucket": "instmasters",
             "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
-        }, 
+        },
         "StatusMessage": "pending"
-    }, 
-    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+    },
+    "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
     "ImportTaskId": "import-snap-0fbbe899f2fd4bbdc"
 }
 ```
@@ -456,17 +456,17 @@ When the process is completed, the `describe-import-snapshot-tasks` command will
     "ImportSnapshotTasks": [
         {
             "SnapshotTaskDetail": {
-                "Status": "completed", 
-                "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
-                "Format": "RAW", 
-                "DiskImageSize": 10737418240.0, 
-                "SnapshotId": "snap-0a369f803b17037bb", 
+                "Status": "completed",
+                "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
+                "Format": "RAW",
+                "DiskImageSize": 10737418240.0,
+                "SnapshotId": "snap-0a369f803b17037bb",
                 "UserBucket": {
-                    "S3Bucket": "instmasters", 
+                    "S3Bucket": "instmasters",
                     "S3Key": "SLES12-SP4-SAP-EC2-HVM-BYOS.x86_64-0.9.2-Build1.1.raw"
                 }
-            }, 
-            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1", 
+            },
+            "Description": "SLES4SAP 12-SP4 Beta4 Build 1.1",
             "ImportTaskId": "import-snap-0fbbe899f2fd4bbdc"
         }
     ]
@@ -497,4 +497,3 @@ Examples of the JSON files used in this document have been added to this repo.
 * The contents of the [provision](provision) subdirectory are the same between AWS and Azure configuration, so it could be usefull to also move [init-nodes.tpl](init-nodes.tpl) and [init-iscsi.tpl](init-iscsi.tpl) there as scripts as long as the same code can be used without changes in all public cloud providers. For the moment, provision points to the Azure configuration files.
 * Check AWS documentation for Hana setup and add required resources. Current configuration works for build validation of new images, but lacks certain resources that are probably needed (Load Balancer, for example) for a complete setup of Hana in AWS.
 * This configuration is adding a `dlm` resource to the cluster, which is not available by default in SUSE Linux Enterprise Server for SAP Applications for public clouds prior to 12-SP4.
-

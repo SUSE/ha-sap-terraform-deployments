@@ -1,0 +1,232 @@
+#!/bin/bash
+# ---------------------------------------------------------------------
+# Copyright 2016 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ---------------------------------------------------------------------
+# Description:	Google Cloud Platform - Floating IP Address (Alias)
+# Version:			1.0.43
+# Date:					18/March/2018
+# ---------------------------------------------------------------------
+
+: ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
+. ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
+
+meta_data() {
+  cat <<EOF
+<?xml version="1.0"?>
+<!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
+<resource-agent name="gcp:alias">
+  <version>1.0</version>
+  <longdesc lang="en">Floating IP Address on Google Cloud Platform - Using Alias IP address functionality to attach a secondary IP address to a running instance</longdesc>
+  <shortdesc lang="en">Floating IP Address on Google Cloud Platform</shortdesc>
+  <parameters>
+    <parameter name="hostlist" unique="1" required="1">
+      <longdesc lang="en">List of hosts in the cluster</longdesc>
+      <shortdesc lang="en">Host list</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="logging" unique="0" required="0">
+      <longdesc lang="en">If enabled (set to true), IP failover logs will be posted to stackdriver logging</longdesc>
+      <shortdesc lang="en">Stackdriver-logging support</shortdesc>
+      <content type="boolean" default="" />
+    </parameter>
+    <parameter name="alias_ip" unique="1" required="1">
+      <longdesc lang="en">IP Address to be added including CIDR. E.g 192.168.0.1/32</longdesc>
+      <shortdesc lang="en">IP Address to be added including CIDR. E.g 192.168.0.1/32</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="alias_range_name" unique="1" required="0">
+      <longdesc lang="en">Subnet name for the Alias IP2</longdesc>
+      <shortdesc lang="en">Subnet name for the Alias IP</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+    <parameter name="gcloud_path" unique="0" required="0">
+      <longdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud - If this is left blank, the default path of /usr/bin/gcloud will be used</longdesc>
+      <shortdesc lang="en">Full path of the gcloud binary. E.g /usr/local/gsdk/google-cloud-sdk/bin/gcloud</shortdesc>
+      <content type="string" default="" />
+    </parameter>
+  </parameters>
+  <actions>
+    <action name="start" timeout="300" />
+    <action name="stop" timeout="15" />
+    <action name="monitor" timeout="15" interval="60" depth="0" />
+    <action name="meta-data" timeout="15" />
+  </actions>
+</resource-agent>
+EOF
+}
+
+
+get_zone() {
+  ZONE=$(${GCLOUDCMD} --quiet compute instances list --filter="name=('${1}')" --format 'csv[no-heading](zone)')
+}
+
+
+get_ip() {
+  IP=$(${GCLOUDCMD} --quiet compute instances describe ${1} --zone ${ZONE} --format text | grep aliasIpRanges | grep ${OCF_RESKEY_alias_ip} | awk '{ print $2 }')
+}
+
+
+get_my_zone() {
+  MYZONE=$(curl -sH'Metadata-Flavor: Google' "http://metadata.google.internal/computeMetadata/v1/instance/zone" | cut -d'/' -f4)
+}
+
+
+get_my_ip() {
+  if [[ $(curl -sH'Metadata-Flavor: Google' "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip-aliases/") ]]; then
+    MYIP=$(curl -sH'Metadata-Flavor: Google' "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip-aliases/0")
+  else
+    unset MYIP
+  fi
+}
+
+
+get_gcloud() {
+  ## if gcloud command isn't set, default to the default path
+  if [[ -n ${OCF_RESKEY_gcloud_path} ]]; then
+    GCLOUDCMD=${OCF_RESKEY_gcloud_path}
+  else
+    GCLOUDCMD="/usr/bin/gcloud"
+  fi
+
+  ## check gcloud command exists
+  if [[ ! -f ${GCLOUDCMD} ]]; then
+    log_error "gcloud command not found at ${GCLOUDCMD}"
+    exit 1
+  fi
+}
+
+
+check_gcloud_version() {
+  ${GCLOUDCMD} --quiet beta compute instances network-interfaces --help >/dev/null
+  if [[ $? -gt 0 ]]; then
+    log_error "gcloud version does not support beta 'network-interfaces' function. Upgrade gcloud SDK or specifiy gcloud path to a newer version"
+    exit 1
+  fi
+}
+
+
+log_info() {
+  echo "gcp:alias - INFO - ${1}"
+  LOG="`hostname` ${OCF_RESOURCE_INSTANCE} \"${1}\""
+  echo ${LOG}
+  if [[ -n ${OCF_RESKEY_logging} ]]; then
+    if [[ ${OCF_RESKEY_logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} logging write ${HOSTNAME} "${LOG}" --severity=INFO || :
+    fi
+  fi
+}
+
+
+log_error() {
+  echo "gcp:alias - ERROR - ${1}"
+  LOG="`hostname` ${OCF_RESOURCE_INSTANCE} \"${1}\""
+  if [[ -n ${OCF_RESKEY_logging} ]]; then
+    if [[ ${OCF_RESKEY_logging,,} =~ ^(yes|true|enabled)$ ]]; then
+      ${GCLOUDCMD} logging write ${HOSTNAME} "${LOG}" --severity=ERROR || :
+    fi
+  fi
+}
+
+case ${1} in
+
+  start)
+    get_gcloud
+    check_gcloud_version
+    get_my_zone
+    get_my_ip
+
+    ## If I already have the IP, exit. If it has an alias IP that isn't the VIP, then remove it
+    if [[ -n ${MYIP} ]]; then
+      if [[ ${MYIP} == ${OCF_RESKEY_alias_ip} ]]; then
+        log_info "${HOSTNAME} already has ${MYIP} attached. No action required"
+        exit 0
+      else
+        log_info "Removing ${MYIP} from ${HOSTNAME}"
+        ${GCLOUDCMD} --quiet beta compute instances network-interfaces update ${HOSTNAME} --zone ${MYZONE} --aliases ""
+      fi
+    fi
+
+    ## Loops through all hosts & remove the alias IP from the host that has it
+    HOSTLIST=${OCF_RESKEY_hostlist/$HOSTNAME/}
+    IFS=' ' read -r -a HOSTS <<< "$HOSTLIST"
+    IP="TBD"
+    for HOST in "${HOSTS[@]}"; do
+      get_zone ${HOST}
+      get_ip ${HOST}
+      log_info "Checking to see if ${HOST} owns $OCF_RESKEY_alias_ip"
+      ## keep trying to remove until it's not there anymore - Added due to the fingerprint bug
+      while [[ -n ${IP} ]]; do
+        log_info "${IP} is attached to ${HOST} - Removing all alias IP addresses from ${HOST}"
+        ${GCLOUDCMD} --quiet beta compute instances network-interfaces update ${HOST} --zone ${ZONE} --aliases ""
+        get_ip ${HOST}
+        sleep 2
+      done
+    done
+
+    ## add alias IP to localhost
+    if [[ -z ${OCF_RESKEY_alias_range_name} ]]; then
+      log_info "Adding ${OCF_RESKEY_alias_ip} to ${HOSTNAME}"
+      ${GCLOUDCMD} --quiet beta compute instances network-interfaces update ${HOSTNAME} --zone ${MYZONE} --aliases ${OCF_RESKEY_alias_ip}
+    else
+      log_info "Adding ${OCF_RESKEY_alias_ip} in secondary range ${OCF_RESKEY_alias_range_name} to ${HOSTNAME}"
+      ${GCLOUDCMD} --quiet beta compute instances network-interfaces update ${HOSTNAME} --zone ${MYZONE} --aliases ${OCF_RESKEY_alias_range_name}:${OCF_RESKEY_alias_ip}
+    fi
+
+    ## Check the IP has been added
+    get_my_ip
+    if [[ -n ${MYIP} ]]; then
+      if [[ ${MYIP} == ${OCF_RESKEY_alias_ip} ]]; then
+        log_info "Finished adding ${OCF_RESKEY_alias_ip} to ${HOSTNAME}"
+      else
+        log_error "Failed to add IP. ${HOSTNAME} has an IP attached but it isn't ${OCF_RESKEY_alias_ip}"
+        exit 1
+      fi
+    else
+      log_error "Failed to add IP address ${OCF_RESKEY_alias_ip} to ${HOSTNAME}"
+      exit 1
+    fi
+
+    #$ exit gracefully
+    exit 0
+	;;
+
+	stop)
+    #$ exit gracefully
+    exit 0
+	;;
+
+	status|monitor)
+    get_gcloud
+    get_my_ip
+    if [[ -n ${MYIP} ]]; then
+      if [[ ${MYIP} == ${OCF_RESKEY_alias_ip} ]]; then
+        log_info "${HOSTNAME} has the correct IP address attached"
+        exit 0
+      else
+        exit 7
+      fi
+    else
+      exit 7
+    fi
+  ;;
+
+  meta-data)
+    meta_data
+  ;;
+
+  *)
+    echo "gcp:alias - no such function \"${1}\""
+    exit 1
+	;;
+esac

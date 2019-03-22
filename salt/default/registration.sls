@@ -1,3 +1,4 @@
+{% if grains['qa_mode']|default(false) is sameas false %}
 {% if grains['reg_code'] %}
 register_system:
   cmd.run:
@@ -10,4 +11,5 @@ register_system:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p {{ module }}  {{ ("-r " ~ mod_reg_code) if mod_reg_code != "" else "" }}
 {% endfor %}
+{% endif %}
 {% endif %}

@@ -1,0 +1,26 @@
+# Launch SLES-HAE of SLES4SAP cluster nodes
+
+# Instance type to use for the cluster nodes
+instancetype = "m4.2xlarge"
+
+# Number of nodes in the cluster
+ninstances = "2"
+
+# Region where to deploy the configuration
+aws_region = "eu-central-1"
+
+# SSH Public key to configure access to the remote instances
+public_key = "ADD_YOUR_SSH_PUBLIC_KEY_HERE"
+
+# Private SSH Key location
+private_key_location = "/path/to/your/private/ssh/key"
+
+# aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
+aws_credentials = "~/.aws/credentials"
+
+# S3 bucket where HANA installation master is located
+hana_inst_master = "s3://path/to/your/hana/installation/master"
+
+# Variable for init-nodes.tpl script. Can be all, skip-hana or skip-cluster
+init-type = "all"
+

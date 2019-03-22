@@ -26,7 +26,7 @@ Note: You must run this command to use the Gcloud SDK and to apply this Terrafor
 
 `export GOOGLE_APPLICATION_CREDENTIALS=/path/to/<PROJECT-ID>-xxxxxxxxx.json`
 
-5. A Google Storage bucket must be created with the RAR compressed files containing the HANA installer. 
+5. A Google Storage bucket must be created with the RAR compressed files containing the HANA installer.
 
 The bucket may be created and populated with these commands:
 
@@ -39,7 +39,7 @@ Note: In this bucket GCP will also store the logs for the deployment, available 
 
 Bucket names have more restrictions than object names and must be globally unique, because every bucket resides in a single Cloud Storage namespace. Also, bucket names can be used with a CNAME redirect, which means they need to conform to DNS naming conventions. For more information, see the [bucket naming guidelines](https://cloud.google.com/storage/docs/naming#requirements).
 
-6. A bucket for the images must be created to hold the SLES version to test. 
+6. A bucket for the images must be created to hold the SLES version to test.
 
 ```
 gsutil mb gs://sles-images
@@ -54,13 +54,13 @@ gsutil mb gs://sles-images
 These are the relevant files and what each provides:
 
  - [disks.tf](disks.tf): definitions of the storage used for images and virtual machines.
- 
+
  - [instances.tf](instances.tf): definition of the GCP instances to create on deployment.
- 
+
  - [init-iscsi.tpl](init-iscsi.tpl): template code for the initialization script for the iSCSI server.
 
  - [network.tf](network.tf): definition of network resources used by the infrastructure and the firewall rules.
- 
+
  - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
  - [provider.tf](provider.tf): definition of the providers being used in the terraform configuration.
@@ -73,13 +73,13 @@ These are the relevant files and what each provides:
 
  - [templates.tf](templates.tf): definition of the templates used.
 
- - [variables.tf](variables.tf): definition of variables used in the configuration. 
- 
- - [terraform.tfvars](terraform.tfvars): defaults for the variables defined in [variables](variables.tf)
+ - [variables.tf](variables.tf): definition of variables used in the configuration.
+
+ - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
 ## How to use
 
-1. Edit [terraform.tfvars](terraform.tfvars) to suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
+1. Rename [terraform.tfvars.example](terraform.tfvars.example) to *terraform.tfvars* and edit to suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
 
 - The `project` variable must contain the project name.
 
@@ -91,13 +91,17 @@ These are the relevant files and what each provides:
 
 - The `gcp_credentials_file` variable must contain the path to the JSON file with the GCP credentials created above.
 
-- The `ssh_pub_key_file` variable must contain the path to your SSH public key.
+- The `ssh_key_file` variable must contain the path to your SSH private key.  This is used by the provisioner.
+
+- The `ssh_pub_key_file` variable must contain the path to your SSH public key.  This is used to access the instances.
 
 - The `region` variable must contain the name of the desired region.
 
 - The `sap_deployment_debug` variable must be set to `Yes` if you want to debug the deployment.
 
 - The `sap_hana_deployment_bucket` variable must contain the name of the Google Storage bucket with the HANA installation files.
+
+- The `sap_hana_backup_size` variable set the size of the SAP HANA backup partition.
 
 - The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 
@@ -131,7 +135,7 @@ When you are done, run:
 
 ## Notes
 
-- This configuration supports [Terraform workspaces](https://www.terraform.io/docs/state/workspaces.html). 
+- This configuration supports [Terraform workspaces](https://www.terraform.io/docs/state/workspaces.html).
 - This Terraform configuration performs the same process described in the [official GCP documentation for deploying SAP HANA](https://cloud.google.com/solutions/partners/sap/sap-hana-ha-deployment-guide) with the following differences:
   - No NAT configuration for the instances.
   - The former SAP HANA primary is not automatically registered as secondary after takeover.  Edit [startup.sh](startup.sh) if you want to change this.

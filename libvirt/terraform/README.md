@@ -49,9 +49,6 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 - https://github.com/SUSE/saphanabootstrap-formula
 - https://github.com/krig/habootstrap-formula
 
-
-In order to enable the cluster creation, ssh keys must be shared between the nodes. For that create new ssh keys (or use already created ones) and copy them in salt/hana_node/files/sshkeys/ .
-
 The easiest way to customize the variables is using a *terraform.tfvars* file.
 Here an example:
 

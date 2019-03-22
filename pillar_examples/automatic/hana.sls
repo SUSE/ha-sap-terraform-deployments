@@ -9,7 +9,7 @@ hana:
     - host: {{ primary_node }}
       sid: 'prd'
       instance: 00
-      password: 'Qwerty1234'
+      password: 'SET YOUR PASSWORD'
       install:
         software_path: '/root/sap_inst/'
         root_user: 'root'
@@ -18,8 +18,8 @@ hana:
         {% else %}
         root_password: ''
         {% endif %}
-        system_user_password: 'Qwerty1234'
-        sapadm_password: 'Qwerty1234'
+        system_user_password: 'SET YOUR PASSWORD'
+        sapadm_password: 'SET YOUR PASSWORD'
       primary:
         name: NUE
         backup:
@@ -30,13 +30,13 @@ hana:
           key_name: 'backupkey'
           environment: '{{ primary_node }}:30013'
           user_name: 'SYSTEM'
-          user_password: 'Qwerty1234'
+          user_password: 'SET YOUR PASSWORD'
           database: 'SYSTEMDB'
 
     - host: {{ secondary_node }}
       sid: 'prd'
       instance: 00
-      password: 'Qwerty1234'
+      password: 'SET YOUR PASSWORD'
       install:
         software_path: '/root/sap_inst/'
         root_user: 'root'
@@ -45,8 +45,8 @@ hana:
         {% else %}
         root_password: ''
         {% endif %}
-        system_user_password: 'Qwerty1234'
-        sapadm_password: 'Qwerty1234'
+        system_user_password: 'SET YOUR PASSWORD'
+        sapadm_password: 'SET YOUR PASSWORD'
       secondary:
         name: PRAGUE
         remote_host: {{ primary_node }}

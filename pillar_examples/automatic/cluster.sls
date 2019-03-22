@@ -10,6 +10,7 @@ cluster:
   interface: 'eth1'
   {% elif grains['provider'] == 'aws' %}
   interface: 'eth0'
+  unicast: True
   {% endif %}
   watchdog:
     module: softdog

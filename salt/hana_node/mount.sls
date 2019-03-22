@@ -1,9 +1,16 @@
+{% if grains['provider'] == 'libvirt' %}
+{% set fs_type = 'ext4'}
+{% else %}
+{% set fs_type = 'xfs'}
+{% endif %}
+
+
 parted:
   pkg.installed
 
 hana_partition:
   cmd.run:
-    - name: /usr/sbin/parted -s {{grains['hana_disk_device']}} mklabel msdos && /usr/sbin/parted -s {{grains['hana_disk_device']}} mkpart primary ext2 1M 100% && sleep 1 && /sbin/mkfs.xfs {{grains['hana_disk_device']}}1
+    - name: /usr/sbin/parted -s {{grains['hana_disk_device']}} mklabel msdos && /usr/sbin/parted -s {{grains['hana_disk_device']}} mkpart primary ext2 1M 100% && sleep 1 && /sbin/mkfs.{{ fs_type }} {{grains['hana_disk_device']}}1
     - unless: ls {{grains['hana_disk_device']}}1
     - require:
       - pkg: parted
@@ -17,7 +24,7 @@ hana_directory:
   mount.mounted:
     - name: /hana
     - device: {{grains['hana_disk_device']}}1
-    - fstype: xfs
+    - fstype: {{ fs_type }}
     - mkmnt: True
     - persist: True
     - opts:

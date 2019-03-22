@@ -121,4 +121,15 @@ resource "google_compute_instance" "clusternodes" {
   service_account {
     scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
+
+  provisioner "file" {
+    source      = "./provision/"
+    destination = "/root/provision/"
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = "${file(var.ssh_key_file)}"
+    }
+  }
 }

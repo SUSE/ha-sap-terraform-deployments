@@ -14,4 +14,4 @@ All the information about how to tune the deployment is available in:
 
 Finally, if instead of deploying SAP HANA and the cluster together, to only
 deploy one of them update the salt/hana_node/files/salt/top.sls file only using
-the desired componente and removing/commenting the other.
+the desired component and removing/commenting the other.

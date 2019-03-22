@@ -43,7 +43,8 @@ variable "hana_inst_master" {
 }
 
 variable "hana_inst_folder" {
-  type = "string"
+  type    = "string"
+  default = "/root/sap_inst"
 }
 
 variable "hana_disk_device" {
