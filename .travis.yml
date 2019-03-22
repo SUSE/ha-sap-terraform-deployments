@@ -33,7 +33,7 @@ script:
       else
         /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null ;
       fi ;
-      if [[ "$provider" == "aws" ]]; then
+      if [[ "$provider" =~ ^(aws|azure)$ ]]; then
         cd ../terraform_salt ;
         /tmp/terraform fmt -check ;
         /tmp/terraform validate -check-variables=false ;

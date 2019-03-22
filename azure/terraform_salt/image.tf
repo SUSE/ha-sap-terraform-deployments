@@ -14,8 +14,8 @@ variable "sles4sap_public" {
   default = {
     "publisher" = "SUSE"
     "offer"     = "SLES-SAP-BYOS"
-    "sku"       = ""
-    "version"   = ""
+    "sku"       = "12-sp4"
+    "version"   = "2019.03.06"
   }
 }
 
@@ -29,8 +29,8 @@ variable "iscsi_srv_public" {
   default = {
     "publisher" = "SUSE"
     "offer"     = "SLES-SAP-BYOS"
-    "sku"       = ""
-    "version"   = ""
+    "sku"       = "15"
+    "version"   = "2018.08.20"
   }
 }
 

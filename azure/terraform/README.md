@@ -216,7 +216,7 @@ terraform plan
 terraform apply
 ```
 
-**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image.
+**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image. If a custom image is used [image.tf](image.tf) must be deleted to avoid the resource creation.
 
 It is also recommended to run the apply command with a timeout, as not all errors are easily detected by the terraform Azure provider, and you can run into a scenario where the infrastructure is apparently still being deployed for a long period (over 15 or 20 minutes), but it is actually broken or failing in the cloud.
 

@@ -1,4 +1,4 @@
-# Azure Public Cloud deployment with terraform
+# Azure Public Cloud deployment with terraform and Salt
 
 The terraform configuration files in this directory can be used to create the infrastructure required to install a SAP HanaSR cluster on Suse Linux Enterprise Server for SAP Applications in **Azure**.
 
@@ -14,6 +14,12 @@ The infrastructure deployed includes:
 
 By default, this configuration will create 3 virtual machines in Azure: one for support services (mainly iSCSI as most other services are provided by Azure), and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 
+Once the infrastructure is created by Terraform, the servers are provisioned with Salt.
+
+ ## Provisioning by Salt
+ The cluster and HANA installation is done using Salt Formulas.
+ To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
+
 ## Relevant files
 
 These are the relevant files and what each provides:
@@ -26,40 +32,196 @@ These are the relevant files and what each provides:
 
 * [resources.tf](resources.tf): definition of the resource group and storage account to use.
 
-* [image.tf](image.tf): definition of the custom image to use for the virtual machines. Edit this to add image blob to use.
+* [image.tf](image.tf): definition of the custom images to use for the virtual machines. The image resources will be only created if the **sles4sap_uri** or **iscsi_srv_uri** are set in the
+**terraform.tfvars** file. Otherwise, a public image will be used.
 
 * [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
 
-* [virtualmachines.tf](virtualmachines.tf): definition of the virtual machines to create on deployment.
-
-* [init-iscsi.sh](init-iscsi.sh): initialization script for the iSCSI server. This will partition the `/dev/sdc` device and set up the iSCSI targets there.
-
-* [init-nodes.sh](init-nodes.sh): initialization script for the cluster nodes. This will connect the cluster nodes to the iSCSI server, configure a watchdog for the cluster, issue a call to ha-cluster-init in the master and a call to ha-cluster-join in the slaves.
+* [instances.tf](instances.tf): definition of the virtual machines to create on deployment.
 
 * [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
-* [terraform.tfvars](terraform.tfvars): file containing initialization values for variables used thoughout the configuration. **Edit this file with your values before use**.
+- [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
-* [create\_remote\_state.sh](create_remote_state.sh): script used to create a remote Terraform remote state & remote-state.tf
+## How to use
 
-* [remote-state.tf](remote-state.tf): definition of the backend to store the Terraform state file remotely.
+To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your working directory and rename `terraform.tfvars.example` to `terraform.tfvars`.
+
+Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
+
+```
+mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
+```
+The key files need to be named as you defined it in `terraform.tfvars` file.
+
+After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
+
+### Variables
+
+In the file [terraform.tfvars.example](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
+
+* **sles4sap_uri**: path to a custom sles4sap image to install in the cluster nodes.
+* **iscsi_srv_uri**: path to a custom image to install the iscsi server.
+* **sles4sap_public**: map with the required information to install a public sles4sap image in the cluster nodes. This data is only used if `sles4sap_uri` is not set.
+* **iscsi_srv_public**: map with the required information to install a public sles4sap image in the support server. This data is only used if `iscsi_srv_uri` is not set.
+* **admin_user**: name of the administration user to deploy in all virtual machines.
+* **private_key_location**: path to the local file containing the private SSH key to configure in the virtual machines to allow access.
+* **public_key_location**: path to the local file containing the public SSH key to configure in the virtual machines to allow access. This public key is configured in the file `$HOME/.ssh/authorized_keys` of the administration user in the remote virtual machines.
+* **storage_account_name**: Azure storage account name.
+* **storage_account_key**: Azure storage account secret key (key1 or key2).
+* **hana_inst_master**: path to the storage account where SAP HANA installation files are stored.
+* **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
+* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
+* **az_region**: Azure region where to deploy the configuration.
+* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
+* **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
+* **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
+* **ha_sap_deployment_repo**: Repository with HA packages
+* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
+* **reg_email**: email to be associated with the system registration. This parameter is optional.
+* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
+    - `<module_name>/<product_version>/<architecture>`
+    - *Example:* Suggested modules for SLES for SAP 15
+
+          sle-module-basesystem/15/x86_64
+          sle-module-desktop-applications/15/x86_64
+          sle-module-server-applications/15/x86_64
+          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
+          sle-module-sap-applications/15/x86_64
+
+ For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
+
+* **additional_repos**: Additional repos to add to the guest machines.
+ * **additional_packages**: Additional packages to add to the guest machines.
+ * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
+
+ Specific QA variable
+* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
+
+### The pillar files hana.sls and cluster.sls
+
+Find more information about the hana and cluster formulas in (check the pillar.example files):
+
+-   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
+-   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
+
+As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
+These files **aren't ready for deployment**, be careful to customize them or create your own files.
+
+### QA usage
+You may have noticed the variable *qa_mode*, this project is also used for QA testing.
+
+**qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
+
+### Deployment execution
+And then, after customizing the configuration files, run from your working directory the following commands:
+
+```
+terraform init
+terraform workspace new my-execution # optional
+terrafomr workspace select my-execution # optional
+terraform plan
+terraform apply
+```
+
+After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user set as your `admin_user` parameter, for example:
+
+```
+ssh admin_user@18.196.143.128 -i private_key_location
+```
+
+Destroy the created infrastructure with:
+
+```
+terraform destroy
+```
+
+Check outputs with:
+
+```
+terraform output
+```
+
+## Configure Terraform Access to Azure
+
+To setup access to Azure via Terraform, four parameters are required:
+
+* Subscription ID
+* Tenant ID
+* Client or App ID
+* Client or App Secret
+
+The subscription and tenant id can be seen with the command `az account show`:
+
+```
+$ az account show
+{
+  "environmentName": "AzureCloud",
+  "id": "<HERE IS THE SUBSCRIPTION ID>",
+  "isDefault": true,
+  "name": "<HERE IS THE SUBSCRIPTION NAME>",
+  "state": "Enabled",
+  "tenantId": "<HERE IS THE TENANT ID>",
+  "user": {
+    "name": "some@email.address.com",
+    "type": "user"
+  }
+}
+```
+
+For the client id and secret, an Azure AD Service Principal is required. If you have the necessary permissions, you can create one with:
+
+```
+az ad sp create-for-rbac --name my-terraform-ad-sp --role="Contributor" --scopes="/subscriptions/<HERE GOES THE SUBSCRIPTION ID>"
+```
+
+This command should output the necesary client id and client secret or password.
+
+More info in the [Terraform Install Configure document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure) in microsoft.com.
+
+Once all four required parameters are known, there are several ways to configure access for terraform:
+
+### In provider definition
+
+Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
+
+### Via Environment Variables
+
+Set the following environment variables before running terraform:
+
+```
+export ARM_SUBSCRIPTION_ID=your_subscription_id
+export ARM_CLIENT_ID=your_appId
+export ARM_CLIENT_SECRET=your_password
+export ARM_TENANT_ID=your_tenant_id
+export ARM_ACCESS_KEY=access_key
+```
 
 ## How to upload a custom image
 
-In the terraform configuration we are using a custom image (defined in the file [image.tf](image.tf)) referenced as `azurerm_image.custom.id` in the file [virtualmachines.tf](virtualmachines.tf) (in the `storage_image_reference` block).
+In the terraform configuration we are using a custom images (defined in the file [image.tf](image.tf)) referenced as `azurerm_image.iscsi_srv.*.id` and `azurerm_image.sles4sap.*.id` in the file [instances.tf](instances.tf) (in the `storage_image_reference` block).
 
-This custom image needs to be already uploaded to Azure before attempting to use it with terraform, as terraform does not have a mechanism to upload images as of yet.
+This custom images need to be already uploaded to Azure before attempting to use it with terraform, as terraform does not have a mechanism to upload images as of yet.
 
 In order to upload images for further use in terraform, use the procedure defined in the [Upload a custom image](#upload-custom-image) section below. Be sure to set up your Azure account first with the azure-cli to be able to follow that procedure.
 
-On the other hand, if there is a need to use publicly available images, the `storage_image_reference` block in the virtual machines definition (file [virtualmachines.tf](virtualmachines.tf)) should look like this:
+On the other hand, if there is a need to use publicly available images, the `terraform.tfvars` file must include the required information as in the following example (by default, the example values will be used if new information is not provided in the `terraform.tfvars` file):
 
 ```
-storage_image_reference {
-  publisher = "SUSE"
-  offer     = "SLES-SAP-BYOS"
-  sku       = "12-SP3"
-  version   = "2018.08.17"
+# Public sles4sap image
+sles4sap_public = {
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
+  "sku"       = "12-sp4"
+  "version"   = "2019.03.06"
+}
+
+# Public iscsi server image
+iscsi_srv_public = {
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
+  "sku"       = "15"
+  "version"   = "2018.08.20"
 }
 ```
 
@@ -68,8 +230,6 @@ To check the values for publisher, offer, sku and version of the available publi
 ```
 az vm image list --output table --publisher SUSE --all
 ```
-
-The file [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) is a copy of [virtualmachines.tf](virtualmachines.tf) but using the `SUSE SLES-SAP-BYOS 12-SP3` public image referenced above instead of a private image. Rename that file as [virtualmachines.tf](virtualmachines.tf) to use that OS image with this configuration or edit the `storage_image_reference` as needed to use a different public image.
 
 If using a public image, skip to the [how to use section](#how-to-use).
 
@@ -188,196 +348,12 @@ az storage blob delete --name SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vh
 
 Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from storage container `MyStorageContainer`.
 
-## How to use
+## To Do
 
-To use, copy the `*.tf`, `*.sh` and `terraform.tfvars` files and the `provision` directory into your working directory.
-
-Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
-
-```
-ssh-keygen -t rsa -f provision/node0_id_rsa
-ssh-keygen -t rsa -f provision/node1_id_rsa
-```
-
-The key files need to be named `node0_id_rsa`, `node0_id_rsa.pub`, `node1_id_rsa` and `node1_id_rsa.pub` as the initialization scripts expect those names, so check for those files in the `provisioning` sub-directory after generating the keys.
-
-Following that edit the following files:
-
-* [terraform.tfvars](terraform.tfvars): add the URI of the image blob to test if using a private OS image; add the admin user, its private key location on the local machine and the SSH public key from that private key.
-* [provider.tf](provider.tf): add the subscription id, client id, client secret and tenant id from you Azure account.
-
-When using local terraform state files, remove the [remote-state.tf](remote-state.tf) file from the directory before any terraform commands; otherwise, if using remote terraform state file and it is not defined in [remote-state.tf](remote-state.tf), run the script [create\_remote\_state.sh](create_remote_state.sh) and pay attention to the last line. Then run `export ARM_ACCESS_KEY=xxxxxxx` as instructed by the script.
-
-Then deploy the infrastructure from the directory by running the following commands:
-
-```
-terraform init
-terraform plan
-terraform apply
-```
-
-**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image.
-
-It is also recommended to run the apply command with a timeout, as not all errors are easily detected by the terraform Azure provider, and you can run into a scenario where the infrastructure is apparently still being deployed for a long period (over 15 or 20 minutes), but it is actually broken or failing in the cloud.
-
-```
-timeout 15m terraform apply
-```
-
-Keep in mind that in the event of a timeout, there is a possibility that you will be required to remove the deployed infrastructure manually, as `terraform destroy` may not work.
-
-After an apply command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using ssh and the user defined in [terraform.tfvars](terraform.tfvars), for example:
-
-```
-ssh myadminuser@168.63.27.167
-```
-
-Destroy the created infrastructure with:
-
-```
-terraform destroy
-```
-
-Check outputs with:
-
-```
-terraform output
-```
-
-Refresh resources with (for example, if one of the init script failed during `apply` but the infrastructure was successfully created):
-
-```
-terraform refresh
-```
-
-By default, the infrastructure is being deployed to the `westeurope` region of Azure. This can be changed by reassigning the variable `az_region` currently defined in the [terraform.tfvars](terraform.tfvars) file. For example, with the command:
-
-```
-terraform apply -var az_region=eastus
-```
-
-The virtual machines for the cluster nodes are created by default with the size `Standard_E4s_v3`, this can be changed with the option -var instancetype. For example the command:
-
-```
-terraform apply -var instancetype=Standard_D8s_v3
-```
-
-Will deploy 2 `Standard_D8s_v3` virtual machines in the West Europe zone, instead of the `Standard_E4s_v3` default ones. The iSCSI server is always deployed as a `Standard_D2s_v3` sized virtual machine.
-
-Finally, the number of cluster nodes can be modified with the option -var ninstances. For example:
-
-```
-terraform apply -var ninstances=4
-```
-
-Will deploy in the West Europe zone 1 `Standard_D2s_v3` sized virtual machine as iSCSI server and 4 `Standard_E4s_v3` as cluster nodes.
-
-All this means that basically the default command `terraform apply` and be also written as `terraform apply -var az_region=westeurope -var instancetype=Standard_E4s_v3 -var ninstances=2`.
-
-### Variables
-
-In the file [terraform.tfvars](terraform.tfvars) there are a number of variables that control what is deployed. Some of these variables are:
-
-* **admin_user**: name of the administration user to deploy in all virtual machines.
-* **private_key_location**: path to the local file containing the private SSH key to configure in the virtual machines to allow access.
-* **public_key**: SSH public key associated with the private key file. This public key is configured in the file `$HOME/.ssh/authorized_keys` of the administration user in the remote virtual machines.
-* **instmaster**: path to a SMB/CIFS share containing the installation master of Hana.
-* **instmaster_user**: user to use to connect to the previous share.
-* **instmaster_pass**: password to use to connect to the previous share.
-* **image_uri**: URI to the BLOB where the VHD file of the image to use to launch the VMs is located. This is only used when deploying the virtual machines with a custom/private OS image. Check [elsewhere in this document](#how-to-upload-a-custom-image) for information on how to change the configuration in order to use a public image.
-* **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
-* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
-* **az_region**: Azure region where to deploy the configuration.
-* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
-
-## Relevant Details
-
-There are some fixed values used throughout the terraform configuration:
-
-- The private IP address of the iSCSI server is set to 10.74.1.10 and its hostname is `iscsisrv`.
-- The cluster nodes are created with private IPs starting with 10.74.1.11 and finishing in 10.74.1.22. More addresses can be added to the array in [network.tf](network.tf). The hostnames of these virtual machines go from `node-0` to `node-11`. The virtual machine named `node-0` is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
-- The iSCSI server has a second disk volume that is being configured as the `/dev/sdc` block device.
-- The [init-iscsi.sh](init-iscsi.sh) script is partitioning this device in 10 1MB partitions, from `sdc1` to `sdc10` and then configuring this as LUNs 0 to 9 for iSCSI.
-- iSCSI LUN 9 is being used in the cluster as SBD device.
-- The cluster nodes have a second disk volume that is being configured as the `/dev/sdc` block device. This is used for Hana installation.
-- The iSCSI server init script leaves a log in the file `init-iscsi.log` located in the home directory of the admin user.
-- The cluster nodes init script leaves a log in the file `init-nodes.log` located in the home directory of the admin user.
-
-## Logs
-
-This configuration is leaving logs of the initializations scripts in the home directory of the remote admin user in each of the virtual machines. So connect as `ssh <admin_user>@<remote_ip>` and check the following files:
-
-* **init-iscsi.log**: only present in the iSCSI server. Check here the output of the commands used to set up the iSCSI target in the virtual machine.
-* **init-nodes.log**: present in the cluster nodes. Check here the output of the commands to set up the watchdog, iSCSI client, NTP server, HANA installation and cluster setup in each of the nodes.
-
-## Configure Terraform Access to Azure
-
-To setup access to Azure via Terraform, four parameters are required:
-
-* Subscription ID
-* Tenant ID
-* Client or App ID
-* Client or App Secret
-
-The subscription and tenant id can be seen with the command `az account show`:
-
-```
-$ az account show
-{
-  "environmentName": "AzureCloud",
-  "id": "<HERE IS THE SUBSCRIPTION ID>",
-  "isDefault": true,
-  "name": "<HERE IS THE SUBSCRIPTION NAME>",
-  "state": "Enabled",
-  "tenantId": "<HERE IS THE TENANT ID>",
-  "user": {
-    "name": "some@email.address.com",
-    "type": "user"
-  }
-}
-```
-
-For the client id and secret, an Azure AD Service Principal is required. If you have the necessary permissions, you can create one with:
-
-```
-az ad sp create-for-rbac --name my-terraform-ad-sp --role="Contributor" --scopes="/subscriptions/<HERE GOES THE SUBSCRIPTION ID>"
-```
-
-This command should output the necesary client id and client secret or password.
-
-More info in the [Terraform Install Configure document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure) in microsoft.com.
-
-Once all four required parameters are known, there are several ways to configure access for terraform:
-
-### In provider definition
-
-Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
-
-### Via Environment Variables
-
-Set the following environment variables before running terraform:
-
-```
-export ARM_SUBSCRIPTION_ID=your_subscription_id
-export ARM_CLIENT_ID=your_appId
-export ARM_CLIENT_SECRET=your_password
-export ARM_TENANT_ID=your_tenant_id
-export ARM_ACCESS_KEY=access_key
-```
-
-## Pending/To Do
-
-* HA Cluster resource templates include fixed IP adddresses and host names specific to this Azure terraform configuration. It would be helpful to change these files into proper templates so they can be used with AWS and GCP as well.
-* More tests with a working fixed configuration just to be sure that it is always working. The smallest VM sizes have presented problems, causing `terraform apply` to stay creating the VMs for over 15 minutes, failing to upload boot information, and also affecting `terraform destroy` after `terraform apply` times out.
-* Command line to determine whether there is enough quota available in the intended deployment zone for the resources, as an interrupted `terraform apply` command due to quotas, usually require the removal of the resources by hand.
-* The contents of the [provision](provision) subdirectory are the same between AWS and Azure configuration, so it could be useful to also move [init-nodes.sh](init-nodes.sh) and [init-iscsi.sh](init-iscsi.sh) there as long as the same code can be used without changes in all public cloud providers. For the moment, provision in AWS configuration points to the Azure configuration files.
-* This configuration is adding a `dlm` resource to the cluster, which is not available by default in SUSE Linux Enterprise Server for SAP Applications for public clouds prior to 12-SP4.
-* Add a prefix variable to resources that require unique names in Azure such as storage accounts and DNS names.
-* Salt everything?
+* Adapt the logic units to work as modules instead of plain terraform files
 
 ## Extra info
 
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
 
 Also check the documentation in https://www.terraform.io/docs.
-
