@@ -11,6 +11,7 @@ variable "sles4sap_uri" {
 
 variable "sles4sap_public" {
   type = "map"
+
   default = {
     "publisher" = "SUSE"
     "offer"     = "SLES-SAP-BYOS"
@@ -26,6 +27,7 @@ variable "iscsi_srv_uri" {
 
 variable "iscsi_srv_public" {
   type = "map"
+
   default = {
     "publisher" = "SUSE"
     "offer"     = "SLES-SAP-BYOS"

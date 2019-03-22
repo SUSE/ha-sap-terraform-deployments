@@ -11,9 +11,9 @@ variable "private_key_location" {
 }
 
 variable "storage_account_name" {
-  type    = "string"
+  type = "string"
 }
 
 variable "storage_account_key" {
-  type    = "string"
+  type = "string"
 }

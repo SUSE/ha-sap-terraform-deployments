@@ -4,8 +4,8 @@
 data "template_file" "init_server" {
   template = "${file("init-server.tpl")}"
 
- vars {
-   regcode     = "${var.reg_code}"
-   qa_mode     = "${var.qa_mode}"
- }
+  vars {
+    regcode = "${var.reg_code}"
+    qa_mode = "${var.qa_mode}"
+  }
 }
