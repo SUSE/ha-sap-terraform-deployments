@@ -3,13 +3,13 @@ nfs-client:
 
 sap_inst_directory:
   file.directory:
-    - name: /root/sap_inst
+    - name: {{grains['hana_inst_folder']}}
     - user: root
     - mode: 755
     - makedirs: True
   {% if grains['provider'] == 'libvirt' %}
   mount.mounted:
-    - name: /root/sap_inst
+    - name: {{grains['hana_inst_folder']}}
     - device: {{grains['sap_inst_media']}}
     - fstype: nfs
     - mkmnt: True

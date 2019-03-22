@@ -35,6 +35,7 @@ module "hana_node" {
   count                  = 2
   vcpu                   = 4
   memory                 = 32678
+  hana_inst_folder       = "${var.hana_inst_folder}"
   sap_inst_media         = "${var.sap_inst_media}"
   hana_disk_size         = "68719476736"
   host_ips               = "${var.host_ips}"

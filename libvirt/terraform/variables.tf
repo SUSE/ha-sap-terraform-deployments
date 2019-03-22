@@ -23,6 +23,11 @@ variable "sap_inst_media" {
   type        = "string"
 }
 
+variable "hana_inst_folder" {
+  description = "Folder where SAP HANA installation files are stored"
+  type        = "string"
+}
+
 variable "host_ips" {
   description = "IP addresses of the nodes"
   default     = ["192.168.106.15", "192.168.106.16"]
