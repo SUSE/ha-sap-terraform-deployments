@@ -1,7 +1,7 @@
 {% if grains['provider'] == 'libvirt' %}
-{% set fs_type = 'ext4'}
+{% set fs_type = 'ext4' %}
 {% else %}
-{% set fs_type = 'xfs'}
+{% set fs_type = 'xfs' %}
 {% endif %}
 
 
