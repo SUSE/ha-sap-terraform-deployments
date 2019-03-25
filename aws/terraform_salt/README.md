@@ -195,7 +195,7 @@ All this means that basically the default command `terraform apply` and be also 
  * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
  * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
  * **aws_region**: AWS region where to deploy the configuration.
- * **public_key_loaction**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
+ * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
  * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
  * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
  * **name**: hostname for the hana node without the domain part.
