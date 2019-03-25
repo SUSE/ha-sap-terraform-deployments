@@ -71,6 +71,11 @@ variable "sap_inst_media" {
   type        = "string"
 }
 
+variable "hana_inst_folder" {
+  description = "Folder where SAP HANA installation files are stored"
+  type        = "string"
+}
+
 // Provider-specific variables
 
 variable "memory" {

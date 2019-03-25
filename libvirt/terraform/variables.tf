@@ -26,6 +26,7 @@ variable "sap_inst_media" {
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = "string"
+  default     = "/root/sap_inst"
 }
 
 variable "host_ips" {
