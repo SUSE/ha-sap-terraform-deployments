@@ -9,8 +9,8 @@ ninstances = "2"
 # Region where to deploy the configuration
 aws_region = "eu-central-1"
 
-# SSH Public key to configure access to the remote instances
-public_key = "ADD_YOUR_SSH_PUBLIC_KEY_HERE"
+# SSH Public key location to configure access to the remote instances
+public_key_location = "/path/to/your/public/ssh/key"
 
 # Private SSH Key location
 private_key_location = "/path/to/your/private/ssh/key"

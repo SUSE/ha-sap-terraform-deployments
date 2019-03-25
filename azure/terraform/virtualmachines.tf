@@ -54,7 +54,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${var.public_key}"
+      key_data = "${file(var.public_key_location)}"
     }
   }
 
@@ -126,7 +126,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${var.public_key}"
+      key_data = "${file(var.public_key_location)}"
     }
   }
 
