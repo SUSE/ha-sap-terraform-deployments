@@ -26,7 +26,7 @@ These are the relevant files and what each provides:
 
 * [resources.tf](resources.tf): definition of the resource group and storage account to use.
 
-* [image.tf](image.tf): definition of the custom image to use for the virtual machines. Edit this to add image blob to use.
+* [image.tf](image.tf): definition of the custom image to use for the virtual machines. Edit this to add image blob to use. This file must be deleted if public images are used in the deployment.
 
 * [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
 
@@ -216,7 +216,7 @@ terraform plan
 terraform apply
 ```
 
-**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image. If a custom image is used [image.tf](image.tf) must be deleted to avoid the resource creation.
+**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image. If a public image is used [image.tf](image.tf) must be deleted to avoid the resource creation.
 
 It is also recommended to run the apply command with a timeout, as not all errors are easily detected by the terraform Azure provider, and you can run into a scenario where the infrastructure is apparently still being deployed for a long period (over 15 or 20 minutes), but it is actually broken or failing in the cloud.
 
