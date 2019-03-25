@@ -46,8 +46,8 @@ storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
 # Azure storage account secret key (key1 or key2)
 storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 
-# Azure storage account path
-hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path"
+# Azure storage account path where HANA installation master is located
+hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/hana/installation/master"
 
 # Local folder where HANA installation master will be mounted
 hana_inst_folder = "/root/sap_inst/"
