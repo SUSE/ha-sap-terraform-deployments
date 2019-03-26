@@ -219,6 +219,7 @@ hana_disk_device: ${var.hana_disk_device}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 iscsi_srv_ip: ${azurerm_network_interface.iscsisrv.private_ip_address}
+azure_lb_ip: ${azurerm_lb.mylb.private_ip_address}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
