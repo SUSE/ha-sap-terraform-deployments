@@ -64,7 +64,7 @@ resource "azurerm_image" "iscsi_srv" {
     os_type  = "Linux"
     os_state = "Generalized"
     blob_uri = "${var.iscsi_srv_uri}"
-    size_gb  = "16"
+    size_gb  = "32"
   }
 
   tags {
