@@ -29,7 +29,7 @@ output "configuration" {
 
   value = {
     timezone             = "${var.timezone}"
-    ssh_key_path         = "${var.ssh_key_path}"
+    public_key_location  = "${var.public_key_location}"
     domain               = "${var.domain}"
     name_prefix          = "${var.name_prefix}"
     use_shared_resources = "${var.use_shared_resources}"

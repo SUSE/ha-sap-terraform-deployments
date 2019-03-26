@@ -44,8 +44,8 @@ variable "count" {
   default     = 1
 }
 
-variable "ssh_key_path" {
-  description = "path of additional pub ssh key you want to use to access VMs, see README_ADVANCED.md"
+variable "public_key_location" {
+  description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
 
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50

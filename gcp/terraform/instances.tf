@@ -40,7 +40,7 @@ resource "google_compute_instance" "iscsisrv" {
   }
 
   metadata {
-    sshKeys = "root:${file(var.ssh_pub_key_file)}"
+    sshKeys = "root:${file(var.public_key_location)}"
   }
 }
 
@@ -89,7 +89,7 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   metadata {
-    sshKeys = "root:${file(var.ssh_pub_key_file)}"
+    sshKeys = "root:${file(var.public_key_location)}"
 
     # For a description of these:
     # https://storage.googleapis.com/sapdeploy/dm-templates/sap_hana_ha/template.yaml
@@ -129,7 +129,7 @@ resource "google_compute_instance" "clusternodes" {
     connection {
       type        = "ssh"
       user        = "root"
-      private_key = "${file(var.ssh_key_file)}"
+      private_key = "${file(var.private_key_location)}"
     }
   }
 }
