@@ -1,6 +1,6 @@
 cluster:
   name: 'hacluster'
-  init: 'ip-10-0-1-0'
+  init: 'hana01'
   interface: 'eth0'
   unicast: True
   watchdog:
@@ -17,7 +17,7 @@ cluster:
       parameters:
         sid: prd
         instance: 00
-        virtual_ip: 10.0.0.250
+        virtual_ip: 10.0.1.50
         virtual_ip_mask: 255.255.0.0
         platform: aws
         prefer_takeover: true
