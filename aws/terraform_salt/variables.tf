@@ -93,6 +93,12 @@ variable "hana_disk_device" {
   type        = "string"
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = "string"
+  default     = "xfs"
+}
+
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
   type        = "string"

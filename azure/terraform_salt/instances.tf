@@ -216,6 +216,7 @@ sbd_disk_device: /dev/sdd
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
+hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 iscsi_srv_ip: ${azurerm_network_interface.iscsisrv.private_ip_address}
