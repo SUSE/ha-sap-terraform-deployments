@@ -29,6 +29,12 @@ variable "hana_inst_folder" {
   default     = "/root/sap_inst"
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = "string"
+  default     = "xfs"
+}
+
 variable "host_ips" {
   description = "IP addresses of the nodes"
   default     = ["192.168.106.15", "192.168.106.16"]
