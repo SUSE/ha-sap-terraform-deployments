@@ -203,6 +203,7 @@ All this means that basically the default command `terraform apply` and be also 
  * **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
  * **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
  * **hana_disk_device**: device used by node where HANA will be installed.
+ * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
  * **iscsidev**: device used by the iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)

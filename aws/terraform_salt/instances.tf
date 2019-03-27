@@ -131,6 +131,7 @@ sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
+hana_fstype: ${var.hana_fstype}
 iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}

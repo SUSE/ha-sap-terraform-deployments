@@ -56,6 +56,12 @@ variable "hana_disk_size" {
   default     = "68719476736"              # 64GB
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = "string"
+  default     = "xfs"
+}
+
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = "list"
