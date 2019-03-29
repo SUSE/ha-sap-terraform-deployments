@@ -91,9 +91,9 @@ These are the relevant files and what each provides:
 
 - The `gcp_credentials_file` variable must contain the path to the JSON file with the GCP credentials created above.
 
-- The `ssh_key_file` variable must contain the path to your SSH private key.  This is used by the provisioner.
+- The `private_key_location` variable must contain the path to your SSH private key.  This is used by the provisioner.
 
-- The `ssh_pub_key_file` variable must contain the path to your SSH public key.  This is used to access the instances.
+- The `public_key_location` variable must contain the path to your SSH public key.  This is used to access the instances.
 
 - The `region` variable must contain the name of the desired region.
 

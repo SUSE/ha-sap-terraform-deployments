@@ -9,7 +9,7 @@ module "hana_node" {
   reg_additional_modules = "${var.reg_additional_modules}"
   additional_repos       = "${var.additional_repos}"
   additional_packages    = "${var.additional_packages}"
-  ssh_key_path           = "${var.ssh_key_path}"
+  public_key_location    = "${var.public_key_location}"
   host_ips               = "${var.host_ips}"
 
   grains = <<EOF

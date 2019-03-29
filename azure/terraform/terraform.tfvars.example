@@ -5,7 +5,7 @@ admin_user = "YOUR_USERNAME_HERE"
 private_key_location = "PATH_TO_PRIVATE_SSH_KEY"
 
 # Admin user's public key
-public_key = "STRING_OF_PUBLIC_SSH_KEY"
+public_key_location = "PATH_TO_PUBLIC_SSH_KEY"
 
 # Installation master share
 instmaster = "SHARE_TO_INSTALLATION_MASTER"
@@ -30,4 +30,3 @@ az_region = "westeurope"
 
 # Variable for init-nodes.sh script
 init-type = "all"
-

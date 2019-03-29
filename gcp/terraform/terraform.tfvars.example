@@ -19,11 +19,11 @@ iscsi_ip = "10.0.0.253"
 machine_type = "n1-highmem-8"
 machine_type_iscsi_server = "custom-1-2048"
 
-# SSH private key file
-ssh_key_file = "my-private.key"
+# SSH Public key location to configure access to the remote instances
+public_key_location = "/path/to/your/public/ssh/key"
 
-# SSH public key file
-ssh_pub_key_file = "my-public.key"
+# Private SSH Key location
+private_key_location = "/path/to/your/private/ssh/key"
 
 region = "europe-west1"
 

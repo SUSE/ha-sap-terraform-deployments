@@ -280,7 +280,7 @@ In the file [terraform.tfvars](terraform.tfvars) there are a number of variables
 
 * **admin_user**: name of the administration user to deploy in all virtual machines.
 * **private_key_location**: path to the local file containing the private SSH key to configure in the virtual machines to allow access.
-* **public_key**: SSH public key associated with the private key file. This public key is configured in the file `$HOME/.ssh/authorized_keys` of the administration user in the remote virtual machines.
+* **public_key_location**: SSH public key location associated with the private key file. This public key is configured in the file `$HOME/.ssh/authorized_keys` of the administration user in the remote virtual machines.
 * **instmaster**: path to a SMB/CIFS share containing the installation master of Hana.
 * **instmaster_user**: user to use to connect to the previous share.
 * **instmaster_pass**: password to use to connect to the previous share.

@@ -29,9 +29,9 @@ script:
       fi ;
       /tmp/terraform init ;
       if [[ "$provider" == "gcp" ]]; then
-        /tmp/terraform validate -var-file=terraform.tfvars.example -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var ssh_key_file=/dev/null -var ssh_pub_key_file=/dev/null ;
+        /tmp/terraform validate -var-file=terraform.tfvars.example -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var private_key_location=/dev/null -var public_key_location=/dev/null ;
       else
-        /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null ;
+        /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null -var public_key_location=/dev/null ;
       fi ;
       if [[ "$provider" == "aws" ]]; then
         cd ../terraform_salt ;

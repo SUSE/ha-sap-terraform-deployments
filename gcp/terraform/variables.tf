@@ -9,8 +9,13 @@ variable "gcp_credentials_file" {
 
 variable "suse_regcode" {}
 
-variable "ssh_key_file" {}
-variable "ssh_pub_key_file" {}
+variable "private_key_location" {
+  type = "string"
+}
+
+variable "public_key_location" {
+  type = "string"
+}
 
 variable "ip_cidr_range" {}
 

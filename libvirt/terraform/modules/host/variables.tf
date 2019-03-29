@@ -44,7 +44,7 @@ variable "grains" {
   default     = ""
 }
 
-variable "ssh_key_path" {
+variable "public_key_location" {
   description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
 
