@@ -52,7 +52,7 @@
         "unmap_granularity_alignment": 0,
         "unmap_zeroes_data": 0
       },
-      "dev": "/dev/xvdd5",
+      "dev": "{{ grains['iscsidev'] }}5",
       "name": "sde",
       "plugin": "block",
       "readonly": false,
@@ -110,7 +110,7 @@
         "unmap_granularity_alignment": 0,
         "unmap_zeroes_data": 0
       },
-      "dev": "/dev/xvdd4",
+      "dev": "{{ grains['iscsidev'] }}4",
       "name": "sdd",
       "plugin": "block",
       "readonly": false,
@@ -168,7 +168,7 @@
         "unmap_granularity_alignment": 0,
         "unmap_zeroes_data": 0
       },
-      "dev": "/dev/xvdd3",
+      "dev": "{{ grains['iscsidev'] }}3",
       "name": "sdc",
       "plugin": "block",
       "readonly": false,
@@ -226,7 +226,7 @@
         "unmap_granularity_alignment": 0,
         "unmap_zeroes_data": 0
       },
-      "dev": "/dev/xvdd2",
+      "dev": "{{ grains['iscsidev'] }}2",
       "name": "sdb",
       "plugin": "block",
       "readonly": false,
@@ -284,7 +284,7 @@
         "unmap_granularity_alignment": 0,
         "unmap_zeroes_data": 0
       },
-      "dev": "/dev/xvdd1",
+      "dev": "{{ grains['iscsidev'] }}1",
       "name": "sda",
       "plugin": "block",
       "readonly": false,

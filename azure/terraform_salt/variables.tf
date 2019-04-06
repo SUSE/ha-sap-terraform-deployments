@@ -1,78 +1,36 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
-# Map used for suse-sles-sap-15-byos-v20180816-hvm-ssd-x86_64
-# SLES4SAP 15 in eu-central-1: ami-024f50fdc1f2f5603
-# Used for cluster nodes
-
-variable "sles4sap" {
-  type = "map"
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
-}
-
-# Map used for suse-sles-sap-15-byos-v20180816-hvm-ssd-x86_64
-# SLES4SAP 15 in eu-central-1: ami-024f50fdc1f2f5603
-# Used for iscsi server
-
-variable "iscsi_srv" {
-  type = "map"
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
-}
-
 # Variables for type of instances to use and number of cluster nodes
-# Use with: terraform apply -var instancetype=t2.micro -var ninstances=2
+# Use with: terraform apply -var instancetype=Small -var ninstances=2
 
 variable "instancetype" {
   type    = "string"
-  default = "t2.micro"
+  default = "Standard_E4s_v3"
 }
+
+# For reference:
+# Standard_B1ms has 1 VCPU, 2GiB RAM, 1 NIC, 2 data disks and 4GiB SSD
+# Standard_D2s_v3 has 2 VCPU, 8GiB RAM, 2 NICs, 4 data disks and 16GiB SSD disk
+# Standard_D8s_v3 has 8 VCPU, 32GiB RAM, 2 NICs, 16 data disks and 64GiB SSD disk
+# Standard_E4s_v3 has 4 VCPU, 32GiB RAM, 2 NICs, 64GiB SSD disk
+# Standard_M32ts has 32 VCPU, 192GiB RAM, 1000 GiB SSD
 
 variable "ninstances" {
   type    = "string"
   default = "2"
 }
 
-variable "aws_region" {
-  type = "string"
-}
-
 variable "name" {
   description = "hostname, without the domain part"
   type        = "string"
+  default     = "hana"
 }
 
-variable "public_key_location" {
-  type = "string"
-}
+# Variable for default region where to deploy resources
 
-variable "private_key_location" {
-  type = "string"
-}
-
-variable "aws_credentials" {
+variable "az_region" {
   type    = "string"
-  default = "~/.aws/credentials"
+  default = "westeurope"
 }
 
 variable "init_type" {

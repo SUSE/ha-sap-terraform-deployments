@@ -56,6 +56,12 @@ variable "hana_disk_size" {
   default     = "68719476736"              # 64GB
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = "string"
+  default     = "xfs"
+}
+
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = "list"
@@ -68,6 +74,11 @@ variable "sbd_disk_id" {
 
 variable "sap_inst_media" {
   description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
+  type        = "string"
+}
+
+variable "hana_inst_folder" {
+  description = "Folder where SAP HANA installation files are stored"
   type        = "string"
 }
 
