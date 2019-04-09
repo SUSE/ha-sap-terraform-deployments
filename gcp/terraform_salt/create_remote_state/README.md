@@ -16,7 +16,7 @@ The bucket name must be globally unique and conform to certain requirements desc
 2. Run `terraform init`
 3. Run `terraform plan` to check whether the following command will succeed:
 4. Run `terraform apply`
-5. Add a [remote-state.tf](../remote-state.tf) file to your proyect.  Make sure that the values for the `bucket` are the same.
+5. Rename the [remote-state.sample](../remote-state.sample) file to remote-state.tf inside your project. Make sure that the values for the `bucket` are the same.
 6. In your proyect directory, run the command `terraform init --upgrade` to reset the state file.
 7. Run `terraform plan` to check whether the following command will succeed:
 8. Run `terraform apply`
