@@ -122,6 +122,7 @@ resource "aws_instance" "clusternodes" {
   provisioner "file" {
     content = <<EOF
 provider: "aws"
+region: ${var.aws_region}
 role: "hana_node"
 name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
