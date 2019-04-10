@@ -17,16 +17,16 @@ az_region = "westeurope"
 
 # Public sles4sap image
 sles4sap_public = {
-  #"publisher" = "SUSE"
-  #"offer"     = "SLES-SAP-BYOS"
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
   "sku"       = "12-sp4"
   "version"   = "2019.03.06"
 }
 
 # Public iscsi server image
 iscsi_srv_public = {
-  #"publisher" = "SUSE"
-  #"offer"     = "SLES-SAP-BYOS"
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
   "sku"       = "15"
   "version"   = "2018.08.20"
 }
