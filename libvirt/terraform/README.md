@@ -1,3 +1,4 @@
+
 # Terraform cluster deployment with Libvirt
 
 This terraform module deploys a cluster running the SUSE Linux Enterprise Server
@@ -26,7 +27,7 @@ host module with some particular updates.
 - [default](../../salt/default): Default configuration for each node. Install the most
 basic packages and apply basic configuration.
 - [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](../../salt/hana_node/files/pillar/hana.sls)
+SAP HANA and enable system replication according [pillar](../../pillar_examples/libvirt/hana.sls)
 data.
 
 ## How to use
@@ -42,12 +43,12 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../salt/hana_node/files/pillar/hana.sls) and [cluster.sls](../../salt/hana_node/files/pillar/cluster.sls).
+To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../pillar_examples/libvirt/hana.sls) and [cluster.sls](../../pillar_examples/libvirt/cluster.sls).
 Configure these files according the wanted cluster type.
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
 - https://github.com/SUSE/saphanabootstrap-formula
-- https://github.com/krig/habootstrap-formula
+- https://github.com/SUSE/habootstrap-formula
 
 The easiest way to customize the variables is using a *terraform.tfvars* file.
 Here an example:
@@ -120,11 +121,11 @@ If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deploymen
 
 #### hana.sls
 
-**hana.sls** is used to configure the SAP HANA cluster. Check the options in: [saphanabootstrap-formula](https://github.com/arbulu89/saphanabootstrap-formula)
+**hana.sls** is used to configure the SAP HANA cluster. Check the options in: [saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
 
 #### cluster.sls
 
-**cluster.sls** is used to configure the HA cluster. Check the options in: [habootstrap-formula](https://github.com/krig/habootstrap-formula)
+**cluster.sls** is used to configure the HA cluster. Check the options in: [habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
 
 
 ### Destroying the cluster
