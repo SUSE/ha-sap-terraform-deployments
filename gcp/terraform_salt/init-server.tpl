@@ -8,6 +8,10 @@ while [[ ! -d "/root/salt/" ]];do
   sleep 15
 done
 
+# Registration for install salt-minion only
+# Node servers are deregistered just after
+# If you don't use qa_mode, a complete registration is done by salt later
+
 if grep -q 'role: "iscsi_srv"' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}
 elif [[ ! -e /usr/bin/salt-minion ]]; then

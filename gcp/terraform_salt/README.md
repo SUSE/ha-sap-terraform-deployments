@@ -1,4 +1,3 @@
-
 # Google Cloud Platform deployment with Terraform
 
 This Terraform configuration deploys SAP HANA in a High-Availability Cluster on SUSE Linux Enterprise Server for SAP Applications in the **Google Cloud Platform**.
@@ -112,6 +111,8 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **images_path_bucket**: the name of the Google Storage bucket with the SLES image.
 
 * **sles4sap_os_image_file**: the name of the SLES4SAP image.
+
+**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions. Use the variable `sles_os_image_file` below.
 
 * **sles_os_image_file**: the name of the SLES image for the iSCSI server used for SBD stonith.
 
