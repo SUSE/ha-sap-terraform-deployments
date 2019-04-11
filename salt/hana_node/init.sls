@@ -1,5 +1,6 @@
 include:
-  {% if grains['provider'] == 'aws' %}
+  - hana_node.packages
+  {% if grains['provider'] in ('aws', 'gcp',) %}
   - hana_node.add_credentials
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   - hana_node.download_hana_inst
