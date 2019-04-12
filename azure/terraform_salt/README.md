@@ -1,3 +1,4 @@
+
 # Azure Public Cloud deployment with terraform and Salt
 
 The terraform configuration files in this directory can be used to create the infrastructure required to install a SAP HanaSR cluster on Suse Linux Enterprise Server for SAP Applications in **Azure**.
@@ -57,6 +58,8 @@ The key files need to be named as you defined it in `terraform.tfvars` file.
 After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
 
 ### Variables
+
+**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the      iSCSI salt formula is not compatible with lower versions.
 
 In the file [terraform.tfvars.example](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 

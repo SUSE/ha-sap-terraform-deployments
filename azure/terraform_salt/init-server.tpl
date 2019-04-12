@@ -1,12 +1,16 @@
 #!/bin/bash -xe
 
-# exec > /tmp/init_server.log 2>&1
+exec > /tmp/init_server.log 2>&1
 
 # Wait for the provisioner file step in Terraform
 while [[ ! -d "/root/salt/" ]];do
   echo "Waiting for Salt directory..."
   sleep 5
 done
+
+# Registration for install salt-minion only
+# Node servers are deregistered just after
+# If you don't use qa_mode, a complete registration is done by salt later
 
 if grep -q 'role: "iscsi_srv"' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}

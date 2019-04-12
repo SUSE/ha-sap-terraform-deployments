@@ -46,16 +46,16 @@ These are the relevant files and what each provides:
 
 ## How to use
 
-To use, copy the `*.tf`, `*.tpl` and `terraform.tfvars` files and the `provision` directory into your working directory.
+To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your working directory and rename `terraform.tfvars.example` to `terraform.tfvars`.
 
 Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
 
 ```
 mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
 ```
-The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars) file.
+The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars.example) file.
 
-To deploy the cluster only the parameters of three files should be changed:  [terraform.tfvars](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/aws/terraform_salt/terraform.tfvars),  hana.sls and cluster.sls. Configure these files according to the wanted cluster type.
+To deploy the cluster only the parameters of three files should be changed:  `terraform.tfvars`,  `hana.sls` and `cluster.sls`. Configure these files according to the wanted cluster type.
 
 ### The terraform.tfvars file
 The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here is an example:
@@ -86,7 +86,7 @@ reg_additional_modules = {
 }
  ```
 
-Following that edit in the [terraform.tfvars](terraform.tfvars) file:
+Following that edit in the [terraform.tfvars](terraform.tfvars.example) file:
 
 * The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
 * The location of the private key associated with that public key.
@@ -124,9 +124,11 @@ terraform apply
 
 This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
 
-If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [terraform.tfvars](terraform.tfvars) file for your region of choice.
+If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [terraform.tfvars](terraform.tfvars.example) file for your region of choice.
 
-To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars) file:
+**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions.
+
+To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
 ```
  # Custom AMI for nodes
 sles4sap = {
@@ -160,7 +162,7 @@ Check outputs with:
 terraform output
 ```
 
-By default this configuration will deploy the infrastructure to the `eu-central-1` region of AWS. Internally, the provided terraform files are only configured for the European (eu-central-1, eu-west-1, eu-west-2 and eu-west-3) and North American zones (us-east-1, us-east-2, us-west-1, us-west-2 and ca-central-1), but this as well as the default zone can be changed by editing the [variables.tf](variables.tf) or the [terraform.tfvars](terraform.tfvars) files.
+By default this configuration will deploy the infrastructure to the `eu-central-1` region of AWS. Internally, the provided terraform files are only configured for the European (eu-central-1, eu-west-1, eu-west-2 and eu-west-3) and North American zones (us-east-1, us-east-2, us-west-1, us-west-2 and ca-central-1), but this as well as the default zone can be changed by editing the [variables.tf](variables.tf) or the [terraform.tfvars](terraform.tfvars.example) files.
 
 It is also possible to change the AWS region from the command line with the `-var aws_region` parameter, for example:
 
@@ -190,7 +192,7 @@ All this means that basically the default command `terraform apply` and be also 
 
 ### Variables
 
- In the file [terraform.tfvars](terraform.tfvars) there are a number of variables that control what is deployed. Some of these variables are:
+ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
  * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
  * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
