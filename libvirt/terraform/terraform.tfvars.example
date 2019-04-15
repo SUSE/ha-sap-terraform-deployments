@@ -1,0 +1,17 @@
+qemu_uri = "qemu:///system"
+sap_inst_media = "url-to-your-nfs-share"
+base_image = "url-to-your-sles4sap-image"
+name_prefix = "your-name"
+iprange = "192.168.XXX.Y/24"
+host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+additional_repos = {}
+ha_sap_deployment_repo = "url-to-your-repository"
+
+# Optional SUSE Customer Center Registration parameters
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
