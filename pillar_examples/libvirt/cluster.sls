@@ -21,7 +21,7 @@ cluster:
         sid: prd
         instance: 00
         virtual_ip: 192.168.107.50
-        virtual_ip_mask: 255.255.255.0
+        virtual_ip_mask: 24
         platform: libvirt
         prefer_takeover: true
         auto_register: false

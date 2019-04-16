@@ -41,9 +41,9 @@ cluster:
         virtual_ip: {{ grains['azure_lb_ip'] }}
         {% endif %}
         {% if grains['provider'] == 'aws' %}
-        virtual_ip_mask: 255.255.0.0
+        virtual_ip_mask: 16
         {% else %}
-        virtual_ip_mask: 255.255.255.0
+        virtual_ip_mask: 24
         {% endif %}
         platform: {{ grains['provider'] }}
         prefer_takeover: true
