@@ -91,7 +91,7 @@ partitions:
 
 resource "google_compute_instance" "clusternodes" {
   machine_type            = "${var.machine_type}"
-  name                    = "${terraform.workspace}-node-${count.index}"
+  name                    = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
   metadata_startup_script = "${data.template_file.init_server.rendered}"
   count                   = "${var.ninstances}"
   zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
@@ -161,9 +161,9 @@ resource "google_compute_instance" "clusternodes" {
     content = <<EOF
 provider: "gcp"
 role: "hana_node"
-name_prefix: ${var.name}
+name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
 domain: "tf.local"
 sbd_disk_device: /dev/sdd
 hana_inst_folder: ${var.hana_inst_folder}
