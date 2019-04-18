@@ -4,7 +4,7 @@
   pkgrepo.managed:
     - humanname: {{ label }}
     - baseurl: {{ url }}
-    - priority: 94
+    - priority: 120
     - gpgcheck: 0
 {% endfor %}
 {% endif %}
