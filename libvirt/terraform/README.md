@@ -99,7 +99,7 @@ with the needed package and try again.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
-- **ha_sap_deployment_repo**: Repository url used to install install HA/SAP deployment packages
+- **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **additional_repos**: Additional repos to add to the guest machines.
 - **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 - **reg_email**: Email to be associated with the system registration. This parameter is optional.
