@@ -7,3 +7,4 @@ ha-factory-repo:
     - baseurl: {{ grains['ha_sap_deployment_repo'] }}/SLE_15/
 {% endif %}
     - gpgautoimport: True
+    - priority: 110
