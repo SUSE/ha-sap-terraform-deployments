@@ -152,7 +152,6 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
-
 # Network variables
 # Pay attention to set ip address according to the cidr range
 
