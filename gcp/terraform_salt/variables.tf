@@ -143,8 +143,12 @@ variable "additional_packages" {
   default     = []
 }
 
+# Repository url used to install install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install install HA/SAP deployment packages (OS version must be ommited)"
+  description = "Repository url used to install install HA/SAP deployment packages"
   type        = "string"
 }
 

@@ -128,7 +128,7 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `GCP Bucket`.
 * **hana_inst_disk_device**: device used by node where HANA will be downloaded.
 * **hana_disk_device**: device used by node where HANA will be installed.
-* **ha_sap_deployment_repo**: repository with HA packages
+* **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 *  **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
 * **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
