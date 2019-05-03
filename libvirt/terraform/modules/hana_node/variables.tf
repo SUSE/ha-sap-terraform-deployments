@@ -82,6 +82,11 @@ variable "hana_inst_folder" {
   type        = "string"
 }
 
+variable "enable_salt" {
+  description = "Enable salt provisioning"
+  default     =  true
+}
+
 // Provider-specific variables
 
 variable "memory" {

@@ -60,11 +60,6 @@ resource "libvirt_domain" "domain" {
     xslt = "${file("modules/host/shareable.xsl")}"
   }
 
-  connection {
-    user     = "root"
-    password = "linux"
-  }
-
   console {
     type        = "pty"
     target_port = "0"
@@ -85,46 +80,6 @@ resource "libvirt_domain" "domain" {
 
   cpu {
     mode = "host-passthrough"
-  }
-
-  provisioner "file" {
-    source      = "../../salt"
-    destination = "/root"
-  }
-
-  provisioner "file" {
-    content = <<EOF
-
-name_prefix: ${var.name}
-hostname: ${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}
-domain: ${var.base_configuration["domain"]}
-timezone: ${var.base_configuration["timezone"]}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
-additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-authorized_keys: [${trimspace(file(var.base_configuration["public_key_location"]))},${trimspace(file(var.public_key_location))}]
-host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-host_ip: ${element(var.host_ips, count.index)}
-
-${var.grains}
-
-EOF
-
-    destination = "/etc/salt/grains"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sh /root/salt/deployment.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sh /root/salt/formula.sh",
-    ]
   }
 }
 

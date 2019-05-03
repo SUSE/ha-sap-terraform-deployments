@@ -78,3 +78,8 @@ variable "ha_sap_deployment_repo" {
   description = "Repository url used to install install HA/SAP deployment packages"
   type        = "string"
 }
+
+variable "enable_salt" {
+  description = "Enable salt provisioning"
+  default     =  true
+}

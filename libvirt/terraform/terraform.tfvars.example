@@ -20,3 +20,5 @@ ha_sap_deployment_repo = ""
 #    "sle-module-containers/12/x86_64" = ""
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
+# To disable the salt provisioning
+#enable_salt = false

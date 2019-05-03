@@ -61,6 +61,11 @@ variable "host_ips" {
   type        = "list"
 }
 
+variable "enable_salt" {
+  description = "Enable salt provisioning"
+  default     =  true
+}
+
 // Provider-specific variables
 
 variable "memory" {
