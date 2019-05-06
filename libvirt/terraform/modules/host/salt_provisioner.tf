@@ -6,6 +6,15 @@ terraform {
   required_version = "~> 0.11.7"
 }
 
+# Template file to launch the salt provisioing script
+data "template_file" "salt_provisioner" {
+  template = "${file("modules/host/salt_provisioner_script.tpl")}"
+
+  vars {
+    regcode = "${var.reg_code}"
+  }
+}
+
 resource "null_resource" "hana_node_provisioner" {
 
   count = "${var.provisioner == "salt" ? libvirt_domain.domain.count : 0}"
@@ -23,6 +32,11 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     source      = "../../salt"
     destination = "/root"
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.salt_provisioner.rendered}"
+    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -50,8 +64,8 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "sh /root/salt/deployment.sh",
-      "sh /root/salt/formula.sh",
+      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "sleep 1" # Workaround to let the process start in background properly
     ]
   }
 }

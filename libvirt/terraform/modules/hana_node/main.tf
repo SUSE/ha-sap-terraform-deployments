@@ -12,6 +12,7 @@ module "hana_node" {
   public_key_location    = "${var.public_key_location}"
   host_ips               = "${var.host_ips}"
   provisioner            = "${var.provisioner}"
+  background             = "${var.background}"
 
   grains = <<EOF
 

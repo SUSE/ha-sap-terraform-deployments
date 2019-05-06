@@ -66,6 +66,11 @@ variable "provisioner" {
   default     =  "salt"
 }
 
+variable "background" {
+  description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  default     =  false
+}
+
 // Provider-specific variables
 
 variable "memory" {
