@@ -1,5 +1,5 @@
 resource "google_compute_disk" "iscsi_data" {
-  name  = "iscsi-data"
+  name  = "${terraform.workspace}-${var.name}-iscsi-data"
   type  = "pd-standard"
   size  = "10"
   count = "${var.use_gcp_stonith == "true" ? 0 : 1}"
@@ -23,7 +23,8 @@ resource "google_compute_disk" "backup" {
 }
 
 resource "google_compute_image" "sles_bootable_image" {
-  name = "${terraform.workspace}-${var.name}-sles"
+  count = "${var.use_custom_image == "true" ? 1 : 0}"
+  name  = "${terraform.workspace}-${var.name}-sles"
 
   raw_disk {
     source = "${var.storage_url}/${var.images_path_bucket}/${var.sles_os_image_file}"
@@ -31,7 +32,8 @@ resource "google_compute_image" "sles_bootable_image" {
 }
 
 resource "google_compute_image" "sles4sap_bootable_image" {
-  name = "${terraform.workspace}-${var.name}-sles4sap"
+  count = "${var.use_custom_image == "true" ? 1 : 0}"
+  name  = "${terraform.workspace}-${var.name}-sles4sap"
 
   raw_disk {
     source = "${var.storage_url}/${var.images_path_bucket}/${var.sles4sap_os_image_file}"
