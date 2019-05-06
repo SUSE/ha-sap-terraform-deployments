@@ -34,9 +34,9 @@ These are the relevant files and what each provides:
 
 - [instances.tf](instances.tf): definition of the EC2 instances to create on deployment.
 
-- [templates.tf](templates.tf): definition of templates to use in the `user_data` field of the EC2 instances.
+- [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [init-server.tpl](init-server.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
@@ -84,6 +84,8 @@ reg_additional_modules = {
     "sle-module-containers/12/x86_64" = ""
     "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 }
+provisioner = "salt"
+background  = false
  ```
 
 Following that edit in the [terraform.tfvars](terraform.tfvars.example) file:
@@ -210,6 +212,8 @@ All this means that basically the default command `terraform apply` and be also 
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
+- **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+- **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
 * **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
@@ -307,7 +311,7 @@ There are some fixed values used throughout the terraform configuration:
 
 This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
 
-* **/tmp/init_server.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
+* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
 * **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
 * **/tmp/salt-formula.log**: Same as above but for salt-formula.
 
