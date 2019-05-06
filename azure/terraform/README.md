@@ -69,8 +69,6 @@ To check the values for publisher, offer, sku and version of the available publi
 az vm image list --output table --publisher SUSE --all
 ```
 
-The file [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) is a copy of [virtualmachines.tf](virtualmachines.tf) but using the `SUSE SLES-SAP-BYOS 12-SP3` public image referenced above instead of a private image. Rename that file as [virtualmachines.tf](virtualmachines.tf) to use that OS image with this configuration or edit the `storage_image_reference` as needed to use a different public image.
-
 If using a public image, skip to the [how to use section](#how-to-use).
 
 ### Setup Azure account
@@ -216,8 +214,6 @@ terraform plan
 terraform apply
 ```
 
-**Important**: Remember to rename [virtualmachines.tf-publicimg](virtualmachines.tf-publicimg) to [virtualmachines.tf](virtualmachines.tf) if using a public OS image. If a public image is used [image.tf](image.tf) must be deleted to avoid the resource creation.
-
 It is also recommended to run the apply command with a timeout, as not all errors are easily detected by the terraform Azure provider, and you can run into a scenario where the infrastructure is apparently still being deployed for a long period (over 15 or 20 minutes), but it is actually broken or failing in the cloud.
 
 ```
@@ -289,6 +285,7 @@ In the file [terraform.tfvars](terraform.tfvars) there are a number of variables
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **az_region**: Azure region where to deploy the configuration.
 * **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
+* **use_custom_image**: Set to `true` if you want to test a custom image.
 
 ## Relevant Details
 

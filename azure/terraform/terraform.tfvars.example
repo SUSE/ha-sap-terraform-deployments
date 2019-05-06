@@ -30,3 +30,6 @@ az_region = "westeurope"
 
 # Variable for init-nodes.sh script
 init-type = "all"
+
+# Set to true to use custom image
+use_custom_image = "false"

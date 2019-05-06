@@ -33,3 +33,7 @@ variable "init-type" {
   type    = "string"
   default = "all"
 }
+
+variable "use_custom_image" {
+  type = "string"
+}

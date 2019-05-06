@@ -32,7 +32,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    id = "${azurerm_image.custom.id}"
+    publisher = "SUSE"
+    offer     = "SLES-SAP-BYOS"
+    sku       = "12-SP3"
+    version   = "2018.08.17"
   }
 
   storage_data_disk {
@@ -105,7 +108,12 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_image_reference {
-    id = "${azurerm_image.custom.id}"
+    # XXX: The join() is a workaround for https://github.com/hashicorp/terraform/issues/11566
+    id        = "${var.use_custom_image == "true" ? "${join("", azurerm_image.custom.*.id)}" : ""}"
+    publisher = "${var.use_custom_image != "true" ? "SUSE" : ""}"
+    offer     = "${var.use_custom_image != "true" ? "SLES-SAP-BYOS" : ""}"
+    sku       = "${var.use_custom_image != "true" ? "12-SP3" : ""}"
+    version   = "${var.use_custom_image != "true" ? "2018.08.17" : ""}"
   }
 
   storage_data_disk {
