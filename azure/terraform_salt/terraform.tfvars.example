@@ -88,6 +88,12 @@ ha_sap_deployment_repo = ""
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
+# To disable the provisioning process
+#provisioner = ""
+
+# Run provisioner execution in background
+#background = true
+
 # QA variables
 
 # Define if the deployment is using for testing purpose

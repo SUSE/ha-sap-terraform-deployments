@@ -40,6 +40,10 @@ These are the relevant files and what each provides:
 
 * [instances.tf](instances.tf): definition of the virtual machines to create on deployment.
 
+- [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
+
+- [salt_provisioner_script.tpl](salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+
 * [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
@@ -81,6 +85,8 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
+- **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+- **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
 * **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
