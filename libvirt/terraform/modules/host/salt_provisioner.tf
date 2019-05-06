@@ -8,7 +8,7 @@ terraform {
 
 resource "null_resource" "hana_node_provisioner" {
 
-  count = "${var.enable_salt ? libvirt_domain.domain.count : 0}"
+  count = "${var.provisioner == "salt" ? libvirt_domain.domain.count : 0}"
 
   triggers = {
       cluster_instance_ids = "${join(",", libvirt_domain.domain.*.id)}"

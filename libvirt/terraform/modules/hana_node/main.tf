@@ -11,7 +11,7 @@ module "hana_node" {
   additional_packages    = "${var.additional_packages}"
   public_key_location    = "${var.public_key_location}"
   host_ips               = "${var.host_ips}"
-  enable_salt            = "${var.enable_salt}"
+  provisioner            = "${var.provisioner}"
 
   grains = <<EOF
 

@@ -79,7 +79,7 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
-variable "enable_salt" {
-  description = "Enable salt provisioning"
-  default     =  true
+variable "provisioner" {
+  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
+  default     =  "salt"
 }

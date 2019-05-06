@@ -20,7 +20,7 @@ network and generic data are managed here.
 - [host](modules/host): The generic SAP HANA node definition. This modules defines the most
 important features of the each node (attach used partitions, networks, OS parameters, etc).
 Besides that, the different kind of provisioners are available in this module. By now, only
-salt is supported but more could be added just adding other `provisioner` files like
+`salt` is supported but more could be added just adding other `provisioner` files like
 [salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
 host module with some particular updates.
@@ -78,8 +78,8 @@ reg_additional_modules = {
     "sle-module-containers/12/x86_64" = ""
     "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 }
-# To disable the salt provisioning
-#enable_salt = false
+# To disable the provisioning process
+#provisioner = ""
 ```
 
 After changing the values, run the terraform commands:
@@ -106,7 +106,7 @@ with the needed package and try again.
 - **host_ips**: Each host IP address (sequential order).
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **additional_repos**: Additional repos to add to the guest machines.
-- **enable_salt**: Set to True to execute the salt provisioning stored in [salt](../../salt) (this is the default option). If set to False only the terraform part is executed
+- **provisioner**: Select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
 - **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 - **reg_email**: Email to be associated with the system registration. This parameter is optional.
 - **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is the _module name_ and the value is the _registration code_. If the _registration code_ is not needed, set an empty string as value. The module format must follow SUSEConnect convention:
