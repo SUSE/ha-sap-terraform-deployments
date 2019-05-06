@@ -16,15 +16,14 @@ data "template_file" "salt_provisioner" {
 }
 
 resource "null_resource" "hana_node_provisioner" {
-
   count = "${var.provisioner == "salt" ? libvirt_domain.domain.count : 0}"
 
   triggers = {
-      cluster_instance_ids = "${join(",", libvirt_domain.domain.*.id)}"
+    cluster_instance_ids = "${join(",", libvirt_domain.domain.*.id)}"
   }
 
   connection {
-    host = "${element(libvirt_domain.domain.*.network_interface.0.addresses.0, count.index)}"
+    host     = "${element(libvirt_domain.domain.*.network_interface.0.addresses.0, count.index)}"
     user     = "root"
     password = "linux"
   }
@@ -65,7 +64,7 @@ EOF
   provisioner "remote-exec" {
     inline = [
       "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1" # Workaround to let the process start in background properly
-    ]
+      "sleep 1",
+    ] # Workaround to let the process start in background properly
   }
 }

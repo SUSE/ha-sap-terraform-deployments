@@ -171,7 +171,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  default     =  false
+  default     = false
 }
 
 # Specific QA variables

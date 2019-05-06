@@ -16,11 +16,10 @@ data "template_file" "salt_provisioner" {
 }
 
 resource "null_resource" "iscsi_provisioner" {
-
   count = "${var.provisioner == "salt" ? azurerm_virtual_machine.iscsisrv.count : 0}"
 
   triggers = {
-      iscsi_id = "${join(",", azurerm_virtual_machine.iscsisrv.*.id)}"
+    iscsi_id = "${join(",", azurerm_virtual_machine.iscsisrv.*.id)}"
   }
 
   connection {
@@ -79,17 +78,16 @@ partitions:
     inline = [
       "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1" # Workaround to let the process start in background properly
-    ]
+      "sleep 1",
+    ] # Workaround to let the process start in background properly
   }
 }
 
 resource "null_resource" "hana_node_provisioner" {
-
   count = "${var.provisioner == "salt" ? azurerm_virtual_machine.clusternodes.count : 0}"
 
   triggers = {
-      iscsi_id = "${join(",", azurerm_virtual_machine.clusternodes.*.id)}"
+    iscsi_id = "${join(",", azurerm_virtual_machine.clusternodes.*.id)}"
   }
 
   connection {
@@ -145,7 +143,7 @@ EOF
     inline = [
       "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1" # Workaround to let the process start in background properly
-    ]
+      "sleep 1",
+    ] # Workaround to let the process start in background properly
   }
 }

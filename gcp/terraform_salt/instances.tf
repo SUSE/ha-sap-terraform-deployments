@@ -11,7 +11,7 @@ resource "google_compute_instance" "iscsisrv" {
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-    address = "${var.iscsi_ip}"
+    address    = "${var.iscsi_ip}"
 
     access_config {
       nat_ip = ""
@@ -100,7 +100,7 @@ resource "google_compute_instance" "clusternodes" {
 
   network_interface {
     subnetwork = "${google_compute_subnetwork.ha_subnet.name}"
-    address = "${element(var.host_ips, count.index)}"
+    address    = "${element(var.host_ips, count.index)}"
 
     access_config {
       nat_ip = ""

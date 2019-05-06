@@ -63,12 +63,12 @@ variable "host_ips" {
 
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     =  "salt"
+  default     = "salt"
 }
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  default     =  false
+  default     = false
 }
 
 // Provider-specific variables
