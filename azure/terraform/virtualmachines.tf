@@ -32,10 +32,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    publisher = "SUSE"
-    offer     = "SLES-SAP-BYOS"
-    sku       = "12-SP3"
-    version   = "2018.08.17"
+    publisher = "${var.iscsi_srv_public["publisher"]}"
+    offer     = "${var.iscsi_srv_public["offer"]}"
+    sku       = "${var.iscsi_srv_public["sku"]}"
+    version   = "${var.iscsi_srv_public["version"]}"
   }
 
   storage_data_disk {
@@ -110,10 +110,10 @@ resource "azurerm_virtual_machine" "clusternodes" {
   storage_image_reference {
     # XXX: The join() is a workaround for https://github.com/hashicorp/terraform/issues/11566
     id        = "${var.use_custom_image == "true" ? "${join("", azurerm_image.custom.*.id)}" : ""}"
-    publisher = "${var.use_custom_image != "true" ? "SUSE" : ""}"
-    offer     = "${var.use_custom_image != "true" ? "SLES-SAP-BYOS" : ""}"
-    sku       = "${var.use_custom_image != "true" ? "12-SP3" : ""}"
-    version   = "${var.use_custom_image != "true" ? "2018.08.17" : ""}"
+    publisher = "${var.use_custom_image == "true" ? "" : "${var.sles4sap_public["publisher"]}"}"
+    offer     = "${var.use_custom_image == "true" ? "" : "${var.sles4sap_public["offer"]}"}"
+    sku       = "${var.use_custom_image == "true" ? "" : "${var.sles4sap_public["sku"]}"}"
+    version   = "${var.use_custom_image == "true" ? "" : "${var.sles4sap_public["version"]}"}"
   }
 
   storage_data_disk {

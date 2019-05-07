@@ -46,20 +46,20 @@ These are the relevant files and what each provides:
 
 ## How to upload a custom image
 
-In the terraform configuration we are using a custom image (defined in the file [image.tf](image.tf)) referenced as `azurerm_image.custom.id` in the file [virtualmachines.tf](virtualmachines.tf) (in the `storage_image_reference` block).
+In the terraform configuration we are using a custom image defined in the `sles4sap_public` map variable.
 
 This custom image needs to be already uploaded to Azure before attempting to use it with terraform, as terraform does not have a mechanism to upload images as of yet.
 
 In order to upload images for further use in terraform, use the procedure defined in the [Upload a custom image](#upload-custom-image) section below. Be sure to set up your Azure account first with the azure-cli to be able to follow that procedure.
 
-On the other hand, if there is a need to use publicly available images, the `storage_image_reference` block in the virtual machines definition (file [virtualmachines.tf](virtualmachines.tf)) should look like this:
+On the other hand, if there is a need to use publicly available images, the `sles4sap_public` map variable should look like this:
 
 ```
-storage_image_reference {
-  publisher = "SUSE"
-  offer     = "SLES-SAP-BYOS"
-  sku       = "12-SP3"
-  version   = "2018.08.17"
+sles4sap_public = {
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
+  "sku"       = "12-sp4"
+  "version"   = "2019.03.06"
 }
 ```
 
@@ -286,6 +286,8 @@ In the file [terraform.tfvars](terraform.tfvars) there are a number of variables
 * **az_region**: Azure region where to deploy the configuration.
 * **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
 * **use_custom_image**: Set to `true` if you want to test a custom image.
+* **sles4sap_public**: map with the required information to install a public sles4sap image in the cluster nodes. This data is only used if `use_custom_image` is not set to `"true"`.
+* **iscsi_srv_public**: map with the required information to install a public sles4sap image in the support server.
 
 ## Relevant Details
 
