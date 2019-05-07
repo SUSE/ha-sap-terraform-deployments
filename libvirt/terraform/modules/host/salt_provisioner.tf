@@ -1,12 +1,12 @@
 # This file contains the salt provisioning logic.
-# It will be executed if 'salt_enable' is set to true (default option) and the
+# It will be executed if 'provisioner' is set to 'salt' (default option) and the
 # libvirt_domain.domain (hana_node) resources are created (check triggers option).
 
 terraform {
   required_version = "~> 0.11.7"
 }
 
-# Template file to launch the salt provisioing script
+# Template file to launch the salt provisioning script
 data "template_file" "salt_provisioner" {
   template = "${file("modules/host/salt_provisioner_script.tpl")}"
 

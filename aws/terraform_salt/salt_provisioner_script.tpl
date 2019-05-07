@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-# Registration for install salt-minion only
+# SCC Registration to install salt-minion
 
 if grep -q 'role: iscsi_srv' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}

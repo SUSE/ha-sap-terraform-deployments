@@ -1,5 +1,5 @@
 # This file contains the salt provisioning logic.
-# It will be executed if 'salt_enable' is set to true (default option) and the
+# It will be executed if 'provisioner' is set to salt (default option) and the
 # iscsi and hana node resources are created (check triggers option).
 
 terraform {
