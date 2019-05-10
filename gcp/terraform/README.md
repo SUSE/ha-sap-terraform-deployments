@@ -105,19 +105,26 @@ These are the relevant files and what each provides:
 
 - The `images_path_bucket` variable must contain the name of the Google Storage bucket with the SLES image.
 
-- The `sles4sap_os_image_file` variable must contain the name of the SLES4SAP image.
-
 - The `post_deployment_script` variable specifies the URL location of a script to run after the deployment is complete. This script should be hosted on a web server or in a GCS bucket.
 
 - The `init_type` variable controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster). Defaults to `all`.
 
 - The `machine_type_iscsi_server` variable must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types) for the iSCSI server used for SBD stonith. Ignored if `use_gcp_stonith` is set to `"true"`.
 
-- The `sles_os_image_file` variable the name of the SLES image for the iSCSI server used for SBD stonith. Ignored if `use_gcp_stonith` is set to `"true"`.
-
 - The `iscsi_ip` variable must contain the IP address for the iSCSI server. Ignored if `use_gcp_stonith` is set to `"true"`.
 
 - The `use_gcp_stonith` variable specifies whether GCP-stonith must be used instead of SBD stonith.  Set to `"true"` (string, not boolean) if you want it.
+
+- The `use_custom_image` variable specifies whether to use custom images or not.  Set to `"true"` (string, not boolean) if you want to use custom images for, e.g., testing.
+
+- The `sles4sap_os_image_file` variable must contain the name of the custom SLES4SAP image.  Used if `use_custom_image` is set to `"true"`.
+
+- The `sles_os_image_file` variable must contain the name of the custom SLES image for the iSCSI server used for SBD stonith.  Used if `use_custom_image` is set to `"true"`.  Ignored if `use_gcp_stonith` is set to `"true"`.
+
+- The `sles_os_image` variable must contain the name of the public SLES image for the iSCSI server used for SBD stonith. Ignored if `use_gcp_stonith` is set to `"true"`. Ignored if `use_custom_image` is set to `"true"`.
+
+- The `sles4sap_os_image` variable  variable must contain the name of the SLES4SAP image. Ignored if `use_custom_image` is set to `"true"`.
+
 
 2. Deploy:
 

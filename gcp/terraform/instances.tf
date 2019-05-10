@@ -27,7 +27,8 @@ resource "google_compute_instance" "iscsisrv" {
 
   boot_disk {
     initialize_params {
-      image = "${google_compute_image.sles_bootable_image.self_link}"
+      # XXX: The join() is a workaround for https://github.com/hashicorp/terraform/issues/11566
+      image = "${var.use_custom_image == "true" ? "${join("", google_compute_image.sles_bootable_image.*.self_link)}" : "suse-cloud/${var.sles_os_image}"}"
     }
 
     auto_delete = true
@@ -70,7 +71,8 @@ resource "google_compute_instance" "clusternodes" {
 
   boot_disk {
     initialize_params {
-      image = "${google_compute_image.sles4sap_bootable_image.self_link}"
+      # XXX: The join() is a workaround for https://github.com/hashicorp/terraform/issues/11566
+      image = "${var.use_custom_image == "true" ? "${join("", google_compute_image.sles4sap_bootable_image.*.self_link)}" : "suse-sap-cloud/${var.sles4sap_os_image}"}"
     }
 
     auto_delete = true

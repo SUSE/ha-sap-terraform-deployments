@@ -50,6 +50,8 @@ variable "sap_hana_backup_size" {}
 variable "images_path_bucket" {}
 variable "sles4sap_os_image_file" {}
 variable "sles_os_image_file" {}
+variable "sles4sap_os_image" {}
+variable "sles_os_image" {}
 
 variable "storage_url" {
   type    = "string"
@@ -64,5 +66,9 @@ variable "init_type" {
 }
 
 variable "use_gcp_stonith" {
+  type = "string"
+}
+
+variable "use_custom_image" {
   type = "string"
 }

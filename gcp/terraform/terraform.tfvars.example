@@ -48,11 +48,6 @@ sap_hana_sidadm_uid = "900"
 # Overrides the backup volume size (2x machine memory size) and sets the size to the number of GB specified.
 sap_hana_backup_size = 200
 
-# GCP bucket with SLES images
-images_path_bucket = "sles-images"
-sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
-sles_os_image_file = "OS-Image-File-for-SLES-for-GCP.tar.gz"
-
 # Specifies the URL location of a script to run after the deployment is complete.
 # The script should be hosted on a web server or in a GCS bucket.
 post_deployment_script = ""
@@ -62,3 +57,16 @@ init_type = "all"
 
 # If set to false, will use iSCSI for fencing on SBD
 use_gcp_stonith = "false"
+
+# Set to true to use custom images for QA
+use_custom_image = "false"
+
+# GCP bucket with SLES images (used if use_custom_image is "true")
+images_path_bucket = "sles-images"
+sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
+sles_os_image_file = "OS-Image-File-for-SLES-for-GCP.tar.gz"
+
+# SLES public image (used if use_custom_image is not "true")
+sles_os_image = "sles-12-sp4-v20190221"
+# SLES4SAP public image (used if use_custom_image is not "true")
+sles4sap_os_image = "sles-12-sp4-sap-v20190221"
