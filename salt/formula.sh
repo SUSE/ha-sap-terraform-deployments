@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 salt-call --local \
     --module-dir=/srv/salt/_modules \
@@ -7,4 +7,4 @@ salt-call --local \
     --log-file=/tmp/salt-formula.log \
     --log-file-level=all \
     --retcode-passthrough \
-    --force-color state.highstate
+    --force-color state.highstate || exit 1

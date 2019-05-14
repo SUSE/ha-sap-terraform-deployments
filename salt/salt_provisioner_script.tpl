@@ -9,9 +9,9 @@ elif [[ ! -e /usr/bin/salt-minion ]]; then
 fi
 
 # Server configuration
-sh /root/salt/deployment.sh
+sh /root/salt/deployment.sh || exit 1
 
 # Salt formulas execution
 if grep -q 'role: hana_node' /etc/salt/grains; then
-  sh /root/salt/formula.sh
+  sh /root/salt/formula.sh || exit 1
 fi

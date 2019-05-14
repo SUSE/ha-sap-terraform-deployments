@@ -8,7 +8,7 @@ terraform {
 
 # Template file for user_data used in resource instances
 data "template_file" "salt_provisioner" {
-  template = "${file("salt_provisioner_script.tpl")}"
+  template = "${file("../../salt/salt_provisioner_script.tpl")}"
 
   vars {
     regcode = "${var.reg_code}"
@@ -78,7 +78,7 @@ EOF
     inline = [
       "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1",
+      "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
 }
@@ -146,7 +146,7 @@ EOF
     inline = [
       "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1",
+      "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
 }

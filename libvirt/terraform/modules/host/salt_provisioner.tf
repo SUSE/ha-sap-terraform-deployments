@@ -8,7 +8,7 @@ terraform {
 
 # Template file to launch the salt provisioning script
 data "template_file" "salt_provisioner" {
-  template = "${file("modules/host/salt_provisioner_script.tpl")}"
+  template = "${file("../../salt/salt_provisioner_script.tpl")}"
 
   vars {
     regcode = "${var.reg_code}"
@@ -64,7 +64,7 @@ EOF
   provisioner "remote-exec" {
     inline = [
       "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "sleep 1",
+      "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
 }
