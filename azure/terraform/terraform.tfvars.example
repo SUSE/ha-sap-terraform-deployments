@@ -46,6 +46,6 @@ sles4sap_public = {
 iscsi_srv_public = {
   "publisher" = "SUSE"
   "offer"     = "SLES-SAP-BYOS"
-  "sku"       = "15"
-  "version"   = "2018.08.20"
+  "sku"       = "12-SP3"
+  "version"   = "2018.08.17"
 }
