@@ -10,6 +10,7 @@ resource "azurerm_image" "custom" {
   name                = "BVSles4SapImg"
   location            = "${var.az_region}"
   resource_group_name = "${azurerm_resource_group.myrg.name}"
+  count               = "${var.use_custom_image == "true" ? 1 : 0}"
 
   os_disk {
     os_type  = "Linux"

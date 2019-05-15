@@ -33,3 +33,29 @@ variable "init-type" {
   type    = "string"
   default = "all"
 }
+
+variable "use_custom_image" {
+  type = "string"
+}
+
+variable "sles4sap_public" {
+  type = "map"
+
+  default = {
+    "publisher" = "SUSE"
+    "offer"     = "SLES-SAP-BYOS"
+    "sku"       = "12-sp4"
+    "version"   = "2019.03.06"
+  }
+}
+
+variable "iscsi_srv_public" {
+  type = "map"
+
+  default = {
+    "publisher" = "SUSE"
+    "offer"     = "SLES-SAP-BYOS"
+    "sku"       = "15"
+    "version"   = "2018.08.20"
+  }
+}

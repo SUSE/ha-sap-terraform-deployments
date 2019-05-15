@@ -30,3 +30,22 @@ az_region = "westeurope"
 
 # Variable for init-nodes.sh script
 init-type = "all"
+
+# Set to true to use custom image
+use_custom_image = "false"
+
+# Public sles4sap image (ignored if use_custom_image is "true")
+sles4sap_public = {
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
+  "sku"       = "12-sp4"
+  "version"   = "2019.03.06"
+}
+
+# Public iscsi server image
+iscsi_srv_public = {
+  "publisher" = "SUSE"
+  "offer"     = "SLES-SAP-BYOS"
+  "sku"       = "12-SP3"
+  "version"   = "2018.08.17"
+}
