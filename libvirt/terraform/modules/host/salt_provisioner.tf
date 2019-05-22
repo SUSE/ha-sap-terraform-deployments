@@ -30,7 +30,7 @@ resource "null_resource" "hana_node_provisioner" {
 
   provisioner "file" {
     source      = "../../salt"
-    destination = "/root"
+    destination = "/tmp"
   }
 
   provisioner "file" {
@@ -58,7 +58,7 @@ ${var.grains}
 
 EOF
 
-    destination = "/etc/salt/grains"
+    destination = "/tmp/grains"
   }
 
   provisioner "remote-exec" {

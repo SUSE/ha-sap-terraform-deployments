@@ -36,7 +36,7 @@ These are the relevant files and what each provides:
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [salt_provisioner_script.tpl](salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
@@ -86,7 +86,7 @@ reg_additional_modules = {
 }
 provisioner = "salt"
 background  = false
- ```
+```
 
 Following that edit in the [terraform.tfvars](terraform.tfvars.example) file:
 
@@ -196,19 +196,19 @@ All this means that basically the default command `terraform apply` and be also 
 
  In the file [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
- * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
- * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
- * **aws_region**: AWS region where to deploy the configuration.
- * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
- * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
- * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
- * **name**: hostname for the hana node without the domain part.
- * **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
- * **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
- * **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
- * **hana_disk_device**: device used by node where HANA will be installed.
- * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
- * **iscsidev**: device used by the iscsi server.
+* **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
+* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
+* **aws_region**: AWS region where to deploy the configuration.
+* **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
+* **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
+* **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
+* **name**: hostname for the hana node without the domain part.
+* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
+* **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
+* **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
+* **hana_disk_device**: device used by node where HANA will be installed.
+* **hana_fstype**: filesystem type used for HANA installation (xfs by default).
+* **iscsidev**: device used by the iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
@@ -229,8 +229,8 @@ All this means that basically the default command `terraform apply` and be also 
  For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
 * **additional_repos**: Additional repos to add to the guest machines.
- * **additional_packages**: Additional packages to add to the guest machines.
- * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
+* **additional_packages**: Additional packages to add to the guest machines.
+* **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
  Specific QA variable
 * **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.

@@ -76,7 +76,6 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
@@ -87,7 +86,7 @@ resource "null_resource" "hana_node_provisioner" {
   count = "${var.provisioner == "salt" ? aws_instance.clusternodes.count : 0}"
 
   triggers = {
-    iscsi_id = "${join(",", aws_instance.clusternodes.*.id)}"
+    cluster_instance_ids = "${join(",", aws_instance.clusternodes.*.id)}"
   }
 
   connection {
@@ -144,7 +143,6 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "sudo mv /tmp/salt /root",
       "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly

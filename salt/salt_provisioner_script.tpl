@@ -1,12 +1,16 @@
 #!/bin/bash -xe
 
+mv /tmp/salt /root || true
+
 # SCC Registration to install salt-minion
 
-if grep -q 'role: iscsi_srv' /etc/salt/grains; then
+if grep -q 'role: iscsi_srv' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}
 elif [[ ! -e /usr/bin/salt-minion ]]; then
   sh /root/salt/install-salt-minion.sh -d -r ${regcode}
 fi
+
+mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
 
 # Server configuration
 sh /root/salt/deployment.sh || exit 1
