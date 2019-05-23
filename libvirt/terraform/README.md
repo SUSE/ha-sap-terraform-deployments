@@ -37,8 +37,9 @@ data.
 
 ### System requirements
 
-1. You need to have Terraform, the Libvirt provider for Terraform
-   `terraform-libvirt-provider`.
+1. You need to have Terraform and the the Libvirt provider for Terraform. You may download packages from the
+   [openSUSE Build Service](http://download.opensuse.org/repositories/systemsmanagement:/terraform/) or
+   [build from source](https://github.com/dmacvicar/terraform-provider-libvirt)
 1. You need at least 15 GB of free disk space and 512 MiB of free memory per
    node.
 1. You need to have a working libvirt setup and sufficient privileges to connect
