@@ -17,3 +17,7 @@ In order to execute the deployment with salt follow the instructions in [README]
 ## Contributing
 
 If you are interested in contributing to this project, fork this repository, clone your fork, write your code and send a pull request.
+
+## Terraform version
+
+All Terraform configurations were tested with the 0.11.14 version
