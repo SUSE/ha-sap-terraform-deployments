@@ -3,7 +3,7 @@ dist: xenial
 language: bash
 
 notifications:
-  email: false
+  email: true
 
 before_script:
   - set -e
