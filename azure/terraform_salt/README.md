@@ -25,22 +25,26 @@ Once the infrastructure is created by Terraform, the servers are provisioned wit
 
 These are the relevant files and what each provides:
 
-* [provider.tf](provider.tf): definition of the providers being used in the terraform configuration. Mainly azurerm and template.
+- [provider.tf](provider.tf): definition of the providers being used in the terraform configuration. Mainly azurerm and template.
 
-* [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, Azure region, etc.
+- [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, Azure region, etc.
 
-* [keys.tf](keys.tf): definition of variables with information of key to include in the instances to allow connection via SSH. Edit this to add your own SSH key.
+- [keys.tf](keys.tf): definition of variables with information of key to include in the instances to allow connection via SSH. Edit this to add your own SSH key.
 
-* [resources.tf](resources.tf): definition of the resource group and storage account to use.
+- [resources.tf](resources.tf): definition of the resource group and storage account to use.
 
-* [image.tf](image.tf): definition of the custom images to use for the virtual machines. The image resources will be only created if the **sles4sap_uri** or **iscsi_srv_uri** are set in the
+- [image.tf](image.tf): definition of the custom images to use for the virtual machines. The image resources will be only created if the **sles4sap_uri** or **iscsi_srv_uri** are set in the
 **terraform.tfvars** file. Otherwise, a public image will be used.
 
-* [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
+- [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
 
-* [instances.tf](instances.tf): definition of the virtual machines to create on deployment.
+- [instances.tf](instances.tf): definition of the virtual machines to create on deployment.
 
-* [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
+- [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
+
+- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+
+- [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
@@ -81,6 +85,8 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
+* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+* **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
 * **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:

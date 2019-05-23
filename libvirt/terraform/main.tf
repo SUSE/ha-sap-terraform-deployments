@@ -46,4 +46,6 @@ module "hana_node" {
   reg_additional_modules = "${var.reg_additional_modules}"
   additional_repos       = "${var.additional_repos}"
   ha_sap_deployment_repo = "${var.ha_sap_deployment_repo}"
+  provisioner            = "${var.provisioner}"
+  background             = "${var.background}"
 }
