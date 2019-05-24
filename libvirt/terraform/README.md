@@ -47,7 +47,7 @@ data.
 
 ### Deployment
 
-To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../pillar_examples/libvirt/hana.sls) and [cluster.sls](../../pillar_examples/libvirt/cluster.sls).
+To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../pillar_examples/libvirt/{scenario-type}/hana.sls) and [cluster.sls](../../pillar_examples/libvirt/{scenario-type}/cluster.sls).
 Configure these files according the wanted cluster type.
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
