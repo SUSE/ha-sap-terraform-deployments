@@ -7,9 +7,6 @@ module "base" {
   image   = "${var.base_image}"
   iprange = "${var.iprange}"
 
-  // optional parameters below
-  name_prefix = "${var.name_prefix}"
-
   // pool = "default"
   pool = "terraform"
 

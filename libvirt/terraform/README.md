@@ -61,7 +61,6 @@ Here an example:
 qemu_uri = "qemu+ssh://root@your_machine/system"
 sap_inst_media = "path_to_nfs_server"
 base_image = "path_to_image"
-name_prefix = "demo"
 iprange = "192.168.101.0/24"
 host_ips = ["192.168.101.15", "192.168.101.16"]
 additional_repos = {
@@ -86,6 +85,8 @@ reg_additional_modules = {
 After changing the values, run the terraform commands:
 
 ```bash
+terraform workspace new myworkspace # The workspace name will be used to create the name of the created resources as prefix (`default` by default)
+terraform workspace select myworkspace
 terraform init
 terraform apply -var-file=terraform.tfvars
 ```
@@ -100,7 +101,6 @@ with the needed package and try again.
 
 - **qemu_uri**: Uri of the libvirt provider.
 - **base_image**: The cluster nodes image is selected updating the *image* parameter in the *base* module.
-- **name_prefix**: The prefix of our infrastructure components.
 - **network_name** and **bridge**: If the cluster is deployed locally, the *network_name* should match with a currently available virtual network. If the cluster is deployed remotely, leave the *network_name* empty and set the *bridge* value with remote machine bridge network interface.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
 - **iprange**: IP range addresses for the isolated network.

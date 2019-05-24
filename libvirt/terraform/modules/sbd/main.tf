@@ -1,5 +1,5 @@
 resource "libvirt_volume" "sbd" {
-  name = "${var.base_configuration["name_prefix"]}-sbd.raw"
+  name = "${terraform.workspace}-sbd.raw"
   pool = "${var.base_configuration["pool"]}"
   size = "${var.sbd_disk_size}"
 

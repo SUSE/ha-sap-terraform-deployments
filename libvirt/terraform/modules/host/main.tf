@@ -3,27 +3,27 @@ terraform {
 }
 
 // Names are calculated as follows:
-// ${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}
+// ${terraform.workspace}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}
 // This means:
-//   name_prefix + name (if count = 1)
-//   name_prefix + name + "-" + index (if count > 1)
+//   workspace + name (if count = 1)
+//   workspace + name + "-" + index (if count > 1)
 
 resource "libvirt_volume" "main_disk" {
-  name             = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-main-disk"
-  base_volume_name = "${var.base_configuration["use_shared_resources"] ? "" : var.base_configuration["name_prefix"]}baseimage"
+  name             = "${terraform.workspace}-${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-main-disk"
+  base_volume_name = "${var.base_configuration["use_shared_resources"] ? "" : terraform.workspace}-baseimage"
   pool             = "${var.base_configuration["pool"]}"
   count            = "${var.count}"
 }
 
 resource "libvirt_volume" "hana_disk" {
-  name  = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-hana-disk"
+  name  = "${terraform.workspace}-${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}-hana-disk"
   pool  = "${var.base_configuration["pool"]}"
   count = "${var.count}"
   size  = "${var.hana_disk_size}"
 }
 
 resource "libvirt_domain" "domain" {
-  name       = "${var.base_configuration["name_prefix"]}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}"
+  name       = "${terraform.workspace}-${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}"
   memory     = "${var.memory}"
   vcpu       = "${var.vcpu}"
   running    = "${var.running}"

@@ -3,14 +3,14 @@ terraform {
 }
 
 resource "libvirt_volume" "base_image" {
-  name   = "${var.name_prefix}baseimage"
+  name   = "${terraform.workspace}-baseimage"
   source = "${var.image}"
   count  = "${var.use_shared_resources ? 0 : 1}"
   pool   = "${var.pool}"
 }
 
 resource "libvirt_network" "isolated_network" {
-  name      = "${var.name_prefix}-isolated"
+  name      = "${terraform.workspace}-isolated"
   mode      = "none"
   addresses = ["${var.iprange}"]
 
@@ -31,7 +31,6 @@ output "configuration" {
     timezone             = "${var.timezone}"
     public_key_location  = "${var.public_key_location}"
     domain               = "${var.domain}"
-    name_prefix          = "${var.name_prefix}"
     use_shared_resources = "${var.use_shared_resources}"
     isolated_network_id  = "${join(",", libvirt_network.isolated_network.*.id)}"
     iprange              = "${var.iprange}"
