@@ -13,11 +13,6 @@ variable "domain" {
   default     = "tf.local"
 }
 
-variable "name_prefix" {
-  description = "a prefix for all names of objects to avoid collisions."
-  default     = ""
-}
-
 variable "use_shared_resources" {
   description = "use true to avoid deploying images, mirrors and other shared infrastructure resources"
   default     = false

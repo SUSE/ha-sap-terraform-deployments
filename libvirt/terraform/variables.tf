@@ -13,11 +13,6 @@ variable "iprange" {
   default     = "192.168.106.0/24"
 }
 
-variable "name_prefix" {
-  description = "Prefix of the deployment VM, network and disks"
-  default     = "hanatest"
-}
-
 variable "sap_inst_media" {
   description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
   type        = "string"
