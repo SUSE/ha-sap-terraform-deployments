@@ -19,13 +19,14 @@ cluster:
       source: /srv/salt/hana/templates/performance_optimized.j2
       parameters:
         sid: prd
-        instance: 00
+        instance: '00'
         virtual_ip: 192.168.107.50
         virtual_ip_mask: 24
         platform: libvirt
         prefer_takeover: true
         auto_register: false
-        cost-optimized-parameters:
+        cost_optimized_parameters:
           sid: qas
-          instance: 01
+          instance: '01'
           prefer_takeover: false
+          remote_host : 'hana01'
