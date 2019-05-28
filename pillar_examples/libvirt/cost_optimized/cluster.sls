@@ -25,3 +25,7 @@ cluster:
         platform: libvirt
         prefer_takeover: true
         auto_register: false
+        cost-optimized-parameters:
+          sid: qas
+          instance: 01
+          prefer_takeover: false
