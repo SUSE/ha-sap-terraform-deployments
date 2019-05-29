@@ -6,13 +6,13 @@ resource "libvirt_volume" "iscsi_image_disk" {
   name   = "${terraform.workspace}-iscsi-disk"
   source = "${var.iscsi_image}"
   pool   = "${var.base_configuration["pool"]}"
-  count = "${var.count}"
+  count  = "${var.count}"
 }
 
 resource "libvirt_volume" "iscsi_dev_disk" {
   name  = "${terraform.workspace}-iscsi-dev"
   pool  = "${var.base_configuration["pool"]}"
-  size  = "10000000000" # 10GB
+  size  = "10000000000"                       # 10GB
   count = "${var.count}"
 }
 
@@ -40,9 +40,9 @@ resource "libvirt_domain" "iscsisrv" {
   }
 
   network_interface {
-    network_id   = "${var.base_configuration["isolated_network_id"]}"
-    mac            = "${var.mac}"
-    addresses      = ["${var.iscsi_srv_ip}"]
+    network_id = "${var.base_configuration["isolated_network_id"]}"
+    mac        = "${var.mac}"
+    addresses  = ["${var.iscsi_srv_ip}"]
   }
 
   console {

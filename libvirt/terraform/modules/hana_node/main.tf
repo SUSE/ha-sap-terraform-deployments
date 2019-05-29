@@ -41,9 +41,7 @@ EOF
       map("volume_id", "${var.sbd_disk_id}")),
       0, var.shared_storage_type == "shared-disk" ? 1 : 0
   )}"
-
 }
-
 
 output "configuration" {
   value {

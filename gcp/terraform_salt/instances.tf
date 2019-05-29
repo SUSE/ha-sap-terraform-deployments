@@ -1,8 +1,8 @@
 resource "google_compute_instance" "iscsisrv" {
-  name                    = "${terraform.workspace}-iscsisrv"
-  description             = "iSCSI server"
-  machine_type            = "${var.machine_type_iscsi_server}"
-  zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
+  name         = "${terraform.workspace}-iscsisrv"
+  description  = "iSCSI server"
+  machine_type = "${var.machine_type_iscsi_server}"
+  zone         = "${element(data.google_compute_zones.available.names, count.index)}"
 
   lifecycle {
     create_before_destroy = true
@@ -40,14 +40,13 @@ resource "google_compute_instance" "iscsisrv" {
   metadata {
     sshKeys = "root:${file(var.public_key_location)}"
   }
-
 }
 
 resource "google_compute_instance" "clusternodes" {
-  machine_type            = "${var.machine_type}"
-  name                    = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
-  count                   = "${var.ninstances}"
-  zone                    = "${element(data.google_compute_zones.available.names, count.index)}"
+  machine_type = "${var.machine_type}"
+  name         = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
+  count        = "${var.ninstances}"
+  zone         = "${element(data.google_compute_zones.available.names, count.index)}"
 
   can_ip_forward = true
 
