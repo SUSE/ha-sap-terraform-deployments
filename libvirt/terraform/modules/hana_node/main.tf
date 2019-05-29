@@ -19,7 +19,9 @@ module "hana_node" {
 provider: libvirt
 role: hana_node
 hana_disk_device: /dev/vdb
-sbd_disk_device: /dev/vdc
+shared_storage_type: ${var.shared_storage_type}
+sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"
+iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_fstype: ${var.hana_fstype}
 hana_inst_folder: ${var.hana_inst_folder}
 sap_inst_media: ${var.sap_inst_media}
@@ -34,10 +36,14 @@ EOF
   mac            = "${var.mac}"
   hana_disk_size = "${var.hana_disk_size}"
 
-  additional_disk = ["${map(
-    "volume_id", "${var.sbd_disk_id}"
-  )}"]
+  additional_disk = "${slice(
+    list(
+      map("volume_id", "${var.sbd_disk_id}")),
+      0, var.shared_storage_type == "shared-disk" ? 1 : 0
+  )}"
+
 }
+
 
 output "configuration" {
   value {

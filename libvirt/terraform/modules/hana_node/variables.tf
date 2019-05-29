@@ -67,9 +67,21 @@ variable "host_ips" {
   type        = "list"
 }
 
+variable "shared_storage_type" {
+  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+  type        = "string"
+  default     = "iscsi"
+}
+
 variable "sbd_disk_id" {
   description = "SBD disk volume id"
   type        = "string"
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
+  type        = "string"
+  default     = ""
 }
 
 variable "sap_inst_media" {
