@@ -68,7 +68,7 @@ host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 additional_repos = {}
 
 # Shared storage type information
-#shared_storage_type = "shared-disk" # To use a shared disk
+#shared_storage_type = "shared-disk" # To use a KVM raw file shared disk
 shared_storage_type = "iscsi"
 iscsi_srv_ip = "192.168.XXX.Y+2"
 iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
@@ -115,7 +115,7 @@ with the needed package and try again.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
-- **shared_storage_type**: Shared storage type between iscsi and shared disk. Available options: `iscsi` and `shared-disk`.
+- **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
 - **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
 - **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
