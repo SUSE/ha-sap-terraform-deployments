@@ -35,6 +35,23 @@ variable "host_ips" {
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 
+variable "shared_storage_type" {
+  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+  type        = "string"
+  default     = "iscsi"
+}
+
+variable "iscsi_image" {
+  description = "iscsi server base image"
+  type        = "string"
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
+  type        = "string"
+  default     = "192.168.106.17"
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""

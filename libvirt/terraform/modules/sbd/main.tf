@@ -1,7 +1,8 @@
 resource "libvirt_volume" "sbd" {
-  name = "${terraform.workspace}-sbd.raw"
-  pool = "${var.base_configuration["pool"]}"
-  size = "${var.sbd_disk_size}"
+  name  = "${terraform.workspace}-sbd.raw"
+  pool  = "${var.base_configuration["pool"]}"
+  size  = "${var.sbd_disk_size}"
+  count = "${var.count}"
 
   xml {
     xslt = "${file("modules/sbd/raw.xsl")}"
@@ -9,5 +10,5 @@ resource "libvirt_volume" "sbd" {
 }
 
 output "id" {
-  value = "${libvirt_volume.sbd.id}"
+  value = "${join(",", libvirt_volume.sbd.*.id)}"
 }

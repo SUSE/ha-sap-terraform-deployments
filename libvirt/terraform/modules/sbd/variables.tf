@@ -7,3 +7,8 @@ variable "sbd_disk_size" {
   description = "sbd partition disk size"
   default     = "104857600"               # 100MB
 }
+
+variable "count" {
+  description = "variable used to decide to create or not the sbd shared disk device"
+  default     = 1
+}

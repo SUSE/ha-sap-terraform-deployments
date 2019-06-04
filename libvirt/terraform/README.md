@@ -24,6 +24,7 @@ Besides that, the different kind of provisioners are available in this module. B
 [salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
 host module with some particular updates.
+- [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
@@ -58,26 +59,35 @@ The easiest way to customize the variables is using a *terraform.tfvars* file.
 Here an example:
 
 ```bash
-qemu_uri = "qemu+ssh://root@your_machine/system"
-sap_inst_media = "path_to_nfs_server"
-base_image = "path_to_image"
-iprange = "192.168.101.0/24"
-host_ips = ["192.168.101.15", "192.168.101.16"]
-additional_repos = {
-    "repo_1" = "url_repo1"
-    "repo_1" = "url_repo1"
-    "repo_1" = "url_repo1"
-}
-ha_sap_deployment_repo = "repo_to_ha_packages"
+qemu_uri = "qemu:///system"
+sap_inst_media = "url-to-your-nfs-share"
+base_image = "url-to-your-sles4sap-image"
+name_prefix = "your-name"
+iprange = "192.168.XXX.Y/24"
+host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+additional_repos = {}
+
+# Shared storage type information
+#shared_storage_type = "shared-disk" # To use a KVM raw file shared disk
+shared_storage_type = "iscsi"
+iscsi_srv_ip = "192.168.XXX.Y+2"
+iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+
+
+# Repository url used to install install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
+ha_sap_deployment_repo = ""
 
 # Optional SUSE Customer Center Registration parameters
-reg_code = "<<REG_CODE>>"
-reg_email = "<<your email>>"
-reg_additional_modules = {
-    "sle-module-adv-systems-management/12/x86_64" = ""
-    "sle-module-containers/12/x86_64" = ""
-    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-}
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
 # To disable the provisioning process
 #provisioner = ""
 ```
@@ -105,6 +115,9 @@ with the needed package and try again.
 - **sap_inst_media**: Public media where SAPA installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
+- **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
+- **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
+- **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **additional_repos**: Additional repos to add to the guest machines.
 - **provisioner**: Select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
