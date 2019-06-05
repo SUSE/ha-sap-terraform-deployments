@@ -31,7 +31,7 @@ cluster:
   configure:
     method: update
     template:
-      source: /srv/salt/hana/templates/performance_optimized.j2
+      source: /srv/salt/hana/templates/scale_up_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
