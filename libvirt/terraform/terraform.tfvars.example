@@ -6,6 +6,11 @@ iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 additional_repos = {}
 
+# Shared storage type information
+shared_storage_type = "iscsi"
+iscsi_srv_ip = "192.168.XXX.Y+2"
+iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+
 # Repository url used to install install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}

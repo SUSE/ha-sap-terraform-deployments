@@ -120,6 +120,7 @@ name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
 domain: "tf.local"
+shared_storage_type: iscsi
 sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}

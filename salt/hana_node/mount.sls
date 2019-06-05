@@ -1,3 +1,6 @@
+parted:
+  pkg.installed
+
 hana_partition:
   cmd.run:
     - name: /usr/sbin/parted -s {{grains['hana_disk_device']}} mklabel msdos && /usr/sbin/parted -s {{grains['hana_disk_device']}} mkpart primary ext2 1M 100% && sleep 1 && /sbin/mkfs -t {{grains['hana_fstype']}} {{grains['hana_disk_device']}}1

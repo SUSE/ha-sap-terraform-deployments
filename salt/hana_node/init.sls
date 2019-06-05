@@ -1,5 +1,4 @@
 include:
-  - hana_node.packages
   {% if grains['provider'] in ('aws', 'gcp',) %}
   - hana_node.add_credentials
   {% if grains['init_type']|default('all') != 'skip-hana' %}
@@ -9,7 +8,7 @@ include:
   - hana_node.sap_inst
   {% endif %}
   - hana_node.hosts
-  {% if grains['provider'] != 'libvirt' %}
+  {% if grains['shared_storage_type'] == 'iscsi' %}
   - hana_node.iscsi_initiator
   {% endif %}
   - hana_node.mount

@@ -6,6 +6,7 @@ download_files_from_s3:
     - onlyif: "aws s3 sync --dryrun {{ grains['hana_inst_master'] }}
       {{ grains['hana_inst_folder'] }} --region {{ grains['region'] }} | grep download"
     - output_loglevel: quiet
+    - hide_output: True
 
 {% elif grains['provider'] == 'gcp' %}
 
@@ -41,7 +42,7 @@ configure_rclone:
   file.append:
     - name: /root/.rclone.conf
     - source: /root/salt/hana_node/files/rclone/gcp.conf
-    
+
 download_files_from_gcp:
   cmd.run:
     - name: "rclone copy remote:{{ grains['sap_hana_deployment_bucket'] }}
