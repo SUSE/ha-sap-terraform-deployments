@@ -43,6 +43,7 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 provider: gcp
 role: iscsi_srv
+scenario_type: ${var.scenario_type}
 iscsi_srv_ip: ${var.iscsi_ip}
 iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}
