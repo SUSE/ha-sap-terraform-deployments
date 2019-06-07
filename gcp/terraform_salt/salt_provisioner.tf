@@ -43,7 +43,6 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 provider: gcp
 role: iscsi_srv
-scenario_type: ${var.scenario_type}
 iscsi_srv_ip: ${var.iscsi_ip}
 iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}
@@ -116,6 +115,7 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: gcp
 role: hana_node
+scenario_type: ${var.scenario_type}
 name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}

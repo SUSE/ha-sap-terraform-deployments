@@ -43,7 +43,6 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 provider: aws
 role: iscsi_srv
-scenario_type: ${var.scenario_type}
 iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
 iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}
@@ -117,6 +116,7 @@ resource "null_resource" "hana_node_provisioner" {
 provider: aws
 region: ${var.aws_region}
 role: hana_node
+scenario_type: ${var.scenario_type}
 name_prefix: ${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
