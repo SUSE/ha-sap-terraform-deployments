@@ -18,6 +18,7 @@ module "hana_node" {
 
 provider: libvirt
 role: hana_node
+scenario_type: ${var.scenario_type}
 hana_disk_device: /dev/vdb
 shared_storage_type: ${var.shared_storage_type}
 sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"

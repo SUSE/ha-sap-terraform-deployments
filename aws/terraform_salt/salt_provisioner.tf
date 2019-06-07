@@ -42,9 +42,10 @@ resource "null_resource" "iscsi_provisioner" {
   provisioner "file" {
     content = <<EOF
 provider: aws
+role: iscsi_srv
+scenario_type: ${var.scenario_type}
 iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
 iscsidev: ${var.iscsidev}
-role: iscsi_srv
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}

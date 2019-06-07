@@ -43,6 +43,7 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 provider: azure
 role: iscsi_srv
+scenario_type: ${var.scenario_type}
 iscsi_srv_ip: ${azurerm_network_interface.iscsisrv.private_ip_address}
 iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}

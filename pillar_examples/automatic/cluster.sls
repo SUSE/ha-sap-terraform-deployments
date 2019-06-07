@@ -46,6 +46,16 @@ cluster:
         virtual_ip_mask: 24
         {% endif %}
         platform: {{ grains['provider'] }}
+        {% if grains['scenario_type'] == 'cost-optimized' %}
+        prefer_takeover: false
+        {% else %}
         prefer_takeover: true
+        {% endif %}
         auto_register: false
+        {% if grains['scenario_type'] == 'cost-optimized' %}
+        cost_optimized_parameters:
+          sid: {{ hana.hana.nodes[2].sid }}
+          instance: {{ hana.hana.nodes[2].instance }}
+          remote_host : {{ hana.hana.nodes[0].host }}
+        {% endif %}
   {% endif %}

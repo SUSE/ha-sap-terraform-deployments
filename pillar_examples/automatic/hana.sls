@@ -34,6 +34,12 @@ hana:
       sid: prd
       instance: 00
       password: YourPassword1234
+      {% if grains['scenario_type'] == 'cost-optimized' %}
+      scenario_type: 'cost-optimized'
+      cost_optimized_parameters:
+        global_allocation_limit: '32100'
+        preload_column_tables: False
+      {% endif %}
       install:
         software_path: /root/sap_inst
         root_user: root
@@ -51,3 +57,23 @@ hana:
         replication_mode: sync
         operation_mode: logreplay
         primary_timeout: 3000
+    {% if grains['scenario_type'] == 'cost-optimized' %}
+    - host: {{ grains['name_prefix'] }}02
+      sid: qas
+      instance: 01
+      password: YourPassword1234
+      scenario_type: 'cost-optimized'
+      cost_optimized_parameters:
+        global_allocation_limit: '28600'
+        preload_column_tables: False
+      install:
+        software_path: '/root/sap_inst'
+        root_user: root
+        {% if grains['provider'] == 'libvirt' %}
+        root_password: linux
+        {% else %}
+        root_password: ''
+        {% endif %}
+        system_user_password: YourPassword1234
+        sapadm_password: YourPassword1234
+    {% endif %}

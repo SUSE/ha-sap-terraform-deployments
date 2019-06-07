@@ -68,6 +68,9 @@ ha_sap_deployment_repo = ""
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
+# Cost optimized scenario
+#scenario_type: "cost-optimized"
+
 # To disable the provisioning process
 #provisioner = ""
 

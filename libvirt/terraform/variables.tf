@@ -91,6 +91,11 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

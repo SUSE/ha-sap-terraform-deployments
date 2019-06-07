@@ -28,5 +28,4 @@ cluster:
         cost_optimized_parameters:
           sid: qas
           instance: 01
-          prefer_takeover: false
           remote_host : 'hana01'
