@@ -1,6 +1,6 @@
 # Outputs: IP address and port where the service will be listening on
 
-output "cluster_nodes_addresses" {
+output "cluster_nodes_ip" {
   value = "${module.hana_node.addresses["addresses"]}"
 }
 

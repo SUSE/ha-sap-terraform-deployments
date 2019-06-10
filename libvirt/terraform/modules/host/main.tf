@@ -39,22 +39,19 @@ resource "libvirt_domain" "domain" {
     var.additional_disk
   )}"]
 
-  network_interface = ["${list(
-      map(
-        "wait_for_lease", true,
-        "network_name", var.base_configuration["network_name"],
-        "bridge", var.base_configuration["bridge"],
-        "mac", var.mac
-      ),
-      merge(
-        map(
-          "wait_for_lease", false,
-          "network_id", var.base_configuration["isolated_network_id"],
-          "hostname", "${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}"
-        ),
-        map("addresses", "${list(element(var.host_ips, count.index))}")
-      )
-    )}"]
+  network_interface {
+    wait_for_lease = true
+    network_name   = "${var.base_configuration["network_name"]}"
+    bridge         = "${var.base_configuration["bridge"]}"
+    mac            = "${var.mac}"
+  }
+
+  network_interface {
+    wait_for_lease = false
+    network_id     = "${var.base_configuration["isolated_network_id"]}"
+    hostname       = "${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}"
+    addresses      = "${list(element(var.host_ips, count.index))}"
+  }
 
   xml {
     xslt = "${file("modules/host/shareable.xsl")}"
@@ -91,7 +88,5 @@ output "configuration" {
 }
 
 output "addresses" {
-  // Returning only the addresses is not possible right now. Will be available in terraform 12
-  // https://bradcod.es/post/terraform-conditional-outputs-in-modules/
-  value = "${libvirt_domain.domain.*.network_interface}"
+  value = "${join(",", flatten(libvirt_domain.domain.*.network_interface.0.addresses))}"
 }
