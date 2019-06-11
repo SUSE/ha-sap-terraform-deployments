@@ -42,12 +42,13 @@ variable "shared_storage_type" {
 }
 
 variable "iscsi_image" {
-  description = "iscsi server base image"
+  description = "iscsi server base image (only used if shared_storage_type is iscsi)"
   type        = "string"
+  default     = ""
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+  description = "iscsi server address (only used if shared_storage_type is iscsi)"
   type        = "string"
   default     = "192.168.106.17"
 }
