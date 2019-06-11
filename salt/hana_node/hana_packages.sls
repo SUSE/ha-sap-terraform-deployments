@@ -1,10 +1,11 @@
 {% if grains['qa_mode']|default(false) is sameas true %}
 {% if grains['pythonversion'][0] == 2 %}
-python2-shaptools:
+python-shaptools:
 {% else %}
 python3-shaptools:
 {% endif %}
-  pkg.installed
+  pkg.installed:
+    - resolve_capabilities: true
 {% endif %}
 
 saphanabootstrap-formula:
