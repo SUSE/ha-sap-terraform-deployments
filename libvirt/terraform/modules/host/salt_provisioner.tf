@@ -41,8 +41,8 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     content = <<EOF
 
-name_prefix: ${var.name}
-hostname: ${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}
+name_prefix: ${terraform.workspace}-${var.name}
+hostname: ${terraform.workspace}-${var.name}${var.count > 1 ? "0${count.index  + 1}" : ""}
 domain: ${var.base_configuration["domain"]}
 timezone: ${var.base_configuration["timezone"]}
 reg_code: ${var.reg_code}

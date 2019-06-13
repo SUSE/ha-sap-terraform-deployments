@@ -111,9 +111,9 @@ resource "null_resource" "hana_node_provisioner" {
 provider: azure
 role: hana_node
 scenario_type: ${var.scenario_type}
-name_prefix: ${var.name}
+name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
 domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sdd
