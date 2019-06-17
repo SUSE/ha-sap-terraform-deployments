@@ -82,11 +82,11 @@ resource "libvirt_domain" "domain" {
 
 output "configuration" {
   value {
-    id       = "${join(",", libvirt_domain.domain.*.id)}"
-    hostname = "${join(",", libvirt_domain.domain.*.name)}"
+    id       = "${libvirt_domain.domain.*.id}"
+    hostname = "${libvirt_domain.domain.*.name}"
   }
 }
 
 output "addresses" {
-  value = "${join(",", flatten(libvirt_domain.domain.*.network_interface.0.addresses))}"
+  value = "${flatten(libvirt_domain.domain.*.network_interface.0.addresses)}"
 }

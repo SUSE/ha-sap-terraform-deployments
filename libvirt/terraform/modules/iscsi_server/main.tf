@@ -76,7 +76,5 @@ output "configuration" {
 }
 
 output "addresses" {
-  // Returning only the addresses is not possible right now. Will be available in terraform 12
-  // https://bradcod.es/post/terraform-conditional-outputs-in-modules/
-  value = "${libvirt_domain.iscsisrv.*.network_interface}"
+  value = "${join(",", flatten(libvirt_domain.iscsisrv.*.network_interface.0.addresses))}"
 }
