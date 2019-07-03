@@ -1,55 +1,46 @@
-
 # Terraform cluster deployment with Libvirt
 
-This terraform module deploys a cluster running the SUSE Linux Enterprise Server
-High Availability Extension.
+# Table of content:
 
-This project is mainly based in [sumaform](https://github.com/moio/sumaform)
+- [Requirements](#requirements)
+- [Howto](#howto)
+- [Design](#design)
+- [Specifications](#specifications)
+- [Troubleshooting](#troubleshooting)
 
-## Main components
-
-- **modules**: Terraform modules to deploy a basic two nodes SAP HANA environment.
-- **salt**: Salt provisioning states to configure the deployed machines with the
-all required components.
-
-## Relevant files
-
-### Terraform modules
-- [base](modules/base): Base configuration of the cluster. The used SLES images, private
-network and generic data are managed here.
-- [host](modules/host): The generic SAP HANA node definition. This modules defines the most
-important features of the each node (attach used partitions, networks, OS parameters, etc).
-Besides that, the different kind of provisioners are available in this module. By now, only
-`salt` is supported but more could be added just adding other `provisioner` files like
-[salt_provisioner](modules/host/salt_provisioner.tf).
-- [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
-host module with some particular updates.
-- [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
-- [sbd](modules/sbd): SBD device definition. Currently a shared disk.
-
-### Salt modules
-- [default](../../salt/default): Default configuration for each node. Install the most
-basic packages and apply basic configuration.
-- [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](../../pillar_examples/libvirt/hana.sls)
-data.
-
-## How to use
-
-### System requirements
+# Requirements
 
 1. You need to have Terraform and the the Libvirt provider for Terraform. You may download packages from the
    [openSUSE Build Service](http://download.opensuse.org/repositories/systemsmanagement:/terraform/) or
    [build from source](https://github.com/dmacvicar/terraform-provider-libvirt)
-1. You need at least 15 GB of free disk space and 512 MiB of free memory per
-   node.
-1. You need to have a working libvirt setup and sufficient privileges to connect
-   and create virtual machines, networks and disks.
 
-### Deployment
+   You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider](https://github.com/dmacvicar/terraform-provider-libvirt))
 
-To deploy the cluster only the parameters of three files should be changed: [main.tf](main.tf), [hana.sls](../../pillar_examples/libvirt/{scenario-type}/hana.sls) and [cluster.sls](../../pillar_examples/libvirt/{scenario-type}/cluster.sls).
+2. You need to fulfill the system requirements provided by SAP for each Application. At least 15 GB of free disk space and 512 MiB of free memory per node.
+
+# Howto
+
+To deploy the cluster only the parameters of three files should be changed: 
+
+* [main.tf](main.tf)
+
 Configure these files according the wanted cluster type.
+
+You can between following profiles:  performance optimized, cost optimized
+
+
+___
+Performance optimized:
+   * [hana.sls](../../pillar_examples/libvirt/performance_optimized/hana.sls) 
+   * [cluster.sls](../../pillar_examples/libvirt/performance_optimized/cluster.sls).
+
+___
+
+Cost optimized:
+
+   * [hana.sls](../../pillar_examples/libvirt/cost_optimized/hana.sls) 
+   * [cluster.sls](../../pillar_examples/libvirt/cost_optimized/cluster.sls).
+
 
 Find more information about the hana and cluster formulas in (check the pillar.example files):
 - https://github.com/SUSE/saphanabootstrap-formula
@@ -96,23 +87,59 @@ After changing the values, run the terraform commands:
 
 ```bash
 terraform workspace new myworkspace # The workspace name will be used to create the name of the created resources as prefix (`default` by default)
-terraform workspace select myworkspace
 terraform init
-terraform apply -var-file=terraform.tfvars
+terraform apply
 ```
 
-**Info**: If some package installation fails during the salt provisioning, the
-most possible thing is that some repository is missing. Add the new repository
-with the needed package and try again.
+####  Destroying the cluster
 
-#### main.tf
+The command `terraform destroy` deletes all resources that Terraform has
+
+
+Have a look at  [specifications](#specifications) for more details.
+
+
+# Design
+
+This project is mainly based in [sumaform](https://github.com/uyuni-project/sumaform/)
+
+Components: 
+
+- **modules**: Terraform modules to deploy a basic two nodes SAP HANA environment.
+- **salt**: Salt provisioning states to configure the deployed machines with the
+all required components.
+
+
+### Terraform modules
+- [base](modules/base): Base configuration of the cluster. The used SLES images, private
+network and generic data are managed here.
+- [host](modules/host): The generic SAP HANA node definition. This modules defines the most
+important features of the each node (attach used partitions, networks, OS parameters, etc).
+Besides that, the different kind of provisioners are available in this module. By now, only
+`salt` is supported but more could be added just adding other `provisioner` files like
+[salt_provisioner](modules/host/salt_provisioner.tf).
+- [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
+host module with some particular updates.
+- [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
+- [sbd](modules/sbd): SBD device definition. Currently a shared disk.
+
+### Salt modules
+- [default](../../salt/default): Default configuration for each node. Install the most
+basic packages and apply basic configuration.
+- [hana_node](../../salt/hana_node): Apply SAP HANA nodes specific updates to install
+SAP HANA and enable system replication according [pillar](../../pillar_examples/libvirt/hana.sls)
+data.
+
+# Specifications
+
+* main.tf
 
 **main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
 
 - **qemu_uri**: Uri of the libvirt provider.
 - **base_image**: The cluster nodes image is selected updating the *image* parameter in the *base* module.
 - **network_name** and **bridge**: If the cluster is deployed locally, the *network_name* should match with a currently available virtual network. If the cluster is deployed remotely, leave the *network_name* empty and set the *bridge* value with remote machine bridge network interface.
-- **sap_inst_media**: Public media where SAPA installation files are stored.
+- **sap_inst_media**: Public media where SAP installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
 - **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
@@ -141,21 +168,16 @@ For more information about registration, check the ["Registering SUSE Linux Ente
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
 
-#### hana.sls
+* hana.sls
 
 **hana.sls** is used to configure the SAP HANA cluster. Check the options in: [saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
 
-#### cluster.sls
+* cluster.sls
 
 **cluster.sls** is used to configure the HA cluster. Check the options in: [habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
 
 
-### Destroying the cluster
-
-The command `terraform destroy` deletes all resources that Terraform has
-created.
-
-## Troubleshooting
+# Troubleshooting
 
 ### Resources have not been destroyed
 
@@ -189,3 +211,9 @@ like to delete a domain you can run `virsh undefine <domain_name>` where
 In case you experience issues with your images such as install ISOs for
 operating systems or virtual disks of your machine check the following folder
 with elevated privileges: `sudo ls -Faihl /var/lib/libvirt/images/`
+
+#### Packages failures
+
+If some package installation fails during the salt provisioning, the
+most possible thing is that some repository is missing. 
+Add the new repository with the needed package and try again.
