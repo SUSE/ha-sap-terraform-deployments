@@ -112,7 +112,7 @@ with the needed package and try again.
 - **qemu_uri**: Uri of the libvirt provider.
 - **base_image**: The cluster nodes image is selected updating the *image* parameter in the *base* module.
 - **network_name** and **bridge**: If the cluster is deployed locally, the *network_name* should match with a currently available virtual network. If the cluster is deployed remotely, leave the *network_name* empty and set the *bridge* value with remote machine bridge network interface.
-- **sap_inst_media**: Public media where SAPA installation files are stored.
+- **sap_inst_media**: Public media where SAP installation files are stored.
 - **iprange**: IP range addresses for the isolated network.
 - **host_ips**: Each host IP address (sequential order).
 - **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
