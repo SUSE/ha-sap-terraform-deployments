@@ -25,14 +25,8 @@ region = "europe-west1"
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
 sap_hana_deployment_bucket = "MyHanaBucket"
 
-# GCP bucket with SLES images
-images_path_bucket = "MySlesBucket"
-
 # Custom sles4sap image
-sles4sap_os_image_file = "OS-Image-File-for-SLES4SAP-for-GCP.tar.gz"
-
-# Custom iscsi server image
-sles_os_image_file = "OS-Image-File-for-SLES-for-GCP.tar.gz"
+sles4sap_boot_image = "MySles4SapImage"
 
 # Variable for init-nodes.tpl script. Can be all, skip-hana or skip-all
 init_type = "all"

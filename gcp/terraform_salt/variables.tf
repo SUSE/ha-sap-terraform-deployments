@@ -21,6 +21,11 @@ variable "machine_type" {
   default = "n1-highmem-8"
 }
 
+variable "iscsi_server_boot_image" {
+  type    = "string"
+  default = "suse-byos-cloud/sles-15-sap-byos"
+}
+
 variable "machine_type_iscsi_server" {
   type    = "string"
   default = "custom-1-2048"
@@ -30,16 +35,9 @@ variable "region" {
   type = "string"
 }
 
-variable "images_path_bucket" {
+variable "sles4sap_boot_image" {
   type = "string"
-}
-
-variable "sles4sap_os_image_file" {
-  type = "string"
-}
-
-variable "sles_os_image_file" {
-  type = "string"
+  default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "storage_url" {
