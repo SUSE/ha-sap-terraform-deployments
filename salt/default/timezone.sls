@@ -5,6 +5,9 @@ timezone_package:
 {% else %}
     - name: tzdata
 {% endif %}
+    - retry:
+        attempts: 3
+        interval: 15
 
 timezone_symlink:
   file.symlink:
