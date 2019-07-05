@@ -12,7 +12,7 @@ connected to the SUSE Customer Center.
 Supported Options:
 
   -r [REG CODE]    Registration Code that will be used to register the system.
-  -d               Deregister the System aften the salt-minion installation
+  -d               Deregister the System after the salt-minion installation
   -h               Show this help. 
 
 EOF
@@ -26,7 +26,11 @@ function install_salt_minion(){
     # Check SLE version
     source /etc/os-release
 
+    # Register the system on SCC
     SUSEConnect -r "$regcode"
+
+    # We have to force refresh the repos and the keys (keys may change during lifetime of this OS/image)
+    zypper --non-interactive --gpg-auto-import-keys refresh --force --services
 
     # Register the modules accordingly with the SLE version.
     if [[ $VERSION_ID =~ ^12\.? ]]; then    
