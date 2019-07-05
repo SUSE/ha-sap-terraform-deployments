@@ -1,6 +1,9 @@
 iscsi-formula:
   pkg.installed:
     - fromrepo: ha-factory
+    - retry:
+        attempts: 3
+        interval: 15
 
 move-iscsi-folder:
   cmd.run:

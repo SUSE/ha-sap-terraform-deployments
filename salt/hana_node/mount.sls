@@ -1,5 +1,8 @@
 parted:
-  pkg.installed
+  pkg.installed:
+  - retry:
+    attempts: 3
+    interval: 15
 
 hana_partition:
   cmd.run:

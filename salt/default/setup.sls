@@ -1,6 +1,9 @@
 minion_package:
   pkg.installed:
     - name: salt-minion
+    - retry:
+        attempts: 3
+        interval: 15
 
 minion_id:
   file.managed:
