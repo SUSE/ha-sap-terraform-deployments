@@ -25,7 +25,7 @@ resource "google_compute_instance" "iscsisrv" {
 
   boot_disk {
     initialize_params {
-      image = "${google_compute_image.sles_bootable_image.self_link}"
+      image = "${var.iscsi_server_boot_image}"
     }
 
     auto_delete = true
@@ -67,7 +67,7 @@ resource "google_compute_instance" "clusternodes" {
 
   boot_disk {
     initialize_params {
-      image = "${google_compute_image.sles4sap_bootable_image.self_link}"
+      image = "${var.sles4sap_boot_image}"
     }
 
     auto_delete = true
