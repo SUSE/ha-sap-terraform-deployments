@@ -15,7 +15,7 @@ module "grafana" {
   background             = "${var.background}"
 
   grains = <<EOF
-role: grafana
+role: monitoring
 provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
