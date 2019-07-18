@@ -24,7 +24,6 @@ prometheus_configuration:
             static_configs:
          ## TODO: grains server need to be passed to monitoring module , change localhost
               - targets: [localhost:8001'] # hanadb_exporter
-         ##     - targets: ['{{grains["server"]}}:9187'] # postgres_exporter
           - job_name: 'hanadb'
             scrape_interval: 5s
             static_configs:

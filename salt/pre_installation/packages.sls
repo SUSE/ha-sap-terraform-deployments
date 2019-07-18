@@ -5,12 +5,12 @@ iscsi-formula:
         attempts: 3
         interval: 15
 
+{% if grains['role'] == 'iscsi_srv' %}
 move-iscsi-folder:
   cmd.run:
     - name: mv /srv/salt/iscsi /root/salt/
     - unless: file.path_exists_glob('/root/salt/iscsi')
 
-{% if grains['role'] == 'iscsi_srv' %}
 /srv/salt:
   file.absent:
   - require:
