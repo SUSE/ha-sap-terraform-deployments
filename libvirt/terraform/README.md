@@ -10,8 +10,8 @@
 
 # Requirements
 
-1. You need to have Terraform and the the Libvirt provider for Terraform. You may download packages from the
-   [openSUSE Build Service](http://download.opensuse.org/repositories/systemsmanagement:/terraform/) or
+1. You need to have Terraform and the the Libvirt provider for Terraform. You need the version v0.11.NN from this packages. You may download packages from the
+   [openSUSE Build Service](http://download.opensuse.org/repositories/systemsmanagement:/sumaform/) or
    [build from source](https://github.com/dmacvicar/terraform-provider-libvirt)
 
    You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider](https://github.com/dmacvicar/terraform-provider-libvirt))
