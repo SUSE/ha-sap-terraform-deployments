@@ -4,6 +4,7 @@
 
 - [Requirements](#requirements)
 - [Howto](#howto)
+- [Monitoring](doc/monitoring.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
@@ -22,7 +23,9 @@
 
 To deploy the cluster only the parameters of three files should be changed: 
 
-* [main.tf](main.tf)
+* [main.tf](main.tf.example)
+
+(remove postfix `example` -> `main.tf`)
 
 Configure these files according the wanted cluster type.
 
@@ -132,7 +135,7 @@ data.
 
 # Specifications
 
-* main.tf
+* main.tf.example
 
 **main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
 

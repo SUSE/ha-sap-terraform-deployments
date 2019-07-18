@@ -11,6 +11,7 @@ before_script:
   - unzip /tmp/terraform -d /tmp
   - chmod +x /tmp/terraform
   - /tmp/terraform -version
+  - mv libvirt/terraform/main.tf.example libvirt/terraform/main.tf
 
 script:
   - set -e
