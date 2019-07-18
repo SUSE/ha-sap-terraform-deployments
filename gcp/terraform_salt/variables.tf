@@ -36,7 +36,7 @@ variable "region" {
 }
 
 variable "sles4sap_boot_image" {
-  type = "string"
+  type    = "string"
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 

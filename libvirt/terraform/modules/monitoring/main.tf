@@ -21,10 +21,10 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
   // Provider-specific variables
-  memory = 4096
-  vcpu           = "${var.vcpu}"
+  memory  = 4096
+  vcpu    = "${var.vcpu}"
   running = "${var.running}"
-  mac = "${var.mac}"
+  mac     = "${var.mac}"
 }
 
 output "configuration" {

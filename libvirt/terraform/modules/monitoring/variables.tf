@@ -1,16 +1,16 @@
 variable "base_configuration" {
   description = "use ${module.base.configuration}, see the main.tf example file"
-  type = "map"
+  type        = "map"
 }
 
 variable "name" {
   description = "hostname, without the domain part"
-  default = "grafana"
+  default     = "grafana"
 }
 
-variable "count"  {
+variable "count" {
   description = "number of hosts like this one"
-  default = 1
+  default     = 1
 }
 
 variable "vcpu" {
@@ -84,24 +84,22 @@ variable "host_ips" {
 
 // Provider-specific variables
 
-
 variable "memory" {
   description = "RAM memory in MiB"
   default     = 512
 }
 
-
 variable "running" {
   description = "Whether this host should be turned on or off"
-  default = true
+  default     = true
 }
 
 variable "mac" {
   description = "a MAC address in the form AA:BB:CC:11:22:22"
-  default = ""
+  default     = ""
 }
 
 variable "cpu_model" {
   description = "Define what CPU model the guest is getting (host-model, host-passthrough or the default)."
-  default = ""
+  default     = ""
 }
