@@ -10,6 +10,3 @@ azure/terraform/provision/node1_id_rsa.pub
 salt/hana_node/files/sshkeys
 salt/hana_node/files/pillar/*
 !salt/hana_node/files/pillar/top.sls
-
-# ignore the main.tf of libvirt. we use main.tf.example
-libvirt/terraform/main.tf

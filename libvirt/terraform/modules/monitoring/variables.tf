@@ -8,16 +8,6 @@ variable "name" {
   default     = "grafana"
 }
 
-variable "count" {
-  description = "number of hosts like this one"
-  default     = 1
-}
-
-variable "vcpu" {
-  description = "Number of virtual CPUs"
-  default     = 1
-}
-
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -32,6 +22,16 @@ variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
   type        = "map"
   default     = {}
+}
+
+variable "count" {
+  description = "number of hosts like this one"
+  default     = 1
+}
+
+variable "vcpu" {
+  description = "Number of virtual CPUs"
+  default     = 1
 }
 
 variable "additional_packages" {
@@ -49,22 +49,11 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
-// TODO: verify if it is needed
-// variable "server_configuration" {
-//   description = "use ${module.<SERVER_NAME>.configuration}, see the main.tf example file"
-//  type = "map"
-//}
-
 variable "public_key_location" {
   description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
 
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {

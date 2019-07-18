@@ -1,18 +1,10 @@
 # Monitoring deploymenet for SHAP:
 
-## Rationale:
+The monitoring module will deploy and install all tool necessary to monitor your SHAP stack. (grafana, prometheus).
 
-The monitoring module will deploy and install all tool necessary to monitor your SHAP stack. (grafana dashboard etc).
+The monitor module will need an extra VM. The packages are the same from Uyuny/Suse manager so we use the same pkg repository.
 
-By design you should have a 3 host where you assign it the role of "monitoring".
-
-## Design:
-
-The monitoring module follow the same pattern by other modules presents, but it require less.
-
-# Specification:
-
-TODO
+The terraform module follow the same conventions as other modules
 
 # Examples:
 

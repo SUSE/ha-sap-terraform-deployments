@@ -1,4 +1,4 @@
-module "grafana" {
+module "monitoring" {
   source = "../host"
 
   base_configuration     = "${var.base_configuration}"
@@ -28,5 +28,5 @@ EOF
 }
 
 output "configuration" {
-  value = "${module.grafana.configuration}"
+  value = "${module.monitoring.configuration}"
 }

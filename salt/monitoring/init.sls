@@ -1,54 +1,51 @@
 # TODO: this repo should detect the os itself and chooose right repo depending the os
-repos:
+# for moment ok
+suse-manager-head-repo:
  pkgrepo.managed:
-    - humanname: devel:tools
+    - humanname: Head:SLE15:Manager:Tools
     - baseurl: http://download.suse.de/ibs/Devel:/Galaxy:/Manager:/Head:/SLE15-SUSE-Manager-Tools/SLE_15/
     - refresh: True
     - gpgautoimport: True
 
+sle-15-update:
+ pkgrepo.managed:
+    - humanname: SLE15:Update
+    - baseurl: http://download.suse.de/ibs/SUSE/Updates/SLE-Module-Basesystem/15/x86_64/update/
+    - refresh: True
+    - gpgautoimport: True
+
+sle-15-pool:
+ pkgrepo.managed:
+    - humanname: SLE15:Pool
+    - baseurl: http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product/
+    - refresh: True
+    - gpgautoimport: True
 
 prometheus:
   pkg.installed:
     - name: golang-github-prometheus-prometheus
     - require:
-      - pkgrepo: repos
+      - pkgrepo: suse-manager-head-repo
+      - pkgrepo: sle-15-update
+      - pkgrepo: sle-15-pool
 
-prometheus_configuration:
+prometheus_shap_configuration:
   file.managed:
     - name: /etc/prometheus/prometheus.yml
     - makedirs: True
     - contents: |
         scrape_configs:
-          - job_name: 'sumaform'
+          - job_name: 'handadb-metrics'
             scrape_interval: 5s
             static_configs:
          ## TODO: grains server need to be passed to monitoring module , change localhost
               - targets: [localhost:8001'] # hanadb_exporter
-          - job_name: 'hanadb'
-            scrape_interval: 5s
-            static_configs:
-         ## TODO: change localhost  with grain
-              - targets: ['localhost:9800']
 
-prometheus_service:
-  file.managed:
-    - name: /etc/systemd/system/prometheus.service
-    - contents: |
-        [Unit]
-        Description=prometheus
-
-        [Service]
-        ExecStart=/usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml
-
-        [Install]
-        WantedBy=multi-user.target
-    - require:
-      - pkg: prometheus
+prometheus_service_systemd_activation:
   service.running:
     - name: prometheus
     - enable: True
     - require:
-      - file: prometheus_service
       - file: prometheus_configuration
     - watch:
       - file: prometheus_configuration
@@ -57,12 +54,14 @@ grafana:
   pkg.installed:
     - name: grafana
     - require:
-      - pkgrepo: repos
+      - pkgrepo: suse-manager-head-repo
+      - pkgrepo: sle-15-update
+      - pkgrepo: sle-15-pool
 
 grafana_anonymous_login_configuration:
   file.blockreplace:
     - name: /etc/grafana/grafana.ini
-    - marker_start: '#################################### Anonymous Auth ##########################'
+    - marker_start: '#################################### Anonymous Auth ######################'
     - marker_end: '#################################### Github Auth ##########################'
     - content: |
         [auth.anonymous]
@@ -83,7 +82,7 @@ grafana_port_configuration:
 grafana_provisioning_directory:
   file.recurse:
     - name: /etc/grafana/provisioning
-    - source: salt://grafana/provisioning
+    - source: salt://monitoring/provisioning
     - clean: True
     - user: grafana
     - group: grafana
@@ -111,9 +110,3 @@ grafana_service:
       - file: grafana_port_configuration
       - file: grafana_provisioning_directory
       - file: grafana_service_configuration
-
-grafana_setup:
-  cmd.script:
-    - name: salt://grafana/setup_grafana.py
-    - require:
-      - service: grafana_service

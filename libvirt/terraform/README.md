@@ -23,7 +23,7 @@
 
 To deploy the cluster only the parameters of three files should be changed: 
 
-* [main.tf](main.tf.example)
+* [main.tf](main.tf)
 
 (remove postfix `example` -> `main.tf`)
 
@@ -135,7 +135,7 @@ data.
 
 # Specifications
 
-* main.tf.example
+* main.tf
 
 **main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
 
