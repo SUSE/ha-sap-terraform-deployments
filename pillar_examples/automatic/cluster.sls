@@ -31,6 +31,7 @@ cluster:
   configure:
     method: update
     template:
+      # When the package salt-standalone-formulas-configuration is finally released, only the first path will be used
       {% if grains['osrelease_info'][0] == 15 and grains['osrelease_info']|length > 1 and grains['osrelease_info'][1] >= 1 %}
       source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
       {% else %}
