@@ -13,7 +13,7 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /srv/salt/hana/templates/scale_up_resources.j2
+      source: /srv/salt/hana/templates/scale_up_resources.j2 #This path changes beyond SLES15SP1
       parameters:
         sid: prd
         instance: 00

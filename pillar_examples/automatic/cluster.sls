@@ -31,7 +31,11 @@ cluster:
   configure:
     method: update
     template:
+      {% if grains['osrelease_info'][0] == 15 and grains['osrelease_info']|length > 1 and grains['osrelease_info'][1] >= 1 %}
+      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
+      {% else %}
       source: /srv/salt/hana/templates/scale_up_resources.j2
+      {% endif %}
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}

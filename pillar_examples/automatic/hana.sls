@@ -29,6 +29,10 @@ hana:
           user_name: SYSTEM
           user_password: YourPassword1234
           database: SYSTEMDB
+      exporter:
+        exposition_port: 8001
+        user: SYSTEM
+        password: YourPassword1234
 
     - host: {{ grains['name_prefix'] }}02
       sid: prd
@@ -76,4 +80,8 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+      exporter:
+        exposition_port: 8002
+        user: SYSTEM
+        password: YourPassword1234
     {% endif %}
