@@ -38,17 +38,19 @@ prometheus_shap_configuration:
           - job_name: 'handadb-metrics'
             scrape_interval: 5s
             static_configs:
-         ## TODO: grains server need to be passed to monitoring module , change localhost
-              - targets: [localhost:8001'] # hanadb_exporter
+	       {% for ip in grains['host_ips'] %}
+                  - targets: ['{{ ip }}:8001'] # hanadb_exporter
+               {% endfor %}
+
 
 prometheus_service_systemd_activation:
   service.running:
     - name: prometheus
     - enable: True
     - require:
-      - file: prometheus_configuration
+      - file: prometheus_shap_configuration
     - watch:
-      - file: prometheus_configuration
+      - file: prometheus_shap_configuration
 
 grafana:
   pkg.installed:
