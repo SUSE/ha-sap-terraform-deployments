@@ -38,7 +38,7 @@ prometheus_shap_configuration:
           - job_name: 'handadb-metrics'
             scrape_interval: 5s
             static_configs:
-	       {% for ip in grains['host_ips'] %}
+               {% for ip in grains['host_ips'] %}
                   - targets: ['{{ ip }}:8001'] # hanadb_exporter
                {% endfor %}
 
