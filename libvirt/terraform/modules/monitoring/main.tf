@@ -30,3 +30,9 @@ EOF
 output "configuration" {
   value = "${module.monitoring.configuration}"
 }
+
+output "addresses" {
+  value {
+    addresses = "${module.monitoring.addresses}"
+  }
+}

@@ -15,7 +15,7 @@ data "template_file" "salt_provisioner" {
   }
 }
 
-resource "null_resource" "hana_node_provisioner" {
+resource "null_resource" "host_provisioner" {
   count = "${var.provisioner == "salt" ? libvirt_domain.domain.count : 0}"
 
   triggers = {
