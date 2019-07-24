@@ -4,6 +4,7 @@
 
 - [Requirements](#requirements)
 - [Howto](#howto)
+- [Monitoring](doc/monitoring.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
@@ -23,6 +24,8 @@
 To deploy the cluster only the parameters of three files should be changed: 
 
 * [main.tf](main.tf)
+
+(remove postfix `example` -> `main.tf`)
 
 Configure these files according the wanted cluster type.
 
