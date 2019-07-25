@@ -19,3 +19,11 @@ output "iscsisrv_ip" {
 output "iscsisrv_name" {
   value = "${module.iscsi_server.configuration["hostname"]}"
 }
+
+output "monitoring_hostname" {
+  value = "${module.monitoring.configuration["hostname"]}"
+}
+
+output "monitoring_ip" {
+  value = "${module.monitoring.addresses["addresses"]}"
+}
