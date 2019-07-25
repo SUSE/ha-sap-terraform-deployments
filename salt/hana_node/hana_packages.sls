@@ -13,7 +13,6 @@ python3-shaptools:
 
 saphanabootstrap-formula:
   pkg.installed:
-    - fromrepo: ha-factory
     - retry:
         attempts: 3
         interval: 15
