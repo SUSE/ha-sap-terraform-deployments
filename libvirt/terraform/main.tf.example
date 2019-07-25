@@ -66,3 +66,21 @@ module "hana_node" {
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
 }
+
+module "monitoring" {
+  source             = "./modules/monitoring"
+  base_configuration = "${module.base.configuration}"
+
+  name                   = "monitoring"
+  count                  = 1
+  vcpu                   = 4
+  memory                 = 4095
+  monitoring_srv_ip      = "${var.monitoring_srv_ip}"
+  reg_code               = "${var.reg_code}"
+  reg_email              = "${var.reg_email}"
+  reg_additional_modules = "${var.reg_additional_modules}"
+  additional_repos       = "${var.additional_repos}"
+  ha_sap_deployment_repo = "${var.ha_sap_deployment_repo}"
+  provisioner            = "${var.provisioner}"
+  background             = "${var.background}"
+}

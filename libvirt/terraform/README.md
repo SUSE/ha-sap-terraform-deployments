@@ -139,7 +139,8 @@ data.
 
 # Specifications
 
-* main.tf
+* main.tf.example (contains all modules)
+* main.tf contains 2 nodes cluster only
 
 **main.tf** stores the configuration of the terraform deployment, the infrastructure configuration basically. Here some important tips to update the file properly (all variables are described in each module variables file):
 

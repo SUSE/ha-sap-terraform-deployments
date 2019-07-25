@@ -6,6 +6,19 @@ The monitoring module will need an extra VM. The packages are the same from Uyun
 
 The terraform module follows the same conventions as other modules
 
+# Enable the monitoring module:
+
+1) Add the IP of your monitoring host in the terraform.tfvars
+```monitoring_srv_ip = "192.168.XXX.Y+3"```
+
+2) add the monitoring module to your main.tf
+
+See main.tf.example for the monitoring module definition.
+
+once added, do `terraform apply`.
+
+3) enable the prometheus exporter in order to gather data, see below
+
 # Enable the SAP HANA database exporters
 
 The SAP HANA database data is exported using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
