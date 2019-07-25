@@ -21,7 +21,7 @@
 
 # Howto
 
-To deploy the cluster only the parameters of three files should be changed: 
+To deploy the cluster only the parameters of three files should be changed:
 
 * [main.tf](main.tf)
 
@@ -34,14 +34,14 @@ You can between following profiles:  performance optimized, cost optimized
 
 ___
 Performance optimized:
-   * [hana.sls](../../pillar_examples/libvirt/performance_optimized/hana.sls) 
+   * [hana.sls](../../pillar_examples/libvirt/performance_optimized/hana.sls)
    * [cluster.sls](../../pillar_examples/libvirt/performance_optimized/cluster.sls).
 
 ___
 
 Cost optimized:
 
-   * [hana.sls](../../pillar_examples/libvirt/cost_optimized/hana.sls) 
+   * [hana.sls](../../pillar_examples/libvirt/cost_optimized/hana.sls)
    * [cluster.sls](../../pillar_examples/libvirt/cost_optimized/cluster.sls).
 
 
@@ -66,6 +66,9 @@ additional_repos = {}
 shared_storage_type = "iscsi"
 iscsi_srv_ip = "192.168.XXX.Y+2"
 iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+
+# Monitoring system data
+monitoring_srv_ip = "192.168.XXX.Y+3"
 
 
 # Repository url used to install install HA/SAP deployment packages"
@@ -106,7 +109,7 @@ Have a look at  [specifications](#specifications) for more details.
 
 This project is mainly based in [sumaform](https://github.com/uyuni-project/sumaform/)
 
-Components: 
+Components:
 
 - **modules**: Terraform modules to deploy a basic two nodes SAP HANA environment.
 - **salt**: Salt provisioning states to configure the deployed machines with the
@@ -124,6 +127,7 @@ Besides that, the different kind of provisioners are available in this module. B
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
 host module with some particular updates.
 - [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
+- [monitoring](modules/monitoring): Machine to host the monitoring stack.
 - [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
@@ -148,6 +152,7 @@ data.
 - **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
 - **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
 - **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
+- **monitoring_srv_ip**: IP address of the machine that will host the monitoring stack
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **additional_repos**: Additional repos to add to the guest machines.
 - **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
@@ -218,5 +223,5 @@ with elevated privileges: `sudo ls -Faihl /var/lib/libvirt/images/`
 #### Packages failures
 
 If some package installation fails during the salt provisioning, the
-most possible thing is that some repository is missing. 
+most possible thing is that some repository is missing.
 Add the new repository with the needed package and try again.

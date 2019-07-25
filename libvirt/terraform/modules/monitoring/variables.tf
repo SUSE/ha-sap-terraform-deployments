@@ -66,9 +66,9 @@ variable "background" {
   default     = false
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
-  type        = "list"
+variable "monitoring_srv_ip" {
+  description = "monitoring server address"
+  type        = "string"
 }
 
 // Provider-specific variables

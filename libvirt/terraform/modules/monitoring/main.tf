@@ -10,7 +10,7 @@ module "monitoring" {
   additional_repos       = "${var.additional_repos}"
   additional_packages    = "${var.additional_packages}"
   public_key_location    = "${var.public_key_location}"
-  host_ips               = "${var.host_ips}"
+  host_ips               = "${list(var.monitoring_srv_ip)}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
 

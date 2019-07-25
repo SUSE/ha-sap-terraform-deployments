@@ -53,6 +53,11 @@ variable "iscsi_srv_ip" {
   default     = "192.168.106.17"
 }
 
+variable "monitoring_srv_ip" {
+  description = "monitoring server address"
+  type        = "string"
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
