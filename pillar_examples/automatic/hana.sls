@@ -29,10 +29,12 @@ hana:
           user_name: SYSTEM
           user_password: YourPassword1234
           database: SYSTEMDB
+      {% if grains['osrelease_info'][0] == 15 %}
       exporter:
         exposition_port: 8001
         user: SYSTEM
         password: YourPassword1234
+      {% endif %}
 
     - host: {{ grains['name_prefix'] }}02
       sid: prd
@@ -80,8 +82,10 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+      {% if grains['osrelease_info'][0] == 15 %}
       exporter:
         exposition_port: 8002
         user: SYSTEM
         password: YourPassword1234
+      {% endif %}
     {% endif %}
