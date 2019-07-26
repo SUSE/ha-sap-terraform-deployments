@@ -16,6 +16,7 @@ module "base" {
   timezone     = "Europe/Berlin"
 }
 
+//  --- ISCSI server --- 
 module "sbd_disk" {
   source             = "./modules/sbd"
   count              = "${var.shared_storage_type == "shared-disk" ? 1 : 0}"
@@ -38,6 +39,16 @@ module "iscsi_server" {
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
 }
+
+output "iscsisrv_ip" {
+  value = "${module.iscsi_server.addresses}"
+}
+
+output "iscsisrv_name" {
+  value = "${module.iscsi_server.configuration["hostname"]}"
+}
+
+// --- HANA NODES ------
 
 module "hana_node" {
   source             = "./modules/hana_node"
@@ -65,4 +76,16 @@ module "hana_node" {
   scenario_type          = "${var.scenario_type}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+}
+
+output "cluster_nodes_ip" {
+  value = "${module.hana_node.addresses["addresses"]}"
+}
+
+output "cluster_nodes_id" {
+  value = "${module.hana_node.configuration["id"]}"
+}
+
+output "cluster_nodes_names" {
+  value = "${module.hana_node.configuration["hostname"]}"
 }
