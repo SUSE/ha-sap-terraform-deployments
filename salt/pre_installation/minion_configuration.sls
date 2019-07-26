@@ -1,5 +1,5 @@
 backup-salt-configuration:
-  file.rename:
+  file.copy:
     - name: /etc/salt/minion.backup
     - source: /etc/salt/minion
 

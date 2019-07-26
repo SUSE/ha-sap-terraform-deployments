@@ -1,0 +1,13 @@
+groups:
+
+# this is only a boostrap/initial alert to setup things
+- name: hana-node01-network-latency
+  rules:
+  - alert: HighRequestLatency
+    expr: job:request_latency_seconds:mean5m{job=hanadb"} > 0.5
+    for: 10m
+    labels:
+      severity: page
+    annotations:
+      summary: High request latency
+

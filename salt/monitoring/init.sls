@@ -30,20 +30,14 @@ prometheus:
       - pkgrepo: sle-15-pool
 
 prometheus_shap_configuration:
-  file.managed:
-    - name: /etc/prometheus/prometheus.yml
+  file.recurse:
+    - name: /etc/prometheus/
     - makedirs: True
-    - contents: |
-        scrape_configs:
-          - job_name: 'handadb-metrics'
-            scrape_interval: 5s
-            static_configs:
-               {% for ip in grains['host_ips'] %}
-                  - targets: ['{{ ip }}:8001'] # hanadb_exporter
-               {% endfor %}
+    - source: salt://monitoring/prometheus
+    - template: jinja
+    - include_empty: True
 
-
-prometheus_service_systemd_activation:
+prometheus_service:
   service.running:
     - name: prometheus
     - enable: True
@@ -103,6 +97,7 @@ grafana_service:
   service.running:
     - name: grafana-server
     - enable: True
+    - restart: True
     - require:
       - pkg: grafana
       - file: grafana_port_configuration
@@ -112,3 +107,15 @@ grafana_service:
       - file: grafana_port_configuration
       - file: grafana_provisioning_directory
       - file: grafana_service_configuration
+
+prometheus-alertmanager:
+  pkg.installed:
+    - names:
+      - golang-github-prometheus-alertmanager
+    - enable: True
+    - reload: True
+    - require:
+      - service: prometheus_service
+      - file: prometheus_shap_configuration
+    - watch:
+      - file: prometheus_shap_configuration
