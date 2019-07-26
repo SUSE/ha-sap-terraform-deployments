@@ -97,3 +97,8 @@ variable "additional_disk" {
   description = "disk block definition(s) to be added to this host"
   default     = []
 }
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = true
+}

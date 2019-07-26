@@ -18,3 +18,6 @@ include:
   - hana_node.hana_packages
   - hana_node.cluster_packages
   - hana_node.formula
+  {% if grains['monitoring_enabled'] %}
+  - hana_node.monitoring
+  {% endif %}

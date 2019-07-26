@@ -1,20 +1,20 @@
 # TODO: this repo should detect the os itself and chooose right repo depending the os
 # for moment ok
-suse-manager-head-repo:
+server_monitoring_repo:
  pkgrepo.managed:
-    - humanname: Head:SLE15:Manager:Tools
-    - baseurl: http://download.suse.de/ibs/Devel:/Galaxy:/Manager:/Head:/SLE15-SUSE-Manager-Tools/SLE_15/
+    - humanname: Server:SLE15:Monitoring
+    - baseurl: https://download.opensuse.org/repositories/server:/monitoring/SLE_15/
     - refresh: True
     - gpgautoimport: True
 
-sle-15-update:
+sle_15_update:
  pkgrepo.managed:
     - humanname: SLE15:Update
     - baseurl: http://download.suse.de/ibs/SUSE/Updates/SLE-Module-Basesystem/15/x86_64/update/
     - refresh: True
     - gpgautoimport: True
 
-sle-15-pool:
+sle_15_pool:
  pkgrepo.managed:
     - humanname: SLE15:Pool
     - baseurl: http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product/
@@ -25,9 +25,9 @@ prometheus:
   pkg.installed:
     - name: golang-github-prometheus-prometheus
     - require:
-      - pkgrepo: suse-manager-head-repo
-      - pkgrepo: sle-15-update
-      - pkgrepo: sle-15-pool
+      - pkgrepo: server_monitoring_repo
+      - pkgrepo: sle_15_update
+      - pkgrepo: sle_15_pool
 
 prometheus_shap_configuration:
   file.recurse:
@@ -50,9 +50,9 @@ grafana:
   pkg.installed:
     - name: grafana
     - require:
-      - pkgrepo: suse-manager-head-repo
-      - pkgrepo: sle-15-update
-      - pkgrepo: sle-15-pool
+      - pkgrepo: server_monitoring_repo
+      - pkgrepo: sle_15_update
+      - pkgrepo: sle_15_pool
 
 grafana_anonymous_login_configuration:
   file.blockreplace:

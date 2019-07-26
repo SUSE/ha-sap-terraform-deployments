@@ -6,6 +6,13 @@ The monitoring module will need an extra VM. The packages are the same from Uyun
 
 The terraform module follows the same conventions as other modules
 
+
+By default each hana host will be monitored.
+
+If you want to disable monitoring for hosts, use:
+`monitoring_enabled: false`
+
+
 # Enable the SAP HANA database exporters
 
 The SAP HANA database data is exported using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
