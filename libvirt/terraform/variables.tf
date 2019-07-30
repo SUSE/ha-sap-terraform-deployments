@@ -111,3 +111,8 @@ variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
   default     = false
 }
+
+variable "monitored_services" {
+  description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
+  type        = "list"
+}

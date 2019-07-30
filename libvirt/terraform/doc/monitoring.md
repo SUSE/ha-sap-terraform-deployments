@@ -6,8 +6,15 @@ The monitoring module will need an extra VM. The packages are the same from Uyun
 
 The terraform module follows the same conventions as other modules
 
+* mandatory:
 
-By default each hana host will be monitored.
+`monitored_services` this is a list containing the services to be monitored. Format: `HOST_IP:PORT`. Under the hood this var tell prometheus the IP and port where to scrape.
+
+See tfvars.example
+```
+monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110.X:9100", "192.168.110.X+1:9100"]
+```
+
 
 If you want to disable monitoring for hosts, use:
 `monitoring_enabled: false`

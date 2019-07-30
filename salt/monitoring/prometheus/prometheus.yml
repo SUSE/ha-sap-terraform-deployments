@@ -7,7 +7,7 @@ scrape_configs:
   - job_name: 'hanadb'
     scrape_interval: 5s
     static_configs:
-      {% for ip in grains['monitored_hosts'] %}
-      - targets: ['{{ ip }}:8001'] # hanadb_exporter port
-      - targets: ['{{ ip }}:9100'] # node_exporter   
+      # servive is an entry like : HOST_IP:PORT 192.XX.XX.1:8001
+      {% for service in grains['monitored_services'] %}
+      - targets: ['{{ service }}'] # service to be monitored
       {% endfor %}
