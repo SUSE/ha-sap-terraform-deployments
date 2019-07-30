@@ -47,20 +47,20 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 
 partitions:
   1:
-    start: 0
-    end: 1024
+    start: 1
+    end: 20%
   2:
-    start: 1025
-    end: 2048
+    start: 20%
+    end: 40%
   3:
-    start: 2049
-    end: 3072
+    start: 40%
+    end: 60%
   4:
-    start: 3073
-    end: 4096
+    start: 60%
+    end: 80%
   5:
-    start: 4097
-    end: 5120
+    start: 80%
+    end: 100%
 EOF
 
     destination = "/tmp/grains"
