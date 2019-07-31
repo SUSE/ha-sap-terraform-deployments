@@ -8,6 +8,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       # servive is an entry like : HOST_IP:PORT 192.XX.XX.1:8001
+      {% if grains.get['monitored_services'] %}
       {% for service in grains['monitored_services'] %}
       - targets: ['{{ service }}'] # service to be monitored
       {% endfor %}
+      {% endif %}
