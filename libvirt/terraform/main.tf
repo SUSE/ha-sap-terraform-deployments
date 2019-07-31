@@ -65,6 +65,7 @@ module "hana_node" {
   scenario_type          = "${var.scenario_type}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+  monitoring_enabled     = "${var.monitoring_enabled}"
 }
 
 module "monitoring" {

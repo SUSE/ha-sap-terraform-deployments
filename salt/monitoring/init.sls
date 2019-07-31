@@ -7,27 +7,11 @@ server_monitoring_repo:
     - refresh: True
     - gpgautoimport: True
 
-sle_15_update:
- pkgrepo.managed:
-    - humanname: SLE15:Update
-    - baseurl: http://download.suse.de/ibs/SUSE/Updates/SLE-Module-Basesystem/15/x86_64/update/
-    - refresh: True
-    - gpgautoimport: True
-
-sle_15_pool:
- pkgrepo.managed:
-    - humanname: SLE15:Pool
-    - baseurl: http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product/
-    - refresh: True
-    - gpgautoimport: True
-
 prometheus:
   pkg.installed:
     - name: golang-github-prometheus-prometheus
     - require:
       - pkgrepo: server_monitoring_repo
-      - pkgrepo: sle_15_update
-      - pkgrepo: sle_15_pool
 
 prometheus_shap_configuration:
   file.recurse:
@@ -51,8 +35,6 @@ grafana:
     - name: grafana
     - require:
       - pkgrepo: server_monitoring_repo
-      - pkgrepo: sle_15_update
-      - pkgrepo: sle_15_pool
 
 grafana_anonymous_login_configuration:
   file.blockreplace:

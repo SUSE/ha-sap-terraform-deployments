@@ -5,27 +5,11 @@ server_monitoring_repo:
     - refresh: True
     - gpgautoimport: True
 
-sle_15_update:
- pkgrepo.managed:
-    - humanname: SLE15:Update
-    - baseurl: http://download.suse.de/ibs/SUSE/Updates/SLE-Module-Basesystem/15/x86_64/update/
-    - refresh: True
-    - gpgautoimport: True
-
-sle_15_pool:
- pkgrepo.managed:
-    - humanname: SLE15:Pool
-    - baseurl: http://download.suse.de/ibs/SUSE/Products/SLE-Module-Basesystem/15/x86_64/product/
-    - refresh: True
-    - gpgautoimport: True
-
 prometheus_node_exporter:
   pkg.installed:
     - name: golang-github-prometheus-node_exporter
     - require:
       - pkgrepo: server_monitoring_repo
-      - pkgrepo: sle_15_update
-      - pkgrepo: sle_15_pool
 
 node_exporter_service:
   service.running:
@@ -35,6 +19,3 @@ node_exporter_service:
     - require:
       - pkg: prometheus_node_exporter
       - pkgrepo: server_monitoring_repo
-      - pkgrepo: sle_15_update
-      - pkgrepo: sle_15_pool
-

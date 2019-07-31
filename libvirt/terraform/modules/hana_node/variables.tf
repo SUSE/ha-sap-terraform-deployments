@@ -130,3 +130,8 @@ variable "mac" {
   description = "a MAC address in the form AA:BB:CC:11:22:22"
   default     = ""
 }
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = true
+}
