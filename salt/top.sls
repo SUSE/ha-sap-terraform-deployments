@@ -11,4 +11,5 @@ base:
  
   'role:monitoring':
     - match: grain
+    - default
     - monitoring

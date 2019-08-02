@@ -65,6 +65,7 @@ module "hana_node" {
   scenario_type          = "${var.scenario_type}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+  monitoring_enabled     = "${var.monitoring_enabled}"
 }
 
 module "monitoring" {
@@ -83,4 +84,5 @@ module "monitoring" {
   ha_sap_deployment_repo = "${var.ha_sap_deployment_repo}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+  monitored_services     = "${var.monitored_services}"
 }

@@ -3,10 +3,13 @@ global:
   scrape_interval: 10s # By default, scrape targets every 15 seconds.
   evaluation_interval: 5s
 
+{% if grains.get('monitored_services') %}
 scrape_configs:
   - job_name: 'hanadb'
     scrape_interval: 5s
     static_configs:
-      {% for ip in grains['host_ips'] %}
-      - targets: ['{{ ip }}:8001'] # hanadb_exporter port TODO: we can improve this 
+      # servive is an entry like : HOST_IP:PORT 192.XX.XX.1:8001
+      {% for service in grains['monitored_services'] %}
+      - targets: ['{{ service }}'] # service to be monitored
       {% endfor %}
+{% endif %}

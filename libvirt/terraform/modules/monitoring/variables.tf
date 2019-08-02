@@ -92,3 +92,8 @@ variable "cpu_model" {
   description = "Define what CPU model the guest is getting (host-model, host-passthrough or the default)."
   default     = ""
 }
+
+variable "monitored_services" {
+  description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
+  type        = "list"
+}

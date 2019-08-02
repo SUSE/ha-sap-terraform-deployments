@@ -53,7 +53,6 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 authorized_keys: [${trimspace(file(var.base_configuration["public_key_location"]))},${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-
 ${var.grains}
 
 EOF
