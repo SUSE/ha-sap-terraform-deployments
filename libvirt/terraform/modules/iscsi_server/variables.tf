@@ -1,5 +1,5 @@
 variable "base_configuration" {
-  description = "use ${module.base.configuration}, see the main.tf example file"
+  description = "use module.base.configuration see the main.tf example file"
   type        = "map"
 }
 
@@ -49,7 +49,7 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "count" {
+variable "iscsi_count" {
   description = "number of hosts like this one"
   default     = 1
 }

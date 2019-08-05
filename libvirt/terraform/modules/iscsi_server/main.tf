@@ -1,43 +1,52 @@
+terraform {
+  required_version = ">= 0.12"
+}
+
 resource "libvirt_volume" "iscsi_image_disk" {
-  name   = "${terraform.workspace}-iscsi-disk"
-  source = "${var.iscsi_image}"
-  pool   = "${var.base_configuration["pool"]}"
-  count  = "${var.count}"
+  name   = format("%s-iscsi-disk", terraform.workspace) 
+  source = var.iscsi_image
+  pool   = var.base_configuration["pool"]
+  count  = var.iscsi_count
 }
 
 resource "libvirt_volume" "iscsi_dev_disk" {
-  name  = "${terraform.workspace}-iscsi-dev"
-  pool  = "${var.base_configuration["pool"]}"
+  name  = format("%s-iscsi-dev", terraform.workspace)
+  pool  = var.base_configuration["pool"]
   size  = "10000000000"                       # 10GB
-  count = "${var.count}"
+  count = var.iscsi_count
 }
 
 resource "libvirt_domain" "iscsisrv" {
-  name       = "${terraform.workspace}-iscsi"
-  memory     = "${var.memory}"
-  vcpu       = "${var.vcpu}"
-  count      = "${var.count}"
+  name       = format("%s-iscsi", terraform.workspace)
+  memory     = var.memory
+  vcpu       = var.vcpu
+  count      = var.iscsi_count
   qemu_agent = true
 
-  disk {
-    volume_id = "${libvirt_volume.iscsi_image_disk.id}"
+  dynamic "disk" {
+    for_each = [
+     {
+       "vol_id" = element(libvirt_volume.iscsi_image_disk.*.id, count.index)
+     },
+     {
+       "vol_id" = element(libvirt_volume.iscsi_dev_disk.*.id, count.index)
+      }]
+    content {
+      volume_id = disk.value.vol_id
+    }
   }
-
-  disk {
-    volume_id = "${libvirt_volume.iscsi_dev_disk.id}"
-  }
-
+  
   network_interface {
-    network_name   = "${var.base_configuration["network_name"]}"
-    bridge         = "${var.base_configuration["bridge"]}"
-    mac            = "${var.mac}"
+    network_name   = var.base_configuration["network_name"]
+    bridge         = var.base_configuration["bridge"]
+    mac            = var.mac
     wait_for_lease = true
   }
 
   network_interface {
-    network_id = "${var.base_configuration["isolated_network_id"]}"
-    mac        = "${var.mac}"
-    addresses  = ["${var.iscsi_srv_ip}"]
+    network_id = var.base_configuration["isolated_network_id"]
+    mac        = var.mac
+    addresses  = [var.iscsi_srv_ip]
   }
 
   console {
@@ -58,18 +67,18 @@ resource "libvirt_domain" "iscsisrv" {
     autoport    = true
   }
 
-  cpu {
+  cpu = {
     mode = "host-passthrough"
   }
 }
 
 output "configuration" {
-  value {
-    id       = "${join(",", libvirt_domain.iscsisrv.*.id)}"
-    hostname = "${join(",", libvirt_domain.iscsisrv.*.name)}"
+  value = {
+    id       = join(",", libvirt_domain.iscsisrv.*.id)
+    hostname = join(",", libvirt_domain.iscsisrv.*.name)
   }
 }
 
 output "addresses" {
-  value = "${join(",", flatten(libvirt_domain.iscsisrv.*.network_interface.0.addresses))}"
+  value = join(",", flatten(libvirt_domain.iscsisrv.*.network_interface.0.addresses))
 }

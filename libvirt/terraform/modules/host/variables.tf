@@ -1,11 +1,11 @@
 variable "base_configuration" {
-  description = "use ${module.base.configuration}, see the main.tf example file"
-  type        = "map"
+  description = "use $${module.base.configuration}, see the main.tf example file"
+  type        = map(string)
 }
 
 variable "name" {
   description = "hostname, without the domain part"
-  type        = "string"
+  type        = string
 }
 
 variable "reg_code" {
@@ -20,7 +20,7 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -34,7 +34,7 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "count" {
+variable "host_count" {
   description = "number of hosts like this one"
   default     = 1
 }
@@ -47,18 +47,17 @@ variable "grains" {
 variable "public_key_location" {
   description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
-
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
 }
 
 variable "hana_disk_size" {
   description = "hana partition disk size"
-  default     = "68719476736"              # 64GB
+  default     = "68719476736" # 64GB
 }
 
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "provisioner" {
@@ -92,3 +91,4 @@ variable "additional_disk" {
   description = "disk block definition(s) to be added to this host"
   default     = []
 }
+

@@ -20,7 +20,7 @@ variable "use_shared_resources" {
 
 variable "iprange" {
   description = "Used host ip addresses range"
-  type        = "string"
+  type        = string
 }
 
 // Provider-specific variables
@@ -43,3 +43,4 @@ variable "bridge" {
 variable "image" {
   description = "path or url of the base image"
 }
+

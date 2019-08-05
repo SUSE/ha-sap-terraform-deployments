@@ -1,6 +1,6 @@
 variable "base_configuration" {
-  description = "use ${module.base.configuration}, see the main.tf example file"
-  type        = "map"
+  description = "use module.base.configuration see the main.tf example file"
+  type        = map(string)
 }
 
 variable "name" {
@@ -20,11 +20,11 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
-variable "count" {
+variable "monitoring_count" {
   description = "number of hosts like this one"
   default     = 1
 }
@@ -46,13 +46,12 @@ variable "additional_repos" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "public_key_location" {
   description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
-
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
 }
 
@@ -68,7 +67,7 @@ variable "background" {
 
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
-  type        = "string"
+  type        = string
 }
 
 // Provider-specific variables
@@ -90,5 +89,6 @@ variable "cpu_model" {
 
 variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
-  type        = "list"
+  type        = list(string)
 }
+

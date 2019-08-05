@@ -7,7 +7,7 @@ notifications:
 
 before_script:
   - set -e
-  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
   - unzip /tmp/terraform -d /tmp
   - chmod +x /tmp/terraform
   - /tmp/terraform -version
@@ -21,7 +21,6 @@ script:
       set -x ;
       cd $provider/terraform ;
       /tmp/terraform fmt -check ;
-      /tmp/terraform validate -check-variables=false ;
       rm -f remote-state.tf ;
       if [[ "$provider" == "libvirt" ]]; then
         continue ;
@@ -34,8 +33,7 @@ script:
       fi ;
       if [[ "$provider" =~ ^(aws|azure)$ ]]; then
         cd ../terraform_salt ;
-        /tmp/terraform fmt -check ;
-        /tmp/terraform validate -check-variables=false ;
+        /tmp/terraform fmt -check=True;
         rm -f remote-state.tf ;
         /tmp/terraform init ;
       fi ;

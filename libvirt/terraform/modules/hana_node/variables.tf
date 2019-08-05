@@ -1,11 +1,11 @@
 variable "base_configuration" {
-  description = "use ${module.base.configuration}, see the main.tf example file"
-  type        = "map"
+  description = "use module.base.configuration see the main.tf example file"
+  type        = map(string)
 }
 
 variable "name" {
   description = "hostname, without the domain part"
-  type        = "string"
+  type        = string
 }
 
 variable "reg_code" {
@@ -20,7 +20,7 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -31,7 +31,7 @@ variable "additional_repos" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "additional_packages" {
@@ -39,59 +39,58 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "count" {
+variable "hana_count" {
   description = "number of hosts like this one"
-  default     = 1
+  default     = 2
 }
 
 variable "public_key_location" {
   description = "path of additional pub ssh key you want to use to access VMs"
   default     = "/dev/null"
-
   # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
 }
 
 variable "hana_disk_size" {
   description = "hana partition disk size"
-  default     = "68719476736"              # 64GB
+  default     = "68719476736" # 64GB
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
-  type        = "string"
+  type        = string
   default     = "xfs"
 }
 
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = "string"
+  type        = string
   default     = "iscsi"
 }
 
 variable "sbd_disk_id" {
   description = "SBD disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
 variable "sap_inst_media" {
   description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
-  type        = "string"
+  type        = string
 }
 
 variable "scenario_type" {
@@ -130,3 +129,4 @@ variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = true
 }
+

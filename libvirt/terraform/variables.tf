@@ -5,7 +5,7 @@ variable "qemu_uri" {
 
 variable "base_image" {
   description = "Image of the sap hana nodes"
-  type        = "string"
+  type        = string
 }
 
 variable "iprange" {
@@ -15,18 +15,18 @@ variable "iprange" {
 
 variable "sap_inst_media" {
   description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
-  type        = "string"
+  type        = string
   default     = "/root/sap_inst"
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
-  type        = "string"
+  type        = string
   default     = "xfs"
 }
 
@@ -37,25 +37,25 @@ variable "host_ips" {
 
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = "string"
+  type        = string
   default     = "iscsi"
 }
 
 variable "iscsi_image" {
   description = "iscsi server base image (only used if shared_storage_type is iscsi)"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
 variable "iscsi_srv_ip" {
   description = "iscsi server address (only used if shared_storage_type is iscsi)"
-  type        = "string"
+  type        = string
   default     = "192.168.106.17"
 }
 
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
-  type        = "string"
+  type        = string
 }
 
 variable "reg_code" {
@@ -78,13 +78,13 @@ variable "reg_email" {
 # - sle-module-sap-applications/15/x86_64
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "additional_repos" {
   description = "Map of the repositories to add to the images. Repo name = url"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -94,7 +94,7 @@ variable "additional_repos" {
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "scenario_type" {
@@ -114,10 +114,12 @@ variable "background" {
 
 variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
-  type        = "list"
+  type        = list(string)
+  default     = []
 }
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = true
 }
+

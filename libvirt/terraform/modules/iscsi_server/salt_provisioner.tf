@@ -1,21 +1,21 @@
 # Template file to launch the salt provisioning script
 data "template_file" "salt_provisioner" {
-  template = "${file("../../salt/salt_provisioner_script.tpl")}"
+  template = file("../../salt/salt_provisioner_script.tpl")
 
-  vars {
-    regcode = "${var.reg_code}"
+  vars = {
+    regcode = var.reg_code
   }
 }
 
 resource "null_resource" "iscsi_provisioner" {
-  count = "${var.provisioner == "salt" ? libvirt_domain.iscsisrv.count : 0}"
+  count = var.iscsi_count
 
   triggers = {
-    iscsi_id = "${libvirt_domain.iscsisrv.id}"
+    iscsi_id = libvirt_domain.iscsisrv[count.index].id
   }
 
   connection {
-    host     = "${libvirt_domain.iscsisrv.network_interface.0.addresses.0}"
+    host     = libvirt_domain.iscsisrv[count.index].network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }
@@ -26,7 +26,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    content     = "${data.template_file.salt_provisioner.rendered}"
+    content     = data.template_file.salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
 
