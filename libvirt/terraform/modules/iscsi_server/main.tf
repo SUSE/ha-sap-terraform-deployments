@@ -20,7 +20,6 @@ resource "libvirt_domain" "iscsisrv" {
   name       = "${terraform.workspace}-iscsi"
   memory     = "${var.memory}"
   vcpu       = "${var.vcpu}"
-  running    = "${var.running}"
   count      = "${var.count}"
   qemu_agent = true
 

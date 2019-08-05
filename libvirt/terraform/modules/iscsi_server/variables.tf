@@ -81,11 +81,6 @@ variable "vcpu" {
   default     = 1
 }
 
-variable "running" {
-  description = "whether this host should be turned on or off"
-  default     = true
-}
-
 variable "mac" {
   description = "a MAC address in the form AA:BB:CC:11:22:22"
   default     = ""

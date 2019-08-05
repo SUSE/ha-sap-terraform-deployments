@@ -22,10 +22,9 @@ monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
 EOF
 
   // Provider-specific variables
-  memory  = 4096
-  vcpu    = "${var.vcpu}"
-  running = "${var.running}"
-  mac     = "${var.mac}"
+  memory = 4096
+  vcpu   = "${var.vcpu}"
+  mac    = "${var.mac}"
 }
 
 output "configuration" {

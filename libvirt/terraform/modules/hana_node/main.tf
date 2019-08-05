@@ -33,7 +33,6 @@ EOF
   // Provider-specific variables
   memory         = "${var.memory}"
   vcpu           = "${var.vcpu}"
-  running        = "${var.running}"
   mac            = "${var.mac}"
   hana_disk_size = "${var.hana_disk_size}"
 
