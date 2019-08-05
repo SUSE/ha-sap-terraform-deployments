@@ -26,7 +26,6 @@ resource "libvirt_domain" "domain" {
   name       = "${terraform.workspace}-${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}"
   memory     = "${var.memory}"
   vcpu       = "${var.vcpu}"
-  running    = "${var.running}"
   count      = "${var.count}"
   qemu_agent = true
 
