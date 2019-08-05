@@ -35,11 +35,17 @@ ha_sap_deployment_repo = ""
 # Run provisioner execution in background
 #background = true
 
-
 # Monitoring:
 # add here HOST:PORT. In this example we monitor on same hosts different services
 monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110.X:9100", "192.168.110.X+1:9100"]
 
-
 # by default monitoring is enabled, if you want to disable it on your node set to false
 # monitoring_enabled = false
+
+# QA variables
+
+# Define if the deployement is using for testing purpose
+# Disable all extra packages that do not come from the image
+# Except salt-minion (for the moment) and salt formulas
+# true or false
+#qa_mode = false
