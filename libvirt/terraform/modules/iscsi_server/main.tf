@@ -1,7 +1,3 @@
-terraform {
-  required_version = "~> 0.11.7"
-}
-
 resource "libvirt_volume" "iscsi_image_disk" {
   name   = "${terraform.workspace}-iscsi-disk"
   source = "${var.iscsi_image}"

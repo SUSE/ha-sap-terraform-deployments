@@ -1,7 +1,3 @@
-terraform {
-  required_version = "~> 0.11.7"
-}
-
 // Names are calculated as follows:
 // ${terraform.workspace}${var.name}${var.count > 1 ? "-${count.index  + 1}" : ""}
 // This means:

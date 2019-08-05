@@ -1,7 +1,3 @@
-terraform {
-  required_version = "~> 0.11.7"
-}
-
 resource "libvirt_volume" "base_image" {
   name   = "${terraform.workspace}-baseimage"
   source = "${var.image}"
