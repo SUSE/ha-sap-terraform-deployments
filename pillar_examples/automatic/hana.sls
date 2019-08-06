@@ -1,5 +1,5 @@
 hana:
-  {% if grains['qa_mode']|default(false) is sameas true %}
+  {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
   nodes:

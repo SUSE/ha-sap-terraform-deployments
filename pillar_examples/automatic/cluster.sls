@@ -1,7 +1,7 @@
 {% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
 
 cluster:
-  {% if grains['qa_mode']|default(false) is sameas true %}
+  {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
   name: hacluster
