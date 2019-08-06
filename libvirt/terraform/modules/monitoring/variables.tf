@@ -92,3 +92,8 @@ variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
   type        = "list"
 }
+
+variable "install_salt_minion" {
+  description = "Trigger a system registration to install salt-minion package and then de-register"
+  default     = true
+}

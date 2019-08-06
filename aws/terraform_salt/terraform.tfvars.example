@@ -77,6 +77,10 @@ ha_sap_deployment_repo = ""
 # Run provisioner execution in background
 #background = true
 
+# Enable salt-minion installation from SCC. Some cloud images don't bring this package pre-installed.
+# WARNING: This flag requires the usage of `reg_code`
+# install_salt_minion = true
+
 # QA variables
 
 # Define if the deployment is using for testing purpose

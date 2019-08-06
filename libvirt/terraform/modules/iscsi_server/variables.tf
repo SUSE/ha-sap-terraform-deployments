@@ -91,6 +91,11 @@ variable "additional_disk" {
   default     = []
 }
 
+variable "install_salt_minion" {
+  description = "Trigger a system registration to install salt-minion package and then de-register"
+  default     = true
+}
+
 # Specific QA variables
 
 variable "qa_mode" {

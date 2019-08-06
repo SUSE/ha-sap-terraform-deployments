@@ -4,9 +4,13 @@ mv /tmp/salt /root || true
 
 # SCC Registration to install salt-minion
 
+# The iSCSI server won't be de-registered as it needs to install some additional packages.
 if grep -q 'role: iscsi_srv' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}
-elif [[ ! -e /usr/bin/salt-minion ]]; then
+
+# System is registered to install salt-minion and de-registered afterwards
+# if the variable install_salt_minion is true
+elif grep -q 'install_salt_minion: 1' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -d -r ${regcode}
 fi
 

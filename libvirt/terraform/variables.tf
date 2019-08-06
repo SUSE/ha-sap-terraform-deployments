@@ -121,3 +121,8 @@ variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = true
 }
+
+variable "install_salt_minion" {
+  description = "Trigger a system registration to install salt-minion package and then de-register"
+  default     = true
+}

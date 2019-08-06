@@ -42,6 +42,10 @@ monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110
 # by default monitoring is enabled, if you want to disable it on your node set to false
 # monitoring_enabled = false
 
+# Enable salt-minion installation from SCC. Some cloud images don't bring this package pre-installed.
+# WARNING: This flag requires the usage of `reg_code`
+# install_salt_minion = true
+
 # QA variables
 
 # Define if the deployement is using for testing purpose

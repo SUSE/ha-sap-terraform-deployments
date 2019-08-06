@@ -13,6 +13,7 @@ module "hana_node" {
   host_ips               = "${var.host_ips}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+  install_salt_minion    = "${var.install_salt_minion}"
 
   grains = <<EOF
 

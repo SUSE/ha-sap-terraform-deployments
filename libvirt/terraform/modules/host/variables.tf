@@ -92,3 +92,8 @@ variable "additional_disk" {
   description = "disk block definition(s) to be added to this host"
   default     = []
 }
+
+variable "install_salt_minion" {
+  description = "Trigger a system registration to install salt-minion package and then de-register"
+  default     = true
+}

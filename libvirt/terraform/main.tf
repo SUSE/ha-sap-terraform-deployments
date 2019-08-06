@@ -37,6 +37,7 @@ module "iscsi_server" {
   ha_sap_deployment_repo = "${var.ha_sap_deployment_repo}"
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
+  install_salt_minion    = "${var.install_salt_minion}"
 }
 
 module "hana_node" {
@@ -66,6 +67,7 @@ module "hana_node" {
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
   monitoring_enabled     = "${var.monitoring_enabled}"
+  install_salt_minion    = "${var.install_salt_minion}"
 }
 
 module "monitoring" {
@@ -85,4 +87,5 @@ module "monitoring" {
   provisioner            = "${var.provisioner}"
   background             = "${var.background}"
   monitored_services     = "${var.monitored_services}"
+  install_salt_minion    = "${var.install_salt_minion}"
 }
