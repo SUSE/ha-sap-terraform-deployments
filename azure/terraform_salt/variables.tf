@@ -141,6 +141,5 @@ variable "background" {
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
-  type        = "string"
-  default     = "false"
+  default     = false
 }

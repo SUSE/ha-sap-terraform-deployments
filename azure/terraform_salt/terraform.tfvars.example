@@ -102,5 +102,5 @@ ha_sap_deployment_repo = ""
 # Define if the deployment is using for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
-# true or false
-#qa_mode = "false"
+# true or false (default)
+#qa_mode = false
