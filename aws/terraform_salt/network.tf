@@ -7,53 +7,53 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Workspace = "${terraform.workspace}"
+    Workspace = terraform.workspace
   }
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_id = aws_vpc.vpc.id
 
-  tags {
+  tags = {
     Network   = "Public"
-    Workspace = "${terraform.workspace}"
+    Workspace = terraform.workspace
   }
 }
 
 resource "aws_route_table" "routetable" {
-  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_id = aws_vpc.vpc.id
 
-  tags {
-    Workspace = "${terraform.workspace}"
+  tags = {
+    Workspace = terraform.workspace
   }
 }
 
 resource "aws_route" "public" {
-  route_table_id         = "${aws_route_table.routetable.id}"
+  route_table_id         = aws_route_table.routetable.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.igw.id}"
+  gateway_id             = aws_internet_gateway.igw.id
 }
 
 resource "aws_route_table_association" "public" {
-  subnet_id      = "${aws_subnet.local.id}"
-  route_table_id = "${aws_route_table.routetable.id}"
+  subnet_id      = aws_subnet.local.id
+  route_table_id = aws_route_table.routetable.id
 }
 
 resource "aws_subnet" "local" {
-  vpc_id     = "${aws_vpc.vpc.id}"
-  cidr_block = "${aws_vpc.vpc.cidr_block}"
+  vpc_id     = aws_vpc.vpc.id
+  cidr_block = aws_vpc.vpc.cidr_block
 
-  tags {
-    Workspace = "${terraform.workspace}"
+  tags = {
+    Workspace = terraform.workspace
   }
 }
 
 resource "aws_security_group" "secgroup" {
   name   = "secgroup"
-  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_id = aws_vpc.vpc.id
 
-  tags {
-    Workspace = "${terraform.workspace}"
+  tags = {
+    Workspace = terraform.workspace
   }
 }
 
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "outall" {
   protocol    = "-1"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
 
 resource "aws_security_group_rule" "local" {
@@ -74,7 +74,7 @@ resource "aws_security_group_rule" "local" {
   protocol    = "-1"
   cidr_blocks = ["10.0.0.0/16"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
 
 resource "aws_security_group_rule" "http" {
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "http" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
 
 resource "aws_security_group_rule" "https" {
@@ -94,7 +94,7 @@ resource "aws_security_group_rule" "https" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
 
 resource "aws_security_group_rule" "hawk" {
@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "hawk" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
 
 resource "aws_security_group_rule" "ssh" {
@@ -114,5 +114,6 @@ resource "aws_security_group_rule" "ssh" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.secgroup.id}"
+  security_group_id = aws_security_group.secgroup.id
 }
+

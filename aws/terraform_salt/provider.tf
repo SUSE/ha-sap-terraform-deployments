@@ -1,9 +1,10 @@
 # Configure the AWS Provider
 provider "aws" {
-  version = "~> 1.29"
-  region  = "${var.aws_region}"
+  version = "~> 2.7"
+  region  = var.aws_region
 }
 
 provider "template" {
-  version = "~> 1.0"
+  version = "~> 2.1"
 }
+
