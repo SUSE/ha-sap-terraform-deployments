@@ -55,7 +55,7 @@ hana_disk_device = "/dev/sdb"
 # Device used by node where HANA will be downloaded
 hana_inst_disk_device = "/dev/sdc"
 
-# Repository url used to install install HA/SAP deployment packages"
+# Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
