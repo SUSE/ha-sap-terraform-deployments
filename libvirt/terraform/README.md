@@ -71,7 +71,7 @@ iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 monitoring_srv_ip = "192.168.XXX.Y+3"
 
 
-# Repository url used to install install HA/SAP deployment packages"
+# Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
