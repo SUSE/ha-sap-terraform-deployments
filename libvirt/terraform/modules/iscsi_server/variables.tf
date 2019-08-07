@@ -19,7 +19,7 @@ variable "iscsidev" {
 }
 
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install install HA/SAP deployment packages"
+  description = "Repository url used to install HA/SAP deployment packages"
   type        = "string"
 }
 
@@ -95,6 +95,5 @@ variable "additional_disk" {
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
-  type        = "string"
-  default     = "false"
+  default     = false
 }
