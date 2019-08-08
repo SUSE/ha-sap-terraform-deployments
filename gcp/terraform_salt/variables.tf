@@ -1,105 +1,105 @@
 # Global variables
 
 variable "project" {
-  type = "string"
+  type = string
 }
 
 variable "gcp_credentials_file" {
-  type = "string"
+  type = string
 }
 
 variable "public_key_location" {
-  type = "string"
+  type = string
 }
 
 variable "private_key_location" {
-  type = "string"
+  type = string
 }
 
 variable "machine_type" {
-  type    = "string"
+  type    = string
   default = "n1-highmem-8"
 }
 
 variable "iscsi_server_boot_image" {
-  type    = "string"
+  type    = string
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "machine_type_iscsi_server" {
-  type    = "string"
+  type    = string
   default = "custom-1-2048"
 }
 
 variable "region" {
-  type = "string"
+  type = string
 }
 
 variable "sles4sap_boot_image" {
-  type    = "string"
+  type    = string
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "storage_url" {
-  type    = "string"
+  type    = string
   default = "https://storage.googleapis.com"
 }
 
 variable "ninstances" {
-  type    = "string"
+  type    = string
   default = "2"
 }
 
 variable "name" {
   description = "hostname, without the domain part"
-  type        = "string"
+  type        = string
   default     = "hana"
 }
 
 variable "init_type" {
-  type    = "string"
+  type    = string
   default = "all"
 }
 
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
-  type        = "string"
+  type        = string
 }
 
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
-  type        = "string"
+  type        = string
 }
 
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
-  type        = "string"
+  type        = string
 }
 
 # HANA variables
 
 variable "sap_hana_deployment_bucket" {
   description = "GCP storage bucket that contains the SAP HANA installation files"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_inst_folder" {
-  type = "string"
+  type = string
 }
 
 variable "hana_disk_device" {
   description = "device where to install HANA"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_inst_disk_device" {
   description = "device where to download HANA"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
-  type        = "string"
+  type        = string
   default     = "xfs"
 }
 
@@ -107,7 +107,7 @@ variable "hana_fstype" {
 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
@@ -127,7 +127,7 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -147,7 +147,7 @@ variable "additional_packages" {
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 # Network variables
@@ -163,7 +163,7 @@ variable "iscsi_ip" {
 
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "scenario_type" {
@@ -187,3 +187,4 @@ variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false
 }
+

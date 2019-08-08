@@ -5,14 +5,14 @@ resource "google_compute_network" "ha_network" {
 
 resource "google_compute_subnetwork" "ha_subnet" {
   name          = "${terraform.workspace}-${var.name}-subnet"
-  network       = "${google_compute_network.ha_network.self_link}"
-  ip_cidr_range = "${var.ip_cidr_range}"
+  network       = google_compute_network.ha_network.self_link
+  ip_cidr_range = var.ip_cidr_range
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
   name          = "${terraform.workspace}-${var.name}-fw-internal"
-  network       = "${google_compute_network.ha_network.name}"
-  source_ranges = ["${var.ip_cidr_range}"]
+  network       = google_compute_network.ha_network.name
+  source_ranges = [var.ip_cidr_range]
 
   allow {
     protocol = "icmp"
@@ -31,7 +31,7 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
   name    = "${terraform.workspace}-${var.name}-fw-icmp"
-  network = "${google_compute_network.ha_network.name}"
+  network = google_compute_network.ha_network.name
 
   allow {
     protocol = "icmp"
@@ -40,10 +40,11 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
   name    = "${terraform.workspace}-${var.name}-fw-tcp"
-  network = "${google_compute_network.ha_network.name}"
+  network = google_compute_network.ha_network.name
 
   allow {
     protocol = "tcp"
     ports    = ["22", "80", "443", "7630"]
   }
 }
+
