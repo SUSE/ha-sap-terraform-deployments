@@ -4,7 +4,7 @@
 # Use with: terraform apply -var instancetype=Small -var ninstances=2
 
 variable "instancetype" {
-  type    = "string"
+  type    = string
   default = "Standard_E4s_v3"
 }
 
@@ -16,65 +16,65 @@ variable "instancetype" {
 # Standard_M32ts has 32 VCPU, 192GiB RAM, 1000 GiB SSD
 
 variable "ninstances" {
-  type    = "string"
+  type    = string
   default = "2"
 }
 
 variable "name" {
   description = "hostname, without the domain part"
-  type        = "string"
+  type        = string
   default     = "hana"
 }
 
 # Variable for default region where to deploy resources
 
 variable "az_region" {
-  type    = "string"
+  type    = string
   default = "westeurope"
 }
 
 variable "init_type" {
-  type    = "string"
+  type    = string
   default = "all"
 }
 
 variable "hana_inst_master" {
-  type = "string"
+  type = string
 }
 
 variable "hana_inst_folder" {
-  type = "string"
+  type = string
 }
 
 variable "hana_disk_device" {
   description = "device where to install HANA"
-  type        = "string"
+  type        = string
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
-  type        = "string"
+  type        = string
   default     = "xfs"
 }
 
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
-  type        = "string"
+  type        = string
 }
 
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
-  type        = "string"
+  type        = string
 }
 
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
-  type        = "string"
+  type        = string
 }
 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
@@ -94,7 +94,7 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -110,7 +110,7 @@ variable "additional_packages" {
 
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
-  type        = "list"
+  type        = list(string)
 }
 
 # Repository url used to install HA/SAP deployment packages"
@@ -119,7 +119,7 @@ variable "host_ips" {
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "scenario_type" {
@@ -143,3 +143,4 @@ variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false
 }
+
