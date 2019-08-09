@@ -35,14 +35,17 @@ resource "libvirt_domain" "domain" {
         {
           "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)
         },
-        {
-         // hack: for monitoring module we don't have an additional_disk so just add the main.disk volume otherwise HCL breaks
-         "vol_id" = length(var.additional_disk) > 0 ? lookup(element(var.additional_disk, 0), "volume_id", null) :  element(libvirt_volume.main_disk.*.id, count.index)
-        },
       ]
     content {
       volume_id = disk.value.vol_id
     }
+  }
+  // handle additional disks
+  dynamic "disk" {
+   for_each = var.additional_disk
+   content {
+     volume_id = disk.value.volume_id
+   }
   }
 
   network_interface {
