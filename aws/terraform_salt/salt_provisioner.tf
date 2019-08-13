@@ -44,22 +44,8 @@ iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(
-", ",
-formatlist(
-"'%s': '%s'",
-keys(var.reg_additional_modules),
-values(var.reg_additional_modules),
-),
-)}}
-additional_repos: {${join(
-", ",
-formatlist(
-"'%s': '%s'",
-keys(var.additional_repos),
-values(var.additional_repos),
-),
-)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
+additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 
@@ -145,22 +131,8 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(
-", ",
-formatlist(
-"'%s': '%s'",
-keys(var.reg_additional_modules),
-values(var.reg_additional_modules),
-),
-)}}
-additional_repos: {${join(
-", ",
-formatlist(
-"'%s': '%s'",
-keys(var.additional_repos),
-values(var.additional_repos),
-),
-)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
+additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
