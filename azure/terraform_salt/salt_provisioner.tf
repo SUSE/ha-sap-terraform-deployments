@@ -3,30 +3,30 @@
 # iscsi and hana node resources are created (check triggers option).
 
 terraform {
-  required_version = "~> 0.11.7"
+  required_version = ">= 0.12"
 }
 
 # Template file to launch the salt provisioing script
 data "template_file" "salt_provisioner" {
-  template = "${file("../../salt/salt_provisioner_script.tpl")}"
+  template = file("../../salt/salt_provisioner_script.tpl")
 
-  vars {
-    regcode = "${var.reg_code}"
+  vars = {
+    regcode = var.reg_code
   }
 }
 
 resource "null_resource" "iscsi_provisioner" {
-  count = "${var.provisioner == "salt" ? azurerm_virtual_machine.iscsisrv.count : 0}"
+  count = var.provisioner == "salt" ? 1 : 0
 
   triggers = {
-    iscsi_id = "${join(",", azurerm_virtual_machine.iscsisrv.*.id)}"
+    iscsi_id = join(",", azurerm_virtual_machine.iscsisrv.*.id)
   }
 
   connection {
-    host        = "${data.azurerm_public_ip.iscsisrv.ip_address}"
+    host        = data.azurerm_public_ip.iscsisrv.ip_address
     type        = "ssh"
-    user        = "${var.admin_user}"
-    private_key = "${file("${var.private_key_location}")}"
+    user        = var.admin_user
+    private_key = file(var.private_key_location)
   }
 
   provisioner "file" {
@@ -35,7 +35,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    content     = "${data.template_file.salt_provisioner.rendered}"
+    content     = data.template_file.salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
 
@@ -69,31 +69,36 @@ partitions:
   5:
     start: 80%
     end: 100%
- EOF
+ 
+EOF
 
-    destination = "/tmp/grains"
-  }
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+destination = "/tmp/grains"
+}
+
+provisioner "remote-exec" {
+  inline = [
+    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+    "return_code=$? && sleep 1 && exit $return_code",
+  ] # Workaround to let the process start in background properly
+}
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = "${var.provisioner == "salt" ? azurerm_virtual_machine.clusternodes.count : 0}"
+  count = var.provisioner == "salt" ? length(azurerm_virtual_machine.clusternodes) : 0
 
   triggers = {
-    cluster_instance_ids = "${join(",", azurerm_virtual_machine.clusternodes.*.id)}"
+    cluster_instance_ids = join(",", azurerm_virtual_machine.clusternodes.*.id)
   }
 
   connection {
-    host        = "${element(data.azurerm_public_ip.clusternodes.*.ip_address, count.index)}"
+    host = element(
+      data.azurerm_public_ip.clusternodes.*.ip_address,
+      count.index,
+    )
     type        = "ssh"
-    user        = "${var.admin_user}"
-    private_key = "${file("${var.private_key_location}")}"
+    user        = var.admin_user
+    private_key = file(var.private_key_location)
   }
 
   provisioner "file" {
@@ -102,7 +107,7 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    content     = "${data.template_file.salt_provisioner.rendered}"
+    content     = data.template_file.salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
 
@@ -113,7 +118,7 @@ role: hana_node
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
 domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sdd
@@ -137,13 +142,15 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
-    destination = "/tmp/grains"
-  }
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+destination = "/tmp/grains"
 }
+
+provisioner "remote-exec" {
+  inline = [
+    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+    "return_code=$? && sleep 1 && exit $return_code",
+  ] # Workaround to let the process start in background properly
+}
+}
+

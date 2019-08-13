@@ -5,12 +5,12 @@
 # One of the two options must be used
 
 variable "sles4sap_uri" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "sles4sap_public" {
-  type = "map"
+  type = map(string)
 
   default = {
     "publisher" = "SUSE"
@@ -21,12 +21,12 @@ variable "sles4sap_public" {
 }
 
 variable "iscsi_srv_uri" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "iscsi_srv_public" {
-  type = "map"
+  type = map(string)
 
   default = {
     "publisher" = "SUSE"
@@ -37,37 +37,38 @@ variable "iscsi_srv_public" {
 }
 
 resource "azurerm_image" "sles4sap" {
-  count               = "${var.sles4sap_uri != "" ? 1 : 0}"
+  count               = var.sles4sap_uri != "" ? 1 : 0
   name                = "BVSles4SapImg"
-  location            = "${var.az_region}"
-  resource_group_name = "${azurerm_resource_group.myrg.name}"
+  location            = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
 
   os_disk {
     os_type  = "Linux"
     os_state = "Generalized"
-    blob_uri = "${var.sles4sap_uri}"
+    blob_uri = var.sles4sap_uri
     size_gb  = "32"
   }
 
-  tags {
-    workspace = "${terraform.workspace}"
+  tags = {
+    workspace = terraform.workspace
   }
 }
 
 resource "azurerm_image" "iscsi_srv" {
-  count               = "${var.iscsi_srv_uri != "" ? 1 : 0}"
+  count               = var.iscsi_srv_uri != "" ? 1 : 0
   name                = "IscsiSrvImg"
-  location            = "${var.az_region}"
-  resource_group_name = "${azurerm_resource_group.myrg.name}"
+  location            = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
 
   os_disk {
     os_type  = "Linux"
     os_state = "Generalized"
-    blob_uri = "${var.iscsi_srv_uri}"
+    blob_uri = var.iscsi_srv_uri
     size_gb  = "32"
   }
 
-  tags {
-    workspace = "${terraform.workspace}"
+  tags = {
+    workspace = terraform.workspace
   }
 }
+

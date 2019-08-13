@@ -4,13 +4,13 @@
 
 resource "azurerm_availability_set" "myas" {
   name                        = "myas"
-  location                    = "${var.az_region}"
-  resource_group_name         = "${azurerm_resource_group.myrg.name}"
+  location                    = var.az_region
+  resource_group_name         = azurerm_resource_group.myrg.name
   platform_fault_domain_count = 2
   managed                     = "true"
 
-  tags {
-    workspace = "${terraform.workspace}"
+  tags = {
+    workspace = terraform.workspace
   }
 }
 
@@ -18,10 +18,10 @@ resource "azurerm_availability_set" "myas" {
 
 resource "azurerm_virtual_machine" "iscsisrv" {
   name                  = "${terraform.workspace}-iscsisrv"
-  location              = "${var.az_region}"
-  resource_group_name   = "${azurerm_resource_group.myrg.name}"
-  network_interface_ids = ["${azurerm_network_interface.iscsisrv.id}"]
-  availability_set_id   = "${azurerm_availability_set.myas.id}"
+  location              = var.az_region
+  resource_group_name   = azurerm_resource_group.myrg.name
+  network_interface_ids = [azurerm_network_interface.iscsisrv.id]
+  availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
@@ -32,11 +32,11 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    id        = "${var.iscsi_srv_uri != "" ? join(",",azurerm_image.iscsi_srv.*.id) : ""}"
-    publisher = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["publisher"]}"}"
-    offer     = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["offer"]}"}"
-    sku       = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["sku"]}"}"
-    version   = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["version"]}"}"
+    id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
+    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["publisher"]
+    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["offer"]
+    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["sku"]
+    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["version"]
   }
 
   storage_data_disk {
@@ -50,7 +50,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   os_profile {
     computer_name  = "iscsisrv"
-    admin_username = "${var.admin_user}"
+    admin_username = var.admin_user
   }
 
   os_profile_linux_config {
@@ -58,30 +58,30 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${file(var.public_key_location)}"
+      key_data = file(var.public_key_location)
     }
   }
 
   boot_diagnostics {
     enabled     = "true"
-    storage_uri = "${azurerm_storage_account.mytfstorageacc.primary_blob_endpoint}"
+    storage_uri = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   }
 
-  tags {
-    workspace = "${terraform.workspace}"
+  tags = {
+    workspace = terraform.workspace
   }
 }
 
 # Cluster Nodes
 
 resource "azurerm_virtual_machine" "clusternodes" {
-  count                 = "${var.ninstances}"
+  count                 = var.ninstances
   name                  = "${terraform.workspace}-node-${count.index}"
-  location              = "${var.az_region}"
-  resource_group_name   = "${azurerm_resource_group.myrg.name}"
-  network_interface_ids = ["${element(azurerm_network_interface.clusternodes.*.id, count.index)}"]
-  availability_set_id   = "${azurerm_availability_set.myas.id}"
-  vm_size               = "${var.instancetype}"
+  location              = var.az_region
+  resource_group_name   = azurerm_resource_group.myrg.name
+  network_interface_ids = [element(azurerm_network_interface.clusternodes.*.id, count.index)]
+  availability_set_id   = azurerm_availability_set.myas.id
+  vm_size               = var.instancetype
 
   storage_os_disk {
     name              = "NodeOsDisk-${count.index}"
@@ -91,11 +91,11 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_image_reference {
-    id        = "${var.sles4sap_uri != "" ? join(",",azurerm_image.sles4sap.*.id) : ""}"
-    publisher = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["publisher"]}"}"
-    offer     = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["offer"]}"}"
-    sku       = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["sku"]}"}"
-    version   = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["version"]}"}"
+    id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
+    publisher = var.sles4sap_uri != "" ? "" : var.sles4sap_public["publisher"]
+    offer     = var.sles4sap_uri != "" ? "" : var.sles4sap_public["offer"]
+    sku       = var.sles4sap_uri != "" ? "" : var.sles4sap_public["sku"]
+    version   = var.sles4sap_uri != "" ? "" : var.sles4sap_public["version"]
   }
 
   storage_data_disk {
@@ -107,8 +107,8 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   os_profile {
-    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
-    admin_username = "${var.admin_user}"
+    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+    admin_username = var.admin_user
   }
 
   os_profile_linux_config {
@@ -116,16 +116,17 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${file(var.public_key_location)}"
+      key_data = file(var.public_key_location)
     }
   }
 
   boot_diagnostics {
     enabled     = "true"
-    storage_uri = "${azurerm_storage_account.mytfstorageacc.primary_blob_endpoint}"
+    storage_uri = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   }
 
-  tags {
-    workspace = "${terraform.workspace}"
+  tags = {
+    workspace = terraform.workspace
   }
 }
+
