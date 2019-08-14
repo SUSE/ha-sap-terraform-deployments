@@ -1,6 +1,6 @@
 # Template file to launch the salt provisioning script
 data "template_file" "salt_provisioner" {
-  template = file("../../salt/salt_provisioner_script.tpl")
+  template = file("../salt/salt_provisioner_script.tpl")
 
   vars = {
     regcode = var.reg_code
