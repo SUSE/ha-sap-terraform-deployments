@@ -28,7 +28,7 @@ resource "null_resource" "host_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../../salt"
+    source      = "../salt"
     destination = "/tmp"
   }
 

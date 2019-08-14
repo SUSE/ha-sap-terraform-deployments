@@ -21,7 +21,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../../salt"
+    source      = "../salt"
     destination = "/tmp/salt"
   }
 
