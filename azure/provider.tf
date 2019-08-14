@@ -4,5 +4,9 @@ provider "azurerm" {
 }
 
 provider "template" {
-  version = "~> 1.0"
+  version = "~> 2.1"
+}
+
+terraform {
+  required_version = ">= 0.12"
 }

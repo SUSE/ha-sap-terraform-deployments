@@ -4,7 +4,7 @@
 
 # Template file for user_data used in resource instances
 data "template_file" "salt_provisioner" {
-  template = file("../../salt/salt_provisioner_script.tpl")
+  template = file("../salt/salt_provisioner_script.tpl")
 
   vars = {
     regcode = var.reg_code

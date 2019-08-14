@@ -12,16 +12,35 @@ for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples');
   echo
 
   cd $provider ;
-
+  echo "--------------------------"
+  echo " executing terraform fmt"
+  echo "--------------------------"
   /tmp/terraform fmt -check ;
   rm -f remote-state.tf ;
-  if [[ "$provider" == "libvirt" ]]; then
-    continue ;
-  fi ;
+  if [[ "$provider" == "libvirt" ]]; then continue ; fi ;
+  echo "--------------------------"
+  echo "** PASSED ** "
+  echo "--------------------------"
+
+
+  echo "--------------------------"
+  echo " executing terraform init"
+  echo "--------------------------"
   /tmp/terraform init ;
+  echo "--------------------------"
+  echo "** PASSED ** "
+  echo "--------------------------"
+
+
+  echo "--------------------------"
+  echo " executing terraform validate"
+  echo "--------------------------"
+
   if [[ "$provider" == "gcp" ]]; then
     /tmp/terraform validate -var-file=terraform.tfvars.example -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var private_key_location=/dev/null -var public_key_location=/dev/null ;
   else
     /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null -var public_key_location=/dev/null ;
   fi ;
+  echo "-------> $provider ALL tests PASSED!"
+  cd ..
 done
