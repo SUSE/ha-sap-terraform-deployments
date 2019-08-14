@@ -137,7 +137,6 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
-
     destination = "/tmp/grains"
   }
 

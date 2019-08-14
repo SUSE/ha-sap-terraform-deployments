@@ -2,7 +2,7 @@ resource "google_compute_instance" "iscsisrv" {
   name         = "${terraform.workspace}-iscsisrv"
   description  = "iSCSI server"
   machine_type = var.machine_type_iscsi_server
-  zone         = element(data.google_compute_zones.available.names, count.index)
+  zone         = element(data.google_compute_zones.available.names, 1)
 
   lifecycle {
     create_before_destroy = true
