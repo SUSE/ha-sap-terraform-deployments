@@ -21,6 +21,8 @@ Once the infrastructure is created by Terraform, the servers are provisioned wit
  The cluster and HANA installation is done using Salt Formulas.
  To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
+
+# Please enter the commit message for your changes. Lines starting
 ## Relevant files
 
 These are the relevant files and what each provides:
@@ -55,7 +57,7 @@ To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your
 Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
 
 ```
-mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
+mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 The key files need to be named as you defined it in `terraform.tfvars` file.
 

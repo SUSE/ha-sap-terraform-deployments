@@ -92,7 +92,7 @@ These are the relevant files and what each provides:
 
  Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
 ```
- mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
+ mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
  ```
  The key files need to be named as you defined it in `terraform.tfvars` file.
 
