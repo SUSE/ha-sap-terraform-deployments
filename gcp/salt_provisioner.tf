@@ -26,7 +26,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../../salt"
+    source      = "../salt"
     destination = "/tmp"
   }
 
@@ -117,7 +117,7 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../../salt"
+    source      = "../salt"
     destination = "/tmp"
   }
 
