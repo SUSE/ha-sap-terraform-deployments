@@ -586,10 +586,3 @@ The output, should include the image id. This image id (a string starting with `
 More information regarding the import of images into AWS can be found in [this Amazon document](https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html) or in [this blog post](https://www.wavether.com/2016/11/import-qcow2-images-into-aws).
 
 Examples of the JSON files used in this document have been added to this repo.
-
-## To Do
-
-* Investigate if it is possible to upload the images directly with terraform
-* Check AWS documentation for Hana setup and add required resources. Current configuration works for build validation of new images, but lacks certain resources that are probably needed (Load Balancer, for example) for a complete setup of Hana in AWS.
-* Find if it's possible to create more than one device with iscsi-formula.
-* Add SLES12 compatibility for iscsi-formula.

@@ -368,3 +368,4 @@ Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from stor
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
 
 Also check the documentation in https://www.terraform.io/docs.
+
