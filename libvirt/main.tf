@@ -18,14 +18,14 @@ module "base" {
 
 module "sbd_disk" {
   source             = "./modules/sbd"
-  sbd_count              = var.shared_storage_type == "shared-disk" ? 1 : 0
+  sbd_count          = var.shared_storage_type == "shared-disk" ? 1 : 0
   base_configuration = module.base.configuration
   sbd_disk_size      = "104857600"
 }
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
-  iscsi_count             = var.shared_storage_type == "iscsi" ? 1 : 0
+  iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   vcpu                   = 2
   memory                 = 4096
   base_configuration     = module.base.configuration
@@ -73,7 +73,7 @@ module "monitoring" {
   base_configuration = module.base.configuration
 
   name                   = "monitoring"
-  monitoring_count                  = 1
+  monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
   monitoring_srv_ip      = var.monitoring_srv_ip

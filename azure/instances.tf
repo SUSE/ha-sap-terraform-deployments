@@ -32,7 +32,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_image_reference {
-    id        = "${var.iscsi_srv_uri != "" ? join(",",azurerm_image.iscsi_srv.*.id) : ""}"
+    id        = "${var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""}"
     publisher = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["publisher"]}"}"
     offer     = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["offer"]}"}"
     sku       = "${var.iscsi_srv_uri != "" ? "" : "${var.iscsi_srv_public["sku"]}"}"
@@ -91,7 +91,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_image_reference {
-    id        = "${var.sles4sap_uri != "" ? join(",",azurerm_image.sles4sap.*.id) : ""}"
+    id        = "${var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""}"
     publisher = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["publisher"]}"}"
     offer     = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["offer"]}"}"
     sku       = "${var.sles4sap_uri != "" ? "" : "${var.sles4sap_public["sku"]}"}"
@@ -107,7 +107,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   os_profile {
-    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index  + 1}" : ""}"
+    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
     admin_username = "${var.admin_user}"
   }
 

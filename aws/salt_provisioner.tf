@@ -68,48 +68,48 @@ partitions:
 EOF
 
 
-      destination = "/tmp/grains"
-      }
+    destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
 
-    resource "null_resource" "hana_node_provisioner" {
-      count = var.provisioner == "salt" ? length(aws_instance.clusternodes) : 0
+resource "null_resource" "hana_node_provisioner" {
+  count = var.provisioner == "salt" ? length(aws_instance.clusternodes) : 0
 
-      triggers = {
-        cluster_instance_ids = join(",", aws_instance.clusternodes.*.id)
-      }
+  triggers = {
+    cluster_instance_ids = join(",", aws_instance.clusternodes.*.id)
+  }
 
-      connection {
-        host        = element(aws_instance.clusternodes.*.public_ip, count.index)
-        type        = "ssh"
-        user        = "ec2-user"
-        private_key = file(var.private_key_location)
-      }
+  connection {
+    host        = element(aws_instance.clusternodes.*.public_ip, count.index)
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file(var.private_key_location)
+  }
 
-      provisioner "file" {
-        source      = var.aws_credentials
-        destination = "/tmp/credentials"
-      }
+  provisioner "file" {
+    source      = var.aws_credentials
+    destination = "/tmp/credentials"
+  }
 
-      provisioner "file" {
-        source      = "../../salt"
-        destination = "/tmp/salt"
-      }
+  provisioner "file" {
+    source      = "../../salt"
+    destination = "/tmp/salt"
+  }
 
-      provisioner "file" {
-        content     = data.template_file.salt_provisioner.rendered
-        destination = "/tmp/salt_provisioner.sh"
-      }
+  provisioner "file" {
+    content     = data.template_file.salt_provisioner.rendered
+    destination = "/tmp/salt_provisioner.sh"
+  }
 
-      provisioner "file" {
-        content = <<EOF
+  provisioner "file" {
+    content = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: hana_node
@@ -138,14 +138,13 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
 
-          destination = "/tmp/grains"
-          }
+    destination = "/tmp/grains"
+  }
 
-          provisioner "remote-exec" {
-            inline = [
-              "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-              "return_code=$? && sleep 1 && exit $return_code",
-            ] # Workaround to let the process start in background properly
-          }
-        }
-
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
