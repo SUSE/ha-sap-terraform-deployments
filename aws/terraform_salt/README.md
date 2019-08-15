@@ -78,7 +78,7 @@ terraform destroy
 
 # Highlevel description
 
-The terraform configuration create the infrastructure needed for installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
+The terraform configuration creates the infrastructure needed for the installation of an SAP HANA cluster in System Replication mode, combined with the high-availability capabilities provided by the SUSE Linux Enterprise Server for SAP Applications in *AWS*.
 
 The infrastructure deployed includes:
 
