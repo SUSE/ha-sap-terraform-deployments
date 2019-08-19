@@ -78,7 +78,7 @@ terraform destroy
 
 # Highlevel description
 
-The terraform configuration create the infrastructure needed for installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
+The terraform configuration creates the infrastructure needed for the installation of an SAP HANA cluster in System Replication mode, combined with the high-availability capabilities provided by the SUSE Linux Enterprise Server for SAP Applications in *AWS*.
 
 The infrastructure deployed includes:
 
@@ -90,7 +90,7 @@ The infrastructure deployed includes:
 - EC2 instances.
 
 By default it create 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
-
+Also, the salt provisioning can be configured to deploy single SAP HANA instances, SAP HANA instances with System Replication enabled or the SUSE SAP HANA cluster based on the SAPHanaSR resource agent.
 Once the infrastructure is created provisioning is made  with Salt in background.
 
 
