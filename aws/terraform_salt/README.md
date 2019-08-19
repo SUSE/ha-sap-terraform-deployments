@@ -20,7 +20,6 @@ The key files need to have same name as defined in [terraform.tfvars](terraform.
 
 3) **Adapt saltstack pillars**:
 
-  Choose one profile, among the list. (in this example we choose `cost_optimized`)
 
   * **From git top-level folder, copy files:**
 `cp pillar_examples/aws/*  salt/hana_node/files/pillar`
