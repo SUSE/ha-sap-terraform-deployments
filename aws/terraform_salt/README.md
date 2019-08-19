@@ -57,7 +57,7 @@ region = eu-central-1
 
 This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
 
-**Note**: All tests so far with this configuration have been done with only the keys stored in the credential files, and the region being passed as a variable.
+**Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
 
 
 5) **Deploy with**: 
