@@ -1,7 +1,84 @@
 
 ## AWS Public Cloud deployment with terraform and Salt
 
-The terraform configuration files in this directory can be used to create the infrastructure required to perform the installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
+- [quickstart](#quickstart)
+- [highlevel description](#highlevel-description)
+- [advanced usage](#advanced-usage)
+- [specification](#specification)
+
+# Quickstart
+
+1) **Rename terraform.tfvars** `mv terraform.tfvars.example terraform.tfvars`
+
+2) **Generate private and public keys for the cluster nodes with**
+
+```
+mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
+```
+
+The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
+
+3) **Adapt saltstack pillars**:
+
+  Choose one profile, among the list. (in this example we choose `cost_optimized`)
+
+  * **From git top-level folder, copy files:**
+`cp pillar_examples/aws/*  salt/hana_node/files/pillar`
+
+For more informations have a look at [pillar-doc](https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples)
+
+
+4) **Configure API access to AWS**
+
+A pair of AWS API access key and secret key will be required;
+
+there are several ways to configure the keys:
+
+
+- env. variables
+
+```
+$ export AWS_ACCESS_KEY_ID="<HERE_GOES_THE_ACCESS_KEY>"
+$ export AWS_SECRET_ACCESS_KEY="<HERE_GOES_THE_SECRET_KEY>"
+$ export AWS_DEFAULT_REGION="eu-central-1"
+$ terraform plan
+```
+
+- Credentials file
+
+Configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
+
+```
+[default]
+aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
+aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
+region = eu-central-1
+```
+
+This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
+
+**Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
+
+
+5) **Deploy with**: 
+
+
+```
+terraform init
+terraform plan
+terraform apply
+```
+
+Destroy the created infrastructure with:
+
+```
+terraform destroy
+```
+
+
+# Highlevel description
+
+The terraform configuration creates the infrastructure needed for the installation of an SAP HANA cluster in System Replication mode, combined with the high-availability capabilities provided by the SUSE Linux Enterprise Server for SAP Applications in *AWS*.
 
 The infrastructure deployed includes:
 
@@ -12,15 +89,12 @@ The infrastructure deployed includes:
 - A route table with its corresponding associations.
 - EC2 instances.
 
-By default, this configuration will create 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+Also, the salt provisioning can be configured to deploy single SAP HANA instances, SAP HANA instances with System Replication enabled or the SUSE SAP HANA cluster based on the SAPHanaSR resource agent.
+Once the infrastructure is created provisioning is made  with Salt in background.
 
-Once the infrastructure created by Terraform, the servers are provisioned with Salt in background.
 
- ## Provisioning by Salt
- The cluster and HANA installation is done using Salt Formulas.
- To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
-
-## Relevant files
+# Specification:
 
 These are the relevant files and what each provides:
 
@@ -44,157 +118,9 @@ These are the relevant files and what each provides:
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
-## How to use
+#### Variables
 
-To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your working directory and rename `terraform.tfvars.example` to `terraform.tfvars`.
-
-Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
-
-```
-mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
-```
-The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars.example) file.
-
-To deploy the cluster only the parameters of three files should be changed:  `terraform.tfvars`,  `hana.sls` and `cluster.sls`. Configure these files according to the wanted cluster type.
-
-### The terraform.tfvars file
-The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here is an example:
-
-```bash
-instancetype = "m4.2xlarge"
-ninstances = "2"
-aws_region = "eu-central-1"
-public_key_location = "/path/to/your/public/ssh/key"
-private_key_location = "/path/to/your/private/ssh/key"
-aws_credentials = "~/.aws/credentials"
-name = "hana"
-hana_inst_master = "s3://path/to/your/hana/installation/master"
-hana_inst_folder = "/root/sap_inst/"
-hana_disk_device = "/dev/xvdd"
-init_type = "all"
-iscsidev = "/dev/xvdd"
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
-cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
-host_ips = ["10.0.1.0", "10.0.1.1"]
-ha_sap_deployment_repo: "ha_repository"
-reg_code = "<<REG_CODE>>"
-reg_email = "<<your email>>"
-reg_additional_modules = {
-    "sle-module-adv-systems-management/12/x86_64" = ""
-    "sle-module-containers/12/x86_64" = ""
-    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-}
-provisioner = "salt"
-background  = false
-```
-
-Following that edit in the [terraform.tfvars](terraform.tfvars.example) file:
-
-* The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
-* The location of the private key associated with that public key.
-* The path to an S3 bucket where the SAP installation master is located.
-* The folder (for cluster nodes) where HANA installation master will be downloaded from S3.
-* The device used by the cluster nodes where HANA will be installed.
-* The deployment target (init_type variable), you can just install HANA or cluster.
-* The registration code if you want to register your system, mandatory to download salt-minion if it isn't included in the image.
-
-### The pillar files hana.sls and cluster.sls
-
-Find more information about the hana and cluster formulas in (check the pillar.example files):
-
--   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
--   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
-
-As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
-These files **aren't ready for deployment**, be careful to customize them or create your own files.
-
-### QA usage
-You may have noticed the variable *qa_mode*, this project is also used for QA testing.
-
-**qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
-
-### Deployment execution
-And then, after customizing the configuration files, run from your working directory the following commands:
-
-```
-terraform init
-terraform plan
-terraform apply
-```
-
-**Important**: If you want to use remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
-
-This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
-
-If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [terraform.tfvars](terraform.tfvars.example) file for your region of choice.
-
-**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions.
-
-To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
-```
- # Custom AMI for nodes
-sles4sap = {
-    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-}
-```
-
-And run the commands:
-
-```
-terraform init
-terraform plan
-terraform apply
-```
-
-After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:
-
-```
-ssh ec2-user@18.196.143.128
-```
-
-Destroy the created infrastructure with:
-
-```
-terraform destroy
-```
-
-Check outputs with:
-
-```
-terraform output
-```
-
-By default this configuration will deploy the infrastructure to the `eu-central-1` region of AWS. Internally, the provided terraform files are only configured for the European (eu-central-1, eu-west-1, eu-west-2 and eu-west-3) and North American zones (us-east-1, us-east-2, us-west-1, us-west-2 and ca-central-1), but this as well as the default zone can be changed by editing the [variables.tf](variables.tf) or the [terraform.tfvars](terraform.tfvars.example) files.
-
-It is also possible to change the AWS region from the command line with the `-var aws_region` parameter, for example:
-
-```
-terraform apply -var aws_region=eu-central-1
-```
-
-Will deploy the insfrastructure in Frankfurt.
-
-The EC2 instances for the cluster nodes are created by default with the type `m4.2xlarge`, this can be changed with the option `-var instancetype`. For example:
-
-```
-terraform apply -var aws_region=eu-central-1 -var instancetype=m4.large
-```
-
-Will deploy 2 `m4.large` instances in Frankfurt, instead of the `m4.2xlarge` default ones. The iSCSI server is always deployed with the `t2.micro` type instance.
-
-Finally, the number of cluster nodes can be modified with the option `-var ninstances`. For example:
-
-```
-terraform apply -var aws_region=eu-central-1 -var ninstances=4
-```
-
-Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xlarge` instances as cluster nodes.
-
-All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
-
-### Variables
-
- In the file [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
+In [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
 * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
@@ -236,67 +162,8 @@ All this means that basically the default command `terraform apply` and be also 
  Specific QA variable
 * **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
 
-## Configure API access to AWS
 
-For this terraform code to work, a pair of AWS API access key and secret key will be required, so be sure to have that.
-
-There are several ways to configure the keys:
-
-### Terraform provider file
-
-Add your access key and secret key to the [provider.tf](provider.tf) file in this format:
-
-```
-provider "aws" {
-  access_key = "<HERE_GOES_THE_ACCESS_KEY>"
-  secret_key = "<HERE_GOES_THE_SECRET_KEY>"
-}
-```
-
-Alternatively, the keys can be added in the form of terraform variables, that will be prompted by `terraform` when running the `plan` and `apply` commands or that can be passed with the option `-var aws_access_key` and `-var aws_secret_key`:
-
-```
-provider "aws" {
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
-}
-
-variable "aws_access_key" {
-  type = "string"
-}
-
-variable "aws_secret_key" {
-  type = "string"
-}
-```
-
-### Environment variables
-
-Another option is to assign environment variables with the access key, secret key, and even the default region:
-
-```
-$ export AWS_ACCESS_KEY_ID="<HERE_GOES_THE_ACCESS_KEY>"
-$ export AWS_SECRET_ACCESS_KEY="<HERE_GOES_THE_SECRET_KEY>"
-$ export AWS_DEFAULT_REGION="eu-central-1"
-$ terraform plan
-```
-
-### Credential file
-
-A third option is to configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
-
-```
-[default]
-aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
-aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
-region = eu-central-1
-```
-
-This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
-
-**Note**: All tests so far with this configuration have been done with only the keys stored in the credential files, and the region being passed as a variable.
-
-## Relevant Details
+### Relevant Details
 
 There are some fixed values used throughout the terraform configuration:
 
@@ -307,14 +174,64 @@ There are some fixed values used throughout the terraform configuration:
 - iSCSI LUN 0 is being used in the cluster as SBD device.
 - The cluster nodes have a second disk volume that is being used for Hana installation.
 
+# Advanced Usage
 
-## Logs
 
-This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
+# notes:
 
-* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
-* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
-* **/tmp/salt-formula.log**: Same as above but for salt-formula.
+**Important**: If you want to use remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
+
+This configuration uses the public **SUSE Linux Enterprise Server 15 for SAP Applications BYOS x86_64** image available in AWS (as defined in the file [variables.tf](variables.tf)) and can be used as is.
+
+If the use of a private/custom image is required (for example, to perform the Build Validation of a new AWS Public Cloud image), first upload the image to the cloud using the [procedure described below](#upload-image-to-aws), and then [register it as an AMI](#import-ami-via-snapshot). Once the new AMI is available, edit its AMI id value in the [terraform.tfvars](terraform.tfvars.example) file for your region of choice.
+
+**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions.
+
+To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
+```
+ # Custom AMI for nodes
+sles4sap = {
+    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
+}
+```
+
+
+After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:
+
+```
+ssh ec2-user@18.196.143.128
+```
+
+
+By default this configuration will deploy the infrastructure to the `eu-central-1` region of AWS. Internally, the provided terraform files are only configured for the European (eu-central-1, eu-west-1, eu-west-2 and eu-west-3) and North American zones (us-east-1, us-east-2, us-west-1, us-west-2 and ca-central-1), but this as well as the default zone can be changed by editing the [variables.tf](variables.tf) or the [terraform.tfvars](terraform.tfvars.example) files.
+
+It is also possible to change the AWS region from the command line with the `-var aws_region` parameter, for example:
+
+```
+terraform apply -var aws_region=eu-central-1
+```
+
+Will deploy the insfrastructure in Frankfurt.
+
+The EC2 instances for the cluster nodes are created by default with the type `m4.2xlarge`, this can be changed with the option `-var instancetype`. For example:
+
+```
+terraform apply -var aws_region=eu-central-1 -var instancetype=m4.large
+```
+
+Will deploy 2 `m4.large` instances in Frankfurt, instead of the `m4.2xlarge` default ones. The iSCSI server is always deployed with the `t2.micro` type instance.
+
+Finally, the number of cluster nodes can be modified with the option `-var ninstances`. For example:
+
+```
+terraform apply -var aws_region=eu-central-1 -var ninstances=4
+```
+
+Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xlarge` instances as cluster nodes.
+
+All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
+
+
 
 ## Upload image to AWS
 
@@ -587,9 +504,10 @@ More information regarding the import of images into AWS can be found in [this A
 
 Examples of the JSON files used in this document have been added to this repo.
 
-## To Do
+## Logs
 
-* Investigate if it is possible to upload the images directly with terraform
-* Check AWS documentation for Hana setup and add required resources. Current configuration works for build validation of new images, but lacks certain resources that are probably needed (Load Balancer, for example) for a complete setup of Hana in AWS.
-* Find if it's possible to create more than one device with iscsi-formula.
-* Add SLES12 compatibility for iscsi-formula.
+This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
+
+* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
+* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
+* **/tmp/salt-formula.log**: Same as above but for salt-formula.
