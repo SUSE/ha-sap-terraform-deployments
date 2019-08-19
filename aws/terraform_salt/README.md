@@ -89,7 +89,7 @@ The infrastructure deployed includes:
 - A route table with its corresponding associations.
 - EC2 instances.
 
-By default it create 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 Also, the salt provisioning can be configured to deploy single SAP HANA instances, SAP HANA instances with System Replication enabled or the SUSE SAP HANA cluster based on the SAPHanaSR resource agent.
 Once the infrastructure is created provisioning is made  with Salt in background.
 
