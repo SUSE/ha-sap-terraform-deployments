@@ -23,7 +23,7 @@ The key files need to have same name as defined in [terraform.tfvars](terraform.
   Choose one profile, among the list. (in this example we choose `cost_optimized`)
 
   * **from git top-level folder, copy files:**
-`cp pillar_examples/aws/cost_optimized/*  salt/hana_node/files/pillar`
+`cp pillar_examples/aws/*  salt/hana_node/files/pillar`
 
 For more informations have a look at [pillar-doc](https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples)
 
