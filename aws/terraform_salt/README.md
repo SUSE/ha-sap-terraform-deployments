@@ -44,7 +44,7 @@ $ export AWS_DEFAULT_REGION="eu-central-1"
 $ terraform plan
 ```
 
-- Credential file
+- Credentials file
 
 Configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
 
