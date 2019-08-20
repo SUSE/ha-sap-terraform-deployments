@@ -24,7 +24,8 @@ To customize this provisioning, you have to create the pillar files (cluster.sls
 
 2. Install the GCloud SDK following the [documentation](https://cloud.google.com/sdk/docs/quickstart-linux)
 
-3. In the [web console](https://console.cloud.google.com/iam-admin/serviceaccounts) create a new personal key for the service account of your project and download the JSON file.
+3. Create a new personal key for the service account of your google cloud project with https://console.cloud.google.com/apis/credentials/serviceaccountkey?_ga=2.91196186.-1602867212.1565799790.
+   See also https://cloud.google.com/community/tutorials/getting-started-on-gcp-with-terraform
 
 4. Log in with `gcloud init`.
 
