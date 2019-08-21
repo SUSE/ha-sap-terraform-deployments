@@ -17,6 +17,11 @@ iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 # Contains the salt formulas rpm packages.
 ha_sap_deployment_repo = ""
 
+# Whether or not to install HA/SAP packages from ha_sap_deployment_repo
+# Default is false
+install_from_ha_sap_deployment_repo = false
+
+
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"

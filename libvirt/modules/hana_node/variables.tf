@@ -36,6 +36,11 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
+variable "install_from_ha_sap_deployment_repo" {
+  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  default     = false
+}
+
 variable "additional_packages" {
   description = "extra packages which should be installed"
   default     = []

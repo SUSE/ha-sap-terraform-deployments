@@ -97,6 +97,11 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
+variable "install_from_ha_sap_deployment_repo" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
