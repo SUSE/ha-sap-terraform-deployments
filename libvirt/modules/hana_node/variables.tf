@@ -108,6 +108,11 @@ variable "background" {
   default     = false
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 // Provider-specific variables
 
 variable "memory" {
@@ -129,4 +134,3 @@ variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = true
 }
-

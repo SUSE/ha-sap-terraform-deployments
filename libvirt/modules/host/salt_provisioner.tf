@@ -43,7 +43,6 @@ resource "null_resource" "host_provisioner" {
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.host_count > 1 ? "0${count.index + 1}" : ""}
 domain: ${var.base_configuration["domain"]}
-timezone: ${var.base_configuration["timezone"]}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}

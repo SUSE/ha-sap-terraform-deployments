@@ -7,13 +7,11 @@ module "base" {
   image   = var.base_image
   iprange = var.iprange
 
-  // pool = "default"
-  pool = "terraform"
 
+  pool = "terraform"
   // network_name = "default"
   network_name = ""
   bridge       = "br0"
-  timezone     = "Europe/Berlin"
 }
 
 module "sbd_disk" {
@@ -37,6 +35,7 @@ module "iscsi_server" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  timezone               = "Europe/Berlin"
 }
 
 module "hana_node" {
@@ -66,6 +65,8 @@ module "hana_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  timezone               = "Europe/Berlin"
+
 }
 
 module "monitoring" {
@@ -85,5 +86,6 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_services     = var.monitored_services
+  timezone               = "Europe/Berlin"
 }
 

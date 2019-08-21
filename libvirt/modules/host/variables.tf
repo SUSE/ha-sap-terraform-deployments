@@ -91,4 +91,3 @@ variable "additional_disk" {
   description = "disk block definition(s) to be added to this host"
   default     = []
 }
-

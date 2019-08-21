@@ -23,6 +23,7 @@ role: monitoring
 provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
+timezone: var.timezone
 EOF
 
 

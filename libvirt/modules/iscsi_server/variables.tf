@@ -91,6 +91,13 @@ variable "additional_disk" {
   default     = []
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
+
+
 # Specific QA variables
 
 variable "qa_mode" {

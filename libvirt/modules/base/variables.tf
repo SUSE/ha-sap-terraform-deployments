@@ -1,8 +1,3 @@
-variable "timezone" {
-  description = "Timezone setting for all VMs"
-  default     = "Europe/Berlin"
-}
-
 variable "public_key_location" {
   description = "path of pub ssh key you want to use to access VMs"
   default     = "~/.ssh/id_rsa.pub"

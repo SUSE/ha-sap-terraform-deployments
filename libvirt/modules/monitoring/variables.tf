@@ -92,3 +92,7 @@ variable "monitored_services" {
   type        = list(string)
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
