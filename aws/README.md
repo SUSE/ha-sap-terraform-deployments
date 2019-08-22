@@ -1,7 +1,83 @@
 
 ## AWS Public Cloud deployment with terraform and Salt
 
-The terraform configuration files in this directory can be used to create the infrastructure required to perform the installation of a SAP HanaSR cluster with Suse Linux Enterprise Server for SAP Applications in *AWS*.
+- [quickstart](#quickstart)
+- [highlevel description](#highlevel-description)
+- [advanced usage](#advanced-usage)
+- [specification](#specification)
+
+# Quickstart
+
+1) **Rename terraform.tfvars** `mv terraform.tfvars.example terraform.tfvars`
+
+2) **Generate private and public keys for the cluster nodes with**
+
+```
+mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
+```
+
+The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
+
+3) **Adapt saltstack pillars**:
+
+
+  * **From git top-level folder, copy files:**
+`cp pillar_examples/aws/*  salt/hana_node/files/pillar`
+
+For more informations have a look at [pillar-doc](https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples)
+
+
+4) **Configure API access to AWS**
+
+A pair of AWS API access key and secret key will be required;
+
+there are several ways to configure the keys:
+
+
+- env. variables
+
+```
+$ export AWS_ACCESS_KEY_ID="<HERE_GOES_THE_ACCESS_KEY>"
+$ export AWS_SECRET_ACCESS_KEY="<HERE_GOES_THE_SECRET_KEY>"
+$ export AWS_DEFAULT_REGION="eu-central-1"
+$ terraform plan
+```
+
+- Credentials file
+
+Configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
+
+```
+[default]
+aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
+aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
+region = eu-central-1
+```
+
+This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
+
+**Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
+
+
+5) **Deploy with**: 
+
+
+```
+terraform init
+terraform plan
+terraform apply
+```
+
+Destroy the created infrastructure with:
+
+```
+terraform destroy
+```
+
+
+# Highlevel description
+
+The terraform configuration creates the infrastructure needed for the installation of an SAP HANA cluster in System Replication mode, combined with the high-availability capabilities provided by the SUSE Linux Enterprise Server for SAP Applications in *AWS*.
 
 The infrastructure deployed includes:
 
@@ -12,15 +88,12 @@ The infrastructure deployed includes:
 - A route table with its corresponding associations.
 - EC2 instances.
 
-By default, this configuration will create 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
+Also, the salt provisioning can be configured to deploy single SAP HANA instances, SAP HANA instances with System Replication enabled or the SUSE SAP HANA cluster based on the SAPHanaSR resource agent.
+Once the infrastructure is created provisioning is made  with Salt in background.
 
-Once the infrastructure created by Terraform, the servers are provisioned with Salt in background.
 
- ## Provisioning by Salt
- The cluster and HANA installation is done using Salt Formulas.
- To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
-
-## Relevant files
+# Specification:
 
 These are the relevant files and what each provides:
 
@@ -36,7 +109,7 @@ These are the relevant files and what each provides:
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
@@ -44,83 +117,66 @@ These are the relevant files and what each provides:
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
-## How to use
+#### Variables
 
-To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your working directory and rename `terraform.tfvars.example` to `terraform.tfvars`.
+In [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
-Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
+* **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
+* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
+* **aws_region**: AWS region where to deploy the configuration.
+* **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
+* **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
+* **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
+* **name**: hostname for the hana node without the domain part.
+* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
+* **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
+* **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
+* **hana_disk_device**: device used by node where HANA will be installed.
+* **hana_fstype**: filesystem type used for HANA installation (xfs by default).
+* **iscsidev**: device used by the iscsi server.
+* **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
+* **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
+* **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
+* **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
+* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+* **background**: run the provisioning process in background finishing terraform execution.
+* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
+* **reg_email**: email to be associated with the system registration. This parameter is optional.
+* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
+    - `<module_name>/<product_version>/<architecture>`
+    - *Example:* Suggested modules for SLES for SAP 15
 
-```
-mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
-```
-The key files need to be named as you defined it in [terraform.tfvars](terraform.tfvars.example) file.
+          sle-module-basesystem/15/x86_64
+          sle-module-desktop-applications/15/x86_64
+          sle-module-server-applications/15/x86_64
+          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
+          sle-module-sap-applications/15/x86_64
 
-To deploy the cluster only the parameters of three files should be changed:  `terraform.tfvars`,  `hana.sls` and `cluster.sls`. Configure these files according to the wanted cluster type.
+ For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
-### The terraform.tfvars file
-The easiest way to customize the variables is using a  _terraform.tfvars_  file. Here is an example:
+* **additional_repos**: Additional repos to add to the guest machines.
+* **additional_packages**: Additional packages to add to the guest machines.
+* **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
-```bash
-instancetype = "m4.2xlarge"
-ninstances = "2"
-aws_region = "eu-central-1"
-public_key_location = "/path/to/your/public/ssh/key"
-private_key_location = "/path/to/your/private/ssh/key"
-aws_credentials = "~/.aws/credentials"
-name = "hana"
-hana_inst_master = "s3://path/to/your/hana/installation/master"
-hana_inst_folder = "/root/sap_inst/"
-hana_disk_device = "/dev/xvdd"
-init_type = "all"
-iscsidev = "/dev/xvdd"
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
-cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
-host_ips = ["10.0.1.0", "10.0.1.1"]
-ha_sap_deployment_repo: "ha_repository"
-reg_code = "<<REG_CODE>>"
-reg_email = "<<your email>>"
-reg_additional_modules = {
-    "sle-module-adv-systems-management/12/x86_64" = ""
-    "sle-module-containers/12/x86_64" = ""
-    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-}
-provisioner = "salt"
-background  = false
-```
+ Specific QA variable
+* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
 
-Following that edit in the [terraform.tfvars](terraform.tfvars.example) file:
 
-* The public SSH key to use to connect to the instances. It is recommended to use a different key than the one generated in the previous steps.
-* The location of the private key associated with that public key.
-* The path to an S3 bucket where the SAP installation master is located.
-* The folder (for cluster nodes) where HANA installation master will be downloaded from S3.
-* The device used by the cluster nodes where HANA will be installed.
-* The deployment target (init_type variable), you can just install HANA or cluster.
-* The registration code if you want to register your system, mandatory to download salt-minion if it isn't included in the image.
+### Relevant Details
 
-### The pillar files hana.sls and cluster.sls
+There are some fixed values used throughout the terraform configuration:
 
-Find more information about the hana and cluster formulas in (check the pillar.example files):
+- The private IP address of the iSCSI server is set to 10.0.0.254.
+- The cluster nodes are created with private IPs starting with 10.0.1.0 and on. The instance running with 10.0.1.0 is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
+- The iSCSI server has a second disk volume that is being used as a shared device.
+- Salt is partitioning this device in 5 x 1MB partitions and then configuring just the LUN 0 for iSCSI (improvement is needed in iscsi-formula to create more than one device). **Until this improvement is added, an iscsi config file (/etc/target/saveconfig.json) is loaded when the qa_mode is set to true to configure 5 more LUN, mandatory for other tests like DRBD.**
+- iSCSI LUN 0 is being used in the cluster as SBD device.
+- The cluster nodes have a second disk volume that is being used for Hana installation.
 
--   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
--   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
+# Advanced Usage
 
-As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
-These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
-### QA usage
-You may have noticed the variable *qa_mode*, this project is also used for QA testing.
-
-**qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
-
-### Deployment execution
-And then, after customizing the configuration files, run from your working directory the following commands:
-
-```
-terraform init
-terraform plan
-terraform apply
-```
+# notes:
 
 **Important**: If you want to use remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
 
@@ -138,13 +194,6 @@ sles4sap = {
 }
 ```
 
-And run the commands:
-
-```
-terraform init
-terraform plan
-terraform apply
-```
 
 After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:
 
@@ -152,17 +201,6 @@ After an `apply` command, terraform will deploy the insfrastructure to the cloud
 ssh ec2-user@18.196.143.128
 ```
 
-Destroy the created infrastructure with:
-
-```
-terraform destroy
-```
-
-Check outputs with:
-
-```
-terraform output
-```
 
 By default this configuration will deploy the infrastructure to the `eu-central-1` region of AWS. Internally, the provided terraform files are only configured for the European (eu-central-1, eu-west-1, eu-west-2 and eu-west-3) and North American zones (us-east-1, us-east-2, us-west-1, us-west-2 and ca-central-1), but this as well as the default zone can be changed by editing the [variables.tf](variables.tf) or the [terraform.tfvars](terraform.tfvars.example) files.
 
@@ -192,129 +230,7 @@ Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xl
 
 All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
 
-### Variables
 
- In the file [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
-
-* **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
-* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
-* **aws_region**: AWS region where to deploy the configuration.
-* **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
-* **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
-* **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
-* **name**: hostname for the hana node without the domain part.
-* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
-* **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
-* **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
-* **hana_disk_device**: device used by node where HANA will be installed.
-* **hana_fstype**: filesystem type used for HANA installation (xfs by default).
-* **iscsidev**: device used by the iscsi server.
-* **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
-* **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
-* **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
-* **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
-* **background**: run the provisioning process in background finishing terraform execution.
-* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
-* **reg_email**: email to be associated with the system registration. This parameter is optional.
-* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
-    - `<module_name>/<product_version>/<architecture>`
-    - *Example:* Suggested modules for SLES for SAP 15
-
-          sle-module-basesystem/15/x86_64
-          sle-module-desktop-applications/15/x86_64
-          sle-module-server-applications/15/x86_64
-          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
-          sle-module-sap-applications/15/x86_64
-
- For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
-
-* **additional_repos**: Additional repos to add to the guest machines.
-* **additional_packages**: Additional packages to add to the guest machines.
-* **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
-
- Specific QA variable
-* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
-
-## Configure API access to AWS
-
-For this terraform code to work, a pair of AWS API access key and secret key will be required, so be sure to have that.
-
-There are several ways to configure the keys:
-
-### Terraform provider file
-
-Add your access key and secret key to the [provider.tf](provider.tf) file in this format:
-
-```
-provider "aws" {
-  access_key = "<HERE_GOES_THE_ACCESS_KEY>"
-  secret_key = "<HERE_GOES_THE_SECRET_KEY>"
-}
-```
-
-Alternatively, the keys can be added in the form of terraform variables, that will be prompted by `terraform` when running the `plan` and `apply` commands or that can be passed with the option `-var aws_access_key` and `-var aws_secret_key`:
-
-```
-provider "aws" {
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
-}
-
-variable "aws_access_key" {
-  type = "string"
-}
-
-variable "aws_secret_key" {
-  type = "string"
-}
-```
-
-### Environment variables
-
-Another option is to assign environment variables with the access key, secret key, and even the default region:
-
-```
-$ export AWS_ACCESS_KEY_ID="<HERE_GOES_THE_ACCESS_KEY>"
-$ export AWS_SECRET_ACCESS_KEY="<HERE_GOES_THE_SECRET_KEY>"
-$ export AWS_DEFAULT_REGION="eu-central-1"
-$ terraform plan
-```
-
-### Credential file
-
-A third option is to configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
-
-```
-[default]
-aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
-aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
-region = eu-central-1
-```
-
-This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
-
-**Note**: All tests so far with this configuration have been done with only the keys stored in the credential files, and the region being passed as a variable.
-
-## Relevant Details
-
-There are some fixed values used throughout the terraform configuration:
-
-- The private IP address of the iSCSI server is set to 10.0.0.254.
-- The cluster nodes are created with private IPs starting with 10.0.1.0 and on. The instance running with 10.0.1.0 is used initially as the master node of the cluster, ie, the node where `ha-cluster-init` is run.
-- The iSCSI server has a second disk volume that is being used as a shared device.
-- Salt is partitioning this device in 5 x 1MB partitions and then configuring just the LUN 0 for iSCSI (improvement is needed in iscsi-formula to create more than one device). **Until this improvement is added, an iscsi config file (/etc/target/saveconfig.json) is loaded when the qa_mode is set to true to configure 5 more LUN, mandatory for other tests like DRBD.**
-- iSCSI LUN 0 is being used in the cluster as SBD device.
-- The cluster nodes have a second disk volume that is being used for Hana installation.
-
-
-## Logs
-
-This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
-
-* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
-* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
-* **/tmp/salt-formula.log**: Same as above but for salt-formula.
 
 ## Upload image to AWS
 
@@ -586,3 +502,11 @@ The output, should include the image id. This image id (a string starting with `
 More information regarding the import of images into AWS can be found in [this Amazon document](https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html) or in [this blog post](https://www.wavether.com/2016/11/import-qcow2-images-into-aws).
 
 Examples of the JSON files used in this document have been added to this repo.
+
+## Logs
+
+This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
+
+* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
+* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
+* **/tmp/salt-formula.log**: Same as above but for salt-formula.

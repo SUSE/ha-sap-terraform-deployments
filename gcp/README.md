@@ -24,7 +24,8 @@ To customize this provisioning, you have to create the pillar files (cluster.sls
 
 2. Install the GCloud SDK following the [documentation](https://cloud.google.com/sdk/docs/quickstart-linux)
 
-3. In the [web console](https://console.cloud.google.com/iam-admin/serviceaccounts) create a new personal key for the service account of your project and download the JSON file.
+3. Create a new personal key for the service account of your google cloud project with https://console.cloud.google.com/apis/credentials/serviceaccountkey?_ga=2.91196186.-1602867212.1565799790.
+   See also https://cloud.google.com/community/tutorials/getting-started-on-gcp-with-terraform
 
 4. Log in with `gcloud init`.
 
@@ -80,7 +81,7 @@ These are the relevant files and what each provides:
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [variables.tf](variables.tf): definition of variables used in the configuration.
 
@@ -92,7 +93,7 @@ These are the relevant files and what each provides:
 
  Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
 ```
- mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+ mkdir provision/hana_node/files/sshkeys; ssh-keygen -t rsa -f provision/hana_node/files/sshkeys/cluster.id_rsa
  ```
  The key files need to be named as you defined it in `terraform.tfvars` file.
 
@@ -121,7 +122,7 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **hana_disk_device**: device used by node where HANA will be installed.
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 * **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
+* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
 * **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
