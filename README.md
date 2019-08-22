@@ -1,12 +1,13 @@
 # Automated SAP/HA Deployments in Public/Private Clouds with Terraform
 
 [![Build Status](https://travis-ci.org/SUSE/ha-sap-terraform-deployments.svg?branch=master)](https://travis-ci.org/SUSE/ha-sap-terraform-deployments)
+Terraform Version supported `0.12.6`
 ___
 # Quickstart:
 
 In this quickstart `libvirt` it is used  as example but same logic can be applied to other terraform providers.
 
-0) `cd libvirt/terraform/`
+0) `cd libvirt/`
 
 1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER``` 
 
@@ -34,4 +35,4 @@ The documentation of terraform and the cloud providers included in this reposito
 ___
 ## Terraform version
 
-All Terraform configurations were tested with the 0.11.14 version
+All Terraform configurations were tested with the 0.12.6 version

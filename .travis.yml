@@ -7,38 +7,10 @@ notifications:
 
 before_script:
   - set -e
-  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
   - unzip /tmp/terraform -d /tmp
   - chmod +x /tmp/terraform
   - /tmp/terraform -version
 
 script:
-  - set -e
-  - find . -name \*.sh -exec bash -n {} \;
-  - find . -name \*.tpl | while read f ; do head -1 "$f" | grep -qnE '^#! ?/bin/(ba)?sh' && bash -n "$f" ; done
-  - find . -name \*.json -type f | while read f ; do cat "$f" | python -m json.tool >/dev/null ; done
-  - for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples'); do
-      set -x ;
-      cd $provider/terraform ;
-      /tmp/terraform fmt -check ;
-      /tmp/terraform validate -check-variables=false ;
-      rm -f remote-state.tf ;
-      if [[ "$provider" == "libvirt" ]]; then
-        continue ;
-      fi ;
-      /tmp/terraform init ;
-      if [[ "$provider" == "gcp" ]]; then
-        /tmp/terraform validate -var-file=terraform.tfvars.example -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var private_key_location=/dev/null -var public_key_location=/dev/null ;
-      else
-        /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null -var public_key_location=/dev/null ;
-      fi ;
-      if [[ "$provider" =~ ^(aws|azure)$ ]]; then
-        cd ../terraform_salt ;
-        /tmp/terraform fmt -check ;
-        /tmp/terraform validate -check-variables=false ;
-        rm -f remote-state.tf ;
-        /tmp/terraform init ;
-      fi ;
-      set +x ;
-      cd ../.. ;
-    done
+  - .ci/validate-terraform.sh
