@@ -508,7 +508,7 @@
         {
           "alias": "PATH",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "PATH",
+          "pattern": "path",
           "type": "string"
         },
         {
@@ -522,7 +522,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "USAGE_TYPE",
+          "pattern": "usage_type",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -554,7 +554,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "FILESYSTEM_TYPE",
+          "pattern": "filesystem_type",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -730,7 +730,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(hanadb_cpu_busy_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1663,7 +1663,7 @@
         {
           "alias": "SERVICE",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "SERVICE",
+          "pattern": "service",
           "type": "string"
         },
         {
@@ -1677,7 +1677,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SQL_TYPE",
+          "pattern": "sql_type",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -1848,7 +1848,7 @@
         {
           "alias": "SQL HASH",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "SQL_HASH",
+          "pattern": "sql_hash",
           "type": "string"
         },
         {
@@ -1862,7 +1862,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SQL_STRING",
+          "pattern": "sql_string",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2040,7 +2040,7 @@
         {
           "alias": "SQL HASH",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "SQL_HASH",
+          "pattern": "sql_hash",
           "type": "string"
         },
         {
@@ -2054,7 +2054,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SQL_STRING",
+          "pattern": "sql_string",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2156,7 +2156,7 @@
         {
           "alias": "SCHEMA NAME",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "SCHEMA_NAME",
+          "pattern": "schema_name",
           "type": "string"
         },
         {
@@ -2170,7 +2170,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "TABLE_NAME",
+          "pattern": "table_name",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2319,7 +2319,7 @@
         {
           "alias": "FILE NAME",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "FILE_NAME",
+          "pattern": "file_name",
           "type": "string"
         },
         {
@@ -2457,7 +2457,7 @@
         {
           "alias": "HOST",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "HOST",
+          "pattern": "host",
           "type": "string"
         },
         {
@@ -2471,7 +2471,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "PORT",
+          "pattern": "port",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2487,7 +2487,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "REPLICATION_MODE",
+          "pattern": "replication_mode",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2503,7 +2503,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SECONDARY_HOST",
+          "pattern": "secondary_host",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2519,7 +2519,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SECONDARY_PORT",
+          "pattern": "secondary_port",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2535,7 +2535,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SECONDARY_SITE_NAME",
+          "pattern": "secondary_site_name",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2551,7 +2551,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SITE_NAME",
+          "pattern": "site_name",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2920,7 +2920,7 @@
         {
           "alias": "SOURCE HOST",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "SRC_HOST",
+          "pattern": "src_host",
           "type": "string"
         },
         {
@@ -2934,7 +2934,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "END_TIME",
+          "pattern": "end_time",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2950,7 +2950,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "LOG_POS_TIME",
+          "pattern": "log_pos_time",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2966,7 +2966,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "OPERATION_MODE",
+          "pattern": "operation_mode",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2982,7 +2982,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SHIPPED_LOG_POS_TIME",
+          "pattern": "shipped_log_pos_time",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -2998,7 +2998,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "SRC_SITE_NAME",
+          "pattern": "src_site_name",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -3014,7 +3014,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "START_TIME",
+          "pattern": "start_time",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -3030,7 +3030,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "TGT_HOST",
+          "pattern": "tgt_host",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -3046,7 +3046,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "TGT_SITE_NAME",
+          "pattern": "tgt_site_name",
           "thresholds": [],
           "type": "string",
           "unit": "short"
