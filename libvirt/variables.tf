@@ -123,3 +123,7 @@ variable "monitoring_enabled" {
   default     = true
 }
 
+variable "qa_mode" {
+  description = "define qa mode (Disable extra packages outside images)"
+  default     = false
+}
