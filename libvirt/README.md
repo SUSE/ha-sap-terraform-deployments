@@ -125,10 +125,11 @@ Besides that, the different kind of provisioners are available in this module. B
 `salt` is supported but more could be added just adding other `provisioner` files like
 [salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
-host module with some particular updates.
+host module with some particular updates. 
+ The hana node contains also:
+ * sbd device definition. Currently a shared disk.
 - [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
 - [monitoring](modules/monitoring): Machine to host the monitoring stack.
-- [sbd](modules/sbd): SBD device definition. Currently a shared disk.
 
 ### Salt modules
 - [default](../salt/default): Default configuration for each node. Install the most
