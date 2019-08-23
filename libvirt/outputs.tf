@@ -25,6 +25,6 @@ output "monitoring_hostname" {
 }
 
 output "monitoring_ip" {
-  value = module.monitoring.addresses["addresses"]
+  value = module.monitoring.addresses
 }
 

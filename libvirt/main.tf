@@ -76,6 +76,7 @@ module "monitoring" {
   monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
+  host_ips               = var.host_ips
   monitoring_srv_ip      = var.monitoring_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
