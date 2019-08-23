@@ -56,7 +56,7 @@ EOF
   additional_disk = slice(
     [
       {
-        "volume_id" = libvirt_volume.sbd.id
+        "volume_id" =  var.shared_storage_type == "shared-disk" ?  libvirt_volume.sbd.0.id : "null"
       },
     ],
     0,

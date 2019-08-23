@@ -61,8 +61,8 @@ module "hana_node" {
   monitoring_enabled     = var.monitoring_enabled
 
   // sbd disk configuration
-  sbd_count          = var.shared_storage_type == "shared-disk" ? 1 : 0
-  sbd_disk_size      = "104857600"
+  sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
+  sbd_disk_size = "104857600"
 }
 
 module "monitoring" {
