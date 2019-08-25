@@ -12,13 +12,3 @@ habootstrap-formula:
     - retry:
         attempts: 3
         interval: 15
-
-{% if grains.get('ha_pkgs_from_factory') %}
-# Restore ha-factory priority to 110 to avoid issues installing sap pattern later on
-restore-ha-factory-priority:
-  pkgrepo.managed:
-    - name: ha-factory
-    - priority: 110
-    - require:
-      - pkg: habootstrap-formula
-{% endif %}
