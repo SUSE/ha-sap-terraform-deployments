@@ -26,6 +26,10 @@ cluster:
   {% endif %}
   resource_agents:
     - SAPHanaSR
+  {% if grains.get('ha_pkgs_from_factory') %}
+  ha_exporter:
+    exposition_port: 9001
+  {% endif %}
 
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:

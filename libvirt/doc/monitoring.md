@@ -43,6 +43,33 @@ hana:
 
 **Attention**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
 
+# Enable the HA exporter
+
+The HA Prometheus metrics are exported using the hawk-apiserver [hawk-apiserver](https://github.com/ClusterLabs/hawk-apiserver).
+In order to enable the exporter for each cluster node `cluster` pillar entries must be modified.
+
+Here an example:
+
+```
+cluster:
+  name: 'hacluster'
+  init: 'hana01'
+  interface: 'eth1'
+  watchdog:
+    module: softdog
+    device: /dev/watchdog
+  sbd:
+    device: '/dev/vdc'
+  ntp: pool.ntp.org
+  sshkeys:
+    overwrite: true
+    password: linux
+  resource_agents:
+    - SAPHanaSR
+  ha_exporter:
+    exposition_port: 9001
+```
+
 # Examples:
 
 For an example look at [main.tf](../main.tf) file and `monitoring` module.

@@ -13,6 +13,8 @@ cluster:
     password: linux
   resource_agents:
     - SAPHanaSR
+  ha_exporter:
+    exposition_port: 9001
   configure:
     method: 'update'
     template:
