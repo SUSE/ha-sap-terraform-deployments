@@ -97,7 +97,7 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
-variable "install_from_ha_sap_deployment_repo" {
+variable "ha_pkgs_from_factory" {
   description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
   default     = false
 }
