@@ -3,7 +3,7 @@ terraform {
 }
 
 
-resource "libvirt_volume" "main_disk" {
+resource "libvirt_volume" "monitoring_main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
   pool             = var.base_configuration["pool"]
@@ -11,7 +11,7 @@ resource "libvirt_volume" "main_disk" {
 }
 
 
-resource "libvirt_domain" "domain" {
+resource "libvirt_domain" "monitoring_domain" {
   name       = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}"
   memory     = var.memory
   vcpu       = var.vcpu
@@ -20,7 +20,7 @@ resource "libvirt_domain" "domain" {
   dynamic "disk" {
     for_each = [
         {
-          "vol_id" = element(libvirt_volume.main_disk.*.id, count.index)
+          "vol_id" = element(libvirt_volume.monitoring_main_disk.*.id, count.index)
         },
       ]
     content {
@@ -38,11 +38,7 @@ resource "libvirt_domain" "domain" {
     wait_for_lease = false
     network_id     = var.base_configuration["isolated_network_id"]
     hostname       = "${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}"
-    addresses      = [element(var.host_ips, count.index)]
-  }
-
-  xml {
-    xslt = file("modules/host/shareable.xsl")
+    addresses      = [var. monitoring_srv_ip]
   }
 
   console {
@@ -70,11 +66,11 @@ resource "libvirt_domain" "domain" {
 
 output "configuration" {
   value = {
-    id       = libvirt_domain.domain.*.id
-    hostname = libvirt_domain.domain.*.name
+    id       = libvirt_domain.monitoring_domain.*.id
+    hostname = libvirt_domain.monitoring_domain.*.name
   }
 }
 
  output "addresses" {
-   value = flatten(libvirt_domain.domain.*.network_interface.0.addresses)
+   value = flatten(libvirt_domain.monitoring_domain.*.network_interface.0.addresses)
 }

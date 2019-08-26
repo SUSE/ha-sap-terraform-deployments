@@ -91,7 +91,3 @@ variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
   type        = list(string)
 }
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
-  type        = list(string)
-}
