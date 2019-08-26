@@ -74,7 +74,7 @@ variable "monitoring_srv_ip" {
 
 variable "memory" {
   description = "RAM memory in MiB"
-  default     = 512
+  default     = 4096
 }
 
 variable "mac" {
@@ -91,4 +91,3 @@ variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
   type        = list(string)
 }
-

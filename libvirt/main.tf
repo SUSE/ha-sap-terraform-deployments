@@ -49,11 +49,11 @@ module "hana_node" {
   hana_count             = 2
   vcpu                   = 4
   memory                 = 32678
+  host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
   sap_inst_media         = var.sap_inst_media
   hana_disk_size         = "68719476736"
   hana_fstype            = var.hana_fstype
-  host_ips               = var.host_ips
   shared_storage_type    = var.shared_storage_type
   sbd_disk_id            = module.sbd_disk.id
   iscsi_srv_ip           = var.iscsi_srv_ip
@@ -86,4 +86,3 @@ module "monitoring" {
   background             = var.background
   monitored_services     = var.monitored_services
 }
-

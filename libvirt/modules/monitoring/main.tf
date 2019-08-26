@@ -2,42 +2,75 @@ terraform {
   required_version = ">= 0.12"
 }
 
-module "monitoring" {
-  source = "../host"
 
-  base_configuration     = var.base_configuration
-  name                   = var.name
-  host_count             = var.monitoring_count
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  additional_repos       = var.additional_repos
-  additional_packages    = var.additional_packages
-  public_key_location    = var.public_key_location
-  host_ips               = [var.monitoring_srv_ip]
-  provisioner            = var.provisioner
-  background             = var.background
-
-  grains = <<EOF
-role: monitoring
-provider: libvirt
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
-EOF
+resource "libvirt_volume" "monitoring_main_disk" {
+  name             = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
+  base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
+  pool             = var.base_configuration["pool"]
+  count            = var.monitoring_count
+}
 
 
-  // Provider-specific variables
-  memory = 4096
-  vcpu = var.vcpu
-  mac = var.mac
+resource "libvirt_domain" "monitoring_domain" {
+  name       = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}"
+  memory     = var.memory
+  vcpu       = var.vcpu
+  count      = var.monitoring_count
+  qemu_agent = true
+  dynamic "disk" {
+    for_each = [
+        {
+          "vol_id" = element(libvirt_volume.monitoring_main_disk.*.id, count.index)
+        },
+      ]
+    content {
+      volume_id = disk.value.vol_id
+    }
+  }
+  network_interface {
+    wait_for_lease = true
+    network_name   = var.base_configuration["network_name"]
+    bridge         = var.base_configuration["bridge"]
+    mac            = var.mac
+  }
+
+  network_interface {
+    wait_for_lease = false
+    network_id     = var.base_configuration["isolated_network_id"]
+    hostname       = "${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}"
+    addresses      = [var. monitoring_srv_ip]
+  }
+
+  console {
+    type        = "pty"
+    target_port = "0"
+    target_type = "serial"
+  }
+
+  console {
+    type        = "pty"
+    target_type = "virtio"
+    target_port = "1"
+  }
+
+  graphics {
+    type        = "spice"
+    listen_type = "address"
+    autoport    = true
+  }
+
+  cpu = {
+    mode = "host-passthrough"
+  }
 }
 
 output "configuration" {
-  value = module.monitoring.configuration
+  value = {
+    id       = libvirt_domain.monitoring_domain.*.id
+    hostname = libvirt_domain.monitoring_domain.*.name
+  }
 }
 
-output "addresses" {
-  value = {
-    addresses = module.monitoring.addresses
-  }
+ output "addresses" {
+   value = flatten(libvirt_domain.monitoring_domain.*.network_interface.0.addresses)
 }
