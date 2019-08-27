@@ -16,12 +16,6 @@ module "base" {
   timezone     = "Europe/Berlin"
 }
 
-module "sbd_disk" {
-  source             = "./modules/sbd"
-  sbd_count          = var.shared_storage_type == "shared-disk" ? 1 : 0
-  base_configuration = module.base.configuration
-  sbd_disk_size      = "104857600"
-}
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
@@ -55,7 +49,6 @@ module "hana_node" {
   hana_disk_size         = "68719476736"
   hana_fstype            = var.hana_fstype
   shared_storage_type    = var.shared_storage_type
-  sbd_disk_id            = module.sbd_disk.id
   iscsi_srv_ip           = var.iscsi_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -66,6 +59,10 @@ module "hana_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+
+  // sbd disk configuration
+  sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
+  sbd_disk_size = "104857600"
 }
 
 module "monitoring" {

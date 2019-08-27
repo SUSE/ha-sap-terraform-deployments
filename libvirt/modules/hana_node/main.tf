@@ -2,6 +2,18 @@ terraform {
   required_version = ">= 0.12"
 }
 
+
+resource "libvirt_volume" "sbd" {
+  name  = "${terraform.workspace}-sbd.raw"
+  pool  = var.base_configuration["pool"]
+  size  = var.sbd_disk_size
+  count = var.sbd_count
+
+  xml {
+    xslt = file("modules/hana_node/raw.xsl")
+  }
+}
+
 module "hana_node" {
   source = "../host"
 
@@ -44,7 +56,7 @@ EOF
   additional_disk = slice(
     [
       {
-        "volume_id" = var.sbd_disk_id
+        "volume_id" =  var.shared_storage_type == "shared-disk" ?  libvirt_volume.sbd.0.id : "null"
       },
     ],
     0,

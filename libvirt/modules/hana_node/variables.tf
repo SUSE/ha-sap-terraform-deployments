@@ -72,11 +72,6 @@ variable "shared_storage_type" {
   default     = "iscsi"
 }
 
-variable "sbd_disk_id" {
-  description = "SBD disk volume id"
-  type        = string
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -130,3 +125,14 @@ variable "monitoring_enabled" {
   default     = true
 }
 
+// sbd disks
+
+variable "sbd_disk_size" {
+  description = "sbd partition disk size"
+  default     = "104857600" # 100MB
+}
+
+variable "sbd_count" {
+  description = "variable used to decide to create or not the sbd shared disk device"
+  default     = 1
+}
