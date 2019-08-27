@@ -37,14 +37,26 @@ resource "libvirt_domain" "hana_domain" {
         {
           "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)
         },
-        {
-          "vol_id" = element(libvirt_volume.sbd.*.id, count.index)
-        },
       ]
     content {
       volume_id = disk.value.vol_id
     }
   }
+
+  // handle additional disks
+  dynamic "disk" {
+   for_each = slice(
+    [
+      {
+       // we set null but it will never reached because the slice with 0 cut it off
+        "volume_id" =  var.shared_storage_type == "shared-disk" ?  libvirt_volume.sbd.0.id : "null"
+      },
+    ], 0,  var.shared_storage_type == "shared-disk" ? 1 : 0,  )
+   content {
+     volume_id = disk.value.volume_id
+   }
+}
+
 
   network_interface {
     wait_for_lease = true
