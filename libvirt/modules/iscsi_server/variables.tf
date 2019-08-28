@@ -86,13 +86,7 @@ variable "mac" {
   default     = ""
 }
 
-variable "additional_disk" {
-  description = "disk block definition(s) to be added to this host"
-  default     = []
-}
-
 # Specific QA variables
-
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false
