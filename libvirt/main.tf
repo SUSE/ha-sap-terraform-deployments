@@ -10,11 +10,9 @@ module "base" {
 }
 
 resource "libvirt_volume" "base_image" {
-  // the base image will be "cloned" and used by other domains, 
-  // it is the central  image.
+  // baseimage is "cloned" and used centrally by other domains
   name   = "${terraform.workspace}-baseimage"
   source = var.base_image
-  // TODO: this can moved to a tfvars
   pool   = var.storage_pool
 }
 

@@ -13,7 +13,6 @@ output "configuration" {
 
   value = {
     timezone             = var.timezone
-    public_key_location  = var.public_key_location
     domain               = var.domain
    
    

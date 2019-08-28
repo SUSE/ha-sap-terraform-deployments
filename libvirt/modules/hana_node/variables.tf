@@ -46,9 +46,8 @@ variable "hana_count" {
 }
 
 variable "public_key_location" {
-  description = "path of additional pub ssh key you want to use to access VMs"
-  default     = "/dev/null"
-  # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
+  description = "path of pub ssh key you want to use to access VMs"
+  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "hana_disk_size" {
