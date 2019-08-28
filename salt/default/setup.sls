@@ -8,7 +8,7 @@ minion_package:
 minion_id:
   file.managed:
     - name: /etc/salt/minion_id
-    - contents: {{ grains['hostname'] }}.{{ grains['domain'] }}
+    - contents: {{ grains['hostname'] }}.{{ grains['network_domain'] }}
 
 minion_service:
   service.running:

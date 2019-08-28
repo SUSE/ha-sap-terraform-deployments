@@ -3,17 +3,6 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
-variable "domain" {
-  description = "hostname's domain"
-  default     = "tf.local"
-}
-
-
 // Provider-specific variables
 
 variable "pool" {

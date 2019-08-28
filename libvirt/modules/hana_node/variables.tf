@@ -40,6 +40,12 @@ variable "additional_packages" {
   default     = []
 }
 
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  default     = "tf.local"
+}
+
 variable "hana_count" {
   description = "number of hosts like this one"
   default     = 2

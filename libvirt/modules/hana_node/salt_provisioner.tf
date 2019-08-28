@@ -37,7 +37,7 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
-domain: ${var.base_configuration["domain"]}
+network_domain: ${var.network_domain}
 timezone: ${var.base_configuration["timezone"]}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}

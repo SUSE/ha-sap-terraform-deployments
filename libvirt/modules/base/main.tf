@@ -13,9 +13,6 @@ output "configuration" {
 
   value = {
     timezone             = var.timezone
-    domain               = var.domain
-   
-   
     network_name = var.bridge == "" ? var.network_name : ""
     bridge       = var.bridge
   }
