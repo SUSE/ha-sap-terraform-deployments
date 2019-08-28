@@ -36,7 +36,7 @@ resource "libvirt_domain" "monitoring_domain" {
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.base_configuration["isolated_network_id"]
+    network_id     = var.network_id
     hostname       = "${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}"
     addresses      = [var. monitoring_srv_ip]
   }

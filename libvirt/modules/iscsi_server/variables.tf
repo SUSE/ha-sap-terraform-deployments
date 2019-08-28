@@ -86,6 +86,12 @@ variable "mac" {
   default     = ""
 }
 
+variable "network_id" {
+  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+  type        = string
+}
+
+
 # Specific QA variables
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"

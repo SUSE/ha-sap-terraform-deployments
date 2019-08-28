@@ -44,7 +44,7 @@ resource "libvirt_domain" "iscsisrv" {
   }
 
   network_interface {
-    network_id = var.base_configuration["isolated_network_id"]
+    network_id = var.network_id
     mac        = var.mac
     addresses  = [var.iscsi_srv_ip]
   }

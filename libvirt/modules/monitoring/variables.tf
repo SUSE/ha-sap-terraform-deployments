@@ -87,6 +87,13 @@ variable "cpu_model" {
   default     = ""
 }
 
+
+variable "network_id" {
+  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+  type        = string
+}
+
+
 variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
   type        = list(string)

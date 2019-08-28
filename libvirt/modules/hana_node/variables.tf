@@ -2,12 +2,12 @@ variable "base_configuration" {
   description = "use module.base.configuration see the main.tf example file"
   type        = map(string)
 }
-
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
 }
 
+// repo and pkgs 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -29,6 +29,7 @@ variable "additional_repos" {
   default     = {}
 }
 
+// hana
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = "string"
@@ -119,6 +120,14 @@ variable "mac" {
   description = "a MAC address in the form AA:BB:CC:11:22:22"
   default     = ""
 }
+
+variable "network_id" {
+  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+  type        = string
+}
+
+
+// monitoring
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"

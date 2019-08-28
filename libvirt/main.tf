@@ -6,16 +6,24 @@ module "base" {
   source  = "./modules/base"
   image   = var.base_image
   iprange = var.iprange
-
-  // pool = "default"
   pool = "terraform"
-
-  // network_name = "default"
   network_name = ""
   bridge       = "br0"
   timezone     = "Europe/Berlin"
 }
 
+
+resource "libvirt_network" "isolated_network" {
+  name      = "${terraform.workspace}-isolated"
+  mode      = "none"
+  addresses = [var.iprange]
+
+  dhcp {
+    enabled = "false"
+  }
+
+  autostart = true
+}
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
@@ -30,6 +38,7 @@ module "iscsi_server" {
   reg_email              = var.reg_email
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
+  network_id             = libvirt_network.isolated_network.id
   background             = var.background
 }
 
@@ -59,6 +68,7 @@ module "hana_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  network_id             = libvirt_network.isolated_network.id
 
   // sbd disk configuration
   sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
@@ -82,4 +92,6 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_services     = var.monitored_services
+  
+  network_id             = libvirt_network.isolated_network.id
 }

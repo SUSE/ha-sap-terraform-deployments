@@ -9,22 +9,9 @@ resource "libvirt_volume" "base_image" {
   pool   = var.pool
 }
 
-resource "libvirt_network" "isolated_network" {
-  name      = "${terraform.workspace}-isolated"
-  mode      = "none"
-  addresses = [var.iprange]
-
-  dhcp {
-    enabled = "false"
-  }
-
-  autostart = true
-}
-
 output "configuration" {
   depends_on = [
     libvirt_volume.base_image,
-    libvirt_network.isolated_network,
   ]
 
   value = {
@@ -32,7 +19,6 @@ output "configuration" {
     public_key_location  = var.public_key_location
     domain               = var.domain
     use_shared_resources = var.use_shared_resources
-    isolated_network_id  = join(",", libvirt_network.isolated_network.*.id)
     iprange              = var.iprange
     // Provider-specific variables
     pool         = var.pool
