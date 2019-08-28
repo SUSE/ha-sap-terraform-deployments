@@ -13,15 +13,6 @@ variable "domain" {
   default     = "tf.local"
 }
 
-variable "use_shared_resources" {
-  description = "use true to avoid deploying images, mirrors and other shared infrastructure resources"
-  default     = false
-}
-
-variable "iprange" {
-  description = "Used host ip addresses range"
-  type        = string
-}
 
 // Provider-specific variables
 
@@ -38,9 +29,5 @@ variable "network_name" {
 variable "bridge" {
   description = "a bridge device name available on the libvirt host, leave default for NAT"
   default     = ""
-}
-
-variable "image" {
-  description = "path or url of the base image"
 }
 

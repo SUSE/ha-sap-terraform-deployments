@@ -11,7 +11,7 @@ resource "libvirt_volume" "sbd" {
 
 resource "libvirt_volume" "main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
-  base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
+  base_volume_name = "${terraform.workspace}-baseimage"
   pool             = var.base_configuration["pool"]
   count            = var.hana_count
 }

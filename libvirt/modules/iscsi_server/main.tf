@@ -30,7 +30,7 @@ resource "libvirt_domain" "iscsisrv" {
      },
      {
        "vol_id" = element(libvirt_volume.iscsi_dev_disk.*.id, count.index)
-      }]
+     }]
     content {
       volume_id = disk.value.vol_id
     }

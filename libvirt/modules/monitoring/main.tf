@@ -5,7 +5,7 @@ terraform {
 
 resource "libvirt_volume" "monitoring_main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
-  base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
+  base_volume_name = "${terraform.workspace}-baseimage"
   pool             = var.base_configuration["pool"]
   count            = var.monitoring_count
 }

@@ -4,12 +4,17 @@ provider "libvirt" {
 
 module "base" {
   source  = "./modules/base"
-  image   = var.base_image
-  iprange = var.iprange
-  pool = "terraform"
   network_name = ""
   bridge       = "br0"
   timezone     = "Europe/Berlin"
+}
+
+// this image will be "cloned" and used by other domains 
+resource "libvirt_volume" "base_image" {
+  name   = "${terraform.workspace}-baseimage"
+  source = var.base_image
+  // TODO: check this better
+  pool   = "terraform"
 }
 
 
