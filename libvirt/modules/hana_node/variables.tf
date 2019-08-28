@@ -145,3 +145,8 @@ variable "sbd_count" {
   description = "variable used to decide to create or not the sbd shared disk device"
   default     = 1
 }
+
+variable "pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}

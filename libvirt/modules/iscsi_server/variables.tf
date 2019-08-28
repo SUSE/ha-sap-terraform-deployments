@@ -91,6 +91,10 @@ variable "network_id" {
   type        = string
 }
 
+variable "pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
 
 # Specific QA variables
 variable "qa_mode" {

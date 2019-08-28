@@ -93,6 +93,11 @@ variable "network_id" {
   type        = string
 }
 
+variable "pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 
 variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"

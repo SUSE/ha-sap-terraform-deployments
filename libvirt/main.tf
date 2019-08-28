@@ -9,12 +9,13 @@ module "base" {
   timezone     = "Europe/Berlin"
 }
 
-// this image will be "cloned" and used by other domains 
 resource "libvirt_volume" "base_image" {
+  // the base image will be "cloned" and used by other domains, 
+  // it is the central  image.
   name   = "${terraform.workspace}-baseimage"
   source = var.base_image
-  // TODO: check this better
-  pool   = "terraform"
+  // TODO: this can moved to a tfvars
+  pool   = var.storage_pool
 }
 
 
@@ -44,6 +45,7 @@ module "iscsi_server" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   network_id             = libvirt_network.isolated_network.id
+  pool                   = var.storage_pool
   background             = var.background
 }
 
@@ -74,7 +76,7 @@ module "hana_node" {
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
   network_id             = libvirt_network.isolated_network.id
-
+  pool                   = var.storage_pool
   // sbd disk configuration
   sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
   sbd_disk_size = "104857600"
@@ -97,6 +99,6 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_services     = var.monitored_services
-  
+  pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
 }

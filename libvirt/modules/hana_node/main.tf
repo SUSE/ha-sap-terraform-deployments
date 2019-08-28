@@ -1,6 +1,6 @@
 resource "libvirt_volume" "sbd" {
   name  = "${terraform.workspace}-sbd.raw"
-  pool  = var.base_configuration["pool"]
+  pool  = var.pool
   size  = var.sbd_disk_size
   count = var.sbd_count
 
@@ -12,13 +12,13 @@ resource "libvirt_volume" "sbd" {
 resource "libvirt_volume" "main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   base_volume_name = "${terraform.workspace}-baseimage"
-  pool             = var.base_configuration["pool"]
+  pool             = var.pool
   count            = var.hana_count
 }
 
 resource "libvirt_volume" "hana_disk" {
   name  = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-hana-disk"
-  pool  = var.base_configuration["pool"]
+  pool  = var.pool
   count = var.hana_count
   size  = var.hana_disk_size
 }

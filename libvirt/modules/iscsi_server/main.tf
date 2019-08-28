@@ -5,13 +5,13 @@ terraform {
 resource "libvirt_volume" "iscsi_image_disk" {
   name   = format("%s-iscsi-disk", terraform.workspace) 
   source = var.iscsi_image
-  pool   = var.base_configuration["pool"]
+  pool   = var.pool
   count  = var.iscsi_count
 }
 
 resource "libvirt_volume" "iscsi_dev_disk" {
   name  = format("%s-iscsi-dev", terraform.workspace)
-  pool  = var.base_configuration["pool"]
+  pool  = var.pool
   size  = "10000000000"                       # 10GB
   count = var.iscsi_count
 }
