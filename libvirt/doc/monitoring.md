@@ -8,11 +8,11 @@ The terraform module follows the same conventions as other modules
 
 * mandatory:
 
-`monitored_services` this is a list containing the services to be monitored. Format: `HOST_IP:PORT`. Under the hood this var tell prometheus the IP and port where to scrape.
+`monitored_services` this is a list containing the IP addresses of hosts to be monitored. Under the hood this var tell prometheus the IP where to scrape.
 
 See tfvars.example
 ```
-monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110.X:9100", "192.168.110.X+1:9100"]
+monitored_services = ["192.168.110.X", "192.168.110.Y"]
 ```
 
 

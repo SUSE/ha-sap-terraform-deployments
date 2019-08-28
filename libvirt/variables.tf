@@ -118,7 +118,7 @@ variable "background" {
 }
 
 variable "monitored_services" {
-  description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
+  description = "IPs of hosts to be monitored"
   type        = list(string)
   default     = []
 }
