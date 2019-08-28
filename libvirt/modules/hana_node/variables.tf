@@ -1,8 +1,3 @@
-variable "base_configuration" {
-  description = "use module.base.configuration see the main.tf example file"
-  type        = map(string)
-}
-
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -137,6 +132,15 @@ variable "network_id" {
   type        = string
 }
 
+variable "network_name" {
+  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
+  default     = ""
+}
+
+variable "bridge" {
+  description = "a bridge device name available on the libvirt host, leave default for NAT"
+  default     = ""
+}
 
 // monitoring
 

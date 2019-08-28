@@ -8,7 +8,6 @@ variable "base_image" {
   type        = string
 }
 
-
 variable "iprange" {
   description = "IP range of the isolated network"
   default     = "192.168.106.0/24"

@@ -60,8 +60,8 @@ resource "libvirt_domain" "hana_domain" {
 
   network_interface {
     wait_for_lease = true
-    network_name   = var.base_configuration["network_name"]
-    bridge         = var.base_configuration["bridge"]
+    network_name   = var.network_name
+    bridge         = var.bridge
     mac            = var.mac
   }
 

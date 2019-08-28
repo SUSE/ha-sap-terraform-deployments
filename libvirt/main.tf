@@ -2,38 +2,34 @@ provider "libvirt" {
   uri = var.qemu_uri
 }
 
-module "base" {
-  source  = "./modules/base"
-  network_name = ""
-  bridge       = "br0"
-}
+// ---------------------------------------
+// this 2 resources are shared among the modules
 
+// baseimage is "cloned" and used centrally by other domains
 resource "libvirt_volume" "base_image" {
-  // baseimage is "cloned" and used centrally by other domains
   name   = "${terraform.workspace}-baseimage"
   source = var.base_image
   pool   = var.storage_pool
 }
 
-
+// the network used by all modules
 resource "libvirt_network" "isolated_network" {
   name      = "${terraform.workspace}-isolated"
   mode      = "none"
   addresses = [var.iprange]
-
   dhcp {
     enabled = "false"
   }
-
   autostart = true
 }
+// ---------------------------------------
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   vcpu                   = 2
   memory                 = 4096
-  base_configuration     = module.base.configuration
+  bridge                 = "br0"
   iscsi_image            = var.iscsi_image
   iscsi_srv_ip           = var.iscsi_srv_ip
   iscsidev               = "/dev/vdb"
@@ -46,16 +42,14 @@ module "iscsi_server" {
   background             = var.background
 }
 
+// hana01 and hana02
 module "hana_node" {
   source             = "./modules/hana_node"
-  base_configuration = module.base.configuration
-
-  // hana01 and hana02
-
   name                   = "hana"
   hana_count             = 2
   vcpu                   = 4
   memory                 = 32678
+  bridge                 = "br0"
   host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
   sap_inst_media         = var.sap_inst_media
@@ -81,12 +75,11 @@ module "hana_node" {
 
 module "monitoring" {
   source             = "./modules/monitoring"
-  base_configuration = module.base.configuration
-
   name                   = "monitoring"
   monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
+  bridge                 = "br0"
   monitoring_srv_ip      = var.monitoring_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email

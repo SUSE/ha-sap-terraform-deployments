@@ -1,8 +1,3 @@
-variable "base_configuration" {
-  description = "use module.base.configuration see the main.tf example file"
-  type        = map(string)
-}
-
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -32,6 +27,16 @@ variable "reg_additional_modules" {
 variable "network_domain" {
   description = "hostname's network domain"
   default     = "tf.local"
+}
+
+variable "network_name" {
+  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
+  default     = ""
+}
+
+variable "bridge" {
+  description = "a bridge device name available on the libvirt host, leave default for NAT"
+  default     = ""
 }
 
 variable "monitoring_count" {

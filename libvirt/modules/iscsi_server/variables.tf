@@ -1,8 +1,3 @@
-variable "base_configuration" {
-  description = "use module.base.configuration see the main.tf example file"
-  type        = "map"
-}
-
 variable "iscsi_image" {
   description = "iscsi server base image"
   type        = "string"
@@ -95,6 +90,17 @@ variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
 }
+
+variable "network_name" {
+  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
+  default     = ""
+}
+
+variable "bridge" {
+  description = "a bridge device name available on the libvirt host, leave default for NAT"
+  default     = ""
+}
+
 
 # Specific QA variables
 variable "qa_mode" {
