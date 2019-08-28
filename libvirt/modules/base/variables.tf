@@ -1,8 +1,3 @@
-variable "timezone" {
-  description = "Timezone setting for all VMs"
-  default     = "Europe/Berlin"
-}
-
 // Provider-specific variables
 
 variable "pool" {

@@ -3,6 +3,11 @@ variable "base_configuration" {
   type        = map(string)
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   default     = "grafana"

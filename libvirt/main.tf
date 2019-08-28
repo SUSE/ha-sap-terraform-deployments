@@ -6,7 +6,6 @@ module "base" {
   source  = "./modules/base"
   network_name = ""
   bridge       = "br0"
-  timezone     = "Europe/Berlin"
 }
 
 resource "libvirt_volume" "base_image" {

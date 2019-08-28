@@ -2,9 +2,15 @@ variable "base_configuration" {
   description = "use module.base.configuration see the main.tf example file"
   type        = map(string)
 }
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
+}
+
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
 }
 
 // repo and pkgs 
