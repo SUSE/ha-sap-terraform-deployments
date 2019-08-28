@@ -86,6 +86,11 @@ variable "monitoring_srv_ip" {
 
 // Provider-specific variables
 
+variable "base_image_id" {
+  description = "it is the centralized images used by the module. It is created in main.tf"
+  type        = string
+}
+
 variable "memory" {
   description = "RAM memory in MiB"
   default     = 4096

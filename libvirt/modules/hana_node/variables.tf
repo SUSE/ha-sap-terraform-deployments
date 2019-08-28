@@ -112,6 +112,11 @@ variable "background" {
 
 // Provider-specific variables
 
+variable "base_image_id" {
+  description = "base image id which the module will use. You can create a baseimage and module will use it. Created in main.tf"
+  type        = string
+}
+
 variable "memory" {
   description = "RAM memory in MiB"
   default     = 512

@@ -4,7 +4,8 @@ provider "libvirt" {
 
 // ---------------------------------------
 // this 2 resources are shared among the modules
-
+// baseimage for hana and monitoring modules.
+// you can also change it for each modules
 // baseimage is "cloned" and used centrally by other domains
 resource "libvirt_volume" "base_image" {
   name   = "${terraform.workspace}-baseimage"
@@ -44,8 +45,9 @@ module "iscsi_server" {
 
 // hana01 and hana02
 module "hana_node" {
-  source             = "./modules/hana_node"
+  source                 = "./modules/hana_node"
   name                   = "hana"
+  base_image_id          = libvirt_volume.base_image.id
   hana_count             = 2
   vcpu                   = 4
   memory                 = 32678
@@ -74,8 +76,9 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source             = "./modules/monitoring"
+  source                 = "./modules/monitoring"
   name                   = "monitoring"
+  base_image_id          = libvirt_volume.base_image.id
   monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
