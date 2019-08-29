@@ -5,6 +5,11 @@ data "azurerm_public_ip" "iscsisrv" {
   resource_group_name = azurerm_virtual_machine.iscsisrv.resource_group_name
 }
 
+data "azurerm_public_ip" "monitoring" {
+  name                = azurerm_public_ip.monitoring.name
+  resource_group_name = azurerm_virtual_machine.monitoring.resource_group_name
+}
+
 data "azurerm_public_ip" "clusternodes" {
   count = var.ninstances
   name  = element(azurerm_public_ip.clusternodes.*.name, count.index)
@@ -18,6 +23,10 @@ data "azurerm_public_ip" "clusternodes" {
 
 output "iscsisrv_ip" {
   value = data.azurerm_public_ip.iscsisrv.ip_address
+}
+
+output "monitoring_ip" {
+  value = data.azurerm_public_ip.monitoring.ip_address
 }
 
 output "cluster_nodes_ip" {

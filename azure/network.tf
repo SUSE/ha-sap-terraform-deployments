@@ -170,6 +170,42 @@ resource "azurerm_lb_rule" "lb_30317" {
 
 # NICs & Public IP resources
 
+
+resource "azurerm_network_interface" "monitoring" {
+  name                      = "iscsisrv-nic"
+  location                  = var.az_region
+  resource_group_name       = azurerm_resource_group.myrg.name
+  network_security_group_id = azurerm_network_security_group.mysecgroup.id
+
+  ip_configuration {
+    name                          = "MyNicConfiguration"
+    subnet_id                     = azurerm_subnet.mysubnet.id
+    private_ip_address_allocation = "static"
+    private_ip_address            = "10.74.1.11"
+    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
+  }
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+
+resource "azurerm_public_ip" "monitoring" {
+  name                    = "monitoring-ip"
+  location                = var.az_region
+  resource_group_name     = azurerm_resource_group.myrg.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+
+
+
 resource "azurerm_network_interface" "iscsisrv" {
   name                      = "iscsisrv-nic"
   location                  = var.az_region
