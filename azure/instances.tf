@@ -143,22 +143,22 @@ resource "azurerm_virtual_machine" "monitoring" {
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
-    name              = "iscsiOsDisk"
+    name              = "monitoringOsDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
-
+   // TODO add variable later
   storage_image_reference {
-    id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : "SUSE"
-    offer     = var.iscsi_srv_uri != "" ? "" : "SLES-SAP-BYOS"
-    sku       = var.iscsi_srv_uri != "" ? "" : "12-sp4"
-    version   = var.iscsi_srv_uri != "" ? "" : "2019.03.06"
+    id        = azurerm_image.monitoring.0.id
+    publisher = "SUSE"
+    offer     = "SLES-SAP-BYOS"
+    sku       = "12-sp4"
+    version   = "2019.03.06"
   }
 
   storage_data_disk {
-    name              = "iscsiDevices"
+    name              = "monitoringDevices"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"

@@ -7,7 +7,7 @@
 
 # Quickstart
 
-## 1) Install
+## 1) Install the azure client 
 
 * [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
 
@@ -27,7 +27,7 @@ After that we need to update the `terraform.tfvars` file and copy the pillar fil
 
 ### 3) Configure Terraform Access to Azure
 
-#### 3a) Setup Azure account
+Setup Azure account:
 
 * Login with  `az login`.
 
@@ -38,64 +38,12 @@ Then set the default subscription with the command `az account set`, for example
 ```
 az account set --subscription "SUSE R&D General"
 ```
+You should be able to deploy now.
+
 
 To verify which subscription is the active one, use the command `az account show`.
 
-
-#### 3b) Terraform Azure
-
-To setup access to Azure via Terraform, four parameters are required:
-
-* Subscription ID
-* Tenant ID
-* Client or App ID
-* Client or App Secret
-
-The subscription and tenant id can be seen with the command `az account show`:
-
-```
-$ az account show
-{
-  "environmentName": "AzureCloud",
-  "id": "<HERE IS THE SUBSCRIPTION ID>",
-  "isDefault": true,
-  "name": "<HERE IS THE SUBSCRIPTION NAME>",
-  "state": "Enabled",
-  "tenantId": "<HERE IS THE TENANT ID>",
-  "user": {
-    "name": "some@email.address.com",
-    "type": "user"
-  }
-}
-```
-
-For the client id and secret, an Azure AD Service Principal is required. If you have the necessary permissions, you can create one with:
-
-```
-az ad sp create-for-rbac --name my-terraform-ad-sp --role="Contributor" --scopes="/subscriptions/<HERE GOES THE SUBSCRIPTION ID>"
-```
-
-This command should output the necesary client id and client secret or password.
-
-More info in the [Terraform Install Configure document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure) in microsoft.com.
-
-Once all four required parameters are known, there are several ways to configure access for terraform:
-
-* In provider definition
-
-Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
-
-* Via Environment Variables
-
-Set the following environment variables before running terraform:
-
-```
-export ARM_SUBSCRIPTION_ID=your_subscription_id
-export ARM_CLIENT_ID=your_appId
-export ARM_CLIENT_SECRET=your_password
-export ARM_TENANT_ID=your_tenant_id
-export ARM_ACCESS_KEY=access_key
-```
+If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
 
 ### 4) Deploy
 
@@ -225,6 +173,62 @@ As a good example, you could find some pillar examples into the folder [pillar_e
 These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
 # Advanced usage
+
+## Terraform Azure CI 
+
+To setup the authentification for CI purposes you will need 4 variables:
+
+* Subscription ID
+* Tenant ID
+* Client or App ID
+* Client or App Secret
+
+The subscription and tenant id can be seen with the command `az account show`:
+
+```
+$ az account show
+{
+  "environmentName": "AzureCloud",
+  "id": "<HERE IS THE SUBSCRIPTION ID>",
+  "isDefault": true,
+  "name": "<HERE IS THE SUBSCRIPTION NAME>",
+  "state": "Enabled",
+  "tenantId": "<HERE IS THE TENANT ID>",
+  "user": {
+    "name": "some@email.address.com",
+    "type": "user"
+  }
+}
+```
+
+For the client id and secret, an Azure AD Service Principal is required. If you have the necessary permissions, you can create one with:
+
+```
+az ad sp create-for-rbac --name my-terraform-ad-sp --role="Contributor" --scopes="/subscriptions/<HERE GOES THE SUBSCRIPTION ID>"
+```
+
+This command should output the necesary client id and client secret or password.
+
+More info in the [Terraform Install Configure document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure) in microsoft.com.
+
+Once all four required parameters are known, there are several ways to configure access for terraform:
+
+* In provider definition
+
+Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
+
+* Via Environment Variables
+
+Set the following environment variables before running terraform:
+To verify which subscription is the active one, use the command `az account show`.
+
+```
+export ARM_SUBSCRIPTION_ID=your_subscription_id
+export ARM_CLIENT_ID=your_appId
+export ARM_CLIENT_SECRET=your_password
+export ARM_TENANT_ID=your_tenant_id
+export ARM_ACCESS_KEY=access_key
+```
 
 ## How to upload a custom image
 

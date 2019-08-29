@@ -172,17 +172,17 @@ resource "azurerm_lb_rule" "lb_30317" {
 
 
 resource "azurerm_network_interface" "monitoring" {
-  name                      = "iscsisrv-nic"
+  name                      = "monitoring-nic"
   location                  = var.az_region
   resource_group_name       = azurerm_resource_group.myrg.name
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
 
   ip_configuration {
-    name                          = "MyNicConfiguration"
+    name                          = "monitoring-nic"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.11"
-    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
+    private_ip_address            = var.monitoring_srv_ip
+    public_ip_address_id          = azurerm_public_ip.monitoring.id
   }
 
   tags = {
