@@ -1,5 +1,16 @@
-
 # Azure Public Cloud deployment with terraform and Salt
+
+- [quickstart](#quickstart)
+- [highlevel description](#highlevel-description)
+- [advanced usage](#advanced-usage)
+- [specification](#specification)
+
+# Quickstart
+
+* Install [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
+
+
+# Highlevel description
 
 The terraform configuration files in this directory can be used to create the infrastructure required to install a SAP HanaSR cluster on Suse Linux Enterprise Server for SAP Applications in **Azure**.
 
@@ -21,9 +32,7 @@ Once the infrastructure is created by Terraform, the servers are provisioned wit
  The cluster and HANA installation is done using Salt Formulas.
  To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
-
-# Please enter the commit message for your changes. Lines starting
-## Relevant files
+## Specification
 
 These are the relevant files and what each provides:
 
@@ -119,11 +128,6 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 
 As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
 These files **aren't ready for deployment**, be careful to customize them or create your own files.
-
-### QA usage
-You may have noticed the variable *qa_mode*, this project is also used for QA testing.
-
-**qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
 
 ### Deployment execution
 And then, after customizing the configuration files, run from your working directory the following commands:
@@ -360,13 +364,6 @@ az storage blob delete --name SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vh
 
 Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from storage container `MyStorageContainer`.
 
-## To Do
-
-* Adapt the logic units to work as modules instead of plain terraform files
-
 ## Extra info
 
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
-
-Also check the documentation in https://www.terraform.io/docs.
-
