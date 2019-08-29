@@ -1,6 +1,6 @@
-variable "base_configuration" {
-  description = "use module.base.configuration see the main.tf example file"
-  type        = map(string)
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
 }
 
 variable "name" {
@@ -22,6 +22,21 @@ variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
   type        = map(string)
   default     = {}
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  default     = "tf.local"
+}
+
+variable "network_name" {
+  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
+  default     = ""
+}
+
+variable "bridge" {
+  description = "a bridge device name available on the libvirt host, leave default for NAT"
+  default     = ""
 }
 
 variable "monitoring_count" {
@@ -50,9 +65,8 @@ variable "ha_sap_deployment_repo" {
 }
 
 variable "public_key_location" {
-  description = "path of additional pub ssh key you want to use to access VMs"
-  default     = "/dev/null"
-  # HACK: "" cannot be used as a default because of https://github.com/hashicorp/hil/issues/50
+  description = "path of pub ssh key you want to use to access VMs"
+  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "provisioner" {
@@ -72,6 +86,11 @@ variable "monitoring_srv_ip" {
 
 // Provider-specific variables
 
+variable "base_image_id" {
+  description = "it is the centralized images used by the module. It is created in main.tf"
+  type        = string
+}
+
 variable "memory" {
   description = "RAM memory in MiB"
   default     = 4096
@@ -86,6 +105,18 @@ variable "cpu_model" {
   description = "Define what CPU model the guest is getting (host-model, host-passthrough or the default)."
   default     = ""
 }
+
+
+variable "network_id" {
+  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+  type        = string
+}
+
+variable "pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 
 variable "monitored_services" {
   description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"

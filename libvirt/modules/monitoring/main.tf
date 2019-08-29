@@ -5,8 +5,8 @@ terraform {
 
 resource "libvirt_volume" "monitoring_main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
-  base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
-  pool             = var.base_configuration["pool"]
+  base_volume_id   = var.base_image_id
+  pool             = var.pool
   count            = var.monitoring_count
 }
 
@@ -29,14 +29,14 @@ resource "libvirt_domain" "monitoring_domain" {
   }
   network_interface {
     wait_for_lease = true
-    network_name   = var.base_configuration["network_name"]
-    bridge         = var.base_configuration["bridge"]
+    network_name   = var.network_name
+    bridge         = var.bridge
     mac            = var.mac
   }
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.base_configuration["isolated_network_id"]
+    network_id     = var.network_id
     hostname       = "${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}"
     addresses      = [var. monitoring_srv_ip]
   }

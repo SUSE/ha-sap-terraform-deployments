@@ -2,27 +2,35 @@ provider "libvirt" {
   uri = var.qemu_uri
 }
 
-module "base" {
-  source  = "./modules/base"
-  image   = var.base_image
-  iprange = var.iprange
-
-  // pool = "default"
-  pool = "terraform"
-
-  // network_name = "default"
-  network_name = ""
-  bridge       = "br0"
-  timezone     = "Europe/Berlin"
+// ---------------------------------------
+// this 2 resources are shared among the modules
+// baseimage for hana and monitoring modules.
+// you can also change it for each modules
+// baseimage is "cloned" and used centrally by other domains
+resource "libvirt_volume" "base_image" {
+  name   = "${terraform.workspace}-baseimage"
+  source = var.base_image
+  pool   = var.storage_pool
 }
 
+// the network used by all modules
+resource "libvirt_network" "isolated_network" {
+  name      = "${terraform.workspace}-isolated"
+  mode      = "none"
+  addresses = [var.iprange]
+  dhcp {
+    enabled = "false"
+  }
+  autostart = true
+}
+// ---------------------------------------
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   vcpu                   = 2
   memory                 = 4096
-  base_configuration     = module.base.configuration
+  bridge                 = "br0"
   iscsi_image            = var.iscsi_image
   iscsi_srv_ip           = var.iscsi_srv_ip
   iscsidev               = "/dev/vdb"
@@ -30,19 +38,20 @@ module "iscsi_server" {
   reg_email              = var.reg_email
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
+  network_id             = libvirt_network.isolated_network.id
+  pool                   = var.storage_pool
   background             = var.background
 }
 
+// hana01 and hana02
 module "hana_node" {
-  source             = "./modules/hana_node"
-  base_configuration = module.base.configuration
-
-  // hana01 and hana02
-
+  source                 = "./modules/hana_node"
   name                   = "hana"
+  base_image_id          = libvirt_volume.base_image.id
   hana_count             = 2
   vcpu                   = 4
   memory                 = 32678
+  bridge                 = "br0"
   host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
   sap_inst_media         = var.sap_inst_media
@@ -59,20 +68,21 @@ module "hana_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-
+  network_id             = libvirt_network.isolated_network.id
+  pool                   = var.storage_pool
   // sbd disk configuration
   sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
   sbd_disk_size = "104857600"
 }
 
 module "monitoring" {
-  source             = "./modules/monitoring"
-  base_configuration = module.base.configuration
-
+  source                 = "./modules/monitoring"
   name                   = "monitoring"
+  base_image_id          = libvirt_volume.base_image.id
   monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
+  bridge                 = "br0"
   monitoring_srv_ip      = var.monitoring_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -82,4 +92,6 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_services     = var.monitored_services
+  pool                   = var.storage_pool
+  network_id             = libvirt_network.isolated_network.id
 }

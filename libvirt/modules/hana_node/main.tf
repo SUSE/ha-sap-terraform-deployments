@@ -1,6 +1,6 @@
 resource "libvirt_volume" "sbd" {
   name  = "${terraform.workspace}-sbd.raw"
-  pool  = var.base_configuration["pool"]
+  pool  = var.pool
   size  = var.sbd_disk_size
   count = var.sbd_count
 
@@ -11,14 +11,14 @@ resource "libvirt_volume" "sbd" {
 
 resource "libvirt_volume" "main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
-  base_volume_name = var.base_configuration["use_shared_resources"] ? "" : "${terraform.workspace}-baseimage"
-  pool             = var.base_configuration["pool"]
+  base_volume_id   = var.base_image_id
+  pool             = var.pool
   count            = var.hana_count
 }
 
 resource "libvirt_volume" "hana_disk" {
   name  = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-hana-disk"
-  pool  = var.base_configuration["pool"]
+  pool  = var.pool
   count = var.hana_count
   size  = var.hana_disk_size
 }
@@ -60,14 +60,14 @@ resource "libvirt_domain" "hana_domain" {
 
   network_interface {
     wait_for_lease = true
-    network_name   = var.base_configuration["network_name"]
-    bridge         = var.base_configuration["bridge"]
+    network_name   = var.network_name
+    bridge         = var.bridge
     mac            = var.mac
   }
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.base_configuration["isolated_network_id"]
+    network_id     = var.network_id
     hostname       = "${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
     addresses      = [element(var.host_ips, count.index)]
   }

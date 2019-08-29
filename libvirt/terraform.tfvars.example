@@ -42,6 +42,11 @@ monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110
 # by default monitoring is enabled, if you want to disable it on your node set to false
 # monitoring_enabled = false
 
+# libvirt storage pool, select the libvirt storage pool where the volume will stored
+
+# storage_pool = "terraform"
+
+
 # QA variables
 
 # Define if the deployement is using for testing purpose

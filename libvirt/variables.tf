@@ -123,6 +123,11 @@ variable "monitoring_enabled" {
   default     = true
 }
 
+variable "storage_pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false
