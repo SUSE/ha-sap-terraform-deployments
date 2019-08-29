@@ -33,10 +33,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   storage_image_reference {
     id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["publisher"]
-    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["offer"]
-    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["sku"]
-    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["version"]
+    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_publisher
+    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_offer
+    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_sku
+    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_version
   }
 
   storage_data_disk {
@@ -92,10 +92,10 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
   storage_image_reference {
     id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
-    publisher = var.sles4sap_uri != "" ? "" : var.sles4sap_public["publisher"]
-    offer     = var.sles4sap_uri != "" ? "" : var.sles4sap_public["offer"]
-    sku       = var.sles4sap_uri != "" ? "" : var.sles4sap_public["sku"]
-    version   = var.sles4sap_uri != "" ? "" : var.sles4sap_public["version"]
+    publisher = var.sles4sap_uri != "" ? "" : var.hana_public_publisher
+    offer     = var.sles4sap_uri != "" ? "" : var.hana_public_offer
+    sku       = var.sles4sap_uri != "" ? "" : var.hana_public_sku
+    version   = var.sles4sap_uri != "" ? "" : var.hana_public_version
   }
 
   storage_data_disk {

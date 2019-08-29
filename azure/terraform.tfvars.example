@@ -55,9 +55,6 @@ hana_inst_folder = "/root/sap_inst/"
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/sdc"
 
-# Variable for init-nodes.sh script
-init-type = "all"
-
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/sdc"
 
