@@ -1,7 +1,5 @@
 **/.terraform
-**/terraform.tfstate.d
-**/terraform.tfstate
-**/terraform.tfstate.backup
+**/terraform.tfstate*
 **/terraform.tfvars
 azure/terraform/provision/node0_id_rsa
 azure/terraform/provision/node0_id_rsa.pub
