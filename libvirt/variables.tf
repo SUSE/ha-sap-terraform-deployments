@@ -97,6 +97,11 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
+variable "devel_mode" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -112,8 +117,8 @@ variable "background" {
   default     = false
 }
 
-variable "monitored_services" {
-  description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
+variable "monitored_hosts" {
+  description = "IPs of hosts to be monitored"
   type        = list(string)
   default     = []
 }

@@ -1,4 +1,58 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS_SHAP",
+      "label": "Prometheus SHAP",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.3.3"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -16,8 +70,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1563184472561,
+  "id": null,
+  "iteration": 1566851526350,
   "links": [],
   "panels": [
     {
@@ -27,6 +81,1250 @@
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 121,
+      "panels": [],
+      "title": "HA monitoring",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 90,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "pluginVersion": "6.3.3",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_configured{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Configured nodes",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 104,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_expected_up{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes expected up",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 92,
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 2,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.3.3",
+      "targets": [
+        {
+          "expr": "cluster_nodes_online{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes online",
+      "type": "gauge"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "id": 100,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_unclean{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes unclean",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 98,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_pending{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes on pending",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 106,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9001\", type=\"remote\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes remote",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "id": 102,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_shutdown{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes shutdown",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 16,
+        "y": 4
+      },
+      "id": 96,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_maintenance{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes on maintenance",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 20,
+        "y": 4
+      },
+      "id": 94,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_nodes_standby{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes on standby",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 7
+      },
+      "id": 112,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_resources_configured{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Resouces configured",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 8,
+        "y": 7
+      },
+      "id": 108,
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 30,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              }
+            ],
+            "title": "$hana_node_name_1",
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "vertical"
+      },
+      "pluginVersion": "6.3.3",
+      "targets": [
+        {
+          "expr": "cluster_resources_running{instance=~\"$hana_node_ip:9001\",node=~\".*01\"}",
+          "format": "time_series",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "type": "bargauge"
+    },
+    {
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 12,
+        "y": 7
+      },
+      "id": 110,
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 30,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 0
+              }
+            ],
+            "title": "$hana_node_name_2",
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "vertical"
+      },
+      "pluginVersion": "6.3.3",
+      "targets": [
+        {
+          "expr": "cluster_resources_running{instance=~\"$hana_node_ip:9001\", node=~\".*02\"}",
+          "format": "time_series",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "type": "bargauge"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 7
+      },
+      "id": 118,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_resources{instance=~\"$hana_node_ip:9001\", role=\"master\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Master resources",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 116,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "pluginVersion": "6.3.3",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_resources_failed{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Resources failed",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 12
+      },
+      "id": 119,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_resources{instance=~\"$hana_node_ip:9001\", role=\"slave\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Slave resources",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 14
+      },
+      "id": 114,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "cluster_resources_disabled{instance=~\"$hana_node_ip:9001\"}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Resources disabled",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
       },
       "id": 38,
       "panels": [],
@@ -43,11 +1341,12 @@
       "decimals": 2,
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 15,
         "w": 13,
         "x": 0,
-        "y": 1
+        "y": 18
       },
       "id": 14,
       "legend": {
@@ -67,7 +1366,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -79,49 +1380,49 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Total Physical Memory",
           "refId": "A"
         },
         {
-          "expr": "hanadb_host_memory_physical_free_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_physical_free_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Free Physical Memory",
           "refId": "B"
         },
         {
-          "expr": "hanadb_host_memory_resident_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_resident_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Resident Memory ",
           "refId": "F"
         },
         {
-          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Allocation Limit",
           "refId": "D"
         },
         {
-          "expr": "hanadb_host_memory_pool_size_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_pool_size_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Pool Size",
           "refId": "E"
         },
         {
-          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Used Pool",
           "refId": "L"
         },
         {
-          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 1,
@@ -179,11 +1480,12 @@
       "datasource": "$hanadb_data_source",
       "description": "Average percent of CPU usage based on usage type.",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 15,
         "w": 11,
         "x": 13,
-        "y": 1
+        "y": 18
       },
       "id": 16,
       "interval": "",
@@ -202,7 +1504,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -213,7 +1517,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -221,28 +1525,28 @@
           "refId": "A"
         },
         {
-          "expr": "avg(hanadb_cpu_system_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_system_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% System Time",
           "refId": "B"
         },
         {
-          "expr": "avg(hanadb_cpu_idle_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_idle_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% Idle Time",
           "refId": "C"
         },
         {
-          "expr": "avg(hanadb_cpu_user_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_user_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% User Time",
           "refId": "D"
         },
         {
-          "expr": "avg(hanadb_cpu_waitio_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_waitio_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -323,7 +1627,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 16
+        "y": 33
       },
       "id": 8,
       "interval": null,
@@ -365,7 +1669,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(hanadb_host_memory_used_total_mb{host=~\"$hana_node\"}) / sum(hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node\"}) * 100",
+          "expr": "sum(hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\"}) / sum(hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\"}) * 100",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -398,11 +1702,12 @@
       "datasource": "$hanadb_data_source",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 10,
         "x": 3,
-        "y": 16
+        "y": 33
       },
       "id": 76,
       "legend": {
@@ -421,7 +1726,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -432,7 +1739,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_connections_total_count{host=~\"$hana_node\"}",
+          "expr": "hanadb_connections_total_count{host=~\"$hana_node_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -490,7 +1797,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 16
+        "y": 33
       },
       "id": 18,
       "interval": "30s",
@@ -627,7 +1934,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_disk_used_size_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_disk_used_size_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -636,7 +1943,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_disk_total_size_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_disk_total_size_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -644,7 +1951,7 @@
           "refId": "B"
         },
         {
-          "expr": "((hanadb_disk_used_size_mb{host=~\"$hana_node\"} / hanadb_disk_total_size_mb{host=~\"$hana_node\"}) * 100) ",
+          "expr": "((hanadb_disk_used_size_mb{host=~\"$hana_node_name\"} / hanadb_disk_total_size_mb{host=~\"$hana_node_name\"}) * 100) ",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -652,7 +1959,7 @@
           "refId": "C"
         },
         {
-          "expr": "hanadb_disk_total_device_size_mb {host=~\"$hana_node\"} ",
+          "expr": "hanadb_disk_total_device_size_mb {host=~\"$hana_node_name\"} ",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -689,7 +1996,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 21
+        "y": 38
       },
       "id": 4,
       "interval": null,
@@ -730,7 +2037,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node\"})",
+          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node_name\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -776,7 +2083,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 25
+        "y": 42
       },
       "id": 10,
       "interval": null,
@@ -817,7 +2124,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count (count by (core) (hanadb_cpu_busy_percent{host=~\"$hana_node\"}))",
+          "expr": "count (count by (core) (hanadb_cpu_busy_percent{host=~\"$hana_node_name\"}))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -863,7 +2170,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 25
+        "y": 42
       },
       "id": 12,
       "interval": null,
@@ -904,7 +2211,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node\"}/1024",
+          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node_name\"}/1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -949,7 +2256,7 @@
         "h": 5,
         "w": 3,
         "x": 6,
-        "y": 25
+        "y": 42
       },
       "id": 28,
       "interval": null,
@@ -989,7 +2296,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1035,7 +2342,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 25
+        "y": 42
       },
       "id": 30,
       "interval": null,
@@ -1075,7 +2382,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1120,7 +2427,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 25
+        "y": 42
       },
       "id": 26,
       "interval": null,
@@ -1160,7 +2467,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_shared_alloc_mb{host=\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_shared_alloc_mb{host=\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1206,7 +2513,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 25
+        "y": 42
       },
       "id": 24,
       "interval": null,
@@ -1246,7 +2553,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_used_peak_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_used_peak_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1292,7 +2599,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 25
+        "y": 42
       },
       "id": 20,
       "interval": null,
@@ -1333,7 +2640,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_code_size_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_code_size_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1379,7 +2686,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 25
+        "y": 42
       },
       "id": 22,
       "interval": null,
@@ -1420,7 +2727,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_swap_used_mb{host=~\"$hana_node\"} / 1024",
+          "expr": "hanadb_host_memory_swap_used_mb{host=~\"$hana_node_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1466,7 +2773,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 30
+        "y": 47
       },
       "id": 66,
       "interval": null,
@@ -1507,7 +2814,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_column_tables_used_memory_mb{host=~\"$hana_node\"}",
+          "expr": "hanadb_column_tables_used_memory_mb{host=~\"$hana_node_name\"}",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1536,7 +2843,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 51
       },
       "id": 6,
       "panels": [],
@@ -1553,11 +2860,12 @@
       "decimals": 2,
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 52
       },
       "id": 68,
       "interval": "",
@@ -1575,7 +2883,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -1587,7 +2897,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_memory_service_total_used_mb{host=~\"$hana_node\"}",
+          "expr": "hanadb_memory_service_total_used_mb{host=~\"$hana_node_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{service}}",
@@ -1646,7 +2956,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 52
       },
       "id": 70,
       "links": [],
@@ -1779,7 +3089,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_service_executions_count{host=~\"$hana_node\"} + 0)",
+          "expr": "sort(hanadb_sql_service_executions_count{host=~\"$hana_node_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1787,7 +3097,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sql_service_elapsed_time_ms{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_sql_service_elapsed_time_ms{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1795,21 +3105,21 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_sql_service_elap_per_exec_avg_ms{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_sql_service_elap_per_exec_avg_ms{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
           "refId": "C"
         },
         {
-          "expr": "hanadb_sql_service_lock_per_exec_ms{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_sql_service_lock_per_exec_ms{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
           "refId": "D"
         },
         {
-          "expr": "hanadb_sql_service_max_ela_time_ms{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_sql_service_max_ela_time_ms{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1831,7 +3141,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 60
       },
       "id": 72,
       "links": [],
@@ -1916,7 +3226,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_top_time_consumers_mu{host=~\"$hana_node\"} + 0)",
+          "expr": "sort(hanadb_sql_top_time_consumers_mu{host=~\"$hana_node_name\"} + 0)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1925,7 +3235,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sql_top_time_consumers_count{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_sql_top_time_consumers_count{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1948,7 +3258,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 66
       },
       "id": 62,
       "interval": "",
@@ -2001,7 +3311,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(sum(hanadb_schema_used_memory_mb{host=~\"$hana_node\"}) by (schema_name))",
+          "expr": "sort(sum(hanadb_schema_used_memory_mb{host=~\"$hana_node_name\"}) by (schema_name))",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -2024,7 +3334,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 70
       },
       "id": 74,
       "links": [],
@@ -2108,7 +3418,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_top_mem_consumers_byte{host=~\"$hana_node\"} + 0)",
+          "expr": "sort(hanadb_sql_top_mem_consumers_byte{host=~\"$hana_node_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2116,7 +3426,7 @@
           "refId": "A"
         },
         {
-          "expr": "sort(hanadb_sql_top_mem_consumers_count{host=~\"$hana_node\"} + 0)",
+          "expr": "sort(hanadb_sql_top_mem_consumers_count{host=~\"$hana_node_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2136,10 +3446,10 @@
       "description": "",
       "fontSize": "100%",
       "gridPos": {
-        "h": 10,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 73
       },
       "id": 88,
       "links": [],
@@ -2256,7 +3566,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_table_cs_top_mem_total_mb{host=~\"$hana_node\"}) + 0",
+          "expr": "sort(hanadb_table_cs_top_mem_total_mb{host=~\"$hana_node_name\"}) + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2264,7 +3574,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_estimated_max_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_estimated_max_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2272,7 +3582,7 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_disk_size_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_disk_size_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2280,7 +3590,7 @@
           "refId": "C"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_record_count{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_record_count{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2302,7 +3612,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 80
       },
       "id": 64,
       "interval": "",
@@ -2390,7 +3700,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_disk_data_files_used_size_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_disk_data_files_used_size_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2398,7 +3708,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_disk_data_files_total_size_mb{host=~\"$hana_node\"} + 0",
+          "expr": "hanadb_disk_data_files_total_size_mb{host=~\"$hana_node_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2406,7 +3716,7 @@
           "refId": "B"
         },
         {
-          "expr": "(hanadb_disk_data_files_used_size_mb{host=~\"$hana_node\"} / hanadb_disk_data_files_total_size_mb{host=~\"$hana_node\"}) * 100",
+          "expr": "(hanadb_disk_data_files_used_size_mb{host=~\"$hana_node_name\"} / hanadb_disk_data_files_total_size_mb{host=~\"$hana_node_name\"}) * 100",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2425,7 +3735,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 70
+        "y": 87
       },
       "id": 80,
       "panels": [],
@@ -2441,7 +3751,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 88
       },
       "id": 78,
       "links": [],
@@ -2723,11 +4033,12 @@
       "dashes": false,
       "datasource": "$hanadb_data_source",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 77
+        "y": 94
       },
       "id": 82,
       "legend": {
@@ -2744,7 +4055,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -2812,11 +4125,12 @@
       "datasource": "$hanadb_data_source",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 77
+        "y": 94
       },
       "id": 84,
       "legend": {
@@ -2833,7 +4147,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -2903,7 +4219,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 102
       },
       "id": 86,
       "links": [],
@@ -3197,1122 +4513,1156 @@
       "type": "table"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 108
       },
       "id": 34,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 4
-          },
-          "id": 50,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_receive_rate_kb_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Receive Rate (KB/s)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "KBs",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 8,
-            "y": 4
-          },
-          "id": 52,
-          "interval": "",
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_transmission_rate_kb_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Transmission Rate (KB/s)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "KBs",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 16,
-            "y": 4
-          },
-          "id": 54,
-          "interval": "",
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_receive_rate_errors_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}} - Rec. rate",
-              "refId": "A"
-            },
-            {
-              "expr": "hanadb_network_transmission_rate_errors_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}} - Trans. rate",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Receive/Transmission Errors per Second",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 0,
-              "format": "short",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 12
-          },
-          "id": 56,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_receive_requests_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Received Requests per Second",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 0,
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 8,
-            "y": 12
-          },
-          "id": 58,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_transmission_rate_requests_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Transmitted Requests per Second",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 0,
-              "format": "short",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "fill": 1,
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 16,
-            "y": 12
-          },
-          "id": 60,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_network_collisions_per_seconds{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{interface}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Collisions per Second",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "decimals": 0,
-              "format": "short",
-              "label": "",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        }
-      ],
+      "panels": [],
       "repeat": null,
       "title": "SAP HANA Network",
       "type": "row"
     },
     {
-      "collapsed": true,
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 109
+      },
+      "id": 50,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_receive_rate_kb_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Receive Rate (KB/s)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "KBs",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 109
+      },
+      "id": 52,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_transmission_rate_kb_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Transmission Rate (KB/s)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "KBs",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 109
+      },
+      "id": 54,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_receive_rate_errors_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}} - Rec. rate",
+          "refId": "A"
+        },
+        {
+          "expr": "hanadb_network_transmission_rate_errors_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}} - Trans. rate",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Receive/Transmission Errors per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 117
+      },
+      "id": 56,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_receive_requests_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Received Requests per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 117
+      },
+      "id": 58,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_transmission_rate_requests_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Transmitted Requests per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 117
+      },
+      "id": 60,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_network_collisions_per_seconds{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{interface}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Collisions per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 92
+        "y": 125
       },
       "id": 36,
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "I/O Throughput  per Disk in KB/Sec",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 0,
-            "y": 5
-          },
-          "id": 32,
-          "interval": "",
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_throughput_kb_second{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "I/O Throughput",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "KBs",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "I/O Latency in miliseconds.",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 8,
-            "y": 5
-          },
-          "id": 40,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_latency_ms{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Latency",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 16,
-            "y": 5
-          },
-          "id": 42,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "repeat": null,
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_service_time_ms{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "I/O Service Time",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 0,
-            "y": 14
-          },
-          "id": 44,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_requests_per_second{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Requests per Sec",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "reqps",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "average queue length of the requests that were issued to the Disk Device",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 8,
-            "y": 14
-          },
-          "id": 46,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_queue_length_requests{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Queue Length (Number of Requests)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "none",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$hanadb_data_source",
-          "description": "",
-          "fill": 1,
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 16,
-            "y": 14
-          },
-          "id": 48,
-          "interval": "",
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {},
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "hanadb_disk_io_wait_time_ms{host=~\"$hana_node\"}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "{{disk}}",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "I/O Wait Time",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        }
-      ],
+      "panels": [],
       "repeat": null,
       "title": "SAP HANA Disk I/O",
       "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "I/O Throughput  per Disk in KB/Sec",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 126
+      },
+      "id": 32,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_throughput_kb_second{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "I/O Throughput",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "KBs",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "I/O Latency in miliseconds.",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 126
+      },
+      "id": 40,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_latency_ms{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 126
+      },
+      "id": 42,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_service_time_ms{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "I/O Service Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 135
+      },
+      "id": 44,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_requests_per_second{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Requests per Sec",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "reqps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "average queue length of the requests that were issued to the Disk Device",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 135
+      },
+      "id": 46,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_queue_length_requests{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Queue Length (Number of Requests)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$hanadb_data_source",
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 135
+      },
+      "id": 48,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "hanadb_disk_io_wait_time_ms{host=~\"$hana_node_name\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{disk}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "I/O Wait Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 18,
+  "schemaVersion": 19,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "prometheus-server-webui",
-          "value": "prometheus-server-webui"
+          "text": "Prometheus SHAP",
+          "value": "Prometheus SHAP"
         },
         "hide": 0,
         "includeAll": false,
@@ -4328,21 +5678,82 @@
       },
       {
         "allValue": null,
-        "current": {
-          "text": "hana01",
-          "value": [
-            "hana01"
-          ]
-        },
+        "current": {},
         "datasource": "$hanadb_data_source",
-        "definition": "label_values(hanadb_host_memory_physical_total_mb, host)",
+        "definition": "label_values(node_uname_info, nodename)",
         "hide": 0,
         "includeAll": false,
         "label": "HANA Node",
         "multi": false,
-        "name": "hana_node",
+        "name": "hana_node_name",
         "options": [],
-        "query": "label_values(hanadb_host_memory_physical_total_mb, host)",
+        "query": "label_values(node_uname_info, nodename)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "label_values(node_uname_info, nodename)",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$hanadb_data_source",
+        "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "hana_node_ip",
+        "options": [],
+        "query": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
+        "refresh": 2,
+        "regex": "^(.*):\\d+$",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$hanadb_data_source",
+        "definition": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "hana_node_name_1",
+        "options": [],
+        "query": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$hanadb_data_source",
+        "definition": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "hana_node_name_2",
+        "options": [],
+        "query": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -4386,6 +5797,6 @@
   },
   "timezone": "",
   "title": "SAP HANA Dashboard",
-  "uid": "jaPvOI4Zk",
-  "version": 18
+  "uid": "EcC4JDFWz",
+  "version": 11
 }

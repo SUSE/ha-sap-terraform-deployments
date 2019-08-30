@@ -8,11 +8,11 @@ The terraform module follows the same conventions as other modules
 
 * mandatory:
 
-`monitored_services` this is a list containing the services to be monitored. Format: `HOST_IP:PORT`. Under the hood this var tell prometheus the IP and port where to scrape.
+`monitored_hosts` this is a list containing the IP addresses of hosts to be monitored. Under the hood this var tell prometheus the IP where to scrape.
 
 See tfvars.example
 ```
-monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110.X:9100", "192.168.110.X+1:9100"]
+monitored_hosts = ["192.168.110.X", "192.168.110.Y"]
 ```
 
 
@@ -42,6 +42,33 @@ hana:
 ```
 
 **Attention**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
+
+# Enable the HA exporter
+
+The HA Prometheus metrics are exported using the hawk-apiserver [hawk-apiserver](https://github.com/ClusterLabs/hawk-apiserver).
+In order to enable the exporter for each cluster node `cluster` pillar entries must be modified.
+
+Here an example:
+
+```
+cluster:
+  name: 'hacluster'
+  init: 'hana01'
+  interface: 'eth1'
+  watchdog:
+    module: softdog
+    device: /dev/watchdog
+  sbd:
+    device: '/dev/vdc'
+  ntp: pool.ntp.org
+  sshkeys:
+    overwrite: true
+    password: linux
+  resource_agents:
+    - SAPHanaSR
+  ha_exporter:
+    exposition_port: 9001
+```
 
 # Examples:
 

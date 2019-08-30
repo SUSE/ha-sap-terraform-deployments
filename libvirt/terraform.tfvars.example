@@ -17,6 +17,11 @@ iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 # Contains the salt formulas rpm packages.
 ha_sap_deployment_repo = ""
 
+# Whether or not to install HA/SAP packages from ha_sap_deployment_repo
+# Default is false
+devel_mode = false
+
+
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
@@ -36,8 +41,8 @@ ha_sap_deployment_repo = ""
 #background = true
 
 # Monitoring:
-# add here HOST:PORT. In this example we monitor on same hosts different services
-monitored_services = ["192.168.110.X:8001", "192.168.110.X+1:8001", "192.168.110.X:9100", "192.168.110.X+1:9100"]
+# Add here IP addresses of the hosts to be monitored:
+monitored_hosts = ["192.168.110.X", "192.168.110.Y"]
 
 # by default monitoring is enabled, if you want to disable it on your node set to false
 # monitoring_enabled = false

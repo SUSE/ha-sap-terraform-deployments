@@ -109,4 +109,3 @@ output "configuration" {
 output "addresses" {
   value = flatten(libvirt_domain.hana_domain.*.network_interface.0.addresses)
 }
-

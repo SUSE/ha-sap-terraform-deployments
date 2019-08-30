@@ -64,6 +64,7 @@ module "hana_node" {
   reg_additional_modules = var.reg_additional_modules
   additional_repos       = var.additional_repos
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  devel_mode             = var.devel_mode
   scenario_type          = var.scenario_type
   provisioner            = var.provisioner
   background             = var.background
@@ -91,7 +92,7 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  monitored_services     = var.monitored_services
+  monitored_hosts        = var.monitored_hosts
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
 }

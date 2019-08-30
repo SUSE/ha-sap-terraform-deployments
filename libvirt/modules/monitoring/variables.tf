@@ -118,7 +118,7 @@ variable "pool" {
 }
 
 
-variable "monitored_services" {
-  description = "HOST:PORT of service you want to monitor, it can contain same host with different ports number (diff services)"
+variable "monitored_hosts" {
+  description = "IPs of hosts you want to monitor"
   type        = list(string)
 }
