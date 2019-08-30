@@ -47,7 +47,7 @@ host_ip: ${var.monitoring_srv_ip}
 role: monitoring
 provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
+monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 EOF
       destination = "/tmp/grains"
       }

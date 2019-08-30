@@ -42,7 +42,7 @@ devel_mode = false
 
 # Monitoring:
 # Add here IP addresses of the hosts to be monitored:
-monitored_services = ["192.168.110.X", "192.168.110.Y"]
+monitored_hosts = ["192.168.110.X", "192.168.110.Y"]
 
 # by default monitoring is enabled, if you want to disable it on your node set to false
 # monitoring_enabled = false

@@ -4,19 +4,19 @@ global:
   scrape_timeout: 5s
   evaluation_interval: 5s
 
-{% if grains.get('monitored_services') %}
+{% if grains.get('monitored_hosts') %}
 scrape_configs:
   - job_name: hanadb
     static_configs:
       - targets:
-        {% for ip in grains['monitored_services'] %}
+        {% for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:8001" # 8801: hanadb exporter port
         {% endfor %}
 
   - job_name: node
     static_configs:
       - targets:
-        {% for ip in grains['monitored_services'] %}
+        {% for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9100" # 9100: node exporter port
         {% endfor %}
 
@@ -28,7 +28,7 @@ scrape_configs:
       insecure_skip_verify: true
     static_configs:
       - targets:
-        {% for ip in grains['monitored_services'] %}
+        {% for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9001" # 9001: hawk-apiserver exporter port
         {% endfor %}
 {% endif %}

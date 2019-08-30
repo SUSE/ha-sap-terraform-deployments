@@ -92,7 +92,7 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  monitored_services     = var.monitored_services
+  monitored_hosts     = var.monitored_hosts
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
 }

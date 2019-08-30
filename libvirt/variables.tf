@@ -117,7 +117,7 @@ variable "background" {
   default     = false
 }
 
-variable "monitored_services" {
+variable "monitored_hosts" {
   description = "IPs of hosts to be monitored"
   type        = list(string)
   default     = []
