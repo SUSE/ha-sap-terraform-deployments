@@ -197,7 +197,7 @@ authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(v
 host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
+monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 network_domain: "tf.local"
 EOF
 
