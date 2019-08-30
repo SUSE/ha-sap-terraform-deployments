@@ -64,7 +64,7 @@ module "hana_node" {
   reg_additional_modules = var.reg_additional_modules
   additional_repos       = var.additional_repos
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  ha_pkgs_from_factory   = var.ha_pkgs_from_factory
+  devel_mode             = var.devel_mode
   scenario_type          = var.scenario_type
   provisioner            = var.provisioner
   background             = var.background

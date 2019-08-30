@@ -1,4 +1,4 @@
-{% if grains.get('ha_pkgs_from_factory') %}
+{% if grains.get('devel_mode') %}
 # Reduce the ha-factory priority in order to install HA packages from there
 Change-ha-factory-priority:
   pkgrepo.managed:

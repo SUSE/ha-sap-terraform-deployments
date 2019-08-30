@@ -19,7 +19,7 @@ ha_sap_deployment_repo = ""
 
 # Whether or not to install HA/SAP packages from ha_sap_deployment_repo
 # Default is false
-ha_pkgs_from_factory = false
+devel_mode = false
 
 
 # Optional SUSE Customer Center Registration parameters

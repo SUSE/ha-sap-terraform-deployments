@@ -26,7 +26,7 @@ cluster:
   {% endif %}
   resource_agents:
     - SAPHanaSR
-  {% if grains.get('ha_pkgs_from_factory') %}
+  {% if grains.get('devel_mode') %}
   ha_exporter:
     exposition_port: 9001
   {% endif %}

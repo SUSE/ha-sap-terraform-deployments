@@ -36,7 +36,7 @@ variable "ha_sap_deployment_repo" {
   type        = "string"
 }
 
-variable "ha_pkgs_from_factory" {
+variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
   default     = false
 }
