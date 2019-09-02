@@ -301,7 +301,8 @@ resource "azurerm_network_security_group" "mysecgroup" {
   name                = "mysecgroup"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
-
+// Todo this security group need to be redifined by cluster roles instead of 1 generic
+// TODO make the monitoring rule more stricter for some instance later on
   security_rule {
     name                       = "OUTALL"
     priority                   = 100
@@ -379,7 +380,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     priority                   = 1005
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "9100"
     source_address_prefix      = "*"
@@ -390,7 +391,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     priority                   = 1006
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "8001"
     source_address_prefix      = "*"
@@ -401,12 +402,25 @@ resource "azurerm_network_security_group" "mysecgroup" {
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "9001"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+  security_rule {
+    name                       = "prometheus"
+    priority                   = 1008
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9090"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
 
   tags = {
     workspace = terraform.workspace

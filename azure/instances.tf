@@ -154,7 +154,7 @@ resource "azurerm_virtual_machine" "monitoring" {
     publisher = "SUSE"
     offer     = "SLES-SAP-BYOS"
     sku       = "15"
-    version   = "2019.03.30"
+    version   = "2019.07.17"
   }
 
   storage_data_disk {
