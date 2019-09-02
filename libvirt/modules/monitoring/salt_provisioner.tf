@@ -36,6 +36,7 @@ name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}
 timezone: ${var.timezone}
 network_domain: ${var.network_domain}
+devel_mode: ${var.devel_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}

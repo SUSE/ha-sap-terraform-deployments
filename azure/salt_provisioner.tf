@@ -110,6 +110,7 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: azure
 role: hana_node
+devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
@@ -130,29 +131,22 @@ cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
+monitoring_enabled: ${var.monitoring_enabled}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(
-    ", ",
-    formatlist(
-      "'%s': '%s'",
-      keys(var.reg_additional_modules),
-      values(var.reg_additional_modules),
-    ),
-)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
+    destination = "/tmp/grains"
+  }
 
-destination = "/tmp/grains"
-}
-
-provisioner "remote-exec" {
-  inline = [
-    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-    "return_code=$? && sleep 1 && exit $return_code",
-  ] # Workaround to let the process start in background properly
-}
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
 }
 
 
