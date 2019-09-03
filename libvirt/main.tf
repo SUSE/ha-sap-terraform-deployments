@@ -62,7 +62,6 @@ module "hana_node" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
-  additional_repos       = var.additional_repos
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   devel_mode             = var.devel_mode
   scenario_type          = var.scenario_type
@@ -88,7 +87,6 @@ module "monitoring" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
-  additional_repos       = var.additional_repos
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background

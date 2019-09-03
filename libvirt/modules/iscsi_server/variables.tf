@@ -34,11 +34,6 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-variable "additional_repos" {
-  description = "extra repositories in the form {label = url}"
-  default     = {}
-}
-
 variable "additional_packages" {
   description = "extra packages to install"
   default     = []

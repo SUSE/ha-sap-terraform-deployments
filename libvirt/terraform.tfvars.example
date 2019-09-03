@@ -4,7 +4,6 @@ base_image = "url-to-your-sles4sap-image"
 name_prefix = "your-name"
 iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
-additional_repos = {}
 
 # Shared storage type information
 shared_storage_type = "iscsi"

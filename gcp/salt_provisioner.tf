@@ -51,14 +51,6 @@ reg_additional_modules: {${join(
       keys(var.reg_additional_modules),
       values(var.reg_additional_modules),
     ),
-    )}}
-additional_repos: {${join(
-    ", ",
-    formatlist(
-      "'%s': '%s'",
-      keys(var.additional_repos),
-      values(var.additional_repos),
-    ),
 )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
@@ -156,14 +148,6 @@ reg_additional_modules: {${join(
       "'%s': '%s'",
       keys(var.reg_additional_modules),
       values(var.reg_additional_modules),
-    ),
-    )}}
-additional_repos: {${join(
-    ", ",
-    formatlist(
-      "'%s': '%s'",
-      keys(var.additional_repos),
-      values(var.additional_repos),
     ),
 )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
