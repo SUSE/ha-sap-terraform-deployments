@@ -3,7 +3,7 @@
 # Table of content:
 
 - [Requirements](#requirements)
-- [Howto](#howto)
+- [Howto](#quickstart)
 - [Monitoring](doc/monitoring.md)
 - [Design](#design)
 - [Specifications](#specifications)
@@ -19,90 +19,34 @@
 
 2. You need to fulfill the system requirements provided by SAP for each Application. At least 15 GB of free disk space and 512 MiB of free memory per node.
 
-# Howto
+# Quickstart
 
-To deploy the cluster only the parameters of three files should be changed:
+1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER``` 
 
-* [main.tf](main.tf)
+  For more doc, see: [workspace](../workspaces-workflow.md). 
+  If you don't create a new one, the string `default` will be used as workspace name. This is however highly discouraged since the workspace name is used as prefix for resources names, which can led to conflicts to unique names in a shared server ( when using a default name).
 
-(remove postfix `example` -> `main.tf`)
+2) Edit the `terraform.tfvars.example` file, following the Readme.md in the provider directory.
 
-Configure these files according the wanted cluster type.
+3) Adapt pillars:
 
-You can between following profiles:  performance optimized, cost optimized
+  Choose one profile, among the list. (in this example we choose `cost_optimized`)
 
+  * from root top-level dir:
+   `cp pillar_examples/libvirt/cost_optimized/*  salt/hana_node/files/pillar`
 
-___
-Performance optimized:
-   * [hana.sls](../../pillar_examples/libvirt/performance_optimized/hana.sls)
-   * [cluster.sls](../../pillar_examples/libvirt/performance_optimized/cluster.sls).
+For more informations have a look at [pillar-doc](../pillar_examples/README.md)
 
-___
-
-Cost optimized:
-
-   * [hana.sls](../../pillar_examples/libvirt/cost_optimized/hana.sls)
-   * [cluster.sls](../../pillar_examples/libvirt/cost_optimized/cluster.sls).
-
-
-Find more information about the hana and cluster formulas in (check the pillar.example files):
-- https://github.com/SUSE/saphanabootstrap-formula
-- https://github.com/SUSE/habootstrap-formula
-
-The easiest way to customize the variables is using a *terraform.tfvars* file.
-Here an example:
-
-```bash
-qemu_uri = "qemu:///system"
-sap_inst_media = "url-to-your-nfs-share"
-base_image = "url-to-your-sles4sap-image"
-name_prefix = "your-name"
-iprange = "192.168.XXX.Y/24"
-host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
-additional_repos = {}
-
-# Shared storage type information
-#shared_storage_type = "shared-disk" # To use a KVM raw file shared disk
-shared_storage_type = "iscsi"
-iscsi_srv_ip = "192.168.XXX.Y+2"
-iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
-
-# Monitoring system data
-monitoring_srv_ip = "192.168.XXX.Y+3"
-
-
-# Repository url used to install HA/SAP deployment packages"
-# The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
-# Contains the salt formulas rpm packages.
-ha_sap_deployment_repo = ""
-
-# Optional SUSE Customer Center Registration parameters
-#reg_code = "<<REG_CODE>>"
-#reg_email = "<<your email>>"
-#reg_additional_modules = {
-#    "sle-module-adv-systems-management/12/x86_64" = ""
-#    "sle-module-containers/12/x86_64" = ""
-#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-#}
-# To disable the provisioning process
-#provisioner = ""
-```
-
-After changing the values, run the terraform commands:
+4) Deploy with:
 
 ```bash
 terraform workspace new myworkspace # The workspace name will be used to create the name of the created resources as prefix (`default` by default)
 terraform init
 terraform apply
+terraform destroy
 ```
 
-####  Destroying the cluster
 
-The command `terraform destroy` deletes all resources that Terraform has
-
-
-Have a look at  [specifications](#specifications) for more details.
 
 
 # Design
