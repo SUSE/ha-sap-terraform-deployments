@@ -40,6 +40,7 @@ hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.ind
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
+devel_mode: ${var.devel_mode}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
 additional_repos: {${join(", ",formatlist("'%s': '%s'",keys(var.additional_repos),values(var.additional_repos),),)}}
