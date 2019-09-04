@@ -82,12 +82,6 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-variable "additional_repos" {
-  description = "Map of the repositories to add to the images. Repo name = url"
-  type        = map(string)
-  default     = {}
-}
-
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}

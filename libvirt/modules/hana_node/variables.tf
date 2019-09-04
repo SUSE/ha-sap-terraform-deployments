@@ -25,11 +25,6 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-variable "additional_repos" {
-  description = "extra repositories used for installation {label = url}"
-  default     = {}
-}
-
 // hana
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"

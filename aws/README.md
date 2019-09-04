@@ -154,7 +154,6 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 
  For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
-* **additional_repos**: Additional repos to add to the guest machines.
 * **additional_packages**: Additional packages to add to the guest machines.
 * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 

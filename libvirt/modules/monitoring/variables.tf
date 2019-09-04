@@ -54,11 +54,6 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "additional_repos" {
-  description = "extra repositories used for installation {label = url}"
-  default     = {}
-}
-
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = "string"

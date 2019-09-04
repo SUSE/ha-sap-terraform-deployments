@@ -43,7 +43,6 @@ reg_code: ${var.reg_code}
 devel_mode: ${var.devel_mode}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
-additional_repos: {${join(", ",formatlist("'%s': '%s'",keys(var.additional_repos),values(var.additional_repos),),)}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
