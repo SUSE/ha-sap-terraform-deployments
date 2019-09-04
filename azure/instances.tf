@@ -3,11 +3,10 @@
 # Availability set for the VMs
 
 resource "azurerm_availability_set" "myas" {
-  name                        = "myas"
-  location                    = var.az_region
-  resource_group_name         = azurerm_resource_group.myrg.name
-  platform_fault_domain_count = 2
-  managed                     = "true"
+  name                = "myas"
+  location            = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
+  managed             = "true"
 
   tags = {
     workspace = terraform.workspace
@@ -33,7 +32,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   storage_image_reference {
     id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_publisher
+    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_publisher
     offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_offer
     sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_sku
     version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_version
@@ -135,9 +134,7 @@ resource "azurerm_virtual_machine" "clusternodes" {
 resource "azurerm_virtual_machine" "monitoring" {
   name     = "${terraform.workspace}-monitoring"
   location = var.az_region
-  // TODO CHECK THIS group
   resource_group_name = azurerm_resource_group.myrg.name
-  // 
   network_interface_ids = [azurerm_network_interface.monitoring.id]
   availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
@@ -148,7 +145,7 @@ resource "azurerm_virtual_machine" "monitoring" {
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
-  // TODO add variable later
+  
   storage_image_reference {
     id        = azurerm_image.monitoring.0.id
     publisher = "SUSE"

@@ -67,8 +67,6 @@ resource "azurerm_lb_probe" "mylb" {
 }
 
 # Load balancing rules for HANA 2.0
-// TODO ALL THIS RULES NEED A PROPER NAME. Port number isn't human friendly
-// use services name
 resource "azurerm_lb_rule" "lb_30313" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
@@ -140,9 +138,7 @@ resource "azurerm_lb_rule" "lb_30342" {
 }
 
 
-# TODO check if this is needed
 # Load balancing rules for HANA 1.0
-
 resource "azurerm_lb_rule" "lb_30315" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
@@ -304,8 +300,6 @@ resource "azurerm_network_security_group" "mysecgroup" {
   name                = "mysecgroup"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
-  // Todo this security group need to be redifined by cluster roles instead of 1 generic
-  // TODO make the monitoring rule more stricter for some instance later on
   security_rule {
     name                       = "OUTALL"
     priority                   = 100

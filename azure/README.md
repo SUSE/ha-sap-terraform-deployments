@@ -12,7 +12,7 @@
 * [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
 
 
-### 2) Configuration of terraform:
+### 2) Configuration of terraform
 
 1) Rename terraform.tfvars `mv terraform.tfvars.example terraform.tfvars`
 
@@ -21,7 +21,7 @@
 ```
 mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
-The key files need to be named as you defined it in `terraform.tfvars` file.
+The key files must be named as you define them in the `terraform.tfvars` file
 
 After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
 
@@ -136,6 +136,7 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **az_region**: Azure region where to deploy the configuration.
+* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)

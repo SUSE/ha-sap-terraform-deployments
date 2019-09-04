@@ -29,7 +29,7 @@ variable "hana_public_version" {
   default = "2019.03.06"
 }
 
-variable "iscsi_publisher" {
+variable "iscsi_public_publisher" {
   type    = string
   default = "SUSE"
 }
@@ -50,6 +50,11 @@ variable "iscsi_public_version" {
 }
 
 variable "iscsi_srv_uri" {
+  type    = string
+  default = ""
+}
+
+variable "monitoring_uri" {
   type    = string
   default = ""
 }
@@ -90,9 +95,8 @@ resource "azurerm_image" "iscsi_srv" {
   }
 }
 
-// TODO: this is an hack: replace iscsi name later
 resource "azurerm_image" "monitoring" {
-  count               = var.iscsi_srv_uri != "" ? 1 : 0
+  count               = var.monitoring_uri != "" ? 1 : 0
   name                = "monitoringSrvImg"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
@@ -100,7 +104,7 @@ resource "azurerm_image" "monitoring" {
   os_disk {
     os_type  = "Linux"
     os_state = "Generalized"
-    blob_uri = var.iscsi_srv_uri
+    blob_uri = var.monitoring_uri
     size_gb  = "32"
   }
 
