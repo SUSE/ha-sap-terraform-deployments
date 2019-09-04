@@ -133,10 +133,10 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
 
 resource "azurerm_virtual_machine" "monitoring" {
-  name                  = "${terraform.workspace}-monitoring"
-  location              = var.az_region
+  name     = "${terraform.workspace}-monitoring"
+  location = var.az_region
   // TODO CHECK THIS group
-  resource_group_name   = azurerm_resource_group.myrg.name
+  resource_group_name = azurerm_resource_group.myrg.name
   // 
   network_interface_ids = [azurerm_network_interface.monitoring.id]
   availability_set_id   = azurerm_availability_set.myas.id
@@ -148,13 +148,13 @@ resource "azurerm_virtual_machine" "monitoring" {
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
-   // TODO add variable later
+  // TODO add variable later
   storage_image_reference {
     id        = azurerm_image.monitoring.0.id
     publisher = "SUSE"
     offer     = "SLES-SAP-BYOS"
-    sku       = "12-sp4"
-    version   = "2019.03.06"
+    sku       = "15"
+    version   = "2019.03.30"
   }
 
   storage_data_disk {

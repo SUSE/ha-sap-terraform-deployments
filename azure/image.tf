@@ -10,43 +10,43 @@ variable "sles4sap_uri" {
 }
 
 variable "hana_public_publisher" {
-  type = string
+  type    = string
   default = "SUSE"
 }
 
 variable "hana_public_offer" {
-  type = string
-   default = "SLES-SAP-BYOS"
+  type    = string
+  default = "SLES-SAP-BYOS"
 }
 
 variable "hana_public_sku" {
-  type = string
+  type    = string
   default = "12-sp4"
 }
 
 variable "hana_public_version" {
- type = string
- default =  "2019.03.06"
+  type    = string
+  default = "2019.03.06"
 }
 
 variable "iscsi_publisher" {
-  type = string
+  type    = string
   default = "SUSE"
 }
 
 variable "iscsi_public_offer" {
-  type = string
-   default = "SLES-SAP-BYOS"
+  type    = string
+  default = "SLES-SAP-BYOS"
 }
 
 variable "iscsi_public_sku" {
-  type = string
+  type    = string
   default = "12-sp4"
 }
 
 variable "iscsi_public_version" {
- type = string
- default =  "2019.03.06"
+  type    = string
+  default = "2019.03.06"
 }
 
 variable "iscsi_srv_uri" {

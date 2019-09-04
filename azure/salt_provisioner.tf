@@ -44,14 +44,7 @@ iscsidev: ${var.iscsidev}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(
-    ", ",
-    formatlist(
-      "'%s': '%s'",
-      keys(var.reg_additional_modules),
-      values(var.reg_additional_modules),
-    ),
-)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 
@@ -75,15 +68,15 @@ partitions:
 EOF
 
 
-destination = "/tmp/grains"
-}
+    destination = "/tmp/grains"
+  }
 
-provisioner "remote-exec" {
-  inline = [
-    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-    "return_code=$? && sleep 1 && exit $return_code",
-  ] # Workaround to let the process start in background properly
-}
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
 }
 
 resource "null_resource" "hana_node_provisioner" {
@@ -188,40 +181,34 @@ resource "null_resource" "monitoring_provisioner" {
     content     = data.template_file.salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
-
-// TODO: add or don't add this (from libvirt)
-// network_domain: ${var.network_domain}
-
-
   provisioner "file" {
     content = <<EOF
 provider: azure
 role: monitoring
-name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}
+name_prefix: ${terraform.workspace}-monitoring
+hostname: ${terraform.workspace}-monitoring
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
-additional_repos: {${join(", ",formatlist("'%s': '%s'",keys(var.additional_repos),values(var.additional_repos),),)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
+additional_repos: {${join(", ", formatlist("'%s': '%s'", keys(var.additional_repos), values(var.additional_repos), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
-role: monitoring
-provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitored_services: [${join(", ", formatlist("'%s'", var.monitored_services))}]
+network_domain: "tf.local"
 EOF
 
-destination = "/tmp/grains"
-}
+    destination = "/tmp/grains"
+  }
 
-provisioner "remote-exec" {
-  inline = [
-    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-    "return_code=$? && sleep 1 && exit $return_code",
-  ] # Workaround to let the process start in background properly
-}
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
 
 }
