@@ -9,15 +9,44 @@ variable "sles4sap_uri" {
   default = ""
 }
 
-variable "sles4sap_public" {
-  type = map(string)
+variable "hana_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
 
-  default = {
-    "publisher" = "SUSE"
-    "offer"     = "SLES-SAP-BYOS"
-    "sku"       = "12-sp4"
-    "version"   = "2019.03.06"
-  }
+variable "hana_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "hana_public_sku" {
+  type    = string
+  default = "12-sp4"
+}
+
+variable "hana_public_version" {
+  type    = string
+  default = "2019.03.06"
+}
+
+variable "iscsi_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "iscsi_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "iscsi_public_sku" {
+  type    = string
+  default = "12-sp4"
+}
+
+variable "iscsi_public_version" {
+  type    = string
+  default = "2019.03.06"
 }
 
 variable "iscsi_srv_uri" {
@@ -25,15 +54,9 @@ variable "iscsi_srv_uri" {
   default = ""
 }
 
-variable "iscsi_srv_public" {
-  type = map(string)
-
-  default = {
-    "publisher" = "SUSE"
-    "offer"     = "SLES-SAP-BYOS"
-    "sku"       = "15"
-    "version"   = "2018.08.20"
-  }
+variable "monitoring_uri" {
+  type    = string
+  default = ""
 }
 
 resource "azurerm_image" "sles4sap" {
@@ -64,6 +87,24 @@ resource "azurerm_image" "iscsi_srv" {
     os_type  = "Linux"
     os_state = "Generalized"
     blob_uri = var.iscsi_srv_uri
+    size_gb  = "32"
+  }
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+resource "azurerm_image" "monitoring" {
+  count               = var.monitoring_uri != "" ? 1 : 0
+  name                = "monitoringSrvImg"
+  location            = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
+
+  os_disk {
+    os_type  = "Linux"
+    os_state = "Generalized"
+    blob_uri = var.monitoring_uri
     size_gb  = "32"
   }
 

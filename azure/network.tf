@@ -67,7 +67,6 @@ resource "azurerm_lb_probe" "mylb" {
 }
 
 # Load balancing rules for HANA 2.0
-
 resource "azurerm_lb_rule" "lb_30313" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
@@ -138,8 +137,8 @@ resource "azurerm_lb_rule" "lb_30342" {
   enable_floating_ip             = "true"
 }
 
-# Load balancing rules for HANA 1.0
 
+# Load balancing rules for HANA 1.0
 resource "azurerm_lb_rule" "lb_30315" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
@@ -169,6 +168,42 @@ resource "azurerm_lb_rule" "lb_30317" {
 }
 
 # NICs & Public IP resources
+
+
+resource "azurerm_network_interface" "monitoring" {
+  name                      = "monitoring-nic"
+  location                  = var.az_region
+  resource_group_name       = azurerm_resource_group.myrg.name
+  network_security_group_id = azurerm_network_security_group.mysecgroup.id
+
+  ip_configuration {
+    name                          = "monitoring-nic"
+    subnet_id                     = azurerm_subnet.mysubnet.id
+    private_ip_address_allocation = "static"
+    private_ip_address            = var.monitoring_srv_ip
+    public_ip_address_id          = azurerm_public_ip.monitoring.id
+  }
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+
+resource "azurerm_public_ip" "monitoring" {
+  name                    = "monitoring-ip"
+  location                = var.az_region
+  resource_group_name     = azurerm_resource_group.myrg.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+
+
 
 resource "azurerm_network_interface" "iscsisrv" {
   name                      = "iscsisrv-nic"
@@ -265,7 +300,6 @@ resource "azurerm_network_security_group" "mysecgroup" {
   name                = "mysecgroup"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
-
   security_rule {
     name                       = "OUTALL"
     priority                   = 100
@@ -337,9 +371,55 @@ resource "azurerm_network_security_group" "mysecgroup" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  // monitoring rules
+  security_rule {
+    name                       = "nodeExporter"
+    priority                   = 1005
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9100"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "hanadbExporter"
+    priority                   = 1006
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "8001"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "hawkExporter"
+    priority                   = 1007
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9001"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "prometheus"
+    priority                   = 1008
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9090"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
 
   tags = {
     workspace = terraform.workspace
   }
 }
-

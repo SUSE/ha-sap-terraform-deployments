@@ -1,5 +1,73 @@
-
 # Azure Public Cloud deployment with terraform and Salt
+
+- [quickstart](#quickstart)
+- [highlevel description](#highlevel-description)
+- [advanced usage](#advanced-usage)
+- [specification](#specification)
+
+# Quickstart
+
+## 1) Install the azure client 
+
+* [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
+
+
+### 2) Configuration of terraform
+
+1) Rename terraform.tfvars `mv terraform.tfvars.example terraform.tfvars`
+
+2) Generate private and public keys for the cluster nodes with:
+
+```
+mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+```
+The key files must be named as you define them in the `terraform.tfvars` file
+
+After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
+
+### 3) Configure Terraform Access to Azure
+
+Setup Azure account:
+
+* Login with  `az login`.
+
+* Check that the account has subscriptions with `az account list`. It should show you an entry for the tenant, and at least an entry for a subscription.
+
+Then set the default subscription with the command `az account set`, for example, we are using the **"SUSE R&D General"** subscription, so we define that as the default subscription with:
+
+```
+az account set --subscription "SUSE R&D General"
+```
+You should be able to deploy now.
+
+
+To verify which subscription is the active one, use the command `az account show`.
+
+If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
+
+### 4) Deploy
+
+```
+terraform init
+terraform workspace new my-execution # optional
+terrafomr workspace select my-execution # optional
+terraform plan
+terraform apply
+```
+
+Connect using `ssh` as the user set as your `admin_user` parameter, for example:
+
+```
+ssh admin_user@18.196.143.128 -i private_key_location
+```
+
+Destroy the created infrastructure with:
+
+```
+terraform destroy
+```
+
+# Highlevel description
 
 The terraform configuration files in this directory can be used to create the infrastructure required to install a SAP HanaSR cluster on Suse Linux Enterprise Server for SAP Applications in **Azure**.
 
@@ -21,9 +89,7 @@ Once the infrastructure is created by Terraform, the servers are provisioned wit
  The cluster and HANA installation is done using Salt Formulas.
  To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
-
-# Please enter the commit message for your changes. Lines starting
-## Relevant files
+## Specification
 
 These are the relevant files and what each provides:
 
@@ -49,19 +115,6 @@ These are the relevant files and what each provides:
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
-
-## How to use
-
-To use, copy the `*.tf`, `*.tpl`  and `terraform.tfvars.example` files into your working directory and rename `terraform.tfvars.example` to `terraform.tfvars`.
-
-Then, from your working directory, generate private and public keys for the cluster nodes with the following commands:
-
-```
-mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
-```
-The key files need to be named as you defined it in `terraform.tfvars` file.
-
-After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
 
 ### Variables
 
@@ -120,43 +173,11 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
 These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
-### QA usage
-You may have noticed the variable *qa_mode*, this project is also used for QA testing.
+# Advanced usage
 
-**qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
+## Terraform Azure CI 
 
-### Deployment execution
-And then, after customizing the configuration files, run from your working directory the following commands:
-
-```
-terraform init
-terraform workspace new my-execution # optional
-terrafomr workspace select my-execution # optional
-terraform plan
-terraform apply
-```
-
-After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user set as your `admin_user` parameter, for example:
-
-```
-ssh admin_user@18.196.143.128 -i private_key_location
-```
-
-Destroy the created infrastructure with:
-
-```
-terraform destroy
-```
-
-Check outputs with:
-
-```
-terraform output
-```
-
-## Configure Terraform Access to Azure
-
-To setup access to Azure via Terraform, four parameters are required:
+To setup the authentification for CI purposes you will need 4 variables:
 
 * Subscription ID
 * Tenant ID
@@ -193,13 +214,14 @@ More info in the [Terraform Install Configure document](https://docs.microsoft.c
 
 Once all four required parameters are known, there are several ways to configure access for terraform:
 
-### In provider definition
+* In provider definition
 
 Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
 
-### Via Environment Variables
+* Via Environment Variables
 
 Set the following environment variables before running terraform:
+To verify which subscription is the active one, use the command `az account show`.
 
 ```
 export ARM_SUBSCRIPTION_ID=your_subscription_id
@@ -245,19 +267,6 @@ az vm image list --output table --publisher SUSE --all
 
 If using a public image, skip to the [how to use section](#how-to-use).
 
-### Setup Azure account
-
-First, an Azure account with an active subscription is required.
-
-Log in with `az login` and check that the account has subscriptions with `az account list`. It should show you an entry for the tenant, and at least an entry for a subscription.
-
-Then set the default subscription with the command `az account set`, for example, we are using the **"SUSE R&D General"** subscription, so we define that as the default subscription with:
-
-```
-az account set --subscription "SUSE R&D General"
-```
-
-To verify which subscription is the active one, use the command `az account show`.
 
 ### Upload custom image
 
@@ -360,13 +369,5 @@ az storage blob delete --name SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vh
 
 Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from storage container `MyStorageContainer`.
 
-## To Do
-
-* Adapt the logic units to work as modules instead of plain terraform files
-
 ## Extra info
-
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
-
-Also check the documentation in https://www.terraform.io/docs.
-

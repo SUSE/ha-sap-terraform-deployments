@@ -3,11 +3,10 @@
 # Availability set for the VMs
 
 resource "azurerm_availability_set" "myas" {
-  name                        = "myas"
-  location                    = var.az_region
-  resource_group_name         = azurerm_resource_group.myrg.name
-  platform_fault_domain_count = 2
-  managed                     = "true"
+  name                = "myas"
+  location            = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
+  managed             = "true"
 
   tags = {
     workspace = terraform.workspace
@@ -33,10 +32,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   storage_image_reference {
     id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["publisher"]
-    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["offer"]
-    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["sku"]
-    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_srv_public["version"]
+    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_publisher
+    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_offer
+    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_sku
+    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_version
   }
 
   storage_data_disk {
@@ -92,10 +91,10 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
   storage_image_reference {
     id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
-    publisher = var.sles4sap_uri != "" ? "" : var.sles4sap_public["publisher"]
-    offer     = var.sles4sap_uri != "" ? "" : var.sles4sap_public["offer"]
-    sku       = var.sles4sap_uri != "" ? "" : var.sles4sap_public["sku"]
-    version   = var.sles4sap_uri != "" ? "" : var.sles4sap_public["version"]
+    publisher = var.sles4sap_uri != "" ? "" : var.hana_public_publisher
+    offer     = var.sles4sap_uri != "" ? "" : var.hana_public_offer
+    sku       = var.sles4sap_uri != "" ? "" : var.hana_public_sku
+    version   = var.sles4sap_uri != "" ? "" : var.hana_public_version
   }
 
   storage_data_disk {
@@ -130,3 +129,60 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 }
 
+
+
+resource "azurerm_virtual_machine" "monitoring" {
+  name     = "${terraform.workspace}-monitoring"
+  location = var.az_region
+  resource_group_name = azurerm_resource_group.myrg.name
+  network_interface_ids = [azurerm_network_interface.monitoring.id]
+  availability_set_id   = azurerm_availability_set.myas.id
+  vm_size               = "Standard_D2s_v3"
+
+  storage_os_disk {
+    name              = "monitoringOsDisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+  }
+  
+  storage_image_reference {
+    id        = azurerm_image.monitoring.0.id
+    publisher = "SUSE"
+    offer     = "SLES-SAP-BYOS"
+    sku       = "15"
+    version   = "2019.07.17"
+  }
+
+  storage_data_disk {
+    name              = "monitoringDevices"
+    caching           = "ReadWrite"
+    create_option     = "Empty"
+    disk_size_gb      = "10"
+    lun               = "0"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "monitoring"
+    admin_username = var.admin_user
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+
+    ssh_keys {
+      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
+      key_data = file(var.public_key_location)
+    }
+  }
+
+  boot_diagnostics {
+    enabled     = "true"
+    storage_uri = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  }
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}

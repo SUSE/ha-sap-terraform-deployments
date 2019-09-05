@@ -10,7 +10,7 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:8001" # 8801: hanadb exporter port
+        - "{{ ip }}:8001" # 8001: hanadb exporter port
         {% endfor %}
 
   - job_name: node
