@@ -132,9 +132,9 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
 
 resource "azurerm_virtual_machine" "monitoring" {
-  name     = "${terraform.workspace}-monitoring"
-  location = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
+  name                  = "${terraform.workspace}-monitoring"
+  location              = var.az_region
+  resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.monitoring.id]
   availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
@@ -145,7 +145,7 @@ resource "azurerm_virtual_machine" "monitoring" {
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
-  
+
   storage_image_reference {
     id        = azurerm_image.monitoring.0.id
     publisher = "SUSE"
