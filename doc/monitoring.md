@@ -1,8 +1,8 @@
-# Monitoring deploymenet for SHAP:
+# Monitoring
 
 # Highlevel description:
 
-The monitoring feature will deploy and install the required tools (grafana, prometheus) to monitor your SHAP stack (SAP HANA, HA cluster, etc).
+The monitoring feature will deploy and install the required tools (grafana, prometheus) to monitor your HA and SAP stack (SAP HANA, HA cluster, etc).
 Additionally with different variables you can install and control the various metrics exporters.
 
 The monitoring feature will need an extra instance, that will host grafana/prometheus server for the dashboard visualisation.
@@ -13,28 +13,35 @@ In order to enable disable the monitoring feature, you need to:
 
 * libvirt: remove or add the `monitoring` module in your main.tf
 
-* azure: for azure cloud we deploy by default the monitoring solution. this need to be refactored and unified later with module similars to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
+* azure: for azure cloud we deploy by default the monitoring solution. 
+
+`NOTE`: In future (azure and other cloud provider) they will be refactored and unified later with module similar to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
 
 
 # Variable specification:
 
 * mandatory:
 
-`monitored_hosts` this is a list containing the IP addresses of hosts to be monitored. Under the hood this var tell prometheus the IP where to scrape.
-
-See tfvars.example
+`monitored_hosts` Default empty. A list containing the IP addresses of hosts to be monitored. Under the hood list var tell prometheus the IP where to scrape.
 ```
 monitored_hosts = ["192.168.110.X", "192.168.110.Y"]
 ```
 
+* optional:
 
-If you want to disable monitoring for hosts, use:
-`monitoring_enabled: false`
+`monitoring_enabled` default True. This variable will install all different supported exporters to the hosts. 
+See the list of supported exporter for more details.
 
+# Hosts Exporters
 
-# Enable the SAP HANA database exporters
+Currently supported exporters:
 
-The SAP HANA database data is exported using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
+- SAP-HANA database exporter
+- HA Cluster exporter (hawk-apiserver)
+
+### SAP HANA database exporter
+
+The SAP HANA database data is exporter using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
 In order to enable the exporters for each HANA database the `hana` pillar entries must be modified.
 
 Here an example:
@@ -55,7 +62,8 @@ hana:
 
 **Attention**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
 
-# Enable the HA exporter
+
+### HA Cluster exporter 
 
 The HA Prometheus metrics are exported using the hawk-apiserver [hawk-apiserver](https://github.com/ClusterLabs/hawk-apiserver).
 In order to enable the exporter for each cluster node `cluster` pillar entries must be modified.
@@ -81,7 +89,3 @@ cluster:
   ha_exporter:
     exposition_port: 9001
 ```
-
-# Examples:
-
-For an example look at [main.tf](../main.tf) file and `monitoring` module.
