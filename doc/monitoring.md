@@ -1,10 +1,22 @@
 # Monitoring deploymenet for SHAP:
 
-The monitoring module will deploy and install the required tools (grafana, prometheus) to monitor your SHAP stack (SAP HANA, HA cluster, etc).
+# Highlevel description:
 
-The monitoring module will need an extra VM. The packages are the same from Uyuni/Suse manager, so we use the same pkg repository.
+The monitoring feature will deploy and install the required tools (grafana, prometheus) to monitor your SHAP stack (SAP HANA, HA cluster, etc).
+Additionally with different variables you can install and control the various metrics exporters.
 
-The terraform module follows the same conventions as other modules
+The monitoring feature will need an extra instance, that will host grafana/prometheus server for the dashboard visualisation.
+
+# How to use the monitoring solution:
+
+In order to enable disable the monitoring feature, you need to:
+
+* libvirt: remove or add the `monitoring` module in your main.tf
+
+* azure: for azure cloud we deploy by default the monitoring solution. this need to be refactored and unified later with module similars to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
+
+
+# Variable specification:
 
 * mandatory:
 
