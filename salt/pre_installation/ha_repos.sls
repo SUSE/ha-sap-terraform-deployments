@@ -20,3 +20,9 @@ allow_all_vendor_changes:
     - name: /etc/zypp/zypp.conf
     - text: solver.allowVendorChange = true
 {% endif %}
+
+refresh_repos:
+  cmd.run:
+    - name: zypper --non-interactive --gpg-auto-import-keys refresh
+    - requre:
+      - pkgrepo: ha-factory-repo
