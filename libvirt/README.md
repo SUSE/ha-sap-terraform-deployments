@@ -4,7 +4,7 @@
 
 - [Requirements](#requirements)
 - [Howto](#quickstart)
-- [Monitoring](doc/monitoring.md)
+- [Monitoring](../doc/monitoring.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
@@ -23,7 +23,7 @@
 
 1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER``` 
 
-  For more doc, see: [workspace](../workspaces-workflow.md). 
+  For more doc, see: [workspace](../doc/workspaces-workflow.md). 
   If you don't create a new one, the string `default` will be used as workspace name. This is however highly discouraged since the workspace name is used as prefix for resources names, which can led to conflicts to unique names in a shared server ( when using a default name).
 
 2) Edit the `terraform.tfvars.example` file, following the Readme.md in the provider directory.

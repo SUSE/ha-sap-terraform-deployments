@@ -13,6 +13,13 @@ ___
 - [aws](aws)
 
 ___
+
+## Major features:
+
+- HA Clusters and HANA deployment
+- [Monitoring of cluster](doc/monitoring.md)
+
+___
 ## Rationale:
 
 This project is organized in folders containing the Terraform configuration files per Public or Private Cloud providers, each also containing documentation relevant to the use of the configuration files and to the cloud provider itself.
