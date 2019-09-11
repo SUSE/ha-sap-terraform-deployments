@@ -3,10 +3,11 @@
 # Availability set for the VMs
 
 resource "azurerm_availability_set" "myas" {
-  name                = "myas"
-  location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
-  managed             = "true"
+  name                        = "myas"
+  location                    = var.az_region
+  resource_group_name         = azurerm_resource_group.myrg.name
+  managed                     = "true"
+  platform_fault_domain_count = 2
 
   tags = {
     workspace = terraform.workspace
