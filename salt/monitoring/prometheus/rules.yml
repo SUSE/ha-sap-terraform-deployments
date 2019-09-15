@@ -1,13 +1,9 @@
 groups:
-
-# this is only a boostrap/initial alert to setup things
-- name: hana-node01-network-latency
+- name: primary-resource-saphana-down
   rules:
-  - alert: HighRequestLatency
-    expr: job:request_latency_seconds:mean5m{job=hanadb"} > 0.5
-    for: 10m
+  - alert: SAPHANAMasterResourcesDown
+    expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="master"})
     labels:
       severity: page
     annotations:
-      summary: High request latency
-
+      summary: Primary SAP-HANA resource down
