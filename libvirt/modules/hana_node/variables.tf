@@ -170,3 +170,14 @@ variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
 }
+
+variable "qa_mode" {
+  description = "define qa mode (Disable extra packages outside images)"
+  default     = false
+}
+
+variable "hwcct" {
+  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}

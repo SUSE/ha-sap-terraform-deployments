@@ -54,6 +54,8 @@ hana_disk_device: /dev/vdb
 shared_storage_type: ${var.shared_storage_type}
 sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+qa_mode: ${var.qa_mode}
+hwcct: ${var.hwcct}
 hana_fstype: ${var.hana_fstype}
 hana_inst_folder: ${var.hana_inst_folder}
 sap_inst_media: ${var.sap_inst_media}

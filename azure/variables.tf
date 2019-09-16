@@ -149,3 +149,8 @@ variable "qa_mode" {
   default     = false
 }
 
+variable "hwcct" {
+  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}

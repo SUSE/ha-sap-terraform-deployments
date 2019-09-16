@@ -19,3 +19,8 @@ sh /root/salt/deployment.sh || exit 1
 if grep -q 'role: hana_node' /etc/salt/grains; then
   sh /root/salt/formula.sh || exit 1
 fi
+
+# QA additional tasks
+if grep -q 'qa_mode: true' /etc/salt/grains && grep -q 'role: hana_node' /etc/salt/grains; then
+  sh /root/salt/qa_mode/run_qa_mode.sh || exit 1
+fi

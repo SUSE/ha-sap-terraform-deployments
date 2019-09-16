@@ -1,0 +1,16 @@
+{% set data = pillar.cluster.configure.template.parameters %}
+{% set sid = data.sid.upper() %}
+{% set instance = '{:0>2}'.format(data.instance) %}
+
+#!/bin/sh
+
+# Extract and execute HWCCT
+
+typeset -r HWCCTCONFIG=/root/salt/qa_mode/files/hwcct/hwcct_config.json
+
+# Extracting HWCCT tool
+/usr/sap/{{ sid }}/HDB{{ instance }}/exe/SAPCAR -xf /root/sap_inst/DATA_UNITS/SAP_HANA_HWCCT_LINUX_X86_64/HWCCT.SAR
+
+# Executing HWCCT tool
+cd hardwareConfigurationCheckTool
+source ./envprofile.sh && ./hwcct -f ${HWCCTCONFIG}

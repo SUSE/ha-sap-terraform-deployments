@@ -128,6 +128,7 @@ init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
+hwcct: ${var.hwcct}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}

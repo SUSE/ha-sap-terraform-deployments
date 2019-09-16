@@ -1,0 +1,25 @@
+{
+"use_hdb":false,
+"blades":["localhost"],
+"tests": [{
+            "package": "FilesystemTest",
+            "test_timeout": 0,
+            "id": 1,
+            "config": {
+                       "mount":{"{{ grains['host'] }}":["/hana"]},
+                       "duration":"short"
+                      },
+            "class": "DataVolumeIO"
+        },
+        {
+            "package": "FilesystemTest",
+            "test_timeout": 0,
+            "id": 2,
+            "config": {
+                       "mount":{"{{ grains['host'] }}":["/hana"]},
+                       "duration":"short"
+                      },
+            "class": "LogVolumeIO"
+        }],
+"output_dir":"/root/hwcct_out"
+}

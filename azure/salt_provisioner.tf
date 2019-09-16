@@ -130,6 +130,7 @@ init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
+hwcct: ${var.hwcct}
 reg_code: ${var.reg_code}
 monitoring_enabled: ${var.monitoring_enabled}
 reg_email: ${var.reg_email}

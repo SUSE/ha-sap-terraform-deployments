@@ -157,8 +157,9 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **additional_packages**: Additional packages to add to the guest machines.
 * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
- Specific QA variable
+ Specific QA variables
 * **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
+* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
 
 
 ### Relevant Details
