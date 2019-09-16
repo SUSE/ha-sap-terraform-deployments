@@ -36,6 +36,6 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:9001" # 9001: hawk-apiserver exporter port
+        - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
         {% endfor %}
 {% endif %}
