@@ -100,10 +100,11 @@ resource "azurerm_virtual_machine" "clusternodes" {
 
   storage_data_disk {
     name              = "node-data-disk-${count.index}"
-    managed_disk_type = "Standard_LRS"
+    managed_disk_type = "${var.hana_data_disk_type}"
     create_option     = "Empty"
     lun               = 0
     disk_size_gb      = "60"
+    caching           = "${var.hana_data_disk_caching}"
   }
 
   os_profile {
