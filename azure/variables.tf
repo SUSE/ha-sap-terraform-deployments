@@ -20,6 +20,16 @@ variable "ninstances" {
   default = "2"
 }
 
+variable "hana_data_disk_type" {
+  type    = string
+  default = "Standard_LRS"
+}
+
+variable "hana_data_disk_caching" {
+  type    = string
+  default = "ReadWrite"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string

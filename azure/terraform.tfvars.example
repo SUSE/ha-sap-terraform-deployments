@@ -1,6 +1,12 @@
 # Instance type to use for the cluster nodes
 instancetype = "Standard_E4s_v3"
 
+# Disk type for HANA
+hana_data_disk_type = "StandardSSD_LRS"
+
+# Caching used for HANA disk
+hana_data_disk_caching = "ReadWrite"
+
 # Number of nodes in the cluster
 ninstances = "2"
 
