@@ -122,6 +122,7 @@ These are the relevant files and what each provides:
 In [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
 * **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
+* **hana_data_disk_type**: disk type to use for HANA (gp2 by default).
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **aws_region**: AWS region where to deploy the configuration.
 * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
