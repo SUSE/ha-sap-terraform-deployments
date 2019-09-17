@@ -44,7 +44,7 @@ resource "aws_instance" "clusternodes" {
   }
 
   ebs_block_device {
-    volume_type = "gp2"
+    volume_type = "${var.hana_data_disk_type}"
     volume_size = "60"
     device_name = "/dev/xvdd"
   }

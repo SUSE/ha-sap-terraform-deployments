@@ -21,6 +21,11 @@ variable "machine_type" {
   default = "n1-highmem-8"
 }
 
+variable "hana_data_disk_type" {
+  type    = string
+  default = "pd-standard"
+}
+
 variable "iscsi_server_boot_image" {
   type    = string
   default = "suse-byos-cloud/sles-15-sap-byos"
