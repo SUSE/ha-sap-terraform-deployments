@@ -138,8 +138,9 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 
  For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
- Specific QA variable
+ Specific QA variables
 * **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
+* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
 
 ### The pillar files hana.sls and cluster.sls
 

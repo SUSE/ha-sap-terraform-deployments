@@ -84,3 +84,8 @@ ha_sap_deployment_repo = ""
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
 #qa_mode = false
+
+# Execute HANA Hardware Configuration Check Tool to bench filesystems
+# qa_mode must be set to true for executing hwcct
+# true or false (default)
+#hwcct = false
