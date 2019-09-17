@@ -26,7 +26,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.3.3"
+      "version": "6.3.5"
     },
     {
       "type": "panel",
@@ -71,7 +71,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1566851526350,
+  "iteration": 1568728404825,
   "links": [],
   "panels": [
     {
@@ -151,7 +151,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_configured{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"configured\"}",
           "instant": true,
           "refId": "A"
         }
@@ -234,7 +234,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_expected_up{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"}",
           "instant": true,
           "refId": "A"
         }
@@ -289,10 +289,10 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "6.3.3",
+      "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "cluster_nodes_online{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"}",
           "instant": true,
           "refId": "A"
         }
@@ -365,7 +365,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_unclean{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"}",
           "instant": true,
           "refId": "A"
         }
@@ -448,7 +448,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_pending{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"}",
           "instant": true,
           "refId": "A"
         }
@@ -531,7 +531,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9001\", type=\"remote\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"}",
           "instant": true,
           "refId": "A"
         }
@@ -614,7 +614,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_shutdown{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"}",
           "instant": true,
           "refId": "A"
         }
@@ -697,7 +697,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_maintenance{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"}",
           "instant": true,
           "refId": "A"
         }
@@ -780,7 +780,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_nodes_standby{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"}",
           "instant": true,
           "refId": "A"
         }
@@ -863,7 +863,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_resources_configured{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_resources_status{instance=~\"$hana_node_ip:9002\", status=\"configured\"}",
           "instant": true,
           "refId": "A"
         }
@@ -919,10 +919,10 @@
         },
         "orientation": "vertical"
       },
-      "pluginVersion": "6.3.3",
+      "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "cluster_resources_running{instance=~\"$hana_node_ip:9001\",node=~\".*01\"}",
+          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -970,10 +970,10 @@
         },
         "orientation": "vertical"
       },
-      "pluginVersion": "6.3.3",
+      "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "cluster_resources_running{instance=~\"$hana_node_ip:9001\", node=~\".*02\"}",
+          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -1048,7 +1048,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_resources{instance=~\"$hana_node_ip:9001\", role=\"master\"}",
+          "expr": "cluster_resources_status{instance=~\"$hana_node_ip:9002\", status=\"master\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1132,7 +1132,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_resources_failed{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_resources_status{instance=~\"$hana_node_ip:9002\", status=\"failed\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1215,7 +1215,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_resources{instance=~\"$hana_node_ip:9001\", role=\"slave\"}",
+          "expr": "cluster_resources_status{instance=~\"$hana_node_ip:9002\", status=\"slave\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1298,7 +1298,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_resources_disabled{instance=~\"$hana_node_ip:9001\"}",
+          "expr": "cluster_resources_status{instance=~\"$hana_node_ip:9002\", status=\"disabled\"}",
           "instant": true,
           "refId": "A"
         }
