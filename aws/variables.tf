@@ -48,6 +48,11 @@ variable "instancetype" {
   default = "t2.micro"
 }
 
+variable "hana_data_disk_type" {
+  type    = string
+  default = "gp2"
+}
+
 variable "ninstances" {
   type    = string
   default = "2"

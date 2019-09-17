@@ -104,6 +104,7 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **ip_cidr_range**: must contain the internal IPv4 range.
 * **iscsi_ip**:  must contain the iscsi server IP.
 * **machine_type** and **machine_type_iscsi_server** variables must contain the [GCP machine type](https://cloud.google.com/compute/docs/machine-types) for the SAP HANA nodes as well as the iSCSI server node.
+* **hana_data_disk_type**: disk type to use for HANA (pd-standard by default).
 * **private_key_location**: the path to your SSH private key.  This is used by the provisioner.
 * **public_key_location**: the path to your SSH public key.  This is used to access the instances.
 * **region**: the name of the desired region.

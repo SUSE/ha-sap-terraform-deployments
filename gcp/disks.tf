@@ -8,7 +8,7 @@ resource "google_compute_disk" "iscsi_data" {
 resource "google_compute_disk" "node_data" {
   count = "2"
   name  = "${terraform.workspace}-${var.name}-data-${count.index}"
-  type  = "pd-ssd"
+  type  = "${var.hana_data_disk_type}"
   size  = var.init_type == "all" ? 60 : 30
   zone  = element(data.google_compute_zones.available.names, count.index)
 }
@@ -16,7 +16,7 @@ resource "google_compute_disk" "node_data" {
 resource "google_compute_disk" "node_data2" {
   count = "2"
   name  = "${terraform.workspace}-${var.name}-backup-${count.index}"
-  type  = "pd-ssd"
+  type  = "${var.hana_data_disk_type}"
   size  = "20"
   zone  = element(data.google_compute_zones.available.names, count.index)
 }
