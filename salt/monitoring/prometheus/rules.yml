@@ -7,3 +7,22 @@ groups:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
+
+- name: a-resource-failed
+  rules:
+  - alert: aResourceFailed
+    expr: count(cluster_node_resources{status="failed"}) > 1
+    labels:
+      severity: page
+    annotations:
+      summary: a cluster resource failed
+
+  
+- name: secondary-resource-saphana-slave-role-changed
+  rules:
+  - alert: SAPHANAMasterResourcesDown
+    expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="slave",status="active"})
+    labels:
+      severity: page
+    annotations:
+      summary: secondary SAP-HANA resource role slave changed
