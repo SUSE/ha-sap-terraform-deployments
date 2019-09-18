@@ -24,21 +24,14 @@ init-type = "all"
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
-# Public sles4sap image
-sles4sap_public = {
-  "publisher" = "SUSE"
-  "offer"     = "SLES-SAP-BYOS"
-  "sku"       = "12-sp4"
-  "version"   = "2019.03.06"
-}
+# hana
+hana_public_sku     = "15"
+hana_public_version = "2019.06.17"
 
-# Public iscsi server image
-iscsi_srv_public = {
-  "publisher" = "SUSE"
-  "offer"     = "SLES-SAP-BYOS"
-  "sku"       = "15"
-  "version"   = "2018.08.20"
-}
+# iscsi
+iscsi_public_sku     = "15"
+iscsi_public_version = "2019.06.17"
+
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"
@@ -115,3 +108,12 @@ ha_sap_deployment_repo = ""
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# monitoring ip this is the server where prometheus and grafana are running
+monitoring_srv_ip = "10.74.1.13"
+
+# monitored services hanadb + node_exporter etc
+monitored_hosts = ["10.74.1.11", "10.74.1.12"]
+
+# for monitoring you need to enable devel_mode currenlty (it install latest pkg)
+devel_mode = true
