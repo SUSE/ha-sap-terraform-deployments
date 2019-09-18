@@ -11,7 +11,7 @@ groups:
 - name: a-resource-failed
   rules:
   - alert: aResourceFailed
-    expr: cluster_node_resources{status="failed"} > 1
+    expr: count(cluster_node_resources{status="failed"}) > 1
     labels:
       severity: page
     annotations:
@@ -21,7 +21,7 @@ groups:
 - name: secondary-resource-saphana-slave-role-changed
   rules:
   - alert: SAPHANAMasterResourcesDown
-    expr: absent(cluster_node_resources{node="dma-dog-hana02",resource_name="rsc_saphana_prd_hdb00",role="slave"})
+    expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="slave",status="active"})
     labels:
       severity: page
     annotations:

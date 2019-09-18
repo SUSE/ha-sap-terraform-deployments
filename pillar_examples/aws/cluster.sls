@@ -10,8 +10,7 @@ cluster:
     device: '/dev/sda'
   resource_agents:
     - SAPHanaSR
-  ha_exporter:
-    exposition_port: 9001
+  ha_exporter: true
   configure:
     method: 'update'
     template:

@@ -19,9 +19,3 @@ node_exporter_service:
     - require:
       - pkg: prometheus_node_exporter
       - pkgrepo: server_monitoring_repo
-
-prometheus_ha_cluster_exporter:
-  pkg.installed:
-    - name: prometheus-ha_cluster_exporter
-    - require:
-      - pkgrepo: server_monitoring_repo
