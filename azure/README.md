@@ -161,6 +161,9 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 
  * **additional_packages**: Additional packages to add to the guest machines.
  * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
+ * **monitoring_srv_ip:** IP address of the machine that will host the monitoring stack
+ * **devel_mode:** Whether or not to install HA/SAP packages from ha_sap_deployment_rep
+ * **monitored_hosts** Default empty. A list containing the IP addresses of hosts to be monitored. Under the hood list var tell prometheus the IP where to scrape.
 
  Specific QA variables
 * **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.

@@ -98,6 +98,7 @@ data.
 - **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
 - **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
 - **monitoring_srv_ip**: IP address of the machine that will host the monitoring stack
+- **monitored_hosts** Default empty. A list containing the IP addresses of hosts to be monitored. Under the hood list var tell prometheus the IP where to scrape.
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **devel_mode**: Whether or not to install HA/SAP packages from ha_sap_deployment_repo
 - **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.

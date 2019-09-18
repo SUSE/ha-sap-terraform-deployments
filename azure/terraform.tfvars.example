@@ -24,11 +24,11 @@ init-type = "all"
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
-# hana
+# Public sles4sap image for HANA
 hana_public_sku     = "15"
 hana_public_version = "2019.06.17"
 
-# iscsi
+# Public SLES15 image for iscsi server
 iscsi_public_sku     = "15"
 iscsi_public_version = "2019.06.17"
 
@@ -109,11 +109,11 @@ ha_sap_deployment_repo = ""
 # true or false (default)
 #hwcct = false
 
-# monitoring ip this is the server where prometheus and grafana are running
+# IP address of the machine where prometheus and grafana are running
 monitoring_srv_ip = "10.74.1.13"
 
-# monitored services hanadb + node_exporter etc
+# IP addresses of hosts to be monitored
 monitored_hosts = ["10.74.1.11", "10.74.1.12"]
 
-# for monitoring you need to enable devel_mode currenlty (it install latest pkg)
-devel_mode = true
+# For monitoring you need to enable devel_mode currenlty (it install latest pkg)
+#devel_mode = true
