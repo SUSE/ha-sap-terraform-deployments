@@ -10,7 +10,7 @@ cluster:
     device: '/dev/sda'
   resource_agents:
     - SAPHanaSR
-  ha_exporter: true
+  ha_exporter: false
   configure:
     method: 'update'
     template:

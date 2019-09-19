@@ -26,8 +26,11 @@ cluster:
   {% endif %}
   resource_agents:
     - SAPHanaSR
+  {% if grains.get('monitoring_enabled') %}
   ha_exporter: true
-
+  {% else %}
+  ha_exporter: false
+  {% endif %}
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     method: update
