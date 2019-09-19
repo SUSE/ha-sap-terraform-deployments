@@ -26,7 +26,7 @@ cluster:
   {% endif %}
   resource_agents:
     - SAPHanaSR
-  {% if grains.get('monitoring_enabled') %}
+  {% if grains.get('monitoring_enabled', False) %}
   ha_exporter: true
   {% else %}
   ha_exporter: false
