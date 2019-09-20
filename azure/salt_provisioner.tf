@@ -189,7 +189,7 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
-host_ips: [${join(", ", formatlist("'%s'", [var.host_ips]))}]
+host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
