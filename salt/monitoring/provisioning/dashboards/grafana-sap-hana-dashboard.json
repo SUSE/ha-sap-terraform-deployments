@@ -1,58 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS_SHAP",
-      "label": "Prometheus SHAP",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "bargauge",
-      "name": "Bar Gauge",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.3.5"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "singlestat",
-      "name": "Singlestat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -70,8 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1568728404828,
+  "iteration": 1568997278777,
   "links": [],
   "panels": [
     {
@@ -987,12 +932,12 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
+      "colorBackground": true,
       "colorValue": false,
       "colors": [
-        "#299c46",
+        "#d44a3a",
         "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
+        "#299c46"
       ],
       "format": "none",
       "gauge": {
@@ -1053,7 +998,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "",
+      "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
       "title": "Master resources",
@@ -1070,7 +1015,7 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
+      "colorBackground": true,
       "colorValue": false,
       "colors": [
         "#299c46",
@@ -1137,7 +1082,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "",
+      "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
       "title": "Resources failed",
@@ -5798,5 +5743,5 @@
   "timezone": "",
   "title": "SAP HANA Dashboard",
   "uid": "EcC4JDFWz",
-  "version": 11
+  "version": 1
 }
