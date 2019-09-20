@@ -111,12 +111,6 @@ variable "background" {
   default     = false
 }
 
-variable "monitored_hosts" {
-  description = "IPs of hosts to be monitored"
-  type        = list(string)
-  default     = []
-}
-
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false

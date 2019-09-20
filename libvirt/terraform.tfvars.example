@@ -40,8 +40,6 @@ devel_mode = false
 #background = true
 
 # Monitoring:
-# Add here IP addresses of the hosts to be monitored:
-monitored_hosts = ["192.168.110.X", "192.168.110.Y"]
 
 # by default monitoring is disabled.
 monitoring_enabled = true

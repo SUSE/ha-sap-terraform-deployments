@@ -64,7 +64,7 @@ partitions:
   5:
     start: 80%
     end: 100%
- 
+
 EOF
 
 
@@ -176,6 +176,7 @@ resource "null_resource" "monitoring_provisioner" {
     content     = data.template_file.salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
+
   provisioner "file" {
     content = <<EOF
 provider: azure
@@ -188,10 +189,10 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
-host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
+host_ips: [${join(", ", formatlist("'%s'", [var.host_ips]))}]
 host_ip: ${var.monitoring_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
+monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 EOF
 
