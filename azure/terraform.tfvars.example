@@ -96,6 +96,17 @@ ha_sap_deployment_repo = ""
 # Run provisioner execution in background
 #background = true
 
+
+# IP address of the machine where prometheus and grafana are running
+monitoring_srv_ip = "10.74.1.13"
+
+# IP addresses of hosts to be monitored
+monitored_hosts = ["10.74.1.11", "10.74.1.12"]
+
+# the devel_mode variable will prioritize ha-factory repo, so devel pkgs are installed instead of systems one if they exists.
+#devel_mode = true
+
+
 # QA variables
 
 # Define if the deployment is using for testing purpose
@@ -109,11 +120,3 @@ ha_sap_deployment_repo = ""
 # true or false (default)
 #hwcct = false
 
-# IP address of the machine where prometheus and grafana are running
-monitoring_srv_ip = "10.74.1.13"
-
-# IP addresses of hosts to be monitored
-monitored_hosts = ["10.74.1.11", "10.74.1.12"]
-
-# For monitoring you need to enable devel_mode currenlty (it install latest pkg)
-#devel_mode = true
