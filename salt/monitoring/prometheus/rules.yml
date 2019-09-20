@@ -20,7 +20,7 @@ groups:
   
 - name: secondary-resource-saphana-slave-role-changed
   rules:
-  - alert: SAPHANAMasterResourcesDown
+  - alert: secondarySAPHANAResourceSlaveRoleChanged
     expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="slave",status="active"})
     labels:
       severity: page
