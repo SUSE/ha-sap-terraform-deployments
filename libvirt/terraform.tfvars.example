@@ -39,10 +39,13 @@ devel_mode = false
 # Run provisioner execution in background
 #background = true
 
-# Monitoring:
+# Monitoring variables
 
-# by default monitoring is disabled.
-monitoring_enabled = true
+# Enable the host to be monitored by exporters
+#monitoring_enabled = true
+
+# IP address of the machine where prometheus and grafana are running
+monitoring_srv_ip = "192.168.XXX.Y+2"
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 

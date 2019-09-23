@@ -20,7 +20,7 @@ In order to enable disable the monitoring feature, you need to:
 
 # Variable specification:
 
-`monitoring_enabled` default True. This variable will install all different supported exporters to the hosts. 
+`monitoring_enabled` default False. This variable will install all different supported exporters to the hosts. 
 See the list of supported exporter for more details.
 
 # Hosts Exporters

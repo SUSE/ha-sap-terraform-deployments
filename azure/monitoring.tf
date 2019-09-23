@@ -15,5 +15,5 @@ variable "devel_mode" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
-  default     = true
+  default     = false
 }
