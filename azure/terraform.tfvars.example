@@ -14,7 +14,7 @@ ninstances = "2"
 az_region = "westeurope"
 
 # Variable for init-nodes.sh script
-init-type = "all"
+init_type = "all"
 
 # SLES4SAP image information
 # If custom uris are enabled public information will be omitted
@@ -102,6 +102,14 @@ ha_sap_deployment_repo = ""
 
 # Run provisioner execution in background
 #background = true
+
+# Monitoring variables
+
+# Enable the host to be monitored by exporters
+#monitoring_enabled = true
+
+# IP address of the machine where prometheus and grafana are running
+monitoring_srv_ip = "10.74.1.13"
 
 # QA variables
 
