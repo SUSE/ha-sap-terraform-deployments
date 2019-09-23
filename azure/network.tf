@@ -395,13 +395,13 @@ resource "azurerm_network_security_group" "mysecgroup" {
     destination_address_prefix = "*"
   }
   security_rule {
-    name                       = "hawkExporter"
+    name                       = "ha-exporter"
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "9001"
+    destination_port_range     = "9002"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
