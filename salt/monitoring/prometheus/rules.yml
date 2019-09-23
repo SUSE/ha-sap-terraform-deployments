@@ -11,7 +11,7 @@ groups:
 - name: a-resource-failed
   rules:
   - alert: aResourceFailed
-    expr: count(cluster_node_resources{status="failed"}) > 1
+    expr: count(cluster_node_resources{status="failed"}) > 0
     labels:
       severity: page
     annotations:
