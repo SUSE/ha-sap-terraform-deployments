@@ -31,8 +31,15 @@ variable "hana_fstype" {
 }
 
 variable "host_ips" {
-  description = "IP addresses of the nodes"
+  description = "IP addresses of the hana nodes"
+  type        = list(string)
   default     = ["192.168.106.15", "192.168.106.16"]
+}
+
+variable "nw_ips" {
+  description = "IP addresses of the netweaver nodes"
+  type        = list(string)
+  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
 }
 
 variable "shared_storage_type" {
@@ -50,12 +57,13 @@ variable "iscsi_image" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address (only used if shared_storage_type is iscsi)"
   type        = string
-  default     = "192.168.106.17"
+  default     = "192.168.106.21"
 }
 
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string
+  default     = "192.168.106.22"
 }
 
 variable "reg_code" {

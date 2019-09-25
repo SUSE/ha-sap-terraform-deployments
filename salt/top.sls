@@ -8,7 +8,6 @@ base:
     - match: grain
     - iscsi_srv
 
- 
   'role:monitoring':
     - match: grain
     - default
