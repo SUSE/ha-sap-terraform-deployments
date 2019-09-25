@@ -5,3 +5,4 @@ include:
   {% if grains['provider'] == 'libvirt' %}
   - pre_installation.ip_workaround
   {% endif %}
+  - pre_installation.upgrade_module_run
