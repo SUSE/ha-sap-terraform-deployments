@@ -14,17 +14,14 @@ Some excerpts:
 
 > Workspaces are technically equivalent to renaming your state file. They aren't any more complex than that. Terraform wraps this simple notion with a set of protections and support for remote state.
 
-The proposed workflow is the following:
 
-  - Workspaces created by any user must be prefixed with `$USER-` and end with a simple but descriptive name for the deployment (e.g., `$USER-testing-ha`) or the GIT branch (e.g., `$USER-add-ha`).  In the case of OpenQA workers, it could be `openqa-$TEST_NUMBER`.
-
-  - Where possible, the tags and labels of the resources created must be prefixed by the workspace, accessible with `${terraform.workspace}` to make it easier to remove resources from the web console when `terraform destroy` can not. Other resources may need to be renamed to conform to this nomenclature to avoid namespace clashes.
+```IMPORTANT```: the terraform workspace name must not contain - or _ characters.  Otherwise you will encounter failures by different cloud providers
 
 ## TL;DR
 
 To create a new workspace:
 
-`terraform worspace new $USER-test-amazing-stuff`
+`terraform worspace new $USER`
 
 Show current workspace:
 
@@ -40,7 +37,7 @@ To list all workspaces:
 
 To remove the previously created workspace:
 
-`terraform workspace delete $USER-test-amazing-stuff`
+`terraform workspace delete $USER`
 
 Get help:
 
