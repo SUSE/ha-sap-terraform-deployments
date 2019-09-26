@@ -27,3 +27,15 @@ output "monitoring_hostname" {
 output "monitoring_ip" {
   value = module.monitoring.addresses
 }
+
+output "netweaver_nodes_ip" {
+  value = module.netweaver_node.addresses
+}
+
+output "netweaver_nodes_id" {
+  value = module.netweaver_node.configuration.id
+}
+
+output "netweaver_nodes_names" {
+  value = module.netweaver_node.configuration.hostname
+}

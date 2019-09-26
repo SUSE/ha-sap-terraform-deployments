@@ -8,6 +8,11 @@ variable "base_image" {
   type        = string
 }
 
+variable "storage_pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 variable "iprange" {
   description = "IP range of the isolated network"
   default     = "192.168.106.0/24"
@@ -28,6 +33,12 @@ variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
   type        = string
   default     = "xfs"
+}
+
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
+  default     = ""
 }
 
 variable "host_ips" {
@@ -122,11 +133,6 @@ variable "background" {
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false
-}
-
-variable "storage_pool" {
-  description = "libvirt storage pool name for VM disks"
-  default     = "default"
 }
 
 variable "qa_mode" {

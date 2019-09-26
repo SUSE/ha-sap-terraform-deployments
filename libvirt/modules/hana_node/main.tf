@@ -1,4 +1,4 @@
-resource "libvirt_volume" "main_disk" {
+resource "libvirt_volume" "hana_main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   base_volume_id   = var.base_image_id
   pool             = var.pool
@@ -21,7 +21,7 @@ resource "libvirt_domain" "hana_domain" {
    dynamic "disk" {
     for_each = [
         {
-          "vol_id" = element(libvirt_volume.main_disk.*.id, count.index)
+          "vol_id" = element(libvirt_volume.hana_main_disk.*.id, count.index)
         },
         {
           "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)

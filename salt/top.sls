@@ -4,6 +4,11 @@ base:
     - default
     - hana_node
 
+  'role:netweaver_node':
+    - match: grain
+    - default
+    - netweaver_node
+
   'role:iscsi_srv':
     - match: grain
     - iscsi_srv
