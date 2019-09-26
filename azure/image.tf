@@ -41,12 +41,12 @@ variable "iscsi_public_offer" {
 
 variable "iscsi_public_sku" {
   type    = string
-  default = "12-sp4"
+  default = "15"
 }
 
 variable "iscsi_public_version" {
   type    = string
-  default = "2019.03.06"
+  default = "2019.07.17"
 }
 
 variable "iscsi_srv_uri" {
@@ -112,4 +112,3 @@ resource "azurerm_image" "monitoring" {
     workspace = terraform.workspace
   }
 }
-

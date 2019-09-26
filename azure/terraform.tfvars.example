@@ -25,20 +25,16 @@ init_type = "all"
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
 # Public sles4sap image
-sles4sap_public = {
-  "publisher" = "SUSE"
-  "offer"     = "SLES-SAP-BYOS"
-  "sku"       = "12-sp4"
-  "version"   = "2019.03.06"
-}
+hana_public_publisher = "SUSE"
+hana_public_offer     = "SLES-SAP-BYOS"
+hana_public_sku       = "12-sp4"
+hana_public_version   = "2019.03.06"
 
 # Public iscsi server image
-iscsi_srv_public = {
-  "publisher" = "SUSE"
-  "offer"     = "SLES-SAP-BYOS"
-  "sku"       = "15"
-  "version"   = "2018.08.20"
-}
+iscsi_public_publisher = "SUSE"
+iscsi_public_offer     = "SLES-SAP-BYOS"
+iscsi_public_sku       = "15"
+iscsi_public_version   = "2019.07.17"
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"

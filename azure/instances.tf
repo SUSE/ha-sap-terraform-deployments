@@ -131,13 +131,12 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 }
 
-
-
 resource "azurerm_virtual_machine" "monitoring" {
   name                  = "${terraform.workspace}-monitoring"
+  count                 = var.monitoring_enabled == true ? 1 : 0
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
-  network_interface_ids = [azurerm_network_interface.monitoring.id]
+  network_interface_ids = [element(azurerm_network_interface.monitoring.*.id, count.index)]
   availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
