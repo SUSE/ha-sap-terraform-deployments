@@ -54,3 +54,28 @@ resource "aws_instance" "clusternodes" {
   }
 }
 
+
+resource "aws_instance" "monitoring" {
+  ami                         = var.sles4sap[var.aws_region]
+  instance_type               = var.instancetype
+  key_name                    = aws_key_pair.mykey.key_name
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.local.id
+  private_ip                  = var.monitoring_srv_ip
+  security_groups             = [aws_security_group.secgroup.id]
+
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "60"
+  }
+
+  ebs_block_device {
+    volume_type = "${var.hana_data_disk_type}"
+    volume_size = "60"
+    device_name = "/dev/xvdd"
+  }
+
+  tags = {
+    Name = "${terraform.workspace} - Monitoring"
+  }
+}

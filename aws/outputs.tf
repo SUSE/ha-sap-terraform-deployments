@@ -18,3 +18,10 @@ output "cluster_nodes_names" {
   value = [aws_instance.clusternodes.*.public_dns]
 }
 
+output "monitoring_node_ip" {
+  value = [aws_instance.monitoring.*.public_ip]
+}
+
+output "monitoring_node_name" {
+  value = [aws_instance.monitoring.*.public_dns]
+}
