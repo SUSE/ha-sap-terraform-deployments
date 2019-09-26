@@ -32,6 +32,7 @@ variable "hana_fstype" {
 
 variable "host_ips" {
   description = "IP addresses of the nodes"
+  type        = list(string)
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 

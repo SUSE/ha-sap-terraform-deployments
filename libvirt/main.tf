@@ -80,8 +80,8 @@ module "hana_node" {
 module "monitoring" {
   source                 = "./modules/monitoring"
   name                   = "monitoring"
+  monitoring_count       = var.monitoring_enabled == true ? 1 : 0
   base_image_id          = libvirt_volume.base_image.id
-  monitoring_count       = 1
   vcpu                   = 4
   memory                 = 4095
   bridge                 = "br0"
