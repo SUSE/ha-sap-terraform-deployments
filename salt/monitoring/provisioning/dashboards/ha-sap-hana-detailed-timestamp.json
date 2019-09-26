@@ -12,11 +12,12 @@
       }
     ]
   },
-  "description": "SAP HANA Database Monitoring Dashboard",
+  "description": "SAP HANA detailed timestamp dashboard",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1568997278777,
+  "id": 4,
+  "iteration": 1569497671774,
   "links": [],
   "panels": [
     {
@@ -26,1250 +27,6 @@
         "w": 24,
         "x": 0,
         "y": 0
-      },
-      "id": 121,
-      "panels": [],
-      "title": "HA monitoring",
-      "type": "row"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 1
-      },
-      "id": 90,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "pluginVersion": "6.3.3",
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Configured nodes",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 1
-      },
-      "id": 104,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes expected up",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 8,
-        "y": 1
-      },
-      "id": 92,
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [],
-            "max": 2,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 1
-              }
-            ]
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes online",
-      "type": "gauge"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 16,
-        "y": 1
-      },
-      "id": 100,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes unclean",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 20,
-        "y": 1
-      },
-      "id": 98,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes on pending",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 4
-      },
-      "id": 106,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes remote",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 4
-      },
-      "id": 102,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes shutdown",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 16,
-        "y": 4
-      },
-      "id": 96,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes on maintenance",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 20,
-        "y": 4
-      },
-      "id": 94,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes on standby",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 0,
-        "y": 7
-      },
-      "id": 112,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resouces configured",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 8,
-        "y": 7
-      },
-      "id": 108,
-      "options": {
-        "displayMode": "lcd",
-        "fieldOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "defaults": {
-            "mappings": [],
-            "max": 30,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 0
-              }
-            ],
-            "title": "$hana_node_name_1",
-            "unit": "none"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "vertical"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
-          "format": "time_series",
-          "instant": true,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "",
-      "type": "bargauge"
-    },
-    {
-      "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 12,
-        "y": 7
-      },
-      "id": 110,
-      "options": {
-        "displayMode": "lcd",
-        "fieldOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "defaults": {
-            "mappings": [],
-            "max": 30,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 0
-              }
-            ],
-            "title": "$hana_node_name_2",
-            "unit": "none"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "vertical"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
-          "format": "time_series",
-          "instant": true,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "",
-      "type": "bargauge"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": true,
-      "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 7
-      },
-      "id": 118,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "0,1",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Master resources",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": true,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 8,
-        "x": 0,
-        "y": 11
-      },
-      "id": 116,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "pluginVersion": "6.3.3",
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "0,1",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resources failed",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 12
-      },
-      "id": 119,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Slave resources",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 8,
-        "x": 0,
-        "y": 14
-      },
-      "id": 114,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resources disabled",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 17
       },
       "id": 38,
       "panels": [],
@@ -1291,7 +48,7 @@
         "h": 15,
         "w": 13,
         "x": 0,
-        "y": 18
+        "y": 1
       },
       "id": 14,
       "legend": {
@@ -1430,7 +187,7 @@
         "h": 15,
         "w": 11,
         "x": 13,
-        "y": 18
+        "y": 1
       },
       "id": 16,
       "interval": "",
@@ -1572,7 +329,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 33
+        "y": 16
       },
       "id": 8,
       "interval": null,
@@ -1652,7 +409,7 @@
         "h": 9,
         "w": 10,
         "x": 3,
-        "y": 33
+        "y": 16
       },
       "id": 76,
       "legend": {
@@ -1742,7 +499,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 33
+        "y": 16
       },
       "id": 18,
       "interval": "30s",
@@ -1941,7 +698,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 38
+        "y": 21
       },
       "id": 4,
       "interval": null,
@@ -2028,7 +785,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 42
+        "y": 25
       },
       "id": 10,
       "interval": null,
@@ -2115,7 +872,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 42
+        "y": 25
       },
       "id": 12,
       "interval": null,
@@ -2201,7 +958,7 @@
         "h": 5,
         "w": 3,
         "x": 6,
-        "y": 42
+        "y": 25
       },
       "id": 28,
       "interval": null,
@@ -2287,7 +1044,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 42
+        "y": 25
       },
       "id": 30,
       "interval": null,
@@ -2372,7 +1129,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 42
+        "y": 25
       },
       "id": 26,
       "interval": null,
@@ -2458,7 +1215,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 42
+        "y": 25
       },
       "id": 24,
       "interval": null,
@@ -2544,7 +1301,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 42
+        "y": 25
       },
       "id": 20,
       "interval": null,
@@ -2631,7 +1388,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 42
+        "y": 25
       },
       "id": 22,
       "interval": null,
@@ -2718,7 +1475,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 47
+        "y": 30
       },
       "id": 66,
       "interval": null,
@@ -2788,7 +1545,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 34
       },
       "id": 6,
       "panels": [],
@@ -2810,7 +1567,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 35
       },
       "id": 68,
       "interval": "",
@@ -2901,7 +1658,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 35
       },
       "id": 70,
       "links": [],
@@ -3086,7 +1843,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 43
       },
       "id": 72,
       "links": [],
@@ -3203,7 +1960,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 66
+        "y": 49
       },
       "id": 62,
       "interval": "",
@@ -3279,7 +2036,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 53
       },
       "id": 74,
       "links": [],
@@ -3394,7 +2151,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 73
+        "y": 56
       },
       "id": 88,
       "links": [],
@@ -3557,7 +2314,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 80
+        "y": 63
       },
       "id": 64,
       "interval": "",
@@ -3680,7 +2437,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 70
       },
       "id": 80,
       "panels": [],
@@ -3696,7 +2453,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 71
       },
       "id": 78,
       "links": [],
@@ -3983,7 +2740,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 94
+        "y": 77
       },
       "id": 82,
       "legend": {
@@ -4075,7 +2832,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 94
+        "y": 77
       },
       "id": 84,
       "legend": {
@@ -4164,7 +2921,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 85
       },
       "id": 86,
       "links": [],
@@ -4463,7 +3220,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 91
       },
       "id": 34,
       "panels": [],
@@ -4483,7 +3240,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 109
+        "y": 92
       },
       "id": 50,
       "legend": {
@@ -4576,7 +3333,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 109
+        "y": 92
       },
       "id": 52,
       "interval": "",
@@ -4668,7 +3425,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 109
+        "y": 92
       },
       "id": 54,
       "interval": "",
@@ -4769,7 +3526,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 117
+        "y": 100
       },
       "id": 56,
       "legend": {
@@ -4862,7 +3619,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 117
+        "y": 100
       },
       "id": 58,
       "legend": {
@@ -4954,7 +3711,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 117
+        "y": 100
       },
       "id": 60,
       "legend": {
@@ -5040,7 +3797,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 125
+        "y": 108
       },
       "id": 36,
       "panels": [],
@@ -5061,7 +3818,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 126
+        "y": 109
       },
       "id": 32,
       "interval": "",
@@ -5154,7 +3911,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 126
+        "y": 109
       },
       "id": 40,
       "legend": {
@@ -5245,7 +4002,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 126
+        "y": 109
       },
       "id": 42,
       "legend": {
@@ -5336,7 +4093,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 135
+        "y": 118
       },
       "id": 44,
       "legend": {
@@ -5427,7 +4184,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 135
+        "y": 118
       },
       "id": 46,
       "legend": {
@@ -5518,7 +4275,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 135
+        "y": 118
       },
       "id": 48,
       "interval": "",
@@ -5623,7 +4380,10 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "dma-dog-hana01",
+          "value": "dma-dog-hana01"
+        },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info, nodename)",
         "hide": 0,
@@ -5645,7 +4405,10 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "192.168.110.19",
+          "value": "192.168.110.19"
+        },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
         "hide": 0,
@@ -5667,7 +4430,10 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "dma-dog-hana01",
+          "value": "dma-dog-hana01"
+        },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
         "hide": 2,
@@ -5689,7 +4455,10 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "dma-dog-hana02",
+          "value": "dma-dog-hana02"
+        },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
         "hide": 2,
@@ -5741,7 +4510,7 @@
     ]
   },
   "timezone": "",
-  "title": "SAP HANA Dashboard",
-  "uid": "EcC4JDFWz",
-  "version": 1
+  "title": "HA SAP HANA detailed cluster timestamp dashboard",
+  "uid": "EcC4JDFWz2",
+  "version": 2
 }

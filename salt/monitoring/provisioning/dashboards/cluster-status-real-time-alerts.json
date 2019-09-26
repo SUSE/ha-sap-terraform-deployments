@@ -12,12 +12,12 @@
       }
     ]
   },
-  "description": "HA SAP HANA  cluster status eal-time alert dashboard",
+  "description": "HA SAP HANA  cluster status real-time alert dashboard",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1569428876659,
+  "id": 3,
+  "iteration": 1569497333466,
   "links": [],
   "panels": [
     {
@@ -2084,8 +2084,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "dma-dog-hana01",
-          "value": "dma-dog-hana01"
+          "text": "dma-dog-hana02",
+          "value": "dma-dog-hana02"
         },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info, nodename)",
@@ -2109,8 +2109,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "192.168.110.19",
-          "value": "192.168.110.19"
+          "text": "192.168.110.20",
+          "value": "192.168.110.20"
         },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
@@ -2213,7 +2213,7 @@
     ]
   },
   "timezone": "",
-  "title": "HA SAP HANA  cluster status",
-  "uid": "59xIkypWz",
-  "version": 31
+  "title": "HA SAP HANA  cluster status Copy",
+  "uid": "Q5YJpwtZk",
+  "version": 1
 }
