@@ -8,14 +8,12 @@ data "template_file" "monitoring_salt_provisioner" {
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.monitoring_domain) : 0
-
   triggers = {
-    monitoring_ids = libvirt_domain.monitoring_domain[count.index].id
+    monitoring_id = libvirt_domain.monitoring_domain.id
   }
 
   connection {
-    host     = libvirt_domain.monitoring_domain[count.index].network_interface.0.addresses.0
+    host     = libvirt_domain.monitoring_domain.network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }
@@ -33,7 +31,7 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     content = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}
 timezone: ${var.timezone}
 network_domain: ${var.network_domain}
 reg_code: ${var.reg_code}
