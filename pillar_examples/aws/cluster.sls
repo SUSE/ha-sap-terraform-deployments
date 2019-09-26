@@ -1,5 +1,5 @@
 cluster:
-  name: 'hacluster'
+  name: 'hana_cluster'
   init: 'hana01'
   interface: 'eth0'
   unicast: True
