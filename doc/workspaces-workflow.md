@@ -15,7 +15,7 @@ Some excerpts:
 > Workspaces are technically equivalent to renaming your state file. They aren't any more complex than that. Terraform wraps this simple notion with a set of protections and support for remote state.
 
 
-```IMPORTANT```: the terraform workspace name must not contain - or _ characters.  Otherwise you will encounter failures by different cloud providers
+```IMPORTANT```: the terraform workspace name **must not contain** `-` or `_` characters.  Otherwise you will encounter failures by different cloud providers
 
 ## TL;DR
 
