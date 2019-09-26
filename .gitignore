@@ -12,3 +12,5 @@ salt/hana_node/files/pillar/*
 
 # Dev specific
 **/*.swp
+**/*.swo
+**/*~
