@@ -2,18 +2,18 @@ groups:
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
-    expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="master"})
+    expr: absent(cluster_node_resources{resource_name=~"rsc_saphana_.*",role="master"})
     labels:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
 
   - alert: sap-hana-secondary-resource-absent
-    expr: absent(cluster_node_resources{resource_name="rsc_saphana_prd_hdb00",role="slave",status="active"})
+    expr: absent(cluster_node_resources{resource_name=~"rsc_saphana_.*",role="slave",status="active"})
     labels:
       severity: page
     annotations:
-      summary: there is no secondary SAP-HANA resource
+      summary: slave resource absent
 
 - name: cluster-resources-monitoring
   rules:
@@ -76,7 +76,7 @@ groups:
       summary: ha cluster exporter service not running
  
   - alert: service-down-hanadb-exporter
-    expr: node_systemd_unit_state{name="hanadb_exporter@prd_00.service", state="active"} == 0
+    expr: node_systemd_unit_state{name=~"hanadb_exporter@.*.service", state="active"} == 0
     labels:
       severity: page
     annotations:
