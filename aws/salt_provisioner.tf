@@ -158,7 +158,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   connection {
-    host        = aws_instance.monitoring.*.public_ip
+    host        = element(aws_instance.monitoring.*.public_ip, count.index)
     type        = "ssh"
     user        = "ec2-user"
     private_key = file(var.private_key_location)
