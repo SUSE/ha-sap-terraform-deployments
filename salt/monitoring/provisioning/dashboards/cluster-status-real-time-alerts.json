@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1569497333466,
+  "id": 1,
+  "iteration": 1569598946364,
   "links": [],
   "panels": [
     {
@@ -1464,7 +1464,7 @@
         "x": 6,
         "y": 17
       },
-      "id": 132,
+      "id": 133,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1504,7 +1504,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"prometheus-node_exporter.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\", name=\"hawk.service\",state=\"active\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1512,7 +1512,7 @@
       "thresholds": "0, 1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "node exporter",
+      "title": "hawk  service",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -1728,7 +1728,7 @@
         "x": 6,
         "y": 20
       },
-      "id": 133,
+      "id": 134,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1768,7 +1768,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\", name=\"hawk.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\", name=\"hawk-backend.service\",state=\"active\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1776,7 +1776,7 @@
       "thresholds": "0, 1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "hawk  service",
+      "title": "hawk  service backend",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -1968,94 +1968,6 @@
         }
       ],
       "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": true,
-      "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 6,
-        "y": 23
-      },
-      "id": 134,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\", name=\"hawk-backend.service\",state=\"active\"}",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "0, 1",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "hawk  service backend",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "Stopped",
-          "value": "null"
-        },
-        {
-          "op": "=",
-          "text": "Started",
-          "value": "1"
-        }
-      ],
-      "valueName": "avg"
     }
   ],
   "refresh": "5s",
@@ -2084,8 +1996,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "dma-dog-hana02",
-          "value": "dma-dog-hana02"
+          "text": "dma-dog-hana01",
+          "value": "dma-dog-hana01"
         },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info, nodename)",
@@ -2109,8 +2021,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "192.168.110.20",
-          "value": "192.168.110.20"
+          "text": "192.168.110.19",
+          "value": "192.168.110.19"
         },
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",

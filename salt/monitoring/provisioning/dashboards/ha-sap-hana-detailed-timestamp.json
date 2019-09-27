@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1569497671774,
+  "id": 2,
+  "iteration": 1569598747153,
   "links": [],
   "panels": [
     {
@@ -27,6 +27,139 @@
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 94,
+      "panels": [],
+      "title": "HA Cluster",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 13,
+        "x": 0,
+        "y": 1
+      },
+      "id": 92,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"sbd.service\",state=\"active\"}",
+          "legendFormat": "sbd",
+          "refId": "A"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"pacemaker.service\",state=\"active\"}",
+          "legendFormat": "pacemaker",
+          "refId": "B"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"corosync.service\",state=\"active\"}",
+          "legendFormat": "corosync",
+          "refId": "C"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"prometheus-node_exporter.service\",state=\"active\"}",
+          "legendFormat": "node-exporter",
+          "refId": "D"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"prometheus-ha_cluster_exporter.service\",state=\"active\"}",
+          "legendFormat": "ha-cluster-exporter",
+          "refId": "E"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hawk.service\",state=\"active\"}",
+          "legendFormat": "hawk",
+          "refId": "F"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hawk-backend.service\",state=\"active\"}",
+          "legendFormat": "hawk-backend",
+          "refId": "G"
+        },
+        {
+          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hanadb_exporter@prd_00.service\",state=\"active\"}",
+          "legendFormat": "hanadb-exporter",
+          "refId": "H"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Cluster services",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
       },
       "id": 38,
       "panels": [],
@@ -48,7 +181,7 @@
         "h": 15,
         "w": 13,
         "x": 0,
-        "y": 1
+        "y": 11
       },
       "id": 14,
       "legend": {
@@ -187,7 +320,7 @@
         "h": 15,
         "w": 11,
         "x": 13,
-        "y": 1
+        "y": 11
       },
       "id": 16,
       "interval": "",
@@ -329,7 +462,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 16
+        "y": 26
       },
       "id": 8,
       "interval": null,
@@ -409,7 +542,7 @@
         "h": 9,
         "w": 10,
         "x": 3,
-        "y": 16
+        "y": 26
       },
       "id": 76,
       "legend": {
@@ -499,7 +632,7 @@
         "h": 9,
         "w": 11,
         "x": 13,
-        "y": 16
+        "y": 26
       },
       "id": 18,
       "interval": "30s",
@@ -698,7 +831,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 21
+        "y": 31
       },
       "id": 4,
       "interval": null,
@@ -785,7 +918,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 25
+        "y": 35
       },
       "id": 10,
       "interval": null,
@@ -872,7 +1005,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 25
+        "y": 35
       },
       "id": 12,
       "interval": null,
@@ -958,7 +1091,7 @@
         "h": 5,
         "w": 3,
         "x": 6,
-        "y": 25
+        "y": 35
       },
       "id": 28,
       "interval": null,
@@ -1044,7 +1177,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 25
+        "y": 35
       },
       "id": 30,
       "interval": null,
@@ -1129,7 +1262,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 25
+        "y": 35
       },
       "id": 26,
       "interval": null,
@@ -1215,7 +1348,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 25
+        "y": 35
       },
       "id": 24,
       "interval": null,
@@ -1301,7 +1434,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 25
+        "y": 35
       },
       "id": 20,
       "interval": null,
@@ -1388,7 +1521,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 25
+        "y": 35
       },
       "id": 22,
       "interval": null,
@@ -1475,7 +1608,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 30
+        "y": 40
       },
       "id": 66,
       "interval": null,
@@ -1545,7 +1678,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 44
       },
       "id": 6,
       "panels": [],
@@ -1567,7 +1700,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 45
       },
       "id": 68,
       "interval": "",
@@ -1658,7 +1791,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 45
       },
       "id": 70,
       "links": [],
@@ -1843,7 +1976,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 53
       },
       "id": 72,
       "links": [],
@@ -1960,7 +2093,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 59
       },
       "id": 62,
       "interval": "",
@@ -2036,7 +2169,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 63
       },
       "id": 74,
       "links": [],
@@ -2151,7 +2284,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 66
       },
       "id": 88,
       "links": [],
@@ -2314,7 +2447,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 73
       },
       "id": 64,
       "interval": "",
@@ -2437,7 +2570,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 70
+        "y": 80
       },
       "id": 80,
       "panels": [],
@@ -2453,7 +2586,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 81
       },
       "id": 78,
       "links": [],
@@ -2740,7 +2873,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 77
+        "y": 87
       },
       "id": 82,
       "legend": {
@@ -2832,7 +2965,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 77
+        "y": 87
       },
       "id": 84,
       "legend": {
@@ -2921,7 +3054,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 95
       },
       "id": 86,
       "links": [],
@@ -3220,7 +3353,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 101
       },
       "id": 34,
       "panels": [],
@@ -3240,7 +3373,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 92
+        "y": 102
       },
       "id": 50,
       "legend": {
@@ -3333,7 +3466,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 92
+        "y": 102
       },
       "id": 52,
       "interval": "",
@@ -3425,7 +3558,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 92
+        "y": 102
       },
       "id": 54,
       "interval": "",
@@ -3526,7 +3659,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 100
+        "y": 110
       },
       "id": 56,
       "legend": {
@@ -3619,7 +3752,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 100
+        "y": 110
       },
       "id": 58,
       "legend": {
@@ -3711,7 +3844,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 100
+        "y": 110
       },
       "id": 60,
       "legend": {
@@ -3797,7 +3930,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 118
       },
       "id": 36,
       "panels": [],
@@ -3818,7 +3951,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 109
+        "y": 119
       },
       "id": 32,
       "interval": "",
@@ -3911,7 +4044,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 109
+        "y": 119
       },
       "id": 40,
       "legend": {
@@ -4002,7 +4135,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 109
+        "y": 119
       },
       "id": 42,
       "legend": {
@@ -4093,7 +4226,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 118
+        "y": 128
       },
       "id": 44,
       "legend": {
@@ -4184,7 +4317,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 118
+        "y": 128
       },
       "id": 46,
       "legend": {
@@ -4275,7 +4408,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 118
+        "y": 128
       },
       "id": 48,
       "interval": "",
@@ -4355,7 +4488,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
@@ -4481,8 +4614,8 @@
     ]
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2019-09-27T15:52:55.690Z",
+    "to": "2019-09-27T15:53:16.719Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -4512,5 +4645,5 @@
   "timezone": "",
   "title": "HA SAP HANA detailed cluster timestamp dashboard",
   "uid": "EcC4JDFWz2",
-  "version": 2
+  "version": 1
 }
