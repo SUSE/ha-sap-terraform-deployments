@@ -182,6 +182,7 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     content = <<EOF
 provider: aws
+region: ${var.aws_region}
 role: monitoring
 devel_mode: ${var.devel_mode}
 name_prefix: ${terraform.workspace}-monitoring
@@ -190,7 +191,7 @@ hostname: ${terraform.workspace}-monitoring
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
