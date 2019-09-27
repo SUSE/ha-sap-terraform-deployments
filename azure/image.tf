@@ -26,7 +26,7 @@ variable "hana_public_sku" {
 
 variable "hana_public_version" {
   type    = string
-  default = "2019.03.06"
+  default = "latest"
 }
 
 variable "iscsi_public_publisher" {
@@ -46,7 +46,7 @@ variable "iscsi_public_sku" {
 
 variable "iscsi_public_version" {
   type    = string
-  default = "2019.07.17"
+  default = "latest"
 }
 
 variable "iscsi_srv_uri" {
