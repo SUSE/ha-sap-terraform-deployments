@@ -1,8 +1,8 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 data "azurerm_public_ip" "monitoring" {
-  count               = var.monitoring_enabled == true ? 1 : 0
-  name                = element(azurerm_public_ip.monitoring.*.name, count.index)
+  count = var.monitoring_enabled == true ? 1 : 0
+  name  = element(azurerm_public_ip.monitoring.*.name, count.index)
   resource_group_name = element(
     azurerm_virtual_machine.monitoring.*.resource_group_name,
     count.index,
@@ -23,8 +23,8 @@ output "iscsisrv_ip" {
 }
 
 data "azurerm_public_ip" "clusternodes" {
-  count               = var.ninstances
-  name                = element(azurerm_public_ip.clusternodes.*.name, count.index)
+  count = var.ninstances
+  name  = element(azurerm_public_ip.clusternodes.*.name, count.index)
   resource_group_name = element(
     azurerm_virtual_machine.clusternodes.*.resource_group_name,
     count.index,
