@@ -169,9 +169,9 @@ resource "azurerm_lb_rule" "lb_30317" {
 
 # NICs & Public IP resources
 
-
 resource "azurerm_network_interface" "monitoring" {
   name                      = "monitoring-nic"
+  count                     = var.monitoring_enabled == true ? 1 : 0
   location                  = var.az_region
   resource_group_name       = azurerm_resource_group.myrg.name
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
@@ -181,7 +181,7 @@ resource "azurerm_network_interface" "monitoring" {
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id          = azurerm_public_ip.monitoring.id
+    public_ip_address_id          = element(azurerm_public_ip.monitoring.*.id, count.index)
   }
 
   tags = {
@@ -189,9 +189,9 @@ resource "azurerm_network_interface" "monitoring" {
   }
 }
 
-
 resource "azurerm_public_ip" "monitoring" {
   name                    = "monitoring-ip"
+  count                   = var.monitoring_enabled == true ? 1 : 0
   location                = var.az_region
   resource_group_name     = azurerm_resource_group.myrg.name
   allocation_method       = "Dynamic"
@@ -201,9 +201,6 @@ resource "azurerm_public_ip" "monitoring" {
     workspace = terraform.workspace
   }
 }
-
-
-
 
 resource "azurerm_network_interface" "iscsisrv" {
   name                      = "iscsisrv-nic"
