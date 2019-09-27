@@ -4,23 +4,21 @@ terraform {
 
 
 resource "libvirt_volume" "monitoring_main_disk" {
-  name             = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
+  name             = "${terraform.workspace}-${var.name}-main-disk"
   base_volume_id   = var.base_image_id
   pool             = var.pool
-  count            = var.monitoring_count
 }
 
 
 resource "libvirt_domain" "monitoring_domain" {
-  name       = "${terraform.workspace}-${var.name}${var.monitoring_count > 1 ? "-${count.index + 1}" : ""}"
+  name       = "${terraform.workspace}-${var.name}"
   memory     = var.memory
   vcpu       = var.vcpu
-  count      = var.monitoring_count
   qemu_agent = true
   dynamic "disk" {
     for_each = [
         {
-          "vol_id" = element(libvirt_volume.monitoring_main_disk.*.id, count.index)
+          "vol_id" = libvirt_volume.monitoring_main_disk.id
         },
       ]
     content {
@@ -37,7 +35,7 @@ resource "libvirt_domain" "monitoring_domain" {
   network_interface {
     wait_for_lease = false
     network_id     = var.network_id
-    hostname       = "${var.name}${var.monitoring_count > 1 ? "0${count.index + 1}" : ""}"
+    hostname       = "${terraform.workspace}-${var.name}"
     addresses      = [var. monitoring_srv_ip]
   }
 
@@ -66,11 +64,11 @@ resource "libvirt_domain" "monitoring_domain" {
 
 output "configuration" {
   value = {
-    id       = libvirt_domain.monitoring_domain.*.id
-    hostname = libvirt_domain.monitoring_domain.*.name
+    id       = libvirt_domain.monitoring_domain.id
+    hostname = libvirt_domain.monitoring_domain.name
   }
 }
 
  output "addresses" {
-   value = flatten(libvirt_domain.monitoring_domain.*.network_interface.0.addresses)
+   value = flatten(libvirt_domain.monitoring_domain.network_interface.0.addresses)
 }
