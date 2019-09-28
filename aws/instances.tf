@@ -66,12 +66,12 @@ resource "aws_instance" "monitoring" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "60"
+    volume_size = "20"
   }
 
   ebs_block_device {
-    volume_type = "${var.hana_data_disk_type}"
-    volume_size = "60"
+    volume_type = "gp2"
+    volume_size = "20"
     device_name = "/dev/xvdd"
   }
 
