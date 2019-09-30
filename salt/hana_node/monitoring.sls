@@ -1,7 +1,10 @@
+{% set repository = 'SLE_'~grains['osrelease_info'][0] %}
+{% set repository = repository~'_SP'~grains['osrelease_info'][1] if grains['osrelease_info']|length > 1 else repository %}
+
 server_monitoring_repo:
  pkgrepo.managed:
-    - humanname: Server:SLE15:Monitoring
-    - baseurl: https://download.opensuse.org/repositories/server:/monitoring/SLE_15/
+    - humanname: Server:Monitoring
+    - baseurl: https://download.opensuse.org/repositories/server:/monitoring/{{ repository }}/
     - refresh: True
     - gpgautoimport: True
 
