@@ -150,8 +150,7 @@ EOF
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? 1 : 0
-
+  count = var.provisioner == "salt" ? length(aws_instance.monitoring) : 0
 
   triggers = {
     monitoring_id = join(",", aws_instance.monitoring.*.id)

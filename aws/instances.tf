@@ -56,6 +56,7 @@ resource "aws_instance" "clusternodes" {
 
 
 resource "aws_instance" "monitoring" {
+  count                       = var.monitoring_enabled == true ? 1 : 0
   ami                         = var.sles4sap[var.aws_region]
   instance_type               = var.instancetype
   key_name                    = aws_key_pair.mykey.key_name
