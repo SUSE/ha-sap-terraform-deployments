@@ -122,6 +122,7 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: gcp
 role: hana_node
+devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
@@ -143,6 +144,7 @@ qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
+monitoring_enabled: ${var.monitoring_enabled}
 reg_additional_modules: {${join(
     ", ",
     formatlist(
@@ -167,3 +169,64 @@ provisioner "remote-exec" {
 }
 }
 
+resource "null_resource" "monitoring_provisioner" {
+  count = var.provisioner == "salt" ? length(google_compute_instance.monitoring) : 0
+
+  triggers = {
+    cluster_instance_ids = join(",", google_compute_instance.monitoring.*.id)
+  }
+
+  connection {
+    host = element(
+      google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip,
+      count.index,
+    )
+    type        = "ssh"
+    user        = "root"
+    private_key = file(var.private_key_location)
+  }
+
+  provisioner "file" {
+    source      = var.gcp_credentials_file
+    destination = "/root/google_credentials.json"
+  }
+
+  provisioner "file" {
+    source      = "../salt"
+    destination = "/tmp"
+  }
+
+  provisioner "file" {
+    content     = data.template_file.salt_provisioner.rendered
+    destination = "/tmp/salt_provisioner.sh"
+  }
+
+  provisioner "file" {
+    content = <<EOF
+provider: gcp
+role: monitoring
+name_prefix: ${terraform.workspace}-monitoring
+host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+hostname: ${terraform.workspace}-monitoring
+network_domain: "tf.local"
+host_ip: ${var.monitoring_srv_ip}
+reg_code: ${var.reg_code}
+reg_email: ${var.reg_email}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
+additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
+monitoring_enabled: ${var.monitoring_enabled}
+monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
+ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
+EOF
+
+
+    destination = "/tmp/grains"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}

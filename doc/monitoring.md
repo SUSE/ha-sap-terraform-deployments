@@ -13,8 +13,7 @@ In order to enable/disable (disabled by default) the monitoring feature, you nee
 
 * libvirt: set `monitoring_enabled` variable to true/false (or just remove or add the `monitoring` module in your main.tf)
 
-* azure/aws: set `monitoring_enabled` variable to true/false.
-* GCP: Monitoring not supported yet.
+* azure/aws/gcp: set `monitoring_enabled` variable to true/false.
 
 This configuration will create an additional VM in the chosen provider and install all the required packages in the monitored hosts.
 IP address to the Grafana dashboard will be available in the final terraform output.
