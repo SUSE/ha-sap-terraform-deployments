@@ -4,6 +4,7 @@
 - [quickstart](#quickstart)
 - [highlevel description](#highlevel-description)
 - [advanced usage](#advanced-usage)
+- [monitoring](../doc/monitoring.md)
 - [specification](#specification)
 
 # Quickstart

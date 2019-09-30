@@ -117,3 +117,49 @@ resource "aws_security_group_rule" "ssh" {
   security_group_id = aws_security_group.secgroup.id
 }
 
+
+# Monitoring rules
+resource "aws_security_group_rule" "hanadb_exporter" {
+  count       = var.monitoring_enabled == true ? 1 : 0
+  type        = "ingress"
+  from_port   = 8001
+  to_port     = 8001
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.secgroup.id
+}
+
+
+resource "aws_security_group_rule" "node_exporter" {
+  count       = var.monitoring_enabled == true ? 1 : 0
+  type        = "ingress"
+  from_port   = 9100
+  to_port     = 9100
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.secgroup.id
+}
+
+resource "aws_security_group_rule" "ha_exporter" {
+  count       = var.monitoring_enabled == true ? 1 : 0
+  type        = "ingress"
+  from_port   = 9002
+  to_port     = 9002
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.secgroup.id
+}
+
+resource "aws_security_group_rule" "prometheus_server" {
+  count       = var.monitoring_enabled == true ? 1 : 0
+  type        = "ingress"
+  from_port   = 9090
+  to_port     = 9090
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.secgroup.id
+}
