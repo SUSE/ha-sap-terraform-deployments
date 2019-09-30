@@ -8,6 +8,7 @@ cluster:
     device: /dev/watchdog
   sbd:
     device: '/dev/sdd'
+  ntp: pool.ntp.org
   resource_agents:
     - SAPHanaSR
   ha_exporter: false

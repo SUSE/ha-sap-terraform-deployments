@@ -3,11 +3,12 @@
 - [quickstart](#quickstart)
 - [highlevel description](#highlevel-description)
 - [advanced usage](#advanced-usage)
+- [monitoring](../doc/monitoring.md)
 - [specification](#specification)
 
 # Quickstart
 
-## 1) Install the azure client 
+## 1) Install the azure client
 
 * [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
 
@@ -178,7 +179,7 @@ These files **aren't ready for deployment**, be careful to customize them or cre
 
 # Advanced usage
 
-## Terraform Azure CI 
+## Terraform Azure CI
 
 To setup the authentification for CI purposes you will need 4 variables:
 

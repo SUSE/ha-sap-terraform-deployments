@@ -6,6 +6,7 @@ variable "timezone" {
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string
+  default     = ""
 }
 
 variable "devel_mode" {

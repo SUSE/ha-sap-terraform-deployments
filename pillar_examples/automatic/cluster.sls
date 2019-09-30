@@ -18,8 +18,8 @@ cluster:
   sbd:
     device: {{ grains['sbd_disk_device'] }}
   join_timer: 20
-  {% if grains['provider'] == 'libvirt' %}
   ntp: pool.ntp.org
+  {% if grains['provider'] == 'libvirt' %}
   sshkeys:
     overwrite: true
     password: linux

@@ -19,3 +19,13 @@ node_exporter_service:
     - require:
       - pkg: prometheus_node_exporter
       - pkgrepo: server_monitoring_repo
+      - file: activate_node_exporter_systemd_collector
+    - watch:
+      - file: activate_node_exporter_systemd_collector
+
+activate_node_exporter_systemd_collector:
+  file.managed:
+    - name: /etc/sysconfig/prometheus-node_exporter
+    - makedirs: True
+    - contents: |
+        ARGS="--collector.systemd"
