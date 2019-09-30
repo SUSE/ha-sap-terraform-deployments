@@ -1,3 +1,9 @@
+variable "monitoring_image" {
+  description = "monitoring server base image"
+  type        = "string"
+  default     = ""
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"

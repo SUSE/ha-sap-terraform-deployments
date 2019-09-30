@@ -59,6 +59,12 @@ variable "monitoring_srv_ip" {
   type        = string
 }
 
+variable "monitoring_image" {
+  description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
+  type        = string
+  default     = ""
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""

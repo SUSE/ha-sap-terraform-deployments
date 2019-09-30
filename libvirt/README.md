@@ -21,9 +21,9 @@
 
 # Quickstart
 
-1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER``` 
+1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER```
 
-  For more doc, see: [workspace](../doc/workspaces-workflow.md). 
+  For more doc, see: [workspace](../doc/workspaces-workflow.md).
   If you don't create a new one, the string `default` will be used as workspace name. This is however highly discouraged since the workspace name is used as prefix for resources names, which can led to conflicts to unique names in a shared server ( when using a default name).
 
 2) Edit the `terraform.tfvars.example` file, following the Readme.md in the provider directory.
@@ -46,9 +46,6 @@ terraform apply
 terraform destroy
 ```
 
-
-
-
 # Design
 
 This project is mainly based in [sumaform](https://github.com/uyuni-project/sumaform/)
@@ -69,7 +66,7 @@ Besides that, the different kind of provisioners are available in this module. B
 `salt` is supported but more could be added just adding other `provisioner` files like
 [salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
-host module with some particular updates. 
+host module with some particular updates.
  The hana node contains also:
  * sbd device definition. Currently a shared disk.
 - [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
@@ -97,6 +94,7 @@ data.
 - **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
 - **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
 - **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
+- **monitoring_image**: Source image of the machine hosting the monitoring stack (if not set, the same image as the hana nodes will be used)
 - **monitoring_srv_ip**: IP address of the machine that will host the monitoring stack
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 - **devel_mode**: Whether or not to install HA/SAP packages from ha_sap_deployment_repo

@@ -19,7 +19,6 @@ ha_sap_deployment_repo = ""
 # Default is false
 devel_mode = false
 
-
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
@@ -39,6 +38,9 @@ devel_mode = false
 #background = true
 
 # Monitoring variables
+
+# Custom sles4sap image for the monitoring server. If not used the same image than the hana nodes will be used
+#monitoring_image = "url-to-your-sles4sap-image"
 
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
