@@ -58,7 +58,7 @@ resource "aws_instance" "clusternodes" {
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
   ami                         = var.sles4sap[var.aws_region]
-  instance_type               = var.instancetype
+  instance_type               = "t2.micro"
   key_name                    = aws_key_pair.mykey.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.local.id
@@ -72,7 +72,7 @@ resource "aws_instance" "monitoring" {
 
   ebs_block_device {
     volume_type = "gp2"
-    volume_size = "20"
+    volume_size = "10"
     device_name = "/dev/xvdd"
   }
 
