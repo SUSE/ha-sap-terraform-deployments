@@ -153,6 +153,9 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
  As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
  These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
+### Monitoring
+[Global monitoring documentation](../doc/monitoring.md)
+
 ### QA usage
  You may have noticed the variable *qa_mode*, this project is also used for QA testing.
 
