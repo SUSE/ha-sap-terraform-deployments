@@ -99,13 +99,11 @@ resource "libvirt_domain" "hana_domain" {
   }
 }
 
-output "configuration" {
+output "output_data" {
   value = {
-    id       = libvirt_domain.hana_domain.*.id
-    hostname = libvirt_domain.hana_domain.*.name
+    id                = libvirt_domain.hana_domain.*.id
+    hostname          = libvirt_domain.hana_domain.*.name
+    private_addresses = var.host_ips
+    addresses         = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
   }
-}
-
-output "addresses" {
-  value = flatten(libvirt_domain.hana_domain.*.network_interface.0.addresses)
 }

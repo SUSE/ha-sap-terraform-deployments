@@ -63,13 +63,11 @@ resource "libvirt_domain" "monitoring_domain" {
   }
 }
 
-output "configuration" {
+output "output_data" {
   value = {
-    id       = join(",", libvirt_domain.monitoring_domain.*.id)
-    hostname = join(",", libvirt_domain.monitoring_domain.*.name)
+    id                = libvirt_domain.monitoring_domain.*.id
+    hostname          = libvirt_domain.monitoring_domain.*.name
+    private_addresses = [var. monitoring_srv_ip]
+    addresses         = libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0
   }
-}
-
- output "addresses" {
-   value = flatten(libvirt_domain.monitoring_domain.*.network_interface.0.addresses)
 }
