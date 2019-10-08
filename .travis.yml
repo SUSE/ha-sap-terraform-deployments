@@ -15,7 +15,7 @@ matrix:
       install:
         - npm install -g jsonlint
       script:
-        - jsonlint salt/monitoring/provisioning/dashboards/*.json
+        - jsonlint -qc salt/monitoring/provisioning/dashboards/*.json
 
 notifications:
   email: true
