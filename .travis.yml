@@ -15,7 +15,12 @@ matrix:
       install:
         - npm install -g jsonlint
       script:
-        - jsonlint -qc salt/monitoring/provisioning/dashboards/*.json
+        - git ls-files | grep '.json$' | xargs -I {} jsonlint -qc {}
+    - language: python
+      install:
+        - pip install salt-lint
+      script:
+        - git ls-files | grep '.sls$' | xargs salt-lint
 
 notifications:
   email: true
