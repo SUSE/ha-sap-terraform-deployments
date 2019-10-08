@@ -11,7 +11,7 @@ matrix:
         - /tmp/terraform -version
       script:
         - .ci/validate-terraform.sh
-    - language: node
+    - language: node_js
       install:
         - npm install -g jsonlint
       script:
