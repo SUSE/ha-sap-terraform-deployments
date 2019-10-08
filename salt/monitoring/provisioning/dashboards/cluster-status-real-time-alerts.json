@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1570105756176,
+  "id": null,
+  "iteration": 0,
   "links": [],
   "panels": [
     {
@@ -2326,11 +2326,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "dma-dog-hana01",
-          "value": "dma-dog-hana01"
-        },
+        "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info, nodename)",
         "hide": 0,
@@ -2352,11 +2348,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "192.168.110.19",
-          "value": "192.168.110.19"
-        },
+        "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
         "hide": 0,
@@ -2378,11 +2370,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "dma-dog-hana01",
-          "value": "dma-dog-hana01"
-        },
+        "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
         "hide": 2,
@@ -2404,11 +2392,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "dma-dog-hana02",
-          "value": "dma-dog-hana02"
-        },
+        "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
         "hide": 2,
