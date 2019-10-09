@@ -4,7 +4,7 @@
     - source: salt://iscsi_srv/files/qa_conf/saveconfig.json
     - user: root
     - group: root
-    - mode: 600
+    - mode: "0600"
     - template: jinja
 
 restart_targetcli:
