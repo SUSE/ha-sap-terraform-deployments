@@ -1,0 +1,67 @@
+qemu_uri = "qemu:///system"
+sap_inst_media = "url-to-your-nfs-share"
+base_image = "url-to-your-sles4sap-image"
+iprange = "192.168.XXX.Y/24"
+host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+
+# Shared storage type information
+shared_storage_type = "iscsi"
+iscsi_srv_ip = "192.168.XXX.Y+2"
+iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+
+# Repository url used to install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
+ha_sap_deployment_repo = ""
+
+# Whether or not to install HA/SAP packages from ha_sap_deployment_repo
+# Default is false
+devel_mode = false
+
+# Optional SUSE Customer Center Registration parameters
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
+
+# Cost optimized scenario
+#scenario_type: "cost-optimized"
+
+# To disable the provisioning process
+#provisioner = ""
+
+# Run provisioner execution in background
+#background = true
+
+# Monitoring variables
+
+# Custom sles4sap image for the monitoring server. If not used the same image than the hana nodes will be used
+#monitoring_image = "url-to-your-sles4sap-image"
+
+# Enable the host to be monitored by exporters
+#monitoring_enabled = true
+
+# IP address of the machine where prometheus and grafana are running
+monitoring_srv_ip = "192.168.XXX.Y+2"
+
+# libvirt storage pool, select the libvirt storage pool where the volume will stored
+
+# storage_pool = "terraform"
+
+
+# QA variables
+
+# Define if the deployement is using for testing purpose
+# Disable all extra packages that do not come from the image
+# Except salt-minion (for the moment) and salt formulas
+# true or false
+#qa_mode = false
+
+# Execute HANA Hardware Configuration Check Tool to bench filesystems
+# qa_mode must be set to true for executing hwcct
+# true or false (default)
+#hwcct = false

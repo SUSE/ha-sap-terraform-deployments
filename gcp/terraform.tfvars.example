@@ -1,0 +1,104 @@
+project     = "my-project"
+
+# Credentials file for GCP
+gcp_credentials_file = "my-project.json"
+
+# Internal IPv4 range
+ip_cidr_range = "10.0.0.0/24"
+
+# IP for iSCSI server
+iscsi_ip = "10.0.0.253"
+
+# Type of VM (vCPUs and RAM)
+machine_type = "n1-highmem-8"
+machine_type_iscsi_server = "custom-1-2048"
+
+# Disk type for HANA
+hana_data_disk_type = "pd-ssd"
+
+# SSH private key file
+private_key_location = "/path/to/your/private/ssh/key"
+
+# SSH public key file
+public_key_location = "/path/to/your/public/ssh/key"
+
+# Region where to deploy the configuration
+region = "europe-west1"
+
+# The name of the GCP storage bucket in your project that contains the SAP HANA installation files
+sap_hana_deployment_bucket = "MyHanaBucket"
+
+# Custom sles4sap image
+sles4sap_boot_image = "MySles4SapImage"
+
+# Variable for init-nodes.tpl script. Can be all, skip-hana or skip-all
+init_type = "all"
+
+# Device used by the iSCSI server to provide LUNs
+iscsidev = "/dev/sdb"
+
+# Path to a custom ssh public key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
+
+# Path to a custom ssh private key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
+
+# Each host IP address (sequential order).
+# example : host_ips = ["10.0.0.2", "10.0.0.3"]
+host_ips = ["10.0.0.2", "10.0.0.3"]
+
+# Local folder where HANA installation master will be mounted
+hana_inst_folder = "/root/sap_inst/"
+
+# Device used by node where HANA will be installed
+hana_disk_device = "/dev/sdb"
+
+# Device used by node where HANA will be downloaded
+hana_inst_disk_device = "/dev/sdc"
+
+# Repository url used to install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
+ha_sap_deployment_repo = ""
+
+# Optional SUSE Customer Center Registration parameters
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
+
+# Cost optimized scenario
+#scenario_type: "cost-optimized"
+
+# To disable the provisioning process
+#provisioner = ""
+
+# Run provisioner execution in background
+#background = true
+
+# Monitoring variables
+
+# Enable the host to be monitored by exporters
+#monitoring_enabled = true
+
+# IP address of the machine where Prometheus and Grafana are running
+monitoring_srv_ip = "10.0.0.4"
+
+# QA variables
+
+# Define if the deployment is using for testing purpose
+# Disable all extra packages that do not come from the image
+# Except salt-minion (for the moment) and salt formulas
+# true or false (default)
+#qa_mode = false
+
+# Execute HANA Hardware Configuration Check Tool to bench filesystems
+# qa_mode must be set to true for executing hwcct
+# true or false (default)
+#hwcct = false

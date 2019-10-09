@@ -3,7 +3,7 @@ hana:
   nodes:
     - host: 'hana01'
       sid: 'prd'
-      instance: 00
+      instance: "00"
       password: 'SET YOUR PASSWORD'
       install:
         software_path: '/root/sap_inst/'
@@ -26,7 +26,7 @@ hana:
 
     - host: 'hana02'
       sid: 'prd'
-      instance: 00
+      instance: "00"
       password: 'SET YOUR PASSWORD'
       install:
         software_path: '/root/sap_inst/'
@@ -37,6 +37,6 @@ hana:
       secondary:
         name: SECONDARY_SITE_NAME
         remote_host: 'hana01'
-        remote_instance: 00
+        remote_instance: "00"
         replication_mode: 'sync'
         operation_mode: 'logreplay'

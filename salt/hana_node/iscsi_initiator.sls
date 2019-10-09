@@ -23,6 +23,6 @@ iscsi_discovery:
     - name: until iscsiadm -m discovery -t st -p "{{ grains['iscsi_srv_ip'] }}:3260" -l -o new;do sleep 10;done
     - output_loglevel: quiet
     - hide_output: True
-    - timeout: 15000
+    - timeout: 2400
     - onchanges:
       - service: iscsid

@@ -28,4 +28,4 @@ legacy_permanent_hostname:
   file.managed:
     - name: /etc/HOSTNAME
     - follow_symlinks: False
-    - contents: {{ grains['hostname'] }}.{{ grains['domain'] }}
+    - contents: {{ grains['hostname'] }}.{{ grains['network_domain'] }}

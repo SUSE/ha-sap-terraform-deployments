@@ -1,4 +1,4 @@
-{% if grains['qa_mode']|default(false) is sameas false %}
+{% if not grains.get('qa_mode') %}
 {% if grains['reg_code'] %}
 register_system:
   cmd.run:

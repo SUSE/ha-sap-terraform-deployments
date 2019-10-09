@@ -1,7 +1,7 @@
 {% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
 
 cluster:
-  {% if grains['qa_mode']|default(false) is sameas true %}
+  {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
   name: hacluster
@@ -18,20 +18,29 @@ cluster:
   sbd:
     device: {{ grains['sbd_disk_device'] }}
   join_timer: 20
-  {% if grains['provider'] == 'libvirt' %}
   ntp: pool.ntp.org
+  {% if grains['provider'] == 'libvirt' %}
   sshkeys:
     overwrite: true
     password: linux
   {% endif %}
   resource_agents:
     - SAPHanaSR
-
+  {% if grains.get('monitoring_enabled', False) %}
+  ha_exporter: true
+  {% else %}
+  ha_exporter: false
+  {% endif %}
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     method: update
     template:
+      # When the package salt-standalone-formulas-configuration is finally released, only the first path will be used
+      {% if grains['osrelease_info'][0] == 15 and grains['osrelease_info']|length > 1 and grains['osrelease_info'][1] >= 1 %}
+      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
+      {% else %}
       source: /srv/salt/hana/templates/scale_up_resources.j2
+      {% endif %}
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
