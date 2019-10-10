@@ -81,3 +81,10 @@ groups:
       severity: page
     annotations:
       summary: hanadb exporter service not running
+
+  - alert: node-filesystem-space-low
+    expr: ((node_filesystem_size_bytes{fstype!="tmpfs"} - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100) > 90
+    labels:
+      severity: page
+    annotations:
+      summary: node filesystem space usage is higher than 90%
