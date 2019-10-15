@@ -96,7 +96,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"})",
           "instant": true,
           "refId": "A"
         }
@@ -179,7 +179,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"})",
           "instant": true,
           "refId": "A"
         }
@@ -237,7 +237,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"})",
           "instant": true,
           "refId": "A"
         }
@@ -310,7 +310,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -394,7 +394,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -477,7 +477,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -562,7 +562,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
           "instant": true,
           "refId": "A"
         }
@@ -645,7 +645,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"})",
           "instant": true,
           "refId": "A"
         }
@@ -728,7 +728,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"})",
           "instant": true,
           "refId": "A"
         }
@@ -787,7 +787,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -838,7 +838,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -913,7 +913,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
           "instant": true,
           "refId": "A"
         }
@@ -996,7 +996,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1079,7 +1079,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"})",
+          "expr": "count(ha_cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1162,7 +1162,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1245,7 +1245,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1567,22 +1567,22 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
           "legendFormat": "expected_votes",
           "refId": "A"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
           "legendFormat": "highest_expected_votes",
           "refId": "B"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
           "legendFormat": "total votes",
           "refId": "C"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
           "legendFormat": "quorum",
           "refId": "D"
         }
@@ -1655,7 +1655,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
           "refId": "A"
         }
       ],
@@ -2177,7 +2177,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_sbd_device_status{instance=~\"$hana_node_ip:9002\", device_name=\"/dev/vdc\"}",
+          "expr": "ha_cluster_sbd_device_status{instance=~\"$hana_node_ip:9002\", device_name=\"/dev/vdc\"}",
           "legendFormat": "SBD device vdc  status",
           "refId": "A"
         }
@@ -2270,7 +2270,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
           "refId": "A"
         }
       ],
