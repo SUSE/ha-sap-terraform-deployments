@@ -787,7 +787,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\",node_name=~\".*01\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -838,7 +838,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
+          "expr": "count(ha_cluster_node_resources{instance=~\"$hana_node_ip:9002\", node_name=~\".*02\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
