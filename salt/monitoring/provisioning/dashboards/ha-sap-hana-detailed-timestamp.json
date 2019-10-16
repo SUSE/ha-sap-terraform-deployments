@@ -225,7 +225,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
           "legendFormat": "ring errors",
           "refId": "A"
         }
