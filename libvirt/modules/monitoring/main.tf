@@ -2,23 +2,24 @@ terraform {
   required_version = ">= 0.12"
 }
 
-
 resource "libvirt_volume" "monitoring_main_disk" {
-  name             = "${terraform.workspace}-${var.name}-main-disk"
-  base_volume_id   = var.base_image_id
-  pool             = var.pool
+  name            = format("%s-monitoring-disk", terraform.workspace)
+  source          = var.monitoring_image
+  base_volume_id  = var.monitoring_image == "" ? var.base_image_id: ""
+  pool            = var.pool
+  count           = var.monitoring_count
 }
-
 
 resource "libvirt_domain" "monitoring_domain" {
   name       = "${terraform.workspace}-${var.name}"
+  count      = var.monitoring_count
   memory     = var.memory
   vcpu       = var.vcpu
   qemu_agent = true
   dynamic "disk" {
     for_each = [
         {
-          "vol_id" = libvirt_volume.monitoring_main_disk.id
+          "vol_id" = element(libvirt_volume.monitoring_main_disk.*.id, count.index)
         },
       ]
     content {
@@ -62,13 +63,11 @@ resource "libvirt_domain" "monitoring_domain" {
   }
 }
 
-output "configuration" {
+output "output_data" {
   value = {
-    id       = libvirt_domain.monitoring_domain.id
-    hostname = libvirt_domain.monitoring_domain.name
+    id                = libvirt_domain.monitoring_domain.*.id
+    hostname          = libvirt_domain.monitoring_domain.*.name
+    private_addresses = [var. monitoring_srv_ip]
+    addresses         = libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0
   }
-}
-
- output "addresses" {
-   value = flatten(libvirt_domain.monitoring_domain.network_interface.0.addresses)
 }

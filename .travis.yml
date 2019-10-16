@@ -1,16 +1,26 @@
 dist: xenial
 
-language: bash
+matrix:
+  include:
+    - language: bash
+      install:
+        - set -e
+        - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
+        - unzip /tmp/terraform -d /tmp
+        - chmod +x /tmp/terraform
+        - /tmp/terraform -version
+      script:
+        - .ci/validate-terraform.sh
+    - language: node_js
+      install:
+        - npm install -g jsonlint
+      script:
+        - git ls-files | grep '.json$' | xargs -I {} jsonlint -qc {}
+    - language: python
+      install:
+        - pip install salt-lint
+      script:
+        - git ls-files | grep '.sls$' | xargs salt-lint
 
 notifications:
   email: true
-
-before_script:
-  - set -e
-  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
-  - unzip /tmp/terraform -d /tmp
-  - chmod +x /tmp/terraform
-  - /tmp/terraform -version
-
-script:
-  - .ci/validate-terraform.sh

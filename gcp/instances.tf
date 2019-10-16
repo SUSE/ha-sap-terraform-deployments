@@ -94,3 +94,47 @@ resource "google_compute_instance" "clusternodes" {
   }
 }
 
+resource "google_compute_instance" "monitoring" {
+  count        = var.monitoring_enabled == true ? 1 : 0
+  name         = "${terraform.workspace}-monitoring"
+  description  = "Monitoring server"
+  machine_type = "custom-1-2048"
+  zone         = element(data.google_compute_zones.available.names, 1)
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.ha_subnet.name
+    network_ip = var.monitoring_srv_ip
+
+    access_config {
+      nat_ip = ""
+    }
+  }
+
+  scheduling {
+    automatic_restart   = true
+    on_host_maintenance = "MIGRATE"
+    preemptible         = false
+  }
+
+  boot_disk {
+    initialize_params {
+      image = var.sles4sap_boot_image
+    }
+
+    auto_delete = true
+  }
+
+  attached_disk {
+    source      = element(google_compute_disk.monitoring_data.*.self_link, count.index)
+    device_name = element(google_compute_disk.monitoring_data.*.name, count.index)
+    mode        = "READ_WRITE"
+  }
+
+  metadata = {
+    sshKeys = "root:${file(var.public_key_location)}"
+  }
+}

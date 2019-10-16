@@ -13,12 +13,12 @@ In order to enable/disable (disabled by default) the monitoring feature, you nee
 
 * libvirt: set `monitoring_enabled` variable to true/false (or just remove or add the `monitoring` module in your main.tf)
 
-* azure: set `monitoring_enabled` variable to true/false.
+* azure/aws/gcp: set `monitoring_enabled` variable to true/false.
 
 This configuration will create an additional VM in the chosen provider and install all the required packages in the monitored hosts.
 IP address to the Grafana dashboard will be available in the final terraform output.
 
-`NOTE`: In future (azure and other cloud provider) they will be refactored and unified later with module similar to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
+`NOTE`: In future monitoring in cloud providers are going to be refactored and unified later with module similar to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
 
 # Hosts Exporters
 

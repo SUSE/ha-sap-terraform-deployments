@@ -82,6 +82,14 @@ ha_sap_deployment_repo = ""
 # Run provisioner execution in background
 #background = true
 
+# Monitoring variables
+
+# Enable the host to be monitored by exporters
+#monitoring_enabled = true
+
+# IP address of the machine where Prometheus and Grafana are running
+monitoring_srv_ip = "10.0.0.4"
+
 # QA variables
 
 # Define if the deployment is using for testing purpose

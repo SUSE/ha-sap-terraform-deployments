@@ -5,7 +5,7 @@ hana:
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
-      instance: 00
+      instance: "00"
       password: YourPassword1234
       install:
         software_path: /root/sap_inst/51053787
@@ -38,7 +38,7 @@ hana:
 
     - host: {{ grains['name_prefix'] }}02
       sid: prd
-      instance: 00
+      instance: "00"
       password: YourPassword1234
       {% if grains['scenario_type'] == 'cost-optimized' %}
       scenario_type: 'cost-optimized'
@@ -59,14 +59,14 @@ hana:
       secondary:
         name: SECONDARY_SITE_NAME
         remote_host: {{ grains['name_prefix'] }}01
-        remote_instance: 00
+        remote_instance: "00"
         replication_mode: sync
         operation_mode: logreplay
         primary_timeout: 3000
     {% if grains['scenario_type'] == 'cost-optimized' %}
     - host: {{ grains['name_prefix'] }}02
       sid: qas
-      instance: 01
+      instance: "01"
       password: YourPassword1234
       scenario_type: 'cost-optimized'
       cost_optimized_parameters:

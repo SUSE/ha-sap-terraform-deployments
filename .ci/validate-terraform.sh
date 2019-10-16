@@ -2,7 +2,6 @@
 set -e
 find . -name \*.sh -exec bash -n {} \;
 find . -name \*.tpl | while read f ; do head -1 "$f" | grep -qnE '^#! ?/bin/(ba)?sh' && bash -n "$f" ; done
-find . -name \*.json -type f | while read f ; do cat "$f" | python -m json.tool >/dev/null ; done
 
 echo "executing terraform check , init and validate for each provider"
 for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples'); do

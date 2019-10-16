@@ -54,3 +54,29 @@ resource "aws_instance" "clusternodes" {
   }
 }
 
+
+resource "aws_instance" "monitoring" {
+  count                       = var.monitoring_enabled == true ? 1 : 0
+  ami                         = var.sles4sap[var.aws_region]
+  instance_type               = "t2.micro"
+  key_name                    = aws_key_pair.mykey.key_name
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.local.id
+  private_ip                  = var.monitoring_srv_ip
+  security_groups             = [aws_security_group.secgroup.id]
+
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "20"
+  }
+
+  ebs_block_device {
+    volume_type = "gp2"
+    volume_size = "10"
+    device_name = "/dev/xvdd"
+  }
+
+  tags = {
+    Name = "${terraform.workspace} - Monitoring"
+  }
+}

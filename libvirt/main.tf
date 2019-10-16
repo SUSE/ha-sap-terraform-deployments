@@ -16,6 +16,7 @@ resource "libvirt_volume" "base_image" {
 // the network used by all modules
 resource "libvirt_network" "isolated_network" {
   name      = "${terraform.workspace}-isolated"
+  bridge    = var.isolated_network_bridge
   mode      = "none"
   addresses = [var.iprange]
   dhcp {
@@ -87,6 +88,7 @@ module "monitoring" {
   source                 = "./modules/monitoring"
   name                   = "monitoring"
   monitoring_count       = var.monitoring_enabled == true ? 1 : 0
+  monitoring_image       = var.monitoring_image
   base_image_id          = libvirt_volume.base_image.id
   vcpu                   = 4
   memory                 = 4095

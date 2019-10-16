@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "libvirt_volume" "iscsi_image_disk" {
-  name   = format("%s-iscsi-disk", terraform.workspace) 
+  name   = format("%s-iscsi-disk", terraform.workspace)
   source = var.iscsi_image
   pool   = var.pool
   count  = var.iscsi_count
@@ -35,7 +35,7 @@ resource "libvirt_domain" "iscsisrv" {
       volume_id = disk.value.vol_id
     }
   }
-  
+
   network_interface {
     network_name   = var.network_name
     bridge         = var.bridge
@@ -72,13 +72,11 @@ resource "libvirt_domain" "iscsisrv" {
   }
 }
 
-output "configuration" {
+output "output_data" {
   value = {
-    id       = join(",", libvirt_domain.iscsisrv.*.id)
-    hostname = join(",", libvirt_domain.iscsisrv.*.name)
+    id                = libvirt_domain.iscsisrv.*.id
+    hostname          = libvirt_domain.iscsisrv.*.name
+    private_addresses = [var.iscsi_srv_ip]
+    addresses         = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
   }
-}
-
-output "addresses" {
-  value = join(",", flatten(libvirt_domain.iscsisrv.*.network_interface.0.addresses))
 }

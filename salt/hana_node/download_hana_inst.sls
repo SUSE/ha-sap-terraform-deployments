@@ -12,7 +12,10 @@ download_files_from_s3:
 
 hana_inst_partition:
   cmd.run:
-    - name: /usr/sbin/parted -s {{grains['hana_inst_disk_device']}} mklabel msdos && /usr/sbin/parted -s {{grains['hana_inst_disk_device']}} mkpart primary ext2 1M 100% && sleep 1 && /sbin/mkfs -t xfs {{grains['hana_inst_disk_device']}}1
+    - name: |
+        /usr/sbin/parted -s {{ grains['hana_inst_disk_device'] }} mklabel msdos && \
+        /usr/sbin/parted -s {{ grains['hana_inst_disk_device'] }} mkpart primary ext2 1M 100% && sleep 1 && \
+        /sbin/mkfs -t xfs {{ grains['hana_inst_disk_device'] }}1
     - unless: ls {{ grains['hana_inst_disk_device'] }}1
     - require:
       - pkg: parted
@@ -21,7 +24,7 @@ hana_inst_directory:
   file.directory:
     - name: {{ grains['hana_inst_folder'] }}
     - user: root
-    - mode: 755
+    - mode: "0755"
     - makedirs: True
   mount.mounted:
     - name: {{ grains['hana_inst_folder'] }}
@@ -53,8 +56,8 @@ download_files_from_gcp:
   file.directory:
     - user: root
     - group: root
-    - dir_mode: 754
-    - file_mode: 755
+    - dir_mode: "0754"
+    - file_mode: "0755"
     - recurse:
       - user
       - group
