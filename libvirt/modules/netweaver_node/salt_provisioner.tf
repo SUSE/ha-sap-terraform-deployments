@@ -35,8 +35,8 @@ resource "null_resource" "netweaver_node_provisioner" {
 
   provisioner "file" {
 content = <<EOF
-name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}
+name_prefix: ${var.name}
+hostname: ${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}

@@ -1,10 +1,12 @@
 qemu_uri = "qemu:///system"
 sap_inst_media = "url-to-your-nfs-share"
-netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
+# NFS share to store the Netweaver shared files
+#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 base_image = "url-to-your-sles4sap-image"
 iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
-nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+# IP addresses of the machines hosting Netweaver instances
+#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"

@@ -5,6 +5,7 @@
 - [Requirements](#requirements)
 - [Howto](#quickstart)
 - [Monitoring](../doc/monitoring.md)
+- [Netwearver](../doc/netweaver.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
@@ -21,9 +22,9 @@
 
 # Quickstart
 
-1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER``` 
+1) Make sure you use terraform workspaces, create new one with: ```terraform workspace new $USER```
 
-  For more doc, see: [workspace](../doc/workspaces-workflow.md). 
+  For more doc, see: [workspace](../doc/workspaces-workflow.md).
   If you don't create a new one, the string `default` will be used as workspace name. This is however highly discouraged since the workspace name is used as prefix for resources names, which can led to conflicts to unique names in a shared server ( when using a default name).
 
 2) Edit the `terraform.tfvars.example` file, following the Readme.md in the provider directory.
@@ -69,7 +70,7 @@ Besides that, the different kind of provisioners are available in this module. B
 `salt` is supported but more could be added just adding other `provisioner` files like
 [salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
-host module with some particular updates. 
+host module with some particular updates.
  The hana node contains also:
  * sbd device definition. Currently a shared disk.
 - [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.

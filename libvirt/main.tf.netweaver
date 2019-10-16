@@ -1,0 +1,54 @@
+provider "libvirt" {
+  uri = var.qemu_uri
+}
+
+// ---------------------------------------
+// this 2 resources are shared among the modules
+// baseimage for hana and monitoring modules.
+// you can also change it for each modules
+// baseimage is "cloned" and used centrally by other domains
+resource "libvirt_volume" "base_image" {
+  name   = "${terraform.workspace}-baseimage"
+  source = var.base_image
+  pool   = var.storage_pool
+}
+
+// the network used by all modules
+resource "libvirt_network" "isolated_network" {
+  name      = "${terraform.workspace}-isolated"
+  mode      = "none"
+  addresses = [var.iprange]
+  dhcp {
+    enabled = "false"
+  }
+  autostart = true
+}
+
+module "nw_shared_disk" {
+  source             = "./modules/shared_disk"
+  name               = "netweaver-shared"
+  pool               = var.storage_pool
+  shared_disk_size   = 68719476736
+}
+
+module "netweaver_node" {
+  source                 = "./modules/netweaver_node"
+  name                   = "netweaver"
+  base_image_id          = libvirt_volume.base_image.id
+  netweaver_count        = 4
+  vcpu                   = 4
+  memory                 = 8192
+  bridge                 = "br0"
+  pool                   = var.storage_pool
+  network_id             = libvirt_network.isolated_network.id
+  host_ips               = var.nw_ips
+  shared_disk_id         = module.nw_shared_disk.id
+  sap_inst_media         = var.sap_inst_media
+  netweaver_nfs_share    = var.netweaver_nfs_share
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  provisioner            = var.provisioner
+  background             = var.background
+}
