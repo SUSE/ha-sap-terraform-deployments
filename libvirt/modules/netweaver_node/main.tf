@@ -73,6 +73,7 @@ output "output_data" {
   value = {
     id                = libvirt_domain.netweaver_domain.*.id
     hostname          = libvirt_domain.netweaver_domain.*.name
-    private_addresses = var.nw_ips
+    private_addresses = var.host_ips
     addresses         = libvirt_domain.netweaver_domain.*.network_interface.0.addresses.0
   }
+}

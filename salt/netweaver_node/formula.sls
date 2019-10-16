@@ -1,7 +1,7 @@
 /srv/pillar:
   file.directory:
     - user: root
-    - mode: 755
+    - mode: '0755'
     - makedirs: True
 
 /srv/salt/top.sls:

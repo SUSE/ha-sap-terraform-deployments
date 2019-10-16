@@ -45,11 +45,11 @@ module "iscsi_server" {
 }
 
 module "sbd_disk" {
-  source             = "./modules/shared_disk"
-  shared_disk_count  = var.shared_storage_type == "shared-disk" ? 1 : 0
-  name               = "sbd"
-  pool               = var.storage_pool
-  shared_disk_size   = 104857600
+  source            = "./modules/shared_disk"
+  shared_disk_count = var.shared_storage_type == "shared-disk" ? 1 : 0
+  name              = "sbd"
+  pool              = var.storage_pool
+  shared_disk_size  = 104857600
 }
 
 // hana01 and hana02

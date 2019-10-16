@@ -5,7 +5,7 @@
 - [Requirements](#requirements)
 - [Howto](#quickstart)
 - [Monitoring](../doc/monitoring.md)
-- [Netwearver](../doc/netweaver.md)
+- [Netweaver](../doc/netweaver.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)

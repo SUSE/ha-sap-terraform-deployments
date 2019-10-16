@@ -22,7 +22,7 @@ netweaver:
   hana:
     host: {{ iprange }}.200
     sid: PRD
-    instance: 00
+    instance: '00'
     password: YourPassword1234
 
   schema:
@@ -33,7 +33,7 @@ netweaver:
     - host: {{ grains['name_prefix'] }}01
       virtual_host: sapha1as
       sid: HA1
-      instance: 00
+      instance: '00'
       root_user: root
       root_password: linux
       master_password: SuSE1234
@@ -44,7 +44,7 @@ netweaver:
     - host: {{ grains['name_prefix'] }}02
       virtual_host: sapha1er
       sid: HA1
-      instance: 10
+      instance: '10'
       root_user: root
       root_password: linux
       master_password: SuSE1234
@@ -54,7 +54,7 @@ netweaver:
     - host: {{ grains['name_prefix'] }}03
       virtual_host: sapha1db
       sid: HA1
-      instance: 00
+      instance: '00'
       root_user: root
       root_password: linux
       master_password: SuSE1234
@@ -64,7 +64,7 @@ netweaver:
       virtual_host: sapha1pas
       ascs_virtual_host: sapha1as
       sid: HA1
-      instance: 01
+      instance: '01'
       root_user: root
       root_password: linux
       master_password: SuSE1234
@@ -73,7 +73,7 @@ netweaver:
     - host: {{ grains['name_prefix'] }}04
       virtual_host: sapha1aas
       sid: HA1
-      instance: 02
+      instance: '02'
       root_user: root
       root_password: linux
       master_password: SuSE1234
