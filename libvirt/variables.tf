@@ -147,6 +147,11 @@ variable "monitoring_enabled" {
   default     = false
 }
 
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver deployment"
+  default     = false
+}
+
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false

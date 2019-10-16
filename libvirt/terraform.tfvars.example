@@ -1,12 +1,8 @@
 qemu_uri = "qemu:///system"
 sap_inst_media = "url-to-your-nfs-share"
-# NFS share to store the Netweaver shared files
-#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 base_image = "url-to-your-sles4sap-image"
 iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
-# IP addresses of the machines hosting Netweaver instances
-#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
@@ -52,10 +48,20 @@ devel_mode = false
 # IP address of the machine where prometheus and grafana are running
 monitoring_srv_ip = "192.168.XXX.Y+7"
 
+# Netweaver variables
+
+# NFS share to store the Netweaver shared files
+#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
+
+# IP addresses of the machines hosting Netweaver instances
+#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+
+# Enable/disable Netweaver deployment
+#netweaver_enabled = true
+
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
 # storage_pool = "terraform"
-
 
 # QA variables
 
