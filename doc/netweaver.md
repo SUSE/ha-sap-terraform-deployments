@@ -23,7 +23,7 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - Netweaver installation software (`swpm`) must be available in `sap_inst_media` NFS share. This folder must contain the `swpm` and `sapexe` folders (optionally the `Netweaver Export` and `HANA HDB Client` folder if the Database, PAS and AAS instances are installed).
 
-- Add the `nw_shared_disk` and `netweaver_node` terraform components to the [main.tf](../libvirt/main.tf) file. An example is available in [main.tf.netweaver](../libvirt/main.tf.netweaver). By default 4 new virtual machines will be created to host the ASCS, ERS, PAS and AAS but this might be customized to fit other requirements. To change this update the `netweaver_count` variable.
+- Add the `nw_shared_disk` and `netweaver_node` terraform components to the [main.tf](../libvirt/main.tf) file. An example is available in [main.tf.netweaver](../libvirt/main.tf.netweaver). By default 4 new virtual machines will be created to host the ASCS, ERS, PAS and AAS but this might be customized to fit other requirements. To change this update the `netweaver_count` variable. The outputs of the `main.tf.netweaver` should be copied to the main `outputs.tf` file too.
 
 - Add new additional IP addresses to the variable `nw_ips` in the `terraform.tfvars`. This variable is a list containing the IP address of the new virtual machines hosting the Netweaver components, so if 4 virtual machines are used (default option) 4 addresses must be added there in the same range that the machines hosting the Hana database.
 

@@ -47,15 +47,3 @@ output "monitoring_name" {
 output "monitoring_public_name" {
   value = []
 }
-
-output "netweaver_nodes_ip" {
-  value = module.netweaver_node.addresses
-}
-
-output "netweaver_nodes_id" {
-  value = module.netweaver_node.configuration.id
-}
-
-output "netweaver_nodes_names" {
-  value = module.netweaver_node.configuration.hostname
-}

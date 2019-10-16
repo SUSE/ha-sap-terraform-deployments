@@ -69,13 +69,10 @@ resource "libvirt_domain" "netweaver_domain" {
   }
 }
 
-output "configuration" {
+output "output_data" {
   value = {
-    id       = libvirt_domain.netweaver_domain.*.id
-    hostname = libvirt_domain.netweaver_domain.*.name
+    id                = libvirt_domain.netweaver_domain.*.id
+    hostname          = libvirt_domain.netweaver_domain.*.name
+    private_addresses = var.nw_ips
+    addresses         = libvirt_domain.netweaver_domain.*.network_interface.0.addresses.0
   }
-}
-
-output "addresses" {
-  value = flatten(libvirt_domain.netweaver_domain.*.network_interface.0.addresses)
-}
