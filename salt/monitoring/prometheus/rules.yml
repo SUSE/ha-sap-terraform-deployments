@@ -1,4 +1,5 @@
 groups:
+# sap alerts
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
@@ -15,6 +16,7 @@ groups:
     annotations:
       summary: slave resource absent
 
+# ha cluster alerts
 - name: cluster-resources-monitoring
   rules:
   - alert: cluster-resources-a-resource-failed
@@ -24,6 +26,18 @@ groups:
     annotations:
       summary: a cluster resource failed
 
+# sbd alerts
+
+- name: sbd-device-alerts
+  rules:
+  - alert: a-sbd-device-unhealthy
+    expr: ha_cluster_sbd_device_status == 0
+    labels:
+      severity: page
+    annotations:
+      summary: a sbd device in the HA cluster is unhealthy
+
+# systemd services alerts
 - name: systemd-services-monitoring
   rules:
   - alert: service-down-pacemaker
