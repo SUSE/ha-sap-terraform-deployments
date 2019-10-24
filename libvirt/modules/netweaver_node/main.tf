@@ -6,9 +6,7 @@ resource "libvirt_volume" "netweaver_main_disk" {
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  #name       = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}"
-  # Netweaver hosts should not have the hostname with more than 15 characters
-  name       = "${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}"
+  name       = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.netweaver_count
