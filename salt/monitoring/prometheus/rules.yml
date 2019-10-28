@@ -3,14 +3,14 @@ groups:
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
-    expr: absent(ha_cluster_node_resources{resource_name=~"rsc_saphana_.*",role="master"})
+    expr: absent(ha_cluster_pacemaker_resources{resource_name=~"rsc_saphana_.*",role="master"})
     labels:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
 
   - alert: sap-hana-secondary-resource-absent
-    expr: absent(ha_cluster_node_resources{resource_name=~"rsc_saphana_.*",role="slave",status="active"})
+    expr: absent(ha_cluster_pacemaker_resources{resource_name=~"rsc_saphana_.*",role="slave",status="active"})
     labels:
       severity: page
     annotations:
@@ -20,7 +20,7 @@ groups:
 - name: cluster-resources-monitoring
   rules:
   - alert: cluster-resources-a-resource-failed
-    expr: count(ha_cluster_node_resources{status="failed"}) > 0
+    expr: count(ha_cluster_pacemaker_resources{status="failed"}) > 0
     labels:
       severity: page
     annotations:
