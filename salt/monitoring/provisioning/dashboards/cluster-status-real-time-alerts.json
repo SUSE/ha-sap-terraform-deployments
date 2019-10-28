@@ -16,23 +16,9 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 0,
+  "iteration": 1571999256957,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 121,
-      "panels": [],
-      "title": "HA monitoring",
-      "type": "row"
-    },
     {
       "cacheTimeout": null,
       "colorBackground": false,
@@ -54,7 +40,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "id": 106,
       "interval": null,
@@ -137,7 +123,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 0
       },
       "id": 102,
       "interval": null,
@@ -204,7 +190,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 0
       },
       "id": 92,
       "options": {
@@ -268,7 +254,7 @@
         "h": 3,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 0
       },
       "id": 112,
       "interval": null,
@@ -351,7 +337,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 4
+        "y": 3
       },
       "id": 90,
       "interval": null,
@@ -435,7 +421,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 4
+        "y": 3
       },
       "id": 104,
       "interval": null,
@@ -519,7 +505,7 @@
         "h": 3,
         "w": 8,
         "x": 16,
-        "y": 4
+        "y": 3
       },
       "id": 116,
       "interval": null,
@@ -581,6 +567,19 @@
         }
       ],
       "valueName": "avg"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 121,
+      "panels": [],
+      "title": "HA monitoring",
+      "type": "row"
     },
     {
       "cacheTimeout": null,
@@ -1956,7 +1955,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
         "x": 0,
         "y": 19
@@ -2044,7 +2043,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
         "x": 3,
         "y": 19
@@ -2132,7 +2131,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 2,
         "x": 6,
         "y": 19
@@ -2298,6 +2297,99 @@
         }
       ],
       "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "description": "",
+      "gridPos": {
+        "h": 11,
+        "w": 11,
+        "x": 0,
+        "y": 23
+      },
+      "id": 144,
+      "interval": "",
+      "links": [],
+      "options": {
+        "displayMode": "basic",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ],
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "ha_cluster_pacemaker_fail_count{instance=~\"$hana_node_ip:9002\"}",
+          "intervalFactor": 1,
+          "legendFormat": "{{ node}} {{ resource }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Cluster resource failcount",
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "gridPos": {
+        "h": 11,
+        "w": 13,
+        "x": 11,
+        "y": 23
+      },
+      "id": 146,
+      "options": {
+        "displayMode": "basic",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "ha_cluster_pacemaker_migration_threshold{instance=~\"$hana_node_ip:9002\"}",
+          "hide": false,
+          "legendFormat": "{{ node }} {{resource}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Resource migration threshold",
+      "type": "bargauge"
     }
   ],
   "refresh": false,
@@ -2308,7 +2400,6 @@
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "Prometheus SHAP",
           "value": "Prometheus SHAP"
         },
@@ -2446,5 +2537,5 @@
   "timezone": "",
   "title": "HA SAP HANA  cluster status",
   "uid": "Q5YJpwtZk1",
-  "version": 1
+  "version": 3
 }
