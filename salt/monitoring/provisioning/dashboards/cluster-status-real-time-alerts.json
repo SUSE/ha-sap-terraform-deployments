@@ -50,7 +50,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 0,
+  "iteration": 1572353698030,
   "links": [],
   "panels": [
     {
@@ -2377,9 +2377,9 @@
       "colorBackground": true,
       "colorValue": false,
       "colors": [
-        "#299c46",
-        "#37872D",
-        "#d44a3a"
+        "#C4162A",
+        "#C4162A",
+        "#299c46"
       ],
       "format": "none",
       "gauge": {
@@ -2439,7 +2439,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "0.1",
+      "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
       "title": "Stonith Enabled",
@@ -2462,7 +2462,7 @@
           "value": "0"
         }
       ],
-      "valueName": "avg"
+      "valueName": "current"
     },
     {
       "cacheTimeout": null,
