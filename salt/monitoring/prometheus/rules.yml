@@ -102,3 +102,10 @@ groups:
       severity: page
     annotations:
       summary: node filesystem space usage is higher than 85%
+
+  - alert: stonith-disabled
+    expr: ha_cluster_pacemaker_stonith_enabled == 0
+    labels:
+      severity: page
+    annotations:
+      summary: stonith is disabled
