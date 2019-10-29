@@ -50,7 +50,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1572353698030,
+  "iteration": 1572355626950,
   "links": [],
   "panels": [
     {
@@ -2436,13 +2436,14 @@
       "targets": [
         {
           "expr": "ha_cluster_pacemaker_stonith_enabled{instance=~\"$hana_node_ip:9002\"}",
+          "instant": true,
           "refId": "A"
         }
       ],
       "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Stonith Enabled",
+      "title": "Fencing",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -2453,12 +2454,12 @@
         },
         {
           "op": "=",
-          "text": "YES",
+          "text": "ENABLED",
           "value": "1"
         },
         {
           "op": "=",
-          "text": "NO",
+          "text": "DISABLED",
           "value": "0"
         }
       ],
