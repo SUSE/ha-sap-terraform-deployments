@@ -1342,6 +1342,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -1430,6 +1435,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -1519,6 +1529,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -1751,6 +1766,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -1839,6 +1859,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -1927,6 +1952,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -2015,6 +2045,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
@@ -2103,6 +2138,11 @@
         {
           "op": "=",
           "text": "Stopped",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "Absent",
           "value": "null"
         },
         {
