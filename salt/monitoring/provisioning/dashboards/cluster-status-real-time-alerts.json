@@ -1581,22 +1581,22 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
           "legendFormat": "expected_votes",
           "refId": "A"
         },
         {
-          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
           "legendFormat": "highest_expected_votes",
           "refId": "B"
         },
         {
-          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
           "legendFormat": "total votes",
           "refId": "C"
         },
         {
-          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
           "legendFormat": "quorum",
           "refId": "D"
         }
