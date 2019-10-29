@@ -50,7 +50,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1572353379288,
+  "iteration": 0,
   "links": [],
   "panels": [
     {
@@ -2567,7 +2567,7 @@
       "type": "bargauge"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
