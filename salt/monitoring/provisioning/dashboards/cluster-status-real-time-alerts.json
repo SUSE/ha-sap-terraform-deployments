@@ -165,7 +165,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"shutdown\"})",
           "instant": true,
           "refId": "A"
         }
@@ -223,7 +223,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\"})",
           "instant": true,
           "refId": "A"
         }
@@ -380,7 +380,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -463,7 +463,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -644,7 +644,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"pending\"})",
           "instant": true,
           "refId": "A"
         }
@@ -727,7 +727,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"maintenance\"})",
           "instant": true,
           "refId": "A"
         }
@@ -995,7 +995,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"unclean\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1078,7 +1078,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"standby\"})",
           "instant": true,
           "refId": "A"
         }
