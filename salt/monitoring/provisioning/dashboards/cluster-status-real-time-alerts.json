@@ -2454,12 +2454,12 @@
         },
         {
           "op": "=",
-          "text": "ENABLED",
+          "text": "Enabled",
           "value": "1"
         },
         {
           "op": "=",
-          "text": "DISABLED",
+          "text": "Disabled",
           "value": "0"
         }
       ],
