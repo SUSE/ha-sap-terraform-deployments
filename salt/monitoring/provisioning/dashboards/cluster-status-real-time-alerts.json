@@ -1,4 +1,37 @@
 {
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.3.5"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -16,7 +49,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1571999256957,
+  "id": null,
+  "iteration": 1572353379288,
   "links": [],
   "panels": [
     {
@@ -1625,7 +1659,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 8,
+        "w": 4,
         "x": 16,
         "y": 15
       },
@@ -1684,6 +1718,98 @@
           "op": "=",
           "text": "N/A",
           "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "#37872D",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 15
+      },
+      "id": 138,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "ha_cluster_corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.1",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Cluster quorate",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        },
+        {
+          "op": "=",
+          "text": "YES",
+          "value": "1"
+        },
+        {
+          "op": "=",
+          "text": "NO",
+          "value": "0"
         }
       ],
       "valueName": "avg"
@@ -1852,7 +1978,7 @@
       "thresholds": "0, 1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "ha_cluster exporter",
+      "title": "ha_cluster_exporter",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -1945,7 +2071,7 @@
       "thresholds": "0, 1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "node exporter",
+      "title": "node_exporter",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -2131,7 +2257,7 @@
       "thresholds": "0, 1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "hawk  service backend",
+      "title": "hawk backend",
       "type": "singlestat",
       "valueFontSize": "100%",
       "valueMaps": [
@@ -2269,7 +2395,7 @@
         "x": 16,
         "y": 19
       },
-      "id": 138,
+      "id": 147,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2309,14 +2435,14 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_pacemaker_stonith_enabled{instance=~\"$hana_node_ip:9002\"}",
           "refId": "A"
         }
       ],
       "thresholds": "0.1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Cluster quorate",
+      "title": "Stonith Enabled",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -2358,11 +2484,16 @@
           ],
           "defaults": {
             "mappings": [],
+            "max": 100,
             "min": 0,
             "thresholds": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ],
             "unit": "none"
@@ -2409,6 +2540,10 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
@@ -2577,5 +2712,5 @@
   "timezone": "",
   "title": "HA SAP HANA  cluster status",
   "uid": "Q5YJpwtZk1",
-  "version": 3
+  "version": 1
 }
