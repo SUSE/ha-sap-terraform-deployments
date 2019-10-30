@@ -1,0 +1,54 @@
+{% set data = pillar.cluster.configure.template.parameters %}
+{% set drbd = salt['pillar.get']('drbd', merge=True) %}
+{% set nfsid = 1 %}
+
+#
+# defaults and production DRBD
+#
+
+rsc_defaults \
+    resource-stickiness="1000" \
+    migration-threshold="5000"
+
+op_defaults \
+    timeout="600"
+
+primitive nfsserver systemd:nfs-server \
+        op monitor interval=30s
+clone cl-nfsserver nfsserver \
+        meta interleave=true
+
+# Need to edit drbd pillar file.
+{% for res in drbd.resource %}
+primitive drbd-{{ res.name }} ocf:linbit:drbd \
+          params drbd_resource={{ res.name }} \
+          op monitor interval=15 role=Master \
+          op monitor interval=30 role=Slave
+
+ms ms_{{ res.name }} drbd-{{ res.name }} \
+   meta master-max=1 master-node-max=1 \
+   meta clone-max={{ res.nodes | length }} clone-node-max=1 \
+   meta notify=true target-role=Started
+
+primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
+   params device={{ res.device }} directory={{ res.mount_point}} fstype={{ res.file_system }} \
+   options=noatime,nodiratime \
+   op monitor interval="20" timeout="40s"
+
+primitive test-IP_{{ res.name }} IPaddr2 \
+        params ip={{ res.virtual_ip }}
+
+primitive exportfs_work_{{ res.name }} exportfs \
+        params directory={{ res.mount_point }} fsid={{ nfsid + loop.index0 }} \
+        options="rw,async,no_subtree_check" clientspec="*" wait_for_leasetime_on_stop=true \
+        op monitor interval=30s
+group g-nfs_{{ res.name }} fs_{{ res.name }} test-IP_{{ res.name }} exportfs_work_{{ res.name }}
+
+order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
+  ms_{{ res.name }}:promote g-nfs_{{ res.name }}:start
+colocation c_fs_{{ res.name }}-with_drbd_{{ res.name }} \
+  inf: g-nfs_{{ res.name }} ms_{{ res.name }}:Master
+{% endfor %}
+
+primitive extra-IP IPaddr2 \
+        params ip={{ data.virtual_ip }}
