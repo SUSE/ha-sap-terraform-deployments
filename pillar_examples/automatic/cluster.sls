@@ -17,7 +17,6 @@ cluster:
     device: /dev/watchdog
   sbd:
     device: {{ grains['sbd_disk_device'] }}
-  join_timer: 20
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:
