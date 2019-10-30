@@ -45,7 +45,7 @@
       }
     ]
   },
-  "description": "SAP HANA detailed timestamp dashboard",
+  "description": "SAP HANA Details",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,

@@ -51,7 +51,7 @@
       }
     ]
   },
-  "description": "HA SAP HANA  cluster status real-time alert dashboard",
+  "description": "HA Cluster Status",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
