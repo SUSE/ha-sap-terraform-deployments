@@ -78,6 +78,35 @@ module "hana_node" {
   sbd_disk_size = "104857600"
 }
 
+// drbd01 and drbd02
+module "drbd_node" {
+  source                 = "./modules/drbd_node"
+  name                   = "drbd"
+  base_image_id          = libvirt_volume.base_image.id
+  drbd_count             = 2
+  vcpu                   = 1
+  memory                 = 1024
+  bridge                 = "br0"
+  drbd_ips               = var.drbd_ips
+  drbd_disk_size         = "1024000000"
+  shared_storage_type    = var.shared_storage_type
+  iscsi_srv_ip           = var.iscsi_srv_ip
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  qa_mode                = var.qa_mode
+  devel_mode             = var.devel_mode
+  provisioner            = var.provisioner
+  background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  network_id             = libvirt_network.isolated_network.id
+  pool                   = var.storage_pool
+  // sbd disk configuration
+  sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
+  sbd_disk_size = "104857600"
+}
+
 module "monitoring" {
   source                 = "./modules/monitoring"
   name                   = "monitoring"

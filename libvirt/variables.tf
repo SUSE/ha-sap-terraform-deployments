@@ -42,6 +42,12 @@ variable "host_ips" {
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 
+variable "drbd_ips" {
+  description = "IP addresses of the drbd nodes"
+  type        = list(string)
+  default     = ["192.168.106.25", "192.168.106.26"]
+}
+
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string
