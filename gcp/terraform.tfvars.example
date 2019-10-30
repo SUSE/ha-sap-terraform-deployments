@@ -1,4 +1,4 @@
-project     = "my-project"
+project = "my-project"
 
 # Credentials file for GCP
 gcp_credentials_file = "my-project.json"
@@ -31,7 +31,7 @@ sap_hana_deployment_bucket = "MyHanaBucket"
 # Custom sles4sap image
 sles4sap_boot_image = "MySles4SapImage"
 
-# Variable for init-nodes.tpl script. Can be all, skip-hana or skip-all
+# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
 # Device used by the iSCSI server to provide LUNs

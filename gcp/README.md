@@ -1,5 +1,60 @@
 # Google Cloud Platform deployment with Terraform
 
+ - [quickstart](#quickstart)
+ - [highlevel description](#highlevel-description)
+ - [advanced usage](#advanced-usage)
+ - [monitoring](../doc/monitoring.md)
+ - [QA](../doc/qa.md)
+ - [specification](#specification)
+
+# Quickstart
+
+1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
+
+2) **Generate private and public keys for the cluster nodes with:**
+
+```
+mkdir ../salt/hana_node/files/sshkeys
+ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+```
+
+The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
+
+3) **[Adapt saltstack pillars](../pillar_examples/)**
+
+4) **Configure Terraform access to GCP**
+
+- First, a GCP account with an active subscription is required.
+
+- Install the GCloud SDK following the [documentation](https://cloud.google.com/sdk/docs/quickstart-linux)
+
+- Create a new personal key for the service account of your google cloud project with https://console.cloud.google.com/apis/credentials/serviceaccountkey?_ga=2.91196186.-1602867212.1565799790.
+   See also https://cloud.google.com/community/tutorials/getting-started-on-gcp-with-terraform
+
+- Log in with `gcloud init`.
+
+Note: You must run this command to use the Gcloud SDK and to apply this Terraform configuration:
+
+`export GOOGLE_APPLICATION_CREDENTIALS=/path/to/<PROJECT-ID>-xxxxxxxxx.json`
+
+5) **Deploy**:
+
+```
+terraform init
+terraform workspace new my-execution # optional
+terraform workspace select my-execution # optional
+terraform plan
+terraform apply
+```
+
+Destroy the created infrastructure with:
+
+```
+terraform destroy
+```
+
+# Highlevel description
+
 This Terraform configuration deploys SAP HANA in a High-Availability Cluster on SUSE Linux Enterprise Server for SAP Applications in the **Google Cloud Platform**.
 
 The infrastructure deployed includes:
@@ -12,58 +67,11 @@ The infrastructure deployed includes:
 
 By default, this configuration will create 3 instances in GCP: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Google) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 
-Once the infrastructure created by Terraform, the servers are provisioned with Salt in background.
-
 ## Provisioning by Salt
-The cluster and HANA installation is done using Salt Formulas.
+By default, the cluster and HANA installation is done using Salt Formulas in foreground.
 To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
 
-## Prerequisites
-
-1. First, a GCP account with an active subscription is required.
-
-2. Install the GCloud SDK following the [documentation](https://cloud.google.com/sdk/docs/quickstart-linux)
-
-3. Create a new personal key for the service account of your google cloud project with https://console.cloud.google.com/apis/credentials/serviceaccountkey?_ga=2.91196186.-1602867212.1565799790.
-   See also https://cloud.google.com/community/tutorials/getting-started-on-gcp-with-terraform
-
-4. Log in with `gcloud init`.
-
-Note: You must run this command to use the Gcloud SDK and to apply this Terraform configuration:
-
-`export GOOGLE_APPLICATION_CREDENTIALS=/path/to/<PROJECT-ID>-xxxxxxxxx.json`
-
-5. A Google Storage bucket must be created with the files containing the HANA installer.
-
-The bucket may be created and populated with these commands:
-
-This is an example where **51053381** is the targeted HANA version to upload.
-```
-gsutil mb gs://sap_instmasters/51053381/
-gsutil cp 51053381/ gs://sap_instmasters/51053381/
-```
-
-Bucket names have more restrictions than object names and must be globally unique, because every bucket resides in a single Cloud Storage namespace. Also, bucket names can be used with a CNAME redirect, which means they need to conform to DNS naming conventions. For more information, see the [bucket naming guidelines](https://cloud.google.com/storage/docs/naming#requirements).
-
-6. A bucket for the images must be created to hold the custom SLES images to use.
-
-```
-gsutil mb gs://sles-images
-```
-
-7. Upload the image you want to use with:
-
-```
-gsutil cp OS-Image-File-for-SLES4SAP-for-GCP.tar.gz gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
-```
-
-8. Create a bootable image
-
-```
-gcloud compute images create OS-Image-File-for-SLES4SAP-for-GCP --source-uri gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
-```
-
-## Relevant files
+## Specification
 
 These are the relevant files and what each provides:
 
@@ -87,15 +95,7 @@ These are the relevant files and what each provides:
 
 - [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
 
-## How to use
-
-1. Rename [terraform.tfvars.example](terraform.tfvars.example) to *terraform.tfvars* and edit to suit your needs or use `terraform [-var VARIABLE=VALUE]...` to override defaults.
-
- Then, from the gcp directory, generate private and public keys for the cluster nodes with the following commands:
-```
-mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
-```
- The key files need to be named as you defined it in `terraform.tfvars` file.
+#### Variables
 
 In the file [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
@@ -117,7 +117,6 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **iscsidev**: device used by the iSCSI server to provide LUNs.
 * **cluster_ssh_pub**: path to a custom ssh public key to upload to the nodes.
 * **cluster_ssh_key**: path to a custom ssh private key to upload to the nodes.
-* **host_ips**: each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `GCP Bucket`.
 * **hana_inst_disk_device**: device used by node where HANA will be downloaded.
 * **hana_disk_device**: device used by node where HANA will be installed.
@@ -139,42 +138,36 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 
  For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
- Specific QA variables
-* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
-* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
+ * **additional_packages**: Additional packages to add to the guest machines.
+ * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
-### The pillar files hana.sls and cluster.sls
+[Specific QA variables](https://github.com/juadk/ha-sap-terraform-deployments/blob/improve_QA_documentation/doc/qa.md#specific-qa-variables)
 
- Find more information about the hana and cluster formulas in (check the pillar.example files):
+# Advanced Usage
 
- -   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
- -   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
+A Google Storage bucket must be created with the files containing the HANA installer.
 
- As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
- These files **aren't ready for deployment**, be careful to customize them or create your own files.
+The bucket may be created and populated with these commands:
 
-### Monitoring
-[Global monitoring documentation](../doc/monitoring.md)
-
-### QA usage
- You may have noticed the variable *qa_mode*, this project is also used for QA testing.
-
- **qa_mode** is used to inform the deployment that we are doing QA, for example disable extra packages installation (sap, ha pattern etc). In this case, don't forget to set qa_mode to true.
-
-2. Deploy:
-
+This is an example where **51053381** is the targeted HANA version to upload.
 ```
-terraform init
-terraform plan -var "name=testing"
-terraform apply -var "name=testing"
+gsutil mb gs://sap_instmasters/51053381/
+gsutil cp 51053381/ gs://sap_instmasters/51053381/
 ```
 
-3. Destroy:
+Bucket names have more restrictions than object names and must be globally unique, because every bucket resides in a single Cloud Storage namespace. Also, bucket names can be used with a CNAME redirect, which means they need to conform to DNS naming conventions. For more information, see the [bucket naming guidelines](https://cloud.google.com/storage/docs/naming#requirements).
 
-When you are done, run:
+ A bucket for the images must be created to hold the custom SLES images to use.
+```
+gsutil mb gs://sles-images
+```
 
-`terraform destroy -var "name=testing"`
+Upload the image you want to use with:
+```
+gsutil cp OS-Image-File-for-SLES4SAP-for-GCP.tar.gz gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
+```
 
-## Notes
-
-- This configuration supports [Terraform workspaces](https://www.terraform.io/docs/state/workspaces.html).
+Create a bootable image
+```
+gcloud compute images create OS-Image-File-for-SLES4SAP-for-GCP --source-uri gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
+```
