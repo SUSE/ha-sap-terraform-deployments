@@ -83,7 +83,7 @@ module "drbd_node" {
   source                 = "./modules/drbd_node"
   name                   = "drbd"
   base_image_id          = libvirt_volume.base_image.id
-  drbd_count             = 2
+  drbd_count             = var.drbd_count
   vcpu                   = 1
   memory                 = 1024
   bridge                 = "br0"

@@ -135,6 +135,11 @@ variable "monitoring_enabled" {
   default     = false
 }
 
+variable "drbd_count" {
+  description = "number of drbd hosts for cluster"
+  default     = 2
+}
+
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
