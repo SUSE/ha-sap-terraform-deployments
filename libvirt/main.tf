@@ -17,10 +17,13 @@ resource "libvirt_volume" "base_image" {
 resource "libvirt_network" "isolated_network" {
   name      = "${terraform.workspace}-isolated"
   bridge    = var.isolated_network_bridge
-  mode      = "none"
+  mode      = "nat"
   addresses = [var.iprange]
   dhcp {
     enabled = "false"
+  }
+  dns {
+    enabled = true
   }
   autostart = true
 }
