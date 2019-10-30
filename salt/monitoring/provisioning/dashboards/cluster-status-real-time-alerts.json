@@ -56,30 +56,17 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1572432845303,
+  "iteration": 1572455519649,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 155,
-      "panels": [],
-      "title": "Alerts",
-      "type": "row"
-    },
     {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "id": 151,
       "options": {},
@@ -194,7 +181,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 4
       },
       "id": 149,
       "panels": [],
@@ -207,7 +194,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 7
+        "y": 5
       },
       "id": 104,
       "links": [],
@@ -251,7 +238,8 @@
       "targets": [
         {
           "expr": "ha_cluster_pacemaker_nodes_total{instance=~\"$hana_node_ip:9002\"}",
-          "legendFormat": "Total",
+          "instant": true,
+          "legendFormat": "Total nodes",
           "refId": "B"
         },
         {
@@ -262,21 +250,25 @@
         },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"dc\"})",
+          "instant": true,
           "legendFormat": "DC",
           "refId": "C"
         },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"member\"})",
-          "legendFormat": "Member",
+          "instant": true,
+          "legendFormat": "Members",
           "refId": "D"
         },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"remote\"})",
+          "instant": true,
           "legendFormat": "Remote",
           "refId": "E"
         },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"ping\"})",
+          "instant": true,
           "legendFormat": "Ping",
           "refId": "F"
         }
@@ -291,7 +283,7 @@
         "h": 8,
         "w": 6,
         "x": 9,
-        "y": 7
+        "y": 5
       },
       "id": 92,
       "options": {
@@ -339,7 +331,7 @@
         "h": 8,
         "w": 6,
         "x": 15,
-        "y": 7
+        "y": 5
       },
       "id": 140,
       "options": {
@@ -417,7 +409,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 7
+        "y": 5
       },
       "id": 136,
       "interval": null,
@@ -484,7 +476,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 11
+        "y": 9
       },
       "id": 98,
       "links": [],
@@ -586,7 +578,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 11
+        "y": 9
       },
       "id": 138,
       "interval": null,
@@ -664,7 +656,7 @@
         "h": 8,
         "w": 5,
         "x": 0,
-        "y": 15
+        "y": 13
       },
       "id": 157,
       "options": {},
@@ -683,7 +675,7 @@
           "type": "string"
         },
         {
-          "alias": "Inactive",
+          "alias": "Active",
           "colorMode": "row",
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -692,38 +684,23 @@
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
-          "mappingType": 1,
-          "pattern": "Value #B",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": [
-            {
-              "text": "Yes",
-              "value": "1"
-            }
-          ]
-        },
-        {
-          "alias": "Active",
-          "colorMode": "row",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
           "link": false,
           "mappingType": 1,
-          "pattern": "Value #A",
-          "thresholds": [],
+          "pattern": "Value",
+          "thresholds": [
+            "1",
+            "1"
+          ],
           "type": "string",
           "unit": "short",
           "valueMaps": [
             {
               "text": "Yes",
               "value": "1"
+            },
+            {
+              "text": "No",
+              "value": "0"
             }
           ]
         },
@@ -744,16 +721,10 @@
       ],
       "targets": [
         {
-          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=\"$hana_node_ip:9100\", state=\"active\"} == 1",
+          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=\"$hana_node_ip:9100\", state=\"active\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
-        },
-        {
-          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=\"$hana_node_ip:9100\", state!=\"active\"} == 1",
-          "format": "table",
-          "instant": true,
-          "refId": "B"
         }
       ],
       "timeFrom": null,
@@ -770,7 +741,7 @@
         "h": 8,
         "w": 4,
         "x": 5,
-        "y": 15
+        "y": 13
       },
       "id": 142,
       "links": [],
@@ -880,7 +851,7 @@
         "h": 3,
         "w": 6,
         "x": 9,
-        "y": 15
+        "y": 13
       },
       "id": 112,
       "interval": null,
@@ -963,7 +934,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 15
+        "y": 13
       },
       "id": 118,
       "interval": null,
@@ -1047,7 +1018,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 15
+        "y": 13
       },
       "id": 116,
       "interval": null,
@@ -1115,7 +1086,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 18
+        "y": 16
       },
       "id": 108,
       "options": {
@@ -1165,7 +1136,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 18
+        "y": 16
       },
       "id": 110,
       "options": {
@@ -1232,7 +1203,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 18
+        "y": 16
       },
       "id": 119,
       "interval": null,
@@ -1315,7 +1286,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 18
+        "y": 16
       },
       "id": 114,
       "interval": null,
@@ -1383,7 +1354,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 21
       },
       "id": 153,
       "panels": [],
@@ -1395,7 +1366,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 22
       },
       "id": 146,
       "options": {
@@ -1445,7 +1416,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 22
       },
       "id": 144,
       "interval": "",
@@ -1646,5 +1617,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 5
+  "version": 7
 }
