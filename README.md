@@ -17,6 +17,7 @@ ___
 - HA Clusters and HANA deployment
 - [Monitoring of cluster](doc/monitoring.md)
 - [Netweaver](doc/netweaver.md)
+- [QA](doc/qa.md)
 
 ___
 ## Rationale

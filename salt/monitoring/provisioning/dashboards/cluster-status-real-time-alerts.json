@@ -16,23 +16,9 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 0,
+  "iteration": 1571999256957,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 121,
-      "panels": [],
-      "title": "HA monitoring",
-      "type": "row"
-    },
     {
       "cacheTimeout": null,
       "colorBackground": false,
@@ -54,7 +40,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "id": 106,
       "interval": null,
@@ -96,7 +82,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", type=\"remote\"})",
           "instant": true,
           "refId": "A"
         }
@@ -137,7 +123,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 0
       },
       "id": 102,
       "interval": null,
@@ -179,7 +165,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"shutdown\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"shutdown\"})",
           "instant": true,
           "refId": "A"
         }
@@ -204,7 +190,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 0
       },
       "id": 92,
       "options": {
@@ -237,7 +223,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"online\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\"})",
           "instant": true,
           "refId": "A"
         }
@@ -268,7 +254,7 @@
         "h": 3,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 0
       },
       "id": 112,
       "interval": null,
@@ -310,7 +296,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -351,7 +337,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 4
+        "y": 3
       },
       "id": 90,
       "interval": null,
@@ -394,7 +380,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -435,7 +421,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 4
+        "y": 3
       },
       "id": 104,
       "interval": null,
@@ -477,7 +463,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"expected_up\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"expected_up\"})",
           "instant": true,
           "refId": "A"
         }
@@ -519,7 +505,7 @@
         "h": 3,
         "w": 8,
         "x": 16,
-        "y": 4
+        "y": 3
       },
       "id": 116,
       "interval": null,
@@ -562,7 +548,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
           "instant": true,
           "refId": "A"
         }
@@ -581,6 +567,19 @@
         }
       ],
       "valueName": "avg"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 121,
+      "panels": [],
+      "title": "HA monitoring",
+      "type": "row"
     },
     {
       "cacheTimeout": null,
@@ -645,7 +644,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"pending\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"pending\"})",
           "instant": true,
           "refId": "A"
         }
@@ -728,7 +727,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"maintenance\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"maintenance\"})",
           "instant": true,
           "refId": "A"
         }
@@ -787,7 +786,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -838,7 +837,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -913,7 +912,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
           "instant": true,
           "refId": "A"
         }
@@ -996,7 +995,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"unclean\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"unclean\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1079,7 +1078,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_nodes{instance=~\"$hana_node_ip:9002\", type=\"standby\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"standby\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1162,7 +1161,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1245,7 +1244,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(cluster_node_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1567,22 +1566,22 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
           "legendFormat": "expected_votes",
           "refId": "A"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
           "legendFormat": "highest_expected_votes",
           "refId": "B"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
           "legendFormat": "total votes",
           "refId": "C"
         },
         {
-          "expr": "corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
+          "expr": "ha_cluster_corosync_quorum{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
           "legendFormat": "quorum",
           "refId": "D"
         }
@@ -1655,7 +1654,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
           "refId": "A"
         }
       ],
@@ -1956,7 +1955,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
         "x": 0,
         "y": 19
@@ -2044,7 +2043,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 3,
         "x": 3,
         "y": 19
@@ -2132,7 +2131,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 2,
         "x": 6,
         "y": 19
@@ -2177,7 +2176,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "cluster_sbd_device_status{instance=~\"$hana_node_ip:9002\", device_name=\"/dev/vdc\"}",
+          "expr": "ha_cluster_sbd_device_status{instance=~\"$hana_node_ip:9002\", device=\"/dev/vdc\"}",
           "legendFormat": "SBD device vdc  status",
           "refId": "A"
         }
@@ -2270,7 +2269,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
           "refId": "A"
         }
       ],
@@ -2298,6 +2297,99 @@
         }
       ],
       "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "description": "",
+      "gridPos": {
+        "h": 11,
+        "w": 11,
+        "x": 0,
+        "y": 23
+      },
+      "id": 144,
+      "interval": "",
+      "links": [],
+      "options": {
+        "displayMode": "basic",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ],
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "ha_cluster_pacemaker_fail_count{instance=~\"$hana_node_ip:9002\"}",
+          "intervalFactor": 1,
+          "legendFormat": "{{ node}} {{ resource }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Cluster resource failcount",
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "gridPos": {
+        "h": 11,
+        "w": 13,
+        "x": 11,
+        "y": 23
+      },
+      "id": 146,
+      "options": {
+        "displayMode": "basic",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "ha_cluster_pacemaker_migration_threshold{instance=~\"$hana_node_ip:9002\"}",
+          "hide": false,
+          "legendFormat": "{{ node }} {{resource}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Resource migration threshold",
+      "type": "bargauge"
     }
   ],
   "refresh": false,
@@ -2308,7 +2400,6 @@
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "Prometheus SHAP",
           "value": "Prometheus SHAP"
         },
@@ -2446,5 +2537,5 @@
   "timezone": "",
   "title": "HA SAP HANA  cluster status",
   "uid": "Q5YJpwtZk1",
-  "version": 1
+  "version": 3
 }

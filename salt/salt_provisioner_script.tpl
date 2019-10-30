@@ -2,8 +2,11 @@
 
 mv /tmp/salt /root || true
 
-# Check is qa_mode is enable
+# Check if qa_mode is enabled
 grep -q 'qa_mode: true' /tmp/grains && QA_MODE=1
+
+# Check if salt-call is installed
+which salt-call > /dev/null 2>&1 && SALT=1
 
 # Disable colors for QA_MODE
 if [[ $${QA_MODE} ]]; then
@@ -15,12 +18,17 @@ if [[ $${QA_MODE} ]]; then
 fi
 
 # SCC Registration to install salt-minion
+# The iSCSI server won't be de-registered as it is needed to install some additional packages.
 if grep -q 'role: iscsi_srv' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}
-elif [[ ! -e /usr/bin/salt-minion ]]; then
+
+# If salt-minion is not included in image, system is registered to install salt-minion 
+# and de-registered afterwards unless if QA_MODE is set or salt already installed.
+elif [[ $${QA_MODE} != 1 && $${SALT} != 1 ]]; then
   sh /root/salt/install-salt-minion.sh -d -r ${regcode}
 fi
 
+# Move salt grains to salt folder
 mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
 
 # Server configuration

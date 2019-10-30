@@ -6,6 +6,7 @@
 - [Howto](#quickstart)
 - [Monitoring](../doc/monitoring.md)
 - [Netweaver](../doc/netweaver.md)
+- [QA](../doc/qa.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
@@ -29,14 +30,7 @@
 
 2) Edit the `terraform.tfvars.example` file, following the Readme.md in the provider directory.
 
-3) Adapt pillars:
-
-  Choose one profile, among the list. (in this example we choose `cost_optimized`)
-
-  * from root top-level dir:
-   `cp pillar_examples/libvirt/cost_optimized/*  salt/hana_node/files/pillar`
-
-For more informations have a look at [pillar-doc](../pillar_examples/README.md)
+3) **[Adapt saltstack pillars](../pillar_examples/)**
 
 4) Deploy with:
 
@@ -118,9 +112,7 @@ data.
 
 For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
 
-Specific QA variables
-* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new image.
-* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
+[Specific QA variables](../doc/qa.md#specific-qa-variables)
 
 If the current *main.tf* is used, only *uri* (usually SAP HANA cluster deployment needs a powerful machine, not recommended to deploy locally) and *sap_inst_media* parameters must be updated.
 

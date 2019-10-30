@@ -13,7 +13,7 @@ ninstances = "2"
 # Region where to deploy the configuration
 az_region = "westeurope"
 
-# Variable for init-nodes.sh script
+# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
 # SLES4SAP image information
