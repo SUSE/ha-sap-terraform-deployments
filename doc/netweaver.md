@@ -25,10 +25,10 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders `sapmnt` and `usrsapsys` in the exposed folder. It's a good practice the store this folder with the Netweaver SID name (for example `/sapdata/HA1/sapmnt` and `/sapdata/HA1/usrsapsys`). **This subfolders content is removed by default during the deployment**.
 
-- Netweaver installation software (`swpm`) must be available in `sap_inst_media` NFS share. This folder must contain the `swpm` and `sapexe` folders (optionally the `Netweaver Export` and `HANA HDB Client` folder if the Database, PAS and AAS instances are installed).
+- Netweaver installation software (`swpm`) must be available in the system. To install the whole Netweaver environment with all the 4 components, the `swpm` folder, `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders must already exist. The `netweaver.sls` pillar file must be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must go in `additional_dvds` list.
 
 - Add new additional IP addresses to the variable `nw_ips` in the `terraform.tfvars`. This variable is a list containing the IP addresses of the new virtual machines hosting the Netweaver components, so if 4 virtual machines are used (default option) 4 addresses must be added there in the same range than the machines hosting the Hana database.
 
 - Add the `netweaver_nfs_share` variable to the `terraform.tfvars` with the address to the NFS share containing the `sapmnt` and `usrsapsys` folders. Following the current example this would be `nfs_address:/sapdata/HA1`.
 
-- Modify the content of [cluster.sls](salt/netweaver_node/files/pillar/cluster.sls) and [netwearver.sls](salt/netweaver_node/files/pillar/netwearver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `sap_inst_media`, the current values are just an example.
+- Modify the content of [cluster.sls](salt/netweaver_node/files/pillar/cluster.sls) and [netwearver.sls](salt/netweaver_node/files/pillar/netwearver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `netweaver_inst_media`, the current values are just an example.

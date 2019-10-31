@@ -56,8 +56,8 @@ variable "shared_disk_id" {
   type        = "string"
 }
 
-variable "sap_inst_media" {
-  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
+variable "netweaver_inst_media" {
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
   type        = string
 }
 

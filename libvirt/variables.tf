@@ -24,21 +24,27 @@ variable "isolated_network_bridge" {
   default     = ""
 }
 
-variable "sap_inst_media" {
-  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
+variable "hana_inst_media" {
+  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
 }
 
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = string
-  default     = "/root/sap_inst"
+  default     = "/root/hana_inst_media"
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
   type        = string
   default     = "xfs"
+}
+
+variable "netweaver_inst_media" {
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
+  type        = string
+  default     = ""
 }
 
 variable "netweaver_nfs_share" {

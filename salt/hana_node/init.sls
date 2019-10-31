@@ -6,7 +6,7 @@ include:
   - hana_node.download_hana_inst
   {% endif %}
   {% else %}
-  - hana_node.sap_inst
+  - hana_node.hana_inst_media
   {% endif %}
   - hana_node.hosts
   {% if grains['shared_storage_type'] == 'iscsi' %}

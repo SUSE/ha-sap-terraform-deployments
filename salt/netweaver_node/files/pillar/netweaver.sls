@@ -11,13 +11,12 @@ netweaver:
     {{ iprange }}.17: sapha1db
     {{ iprange }}.18: sapha1pas
     {{ iprange }}.19: sapha1aas
-  swpm_media: {{ grains['sap_inst_media'] }}
   sapmnt_inst_media: {{ grains['netweaver_nfs_share'] }}
-  swpm_folder: SWPM_10_SP26_6
-  sapexe_folder: kernel_nw75_sar
+  swpm_folder: /root/netweaver_inst_media/SWPM_10_SP26_6
+  sapexe_folder: /root/netweaver_inst_media/kernel_nw75_sar
   additional_dvds:
-    - '51050829_3' # NW Export folder
-    - '51053787' # HANA HDB Client folder
+    - '/root/netweaver_inst_media/51050829_3' # NW Export folder
+    - '/root/netweaver_inst_media/51053787' # HANA HDB Client folder
 
   hana:
     host: {{ iprange }}.200

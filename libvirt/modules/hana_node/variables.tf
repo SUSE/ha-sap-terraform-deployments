@@ -90,8 +90,8 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "sap_inst_media" {
-  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
+variable "hana_inst_media" {
+  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
 }
 
