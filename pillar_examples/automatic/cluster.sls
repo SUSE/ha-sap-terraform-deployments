@@ -4,7 +4,7 @@ cluster:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
-  name: hacluster
+  name: hana_cluster
   init: {{ grains['name_prefix'] }}01
   {% if grains['provider'] == 'libvirt' %}
   interface: eth1

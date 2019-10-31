@@ -6,7 +6,7 @@ host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
-iscsi_srv_ip = "192.168.XXX.Y+2"
+iscsi_srv_ip = "192.168.XXX.Y+6"
 iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 
 # Repository url used to install HA/SAP deployment packages"
@@ -46,12 +46,22 @@ devel_mode = false
 #monitoring_enabled = true
 
 # IP address of the machine where prometheus and grafana are running
-monitoring_srv_ip = "192.168.XXX.Y+2"
+monitoring_srv_ip = "192.168.XXX.Y+7"
+
+# Netweaver variables
+
+# NFS share to store the Netweaver shared files
+#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
+
+# IP addresses of the machines hosting Netweaver instances
+#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+
+# Enable/disable Netweaver deployment
+#netweaver_enabled = true
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
 # storage_pool = "terraform"
-
 
 # QA variables
 

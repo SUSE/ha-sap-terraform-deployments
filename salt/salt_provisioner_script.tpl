@@ -35,7 +35,7 @@ mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
 sh /root/salt/deployment.sh || exit 1
 
 # Salt formulas execution
-if grep -q 'role: hana_node' /etc/salt/grains; then
+if grep -q 'role:.*_node' /etc/salt/grains; then
   sh /root/salt/formula.sh || exit 1
 fi
 
