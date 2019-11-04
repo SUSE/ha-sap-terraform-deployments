@@ -7,7 +7,7 @@ nfs-client:
 
 mount_swpm:
   mount.mounted:
-    - name: /root/netweaver_inst_media
+    - name: /netweaver_inst_media
     - device: {{ grains['netweaver_inst_media'] }}
     - fstype: nfs
     - mkmnt: True
