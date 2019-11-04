@@ -56,17 +56,30 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1572455519649,
+  "iteration": 1572868725165,
   "links": [],
   "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 155,
+      "panels": [],
+      "title": "Alerts",
+      "type": "row"
+    },
     {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 151,
       "options": {},
@@ -181,7 +194,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 6
       },
       "id": 149,
       "panels": [],
@@ -194,7 +207,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 104,
       "links": [],
@@ -283,7 +296,7 @@
         "h": 8,
         "w": 6,
         "x": 9,
-        "y": 5
+        "y": 7
       },
       "id": 92,
       "options": {
@@ -331,7 +344,7 @@
         "h": 8,
         "w": 6,
         "x": 15,
-        "y": 5
+        "y": 7
       },
       "id": 140,
       "options": {
@@ -409,7 +422,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 5
+        "y": 7
       },
       "id": 136,
       "interval": null,
@@ -476,7 +489,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 9
+        "y": 11
       },
       "id": 98,
       "links": [],
@@ -578,7 +591,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 9
+        "y": 11
       },
       "id": 138,
       "interval": null,
@@ -656,7 +669,7 @@
         "h": 8,
         "w": 5,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 157,
       "options": {},
@@ -741,7 +754,7 @@
         "h": 8,
         "w": 4,
         "x": 5,
-        "y": 13
+        "y": 15
       },
       "id": 142,
       "links": [],
@@ -851,7 +864,7 @@
         "h": 3,
         "w": 6,
         "x": 9,
-        "y": 13
+        "y": 15
       },
       "id": 112,
       "interval": null,
@@ -934,7 +947,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 13
+        "y": 15
       },
       "id": 118,
       "interval": null,
@@ -998,6 +1011,89 @@
     },
     {
       "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 18,
+        "y": 15
+      },
+      "id": 119,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Slave resources",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
       "colorBackground": true,
       "colorPrefix": false,
       "colorValue": false,
@@ -1017,8 +1113,8 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 18,
-        "y": 13
+        "x": 21,
+        "y": 15
       },
       "id": 116,
       "interval": null,
@@ -1086,7 +1182,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 16
+        "y": 18
       },
       "id": 108,
       "options": {
@@ -1136,7 +1232,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 16
+        "y": 18
       },
       "id": 110,
       "options": {
@@ -1203,90 +1299,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 16
-      },
-      "id": 119,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Slave resources",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 18,
-        "y": 16
+        "y": 18
       },
       "id": 114,
       "interval": null,
@@ -1349,24 +1362,11 @@
       "valueName": "avg"
     },
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 153,
-      "panels": [],
-      "title": "Resources",
-      "type": "row"
-    },
-    {
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "id": 146,
       "options": {
@@ -1386,7 +1386,7 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 5001
               }
             ]
           },
@@ -1416,7 +1416,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 23
       },
       "id": 144,
       "interval": "",
@@ -1463,7 +1463,7 @@
       "type": "bargauge"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
