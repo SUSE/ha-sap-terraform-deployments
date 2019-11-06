@@ -35,18 +35,27 @@ For enabling multi-cluster in prometheus and our monitoring solution, you need t
 Each cluster is a different jobname. So if you have 2 cluster you will add 2 jobnames. like :
 
 ```
-  - job_name: cluster-europe-00
-    metrics_path: /metrics
+scrape_configs:
+  - job_name: hacluster-01
     static_configs:
       - targets:
+        - "192.168.110.19:8001" # 8001: hanadb exporter port
+        - "192.168.110.20:8001" # 8001: hanadb exporter port
+        - "192.168.110.19:9100" # 9100: node exporter port
+        - "192.168.110.20:9100" # 9100: node exporter port
         - "192.168.110.19:9002" # 9002: ha_cluster_exporter metrics
         - "192.168.110.20:9002" # 9002: ha_cluster_exporter metrics
 
-  - job_name: cluster-asia-00
-    metrics_path: /metrics
+
+  - job_name: hacluster-02
     static_configs:
       - targets:
-        - "10.67.162.43:9002"
+        - "10.162.32.117:8001" # 8001: hanadb exporter port
+        - "10.162.32.238:8001" # 8001: hanadb exporter port
+        - "10.162.32.117:9100" # 9100: node exporter port
+        - "10.162.32.238:9100" # 9100: node exporter port
+        - "10.162.32.117:9002" # 9002: ha_cluster_exporter metrics
+        - "10.162.32.238:9002" # 9002: ha_cluster_exporter metrics
 ```
 
 This will add in prometheus a label `job="cluster-asia-00" from where you can filter your different metrics.

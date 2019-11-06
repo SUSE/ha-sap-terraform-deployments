@@ -15,8 +15,8 @@ rule_files:
 
 scrape_configs:
   # in a multi-cluster scenario, add another job name called
-  #  hacluster-europe-02
-  - job_name: hacluster-europe-01
+  #  hacluster-02
+  - job_name: hacluster-01
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}

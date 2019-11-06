@@ -1,43 +1,4 @@
 {
-  "__inputs": [],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "bargauge",
-      "name": "Bar Gauge",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.3.5"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "singlestat",
-      "name": "Singlestat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -55,8 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1572885006030,
+  "iteration": 1573134324833,
   "links": [],
   "panels": [
     {
@@ -1444,107 +1404,6 @@
         }
       ],
       "valueName": "current"
-    },
-    {
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 23
-      },
-      "id": 146,
-      "options": {
-        "displayMode": "basic",
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [],
-            "max": 100,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 5001
-              }
-            ]
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "ha_cluster_pacemaker_migration_threshold{instance=~\"$hana_node_ip:9002\"}",
-          "hide": false,
-          "legendFormat": "{{ node }} {{resource}}",
-          "refId": "B"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resource migration threshold",
-      "type": "bargauge"
-    },
-    {
-      "cacheTimeout": null,
-      "description": "",
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 23
-      },
-      "id": 144,
-      "interval": "",
-      "links": [],
-      "options": {
-        "displayMode": "basic",
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [],
-            "max": 100,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ],
-            "unit": "none"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "ha_cluster_pacemaker_fail_count{instance=~\"$hana_node_ip:9002\"}",
-          "intervalFactor": 1,
-          "legendFormat": "{{ node}} {{ resource }}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Cluster resource failcount",
-      "type": "bargauge"
     }
   ],
   "refresh": "5s",
@@ -1574,14 +1433,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info, nodename)",
+        "definition": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
         "hide": 0,
         "includeAll": false,
         "label": "HANA Node",
         "multi": false,
         "name": "hana_node_name",
         "options": [],
-        "query": "label_values(node_uname_info, nodename)",
+        "query": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1596,14 +1455,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
+        "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\", job=\"$hacluster\"}, instance)",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "hana_node_ip",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
+        "query": "label_values(node_uname_info{nodename=~\"$hana_node_name\", job=\"$hacluster\"}, instance)",
         "refresh": 2,
         "regex": "^(.*):\\d+$",
         "skipUrlSync": false,
@@ -1618,14 +1477,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
+        "definition": "label_values(node_uname_info{nodename=~\".*1\", job=\"$hacluster\"}, nodename)",
         "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "hana_node_name_1",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=~\".*1\"}, nodename)",
+        "query": "label_values(node_uname_info{nodename=~\".*1\", job=\"$hacluster\"}, nodename)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1640,14 +1499,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
+        "definition": "label_values(node_uname_info{nodename=~\".*2\", job=\"$hacluster\"}, nodename)",
         "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "hana_node_name_2",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=~\".*2\"}, nodename)",
+        "query": "label_values(node_uname_info{nodename=~\".*2\", job=\"$hacluster\"}, nodename)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1666,6 +1525,28 @@
         "name": "Filters",
         "skipUrlSync": false,
         "type": "adhoc"
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "Prometheus SHAP",
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "hacluster",
+        "multi": false,
+        "name": "hacluster",
+        "options": [],
+        "query": "label_values(job)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -1701,5 +1582,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 9
+  "version": 6
 }
