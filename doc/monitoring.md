@@ -28,6 +28,30 @@ Currently supported exporters:
 - SAP-HANA database exporter
 - HA Cluster exporter (hawk-apiserver)
 
+# Multi-cluster monitoring:
+
+For enabling multi-cluster in prometheus and our monitoring solution, you need to follow the schema in `/etc/prometheus/prometheus.yaml`.
+
+Each cluster is a different jobname. So if you have 2 cluster you will add 2 jobnames. like :
+
+```
+  - job_name: cluster-europe-00
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+        - "192.168.110.19:9002" # 9002: ha_cluster_exporter metrics
+        - "192.168.110.20:9002" # 9002: ha_cluster_exporter metrics
+
+  - job_name: cluster-asia-00
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+        - "10.67.162.43:9002"
+```
+
+This will add in prometheus a label `job="cluster-asia-00" from where you can filter your different metrics.
+
+
 ### SAP HANA database exporter
 
 The SAP HANA database data is exporter using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
