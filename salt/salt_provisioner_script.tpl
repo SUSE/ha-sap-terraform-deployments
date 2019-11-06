@@ -17,16 +17,15 @@ if [[ $${QA_MODE} ]]; then
   done
 fi
 
-# SCC Registration to install salt-minion
-# The iSCSI server won't be de-registered as it is needed to install some additional packages.
-if grep -q 'role: iscsi_srv' /tmp/grains; then
-  sh /root/salt/install-salt-minion.sh -r ${regcode}
-
-# If salt-minion is not included in image, system is registered to install salt-minion 
-# and de-registered afterwards unless if QA_MODE is set or salt already installed.
-elif [[ $${QA_MODE} != 1 && $${SALT} != 1 ]]; then
-  sh /root/salt/install-salt-minion.sh -d -r ${regcode}
+# Install salt if QA_MODE is False and salt is not already installed
+# It will register in SCC to install salt if registration code is provided
+[[ "${regcode}" != "" ]] && REGISTER="-d -r ${regcode}"
+if [[ $${QA_MODE} != 1 && $${SALT} != 1 ]]; then
+  sh /root/salt/install-salt-minion.sh $${REGISTER}
 fi
+
+# Recheck if salt-call is installed. If it's not available stop execution
+which salt-call || exit 1
 
 # Move salt grains to salt folder
 mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
