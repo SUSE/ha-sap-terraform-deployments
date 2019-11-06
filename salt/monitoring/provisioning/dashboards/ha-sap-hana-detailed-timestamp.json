@@ -45,7 +45,7 @@
       }
     ]
   },
-  "description": "SAP HANA detailed timestamp dashboard",
+  "description": "SAP HANA Details",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -4722,7 +4722,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
@@ -4865,7 +4865,7 @@
     ]
   },
   "timezone": "",
-  "title": "HA SAP HANA detailed cluster timestamp dashboard",
+  "title": "SAP HANA Details",
   "uid": "EcC4JDFWz2",
   "version": 1
 }
