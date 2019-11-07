@@ -11,17 +11,6 @@ data "template_file" "drbd_salt_provisioner" {
   }
 }
 
-# Template file to launch the salt provisioning script for drbd
-data "template_file" "cluster_info" {
-  template = "${file("modules/drbd_node/cluster_info.tpl")}"
-
-  vars = {
-    drbd_nodes = "${var.drbd_count}"
-    drbd_hostname_base = "${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "0" : ""}"
-    drbd_ips = "${join(",", var.drbd_ips)}"
-  }
-}
-
 resource "null_resource" "drbd_node_provisioner" {
   count = var.provisioner == "salt" ? length(libvirt_domain.drbd_domain) : 0
   triggers = {
@@ -45,11 +34,6 @@ resource "null_resource" "drbd_node_provisioner" {
   }
 
   provisioner "file" {
-    content     = data.template_file.cluster_info.rendered
-    destination = "/tmp/cluster_info"
-  }
-
-  provisioner "file" {
     content = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
@@ -61,15 +45,14 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
-drbd_ips: [${join(", ", formatlist("'%s'", var.drbd_ips))}]
-host_ip: ${element(var.drbd_ips, count.index)}
+host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+host_ip: ${element(var.host_ips, count.index)}
 provider: libvirt
 role: drbd_node
 drbd_disk_device: /dev/vdb
 shared_storage_type: ${var.shared_storage_type}
 sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-qa_mode: ${var.qa_mode}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
 

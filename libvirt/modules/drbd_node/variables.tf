@@ -62,7 +62,7 @@ variable "drbd_disk_size" {
   default     = "1024000000" # 1GB
 }
 
-variable "drbd_ips" {
+variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
 }
@@ -148,9 +148,4 @@ variable "sbd_count" {
 variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
-}
-
-variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
-  default     = false
 }

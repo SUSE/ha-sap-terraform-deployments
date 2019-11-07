@@ -19,7 +19,7 @@ fi
 
 # SCC Registration to install salt-minion
 # The iSCSI server won't be de-registered as it is needed to install some additional packages.
-if grep -Eq 'role: iscsi_srv|role: drbd_node' /tmp/grains; then
+if grep -q 'role: iscsi_srv' /tmp/grains; then
   sh /root/salt/install-salt-minion.sh -r ${regcode}
 
 # If salt-minion is not included in image, system is registered to install salt-minion 
@@ -35,7 +35,7 @@ mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
 sh /root/salt/deployment.sh || exit 1
 
 # Salt formulas execution
-if grep -Eq 'role: hana_node|role: drbd_node' /etc/salt/grains; then
+if grep -q 'role:.*_node' /etc/salt/grains; then
   sh /root/salt/formula.sh || exit 1
 fi
 

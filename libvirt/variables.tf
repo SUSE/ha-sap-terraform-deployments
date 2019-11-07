@@ -135,8 +135,13 @@ variable "monitoring_enabled" {
   default     = false
 }
 
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
 variable "drbd_count" {
-  description = "number of drbd hosts for cluster"
+  description = "number of DRBD hosts for cluster"
   default     = 2
 }
 

@@ -1,6 +1,3 @@
-# -*- mode: yaml -*-
-# vim: ft=yaml
-
 drbd:
   ## Install required package to manage DRBD
   install_packages: false

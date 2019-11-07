@@ -48,6 +48,15 @@ devel_mode = false
 # IP address of the machine where prometheus and grafana are running
 monitoring_srv_ip = "192.168.XXX.Y+2"
 
+# Enable the DRBD cluster for nfs
+#drbd_enabled = true
+
+# Nodes number of DRBD cluster for nfs
+#drbd_count = 2
+
+# IP of DRBD cluster
+#drbd_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
 # storage_pool = "terraform"

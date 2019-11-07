@@ -1,4 +1,4 @@
-{% for ip in grains['drbd_ips'] %}
+{% for ip in grains['host_ips'] %}
 {{ grains['name_prefix'] }}{{ '{:0>2}'.format(loop.index) }}:
   host.present:
     - ip: {{ ip }}
