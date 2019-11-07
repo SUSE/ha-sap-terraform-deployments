@@ -26,8 +26,18 @@ groups:
     annotations:
       summary: A cluster resource failed
 
-# sbd alerts
 
+# failcount exceed migration threshold (example on saphana specific resource)
+- name: resource-failcount-higher-threshold
+  rules:
+  - alert: resource-failcount-higher-threshold
+    expr: count(ha_cluster_pacemaker_fail_count > ha_cluster_pacemaker_migration_threshold) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: the rsc_SAPHana_PRD_HDB00 has exceeded the limit threshold
+
+# sbd alerts
 - name: sbd-device-alerts
   rules:
   - alert: a-sbd-device-unhealthy
