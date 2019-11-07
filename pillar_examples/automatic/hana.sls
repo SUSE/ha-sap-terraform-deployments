@@ -8,7 +8,7 @@ hana:
       instance: "00"
       password: YourPassword1234
       install:
-        software_path: /root/sap_inst
+        software_path: '/root/sap_inst'
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
         root_password: linux
@@ -47,7 +47,7 @@ hana:
         preload_column_tables: False
       {% endif %}
       install:
-        software_path: /root/sap_inst
+        software_path: '/root/sap_inst'
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
         root_password: linux

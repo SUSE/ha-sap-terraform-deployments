@@ -8,6 +8,11 @@ variable "base_image" {
   type        = string
 }
 
+variable "storage_pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 variable "iprange" {
   description = "IP range of the isolated network"
   default     = "192.168.106.0/24"
@@ -36,16 +41,22 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
+  default     = ""
+}
+
 variable "host_ips" {
-  description = "IP addresses of the nodes"
+  description = "IP addresses of the hana nodes"
   type        = list(string)
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 
-variable "drbd_ips" {
-  description = "IP addresses of the drbd nodes"
+variable "nw_ips" {
+  description = "IP addresses of the netweaver nodes"
   type        = list(string)
-  default     = ["192.168.106.25", "192.168.106.26"]
+  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
 }
 
 variable "shared_storage_type" {
@@ -63,18 +74,25 @@ variable "iscsi_image" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address (only used if shared_storage_type is iscsi)"
   type        = string
-  default     = "192.168.106.17"
+  default     = "192.168.106.21"
 }
 
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string
+  default     = "192.168.106.22"
 }
 
 variable "monitoring_image" {
   description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
   type        = string
   default     = ""
+}
+
+variable "drbd_ips" {
+  description = "IP addresses of the drbd nodes"
+  type        = list(string)
+  default     = ["192.168.106.23", "192.168.106.24"]
 }
 
 variable "reg_code" {
@@ -135,6 +153,16 @@ variable "monitoring_enabled" {
   default     = false
 }
 
+variable "storage_pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver deployment"
+  default     = false
+}
+
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
   default     = false
@@ -143,11 +171,6 @@ variable "drbd_enabled" {
 variable "drbd_count" {
   description = "number of DRBD hosts for cluster"
   default     = 2
-}
-
-variable "storage_pool" {
-  description = "libvirt storage pool name for VM disks"
-  default     = "default"
 }
 
 variable "qa_mode" {

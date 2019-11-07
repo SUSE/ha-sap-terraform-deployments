@@ -25,31 +25,20 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-// hana
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = "string"
 }
 
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  default     = false
-}
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
   default     = []
 }
 
-
-variable "network_domain" {
-  description = "hostname's network domain"
-  default     = "tf.local"
-}
-
-variable "hana_count" {
+variable "netweaver_count" {
   description = "number of hosts like this one"
-  default     = 2
+  default     = 4
 }
 
 variable "public_key_location" {
@@ -57,37 +46,14 @@ variable "public_key_location" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-variable "hana_disk_size" {
-  description = "hana partition disk size"
-  default     = "68719476736" # 64GB
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
 }
 
-variable "shared_storage_type" {
-  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
-}
-
-variable "sbd_disk_id" {
-  description = "SBD disk volume id"
+variable "shared_disk_id" {
+  description = "ASCS and ERS shared disk volume id"
   type        = "string"
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
-  default     = ""
 }
 
 variable "sap_inst_media" {
@@ -95,14 +61,9 @@ variable "sap_inst_media" {
   type        = string
 }
 
-variable "hana_inst_folder" {
-  description = "Folder where SAP HANA installation files are stored"
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
   type        = string
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {
@@ -142,6 +103,11 @@ variable "network_id" {
   type        = string
 }
 
+variable "network_domain" {
+  description = "hostname's network domain"
+  default     = "tf.local"
+}
+
 variable "network_name" {
   description = "libvirt NAT network name for VMs, use empty string for bridged networking"
   default     = ""
@@ -155,24 +121,4 @@ variable "bridge" {
 variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
-}
-
-// monitoring
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  default     = false
-}
-
-// QA mode variables
-
-variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
-  default     = false
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }

@@ -4,7 +4,7 @@ cluster:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
-  name: hacluster
+  name: hana_cluster
   init: {{ grains['name_prefix'] }}01
   {% if grains['provider'] == 'libvirt' %}
   interface: eth1
@@ -17,7 +17,6 @@ cluster:
     device: /dev/watchdog
   sbd:
     device: {{ grains['sbd_disk_device'] }}
-  join_timer: 20
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:

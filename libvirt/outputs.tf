@@ -63,3 +63,19 @@ output "monitoring_name" {
 output "monitoring_public_name" {
   value = []
 }
+
+output "netweaver_nodes_ip" {
+  value = module.netweaver_node.output_data.private_addresses
+}
+
+output "netweaver_nodes_public_ip" {
+  value = module.netweaver_node.output_data.addresses
+}
+
+output "netweaver_nodes_name" {
+  value = module.netweaver_node.output_data.hostname
+}
+
+output "netweaver_nodes_public_name" {
+  value = []
+}
