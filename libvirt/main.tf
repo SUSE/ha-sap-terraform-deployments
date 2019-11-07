@@ -87,6 +87,14 @@ module "hana_node" {
   monitoring_enabled     = var.monitoring_enabled
 }
 
+module "drbd_sbd_disk" {
+  source            = "./modules/shared_disk"
+  shared_disk_count = var.drbd_enabled == true && var.drbd_shared_storage_type == "shared-disk" ? 1 : 0
+  name              = "drbd-sbd"
+  pool              = var.storage_pool
+  shared_disk_size  = 104857600
+}
+
 // drbd01 and drbd02
 module "drbd_node" {
   source                 = "./modules/drbd_node"
@@ -98,7 +106,7 @@ module "drbd_node" {
   bridge                 = "br0"
   host_ips               = var.drbd_ips
   drbd_disk_size         = "1024000000"
-  shared_storage_type    = var.shared_storage_type
+  shared_storage_type    = var.drbd_shared_storage_type
   iscsi_srv_ip           = var.iscsi_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -110,9 +118,7 @@ module "drbd_node" {
   monitoring_enabled     = var.monitoring_enabled
   network_id             = libvirt_network.isolated_network.id
   pool                   = var.storage_pool
-  // sbd disk configuration
-  sbd_count     = var.shared_storage_type == "shared-disk" ? 1 : 0
-  sbd_disk_size = "104857600"
+  sbd_disk_id            = module.drbd_sbd_disk.id
 }
 
 module "monitoring" {

@@ -65,6 +65,12 @@ variable "shared_storage_type" {
   default     = "iscsi"
 }
 
+variable "drbd_shared_storage_type" {
+  description = "used shared storage type for fencing (sbd) for DRBD cluster. Available options: iscsi, shared-disk."
+  type        = string
+  default     = "iscsi"
+}
+
 variable "iscsi_image" {
   description = "iscsi server base image (only used if shared_storage_type is iscsi)"
   type        = string
@@ -151,11 +157,6 @@ variable "background" {
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false
-}
-
-variable "storage_pool" {
-  description = "libvirt storage pool name for VM disks"
-  default     = "default"
 }
 
 variable "netweaver_enabled" {
