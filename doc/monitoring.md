@@ -30,7 +30,7 @@ Currently supported exporters:
 
 # Multi-cluster monitoring:
 
-For enabling multi-cluster in prometheus and our monitoring solution, you need to follow the schema in `/etc/prometheus/prometheus.yaml`.
+For enabling multi-cluster in prometheus and in our monitoring solution, you need to follow the schema in `/etc/prometheus/prometheus.yaml`.
 
 Each cluster is a different jobname. So if you have 2 cluster you will add 2 jobnames. like :
 
@@ -58,7 +58,7 @@ scrape_configs:
         - "10.162.32.238:9002" # 9002: ha_cluster_exporter metrics
 ```
 
-This will add in prometheus a label `job="cluster-asia-00" from where you can filter your different metrics.
+This will add in prometheus a label `job="hacluster-01` and  `job="hacluster-01`. In the grafana dashboard you will have a special switch on the top to switch clusters.
 
 
 ### SAP HANA database exporter
