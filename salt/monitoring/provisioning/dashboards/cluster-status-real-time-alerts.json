@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1573134324833,
+  "iteration": 1573214856381,
   "links": [],
   "panels": [
     {
@@ -1432,6 +1432,28 @@
       {
         "allValue": null,
         "current": {},
+        "datasource": "Prometheus SHAP",
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "hacluster",
+        "multi": false,
+        "name": "hacluster",
+        "options": [],
+        "query": "label_values(job)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
         "hide": 0,
@@ -1456,7 +1478,7 @@
         "current": {},
         "datasource": "$hanadb_data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\", job=\"$hacluster\"}, instance)",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
@@ -1525,28 +1547,6 @@
         "name": "Filters",
         "skipUrlSync": false,
         "type": "adhoc"
-      },
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": "Prometheus SHAP",
-        "definition": "label_values(job)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "hacluster",
-        "multi": false,
-        "name": "hacluster",
-        "options": [],
-        "query": "label_values(job)",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
       }
     ]
   },
@@ -1582,5 +1582,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 6
+  "version": 7
 }
