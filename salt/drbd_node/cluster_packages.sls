@@ -11,4 +11,6 @@ install_cluster_packages_prepare:
       - crmsh
       - ha-cluster-bootstrap
       - hawk2
-
+    - retry:
+        attempts: 3
+        interval: 15
