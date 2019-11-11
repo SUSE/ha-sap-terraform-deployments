@@ -2,7 +2,8 @@
 {% if grains['reg_code'] %}
 register_system:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -r {{ grains['reg_code'] }} {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
+    - name: /usr/bin/SUSEConnect -r {{ grains['reg_code'] }} {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }} ||
+        (zypper --non-interactive --gpg-auto-import-keys refresh --force --services && exit 1)
     - retry:
         attempts: 3
         interval: 15
