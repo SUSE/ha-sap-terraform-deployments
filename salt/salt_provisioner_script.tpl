@@ -17,6 +17,14 @@ if [[ $${QA_MODE} ]]; then
   done
 fi
 
+# Workaround for the cases where the cloud providers are coming without repositories
+# https://www.suse.com/support/kb/doc/?id=7022311
+# Check if the deployment is executed in a cloud provider
+grep -q 'provider: azure\|aws' /tmp/grains && CLOUD=1
+if [[ $${QA_MODE} != 1 && $${CLOUD} == 1 && "${regcode}" == "" ]]; then
+  zypper lr || sudo /usr/sbin/registercloudguest --force-new
+fi
+
 # Install salt if QA_MODE is False and salt is not already installed
 # It will register in SCC to install salt if registration code is provided
 [[ "${regcode}" != "" ]] && REGISTER="-d -r ${regcode}"
