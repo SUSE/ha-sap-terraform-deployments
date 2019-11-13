@@ -78,7 +78,7 @@ data "azurerm_public_ip" "monitoring" {
 
 data "azurerm_network_interface" "monitoring" {
   count = var.monitoring_enabled == true ? 1 : 0
-  name  = element(azurerm_network_interface.monitoring.0.name, count.index)
+  name  = azurerm_network_interface.monitoring.0.name
   resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
 }
 
