@@ -8,13 +8,13 @@ data "template_file" "monitoring_salt_provisioner" {
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.monitoring_domain) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
   triggers = {
-    monitoring_id = libvirt_domain.monitoring_domain[count.index].id
+    monitoring_id = libvirt_domain.monitoring_domain.0.id
   }
 
   connection {
-    host     = libvirt_domain.monitoring_domain[count.index].network_interface.0.addresses.0
+    host     = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }

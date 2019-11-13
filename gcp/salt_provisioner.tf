@@ -71,7 +71,7 @@ partitions:
   5:
     start: 80%
     end: 100%
- 
+
 EOF
 
 
@@ -170,17 +170,14 @@ provisioner "remote-exec" {
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(google_compute_instance.monitoring) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
   triggers = {
-    cluster_instance_ids = join(",", google_compute_instance.monitoring.*.id)
+    cluster_instance_id = google_compute_instance.monitoring.0.id
   }
 
   connection {
-    host = element(
-      google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip,
-      count.index,
-    )
+    host        = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
     type        = "ssh"
     user        = "root"
     private_key = file(var.private_key_location)

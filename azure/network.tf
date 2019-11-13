@@ -181,7 +181,7 @@ resource "azurerm_network_interface" "monitoring" {
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id          = element(azurerm_public_ip.monitoring.*.id, count.index)
+    public_ip_address_id          = azurerm_public_ip.monitoring.0.id
   }
 
   tags = {

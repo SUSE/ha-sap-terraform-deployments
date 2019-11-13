@@ -150,14 +150,14 @@ EOF
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(aws_instance.monitoring) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
   triggers = {
-    monitoring_id = join(",", aws_instance.monitoring.*.id)
+    monitoring_id = aws_instance.monitoring.0.id
   }
 
   connection {
-    host        = element(aws_instance.monitoring.*.public_ip, count.index)
+    host        = aws_instance.monitoring.0.public_ip
     type        = "ssh"
     user        = "ec2-user"
     private_key = file(var.private_key_location)
