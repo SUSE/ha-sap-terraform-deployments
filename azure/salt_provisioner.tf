@@ -80,7 +80,7 @@ EOF
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? length(azurerm_virtual_machine.clusternodes) : 0
+  count = var.provisioner == "salt" ? var.ninstances : 0
 
   triggers = {
     cluster_instance_ids = join(",", azurerm_virtual_machine.clusternodes.*.id)
