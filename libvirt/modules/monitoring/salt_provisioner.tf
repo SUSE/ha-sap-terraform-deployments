@@ -14,7 +14,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   connection {
-    host     = libvirt_domain.monitoring_domain[count.index].network_interface.0.addresses.0
+    host     = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }
