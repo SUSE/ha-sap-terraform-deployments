@@ -24,6 +24,9 @@ init_type = "all"
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
+# Custom monitoring server image
+#monitoring_uri = "/path/to/your/monitoring/image"
+
 # Public sles4sap image
 hana_public_publisher = "SUSE"
 hana_public_offer     = "SLES-SAP-BYOS"
@@ -35,6 +38,12 @@ iscsi_public_publisher = "SUSE"
 iscsi_public_offer     = "SLES-SAP-BYOS"
 iscsi_public_sku       = "15"
 iscsi_public_version   = "2019.07.17"
+
+# Public monitoring server image
+monitoring_public_publisher = "SUSE"
+monitoring_public_offer     = "SLES-SAP-BYOS"
+monitoring_public_sku       = "15"
+monitoring_public_version   = "2019.07.17"
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"

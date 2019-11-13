@@ -54,6 +54,26 @@ variable "iscsi_srv_uri" {
   default = ""
 }
 
+variable "monitoring_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "monitoring_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "monitoring_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "monitoring_public_version" {
+  type    = string
+  default = "latest"
+}
+
 variable "monitoring_uri" {
   type    = string
   default = ""
