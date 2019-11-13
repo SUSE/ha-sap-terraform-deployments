@@ -33,22 +33,18 @@ output "iscsisrv_public_name" {
 }
 
 output "monitoring_ip" {
-  type = "string"
   value = module.monitoring.output_data.private_address
 }
 
 output "monitoring_public_ip" {
-  type = "string"
   value = module.monitoring.output_data.public_address
 }
 
 output "monitoring_name" {
-  type = "string"
   value = module.monitoring.output_data.hostname
 }
 
 output "monitoring_public_name" {
-  type = "string"
   value = ""
 }
 

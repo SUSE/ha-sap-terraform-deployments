@@ -83,21 +83,17 @@ data "azurerm_network_interface" "monitoring" {
 }
 
 output "monitoring_ip" {
-  type = "string"
   value = data.azurerm_network_interface.monitoring.0.private_ip_address
 }
 
 output "monitoring_public_ip" {
-  type = "string"
   value = data.azurerm_public_ip.monitoring.0.ip_address
 }
 
 output "monitoring_name" {
-  type = "string"
   value = azurerm_virtual_machine.monitoring.0.name
 }
 
 output "monitoring_public_name" {
-  type = "string"
   value = data.azurerm_public_ip.monitoring.0.fqdn
 }

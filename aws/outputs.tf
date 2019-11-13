@@ -57,21 +57,17 @@ data "aws_instance" "monitoring" {
 }
 
 output "monitoring_ip" {
-  type = "string"
   value = data.aws_instance.monitoring.0.private_ip
 }
 
 output "monitoring_public_ip" {
-  type = "string"
   value = data.aws_instance.monitoring.0.public_ip
 }
 
 output "monitoring_name" {
-  type = "string"
   value = data.aws_instance.monitoring.0.id
 }
 
 output "monitoring_public_name" {
-  type = "string"
   value = data.aws_instance.monitoring.0.public_dns
 }

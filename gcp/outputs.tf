@@ -43,21 +43,17 @@ output "cluster_nodes_public_name" {
 # Monitoring
 
 output "monitoring_ip" {
-  type = "string"
   value = google_compute_instance.monitoring.0.network_interface.0.network_ip
 }
 
 output "monitoring_public_ip" {
-  type = "string"
   value = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
 }
 
 output "monitoring_name" {
-  type = "string"
   value = google_compute_instance.monitoring.0.name
 }
 
 output "monitoring_public_name" {
-  type = "string"
   value = ""
 }
