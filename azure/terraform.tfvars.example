@@ -24,6 +24,9 @@ init_type = "all"
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
+# Custom monitoring server image
+#monitoring_uri = "/path/to/your/monitoring/image"
+
 # Public sles4sap image
 hana_public_publisher = "SUSE"
 hana_public_offer     = "SLES-SAP-BYOS"
@@ -35,6 +38,12 @@ iscsi_public_publisher = "SUSE"
 iscsi_public_offer     = "SLES-SAP-BYOS"
 iscsi_public_sku       = "15"
 iscsi_public_version   = "2019.07.17"
+
+# Public monitoring server image
+monitoring_public_publisher = "SUSE"
+monitoring_public_offer     = "SLES-SAP-BYOS"
+monitoring_public_sku       = "15"
+monitoring_public_version   = "2019.07.17"
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"
@@ -84,6 +93,8 @@ ha_sap_deployment_repo = ""
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
+
+# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
 #reg_additional_modules = {
 #    "sle-module-adv-systems-management/12/x86_64" = ""
 #    "sle-module-containers/12/x86_64" = ""

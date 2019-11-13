@@ -148,11 +148,11 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   storage_image_reference {
-    id        = azurerm_image.monitoring.0.id
-    publisher = "SUSE"
-    offer     = "SLES-SAP-BYOS"
-    sku       = "15"
-    version   = "latest"
+    id        = var.monitoring_uri != "" ? join(",", azurerm_image.monitoring.*.id) : ""
+    publisher = var.monitoring_uri != "" ? "" : var.monitoring_public_publisher
+    offer     = var.monitoring_uri != "" ? "" : var.monitoring_public_offer
+    sku       = var.monitoring_uri != "" ? "" : var.monitoring_public_sku
+    version   = var.monitoring_uri != "" ? "" : var.monitoring_public_version
   }
 
   storage_data_disk {

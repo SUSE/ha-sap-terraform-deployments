@@ -67,6 +67,8 @@ ha_sap_deployment_repo = ""
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
+
+# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
 #reg_additional_modules = {
 #    "sle-module-adv-systems-management/12/x86_64" = ""
 #    "sle-module-containers/12/x86_64" = ""
