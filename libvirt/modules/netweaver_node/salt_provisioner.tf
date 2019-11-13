@@ -12,7 +12,7 @@ data "template_file" "netweaver_salt_provisioner" {
 }
 
 resource "null_resource" "netweaver_node_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.netweaver_domain) : 0
+  count = var.provisioner == "salt" ? var.netweaver_count : 0
   triggers = {
     netweaver_ids = libvirt_domain.netweaver_domain[count.index].id
   }

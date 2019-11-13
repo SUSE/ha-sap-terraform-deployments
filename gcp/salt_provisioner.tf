@@ -87,7 +87,7 @@ provisioner "remote-exec" {
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? length(google_compute_instance.clusternodes) : 0
+  count = var.provisioner == "salt" ? var.ninstances : 0
 
   triggers = {
     cluster_instance_ids = join(",", google_compute_instance.clusternodes.*.id)

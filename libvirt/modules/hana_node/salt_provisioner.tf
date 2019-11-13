@@ -12,7 +12,7 @@ data "template_file" "hana_salt_provisioner" {
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.hana_domain) : 0
+  count = var.provisioner == "salt" ? var.hana_count : 0
   triggers = {
     hana_ids = libvirt_domain.hana_domain[count.index].id
   }
