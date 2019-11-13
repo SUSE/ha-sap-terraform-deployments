@@ -72,34 +72,32 @@ output "cluster_nodes_public_name" {
 
 data "azurerm_public_ip" "monitoring" {
   count = var.monitoring_enabled == true ? 1 : 0
-  name  = element(azurerm_public_ip.monitoring.*.name, count.index)
-  resource_group_name = element(
-    azurerm_virtual_machine.monitoring.*.resource_group_name,
-    count.index,
-  )
+  name  = azurerm_public_ip.monitoring.0.name
+  resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
 }
 
 data "azurerm_network_interface" "monitoring" {
   count = var.monitoring_enabled == true ? 1 : 0
-  name  = element(azurerm_network_interface.monitoring.*.name, count.index)
-  resource_group_name = element(
-    azurerm_virtual_machine.monitoring.*.resource_group_name,
-    count.index,
-  )
+  name  = element(azurerm_network_interface.monitoring.0.name, count.index)
+  resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
 }
 
 output "monitoring_ip" {
-  value = data.azurerm_network_interface.monitoring.*.private_ip_address
+  type = "string"
+  value = data.azurerm_network_interface.monitoring.0.private_ip_address
 }
 
 output "monitoring_public_ip" {
-  value = data.azurerm_public_ip.monitoring.*.ip_address
+  type = "string"
+  value = data.azurerm_public_ip.monitoring.0.ip_address
 }
 
 output "monitoring_name" {
-  value = azurerm_virtual_machine.monitoring.*.name
+  type = "string"
+  value = azurerm_virtual_machine.monitoring.0.name
 }
 
 output "monitoring_public_name" {
-  value = data.azurerm_public_ip.monitoring.*.fqdn
+  type = "string"
+  value = data.azurerm_public_ip.monitoring.0.fqdn
 }

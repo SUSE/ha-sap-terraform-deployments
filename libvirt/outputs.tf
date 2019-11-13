@@ -33,19 +33,23 @@ output "iscsisrv_public_name" {
 }
 
 output "monitoring_ip" {
-  value = module.monitoring.output_data.private_addresses
+  type = "string"
+  value = module.monitoring.output_data.private_address
 }
 
 output "monitoring_public_ip" {
-  value = module.monitoring.output_data.addresses
+  type = "string"
+  value = module.monitoring.output_data.public_address
 }
 
 output "monitoring_name" {
+  type = "string"
   value = module.monitoring.output_data.hostname
 }
 
 output "monitoring_public_name" {
-  value = []
+  type = "string"
+  value = ""
 }
 
 output "netweaver_nodes_ip" {

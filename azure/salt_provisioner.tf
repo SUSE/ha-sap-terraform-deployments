@@ -156,12 +156,12 @@ resource "null_resource" "monitoring_provisioner" {
   count = var.provisioner == "salt" ? length(azurerm_virtual_machine.monitoring) : 0
 
   triggers = {
-    monitoring_id = join(",", azurerm_virtual_machine.monitoring.*.id)
+    monitoring_id = azurerm_virtual_machine.monitoring.0.id
   }
 
   connection {
     host = element(
-      data.azurerm_public_ip.monitoring.*.ip_address,
+      data.azurerm_public_ip.monitoring.0.ip_address,
       count.index,
     )
     type        = "ssh"

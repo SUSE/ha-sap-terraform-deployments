@@ -45,9 +45,10 @@ variable "bridge" {
   default     = ""
 }
 
-variable "monitoring_count" {
-  description = "number of hosts like this one"
-  default     = 1
+variable "monitoring_enabled" {
+  description = "whether or not to enable this module"
+  type        = bool
+  default     = true
 }
 
 variable "vcpu" {
