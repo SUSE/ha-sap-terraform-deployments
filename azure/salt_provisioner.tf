@@ -153,7 +153,7 @@ EOF
 
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(azurerm_virtual_machine.monitoring) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
   triggers = {
     monitoring_id = azurerm_virtual_machine.monitoring.0.id

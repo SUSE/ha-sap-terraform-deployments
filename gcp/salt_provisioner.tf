@@ -170,7 +170,7 @@ provisioner "remote-exec" {
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(google_compute_instance.monitoring) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
   triggers = {
     cluster_instance_id = google_compute_instance.monitoring.0.id
