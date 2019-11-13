@@ -37,7 +37,7 @@ output "monitoring_ip" {
 }
 
 output "monitoring_public_ip" {
-  value = module.monitoring.output_data.public_address
+  value = module.monitoring.output_data.address
 }
 
 output "monitoring_name" {
