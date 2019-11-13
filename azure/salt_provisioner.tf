@@ -160,10 +160,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   connection {
-    host = element(
-      data.azurerm_public_ip.monitoring.0.ip_address,
-      count.index,
-    )
+    host        = azurerm_public_ip.monitoring.0.ip_address
     type        = "ssh"
     user        = var.admin_user
     private_key = file(var.private_key_location)
