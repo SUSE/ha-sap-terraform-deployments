@@ -19,7 +19,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   connection {
-    host        = google_compute_instance.iscsisrv.network_interface[0].access_config[0].nat_ip
+    host        = google_compute_instance.iscsisrv.network_interface.0.access_config.0.nat_ip
     type        = "ssh"
     user        = "root"
     private_key = file(var.private_key_location)
