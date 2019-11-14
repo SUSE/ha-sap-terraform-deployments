@@ -1,31 +1,28 @@
 drbd:
   ## Install required package to manage DRBD
-  install_packages: false
+  #install_packages: false
 
   ## Install required package to configure DRBD in pacemaker cluster
-  #with_ha: true
+  #with_ha: false
+
+  ## Pirmary node when promoting DRBD
+  ## TODO: Only support single primary currently
+  promotion: "<HOSTNAME>"
+
+  ## Resource template for /etc/drbd.d/xxx.res
+  #res_template: "res_single_vol_v9.j2"
 
   ## Perform initial sync for DRBD resources
   #need_init_sync: true
 
-  ## Optional: stop the DRBD resources after initial resync
-  #stop_after_init_sync: true
+  ## Optional: interval check time for waiting for resource synced
+  #sync_interval: 10
+
+  ## Optional: timeout for waiting for resource synced
+  #sync_timeout: 500
 
   ## Optional: format the DRBD resource after initial resync
   #need_format: true
-
-
-  # Salt deployment/manage related parameters
-  salt:
-    # Pirmary node when promoting DRBD
-    # TODO: Only support single primary currently
-    promotion: "<HOSTNAME>"
-  #  # Resource template for /etc/drbd.d/xxx.res
-  #  res_template: "res_single_vol_v9.j2"
-  #  # Optional: interval check time for waiting for resource synced
-  #  sync_interval: 10
-  #  # Optional: timeout for waiting for resource synced
-  #  sync_timeout: 500
 
 
   ## Configures some "global" parameters of /etc/drbd.d/global_common.conf
@@ -77,12 +74,6 @@ drbd:
       device: "<DRBD_DEVICE_1>"
       disk: "<BACKEND_DEVICE_1>"
 
-      # Refer to bsc#1101037
-      fixed_rate:  true
-      c_plan_ahead: 20
-      c_max_rate: "100M"
-      c_fill_target: "10M"
-
       # Salt specific
       file_system: "ext3"
       mount_point: "<MOUNT_1>"
@@ -105,10 +96,6 @@ drbd:
     - name: "<RESOURCE_NAME_2>"
       device: "<DRBD_DEVICE_2>"
       disk: "<BACKEND_DEVICE_2>"
-      on_io_error: "detach"
-
-      fixed_rate:  True
-      resync_rate: "150M"
 
       # Salt specific
       file_system: "ext4"
