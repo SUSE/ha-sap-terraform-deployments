@@ -12,7 +12,7 @@ data "template_file" "drbd_salt_provisioner" {
 }
 
 resource "null_resource" "drbd_node_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.drbd_domain) : 0
+  count = var.provisioner == "salt" ? var.drbd_count : 0
   triggers = {
     drbd_ids = libvirt_domain.drbd_domain[count.index].id
   }
