@@ -1,9 +1,9 @@
 # This file contains the salt provisioning logic.
 # It will be executed if 'provisioner' is set to 'salt' (default option) and the
-# libvirt_domain.domain (hana_node) resources are created (check triggers option).
+# libvirt_domain.domain (drbd_node) resources are created (check triggers option).
 
 # Template file to launch the salt provisioning script
-data "template_file" "hana_salt_provisioner" {
+data "template_file" "drbd_salt_provisioner" {
   template = file("../salt/salt_provisioner_script.tpl")
 
   vars = {
@@ -11,14 +11,14 @@ data "template_file" "hana_salt_provisioner" {
   }
 }
 
-resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? var.hana_count : 0
+resource "null_resource" "drbd_node_provisioner" {
+  count = var.provisioner == "salt" ? length(libvirt_domain.drbd_domain) : 0
   triggers = {
-    hana_ids = libvirt_domain.hana_domain[count.index].id
+    drbd_ids = libvirt_domain.drbd_domain[count.index].id
   }
 
   connection {
-    host     = libvirt_domain.hana_domain[count.index].network_interface.0.addresses.0
+    host     = libvirt_domain.drbd_domain[count.index].network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }
@@ -29,14 +29,14 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    content     = data.template_file.hana_salt_provisioner.rendered
+    content     = data.template_file.drbd_salt_provisioner.rendered
     destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
     content = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
@@ -48,19 +48,24 @@ authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 provider: libvirt
-role: hana_node
-scenario_type: ${var.scenario_type}
-hana_disk_device: /dev/vdb
+role: drbd_node
+drbd_disk_device: /dev/vdb
 shared_storage_type: ${var.shared_storage_type}
 sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-qa_mode: ${var.qa_mode}
-hwcct: ${var.hwcct}
-hana_fstype: ${var.hana_fstype}
-hana_inst_folder: ${var.hana_inst_folder}
-sap_inst_media: ${var.sap_inst_media}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
+
+drbd_nodes: ${var.drbd_count}
+
+partitions:
+  1:
+    start: 1
+    end: 30%
+  2:
+    start: 30%
+    end: 100%
+
 EOF
       destination = "/tmp/grains"
       }

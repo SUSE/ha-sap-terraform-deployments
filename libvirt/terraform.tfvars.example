@@ -61,6 +61,15 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true
 
+# Enable the DRBD cluster for nfs
+#drbd_enabled = true
+
+# Nodes number of DRBD cluster for nfs
+#drbd_count = 2
+
+# IP of DRBD cluster
+#drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
 # storage_pool = "terraform"

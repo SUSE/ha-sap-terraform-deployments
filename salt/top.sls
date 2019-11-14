@@ -9,6 +9,11 @@ base:
     - default
     - netweaver_node
 
+  'role:drbd_node':
+    - match: grain
+    - default
+    - drbd_node
+
   'role:iscsi_srv':
     - match: grain
     - iscsi_srv

@@ -16,6 +16,22 @@ output "cluster_nodes_public_name" {
   value = []
 }
 
+output "drbd_ip" {
+  value = module.drbd_node.output_data.private_addresses
+}
+
+output "drbd_public_ip" {
+  value = module.drbd_node.output_data.addresses
+}
+
+output "drbd_name" {
+  value = module.drbd_node.output_data.hostname
+}
+
+output "drbd_public_name" {
+  value = []
+}
+
 output "iscsisrv_ip" {
   value = module.iscsi_server.output_data.private_addresses
 }

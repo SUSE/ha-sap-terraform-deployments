@@ -22,6 +22,9 @@ resource "libvirt_network" "isolated_network" {
   dhcp {
     enabled = "false"
   }
+  dns {
+    enabled = true
+  }
   autostart = true
 }
 // ---------------------------------------
@@ -82,6 +85,40 @@ module "hana_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+}
+
+module "drbd_sbd_disk" {
+  source            = "./modules/shared_disk"
+  shared_disk_count = var.drbd_enabled == true && var.drbd_shared_storage_type == "shared-disk" ? 1 : 0
+  name              = "drbd-sbd"
+  pool              = var.storage_pool
+  shared_disk_size  = 104857600
+}
+
+// drbd01 and drbd02
+module "drbd_node" {
+  source                 = "./modules/drbd_node"
+  name                   = "drbd"
+  base_image_id          = libvirt_volume.base_image.id
+  drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
+  vcpu                   = 1
+  memory                 = 1024
+  bridge                 = "br0"
+  host_ips               = var.drbd_ips
+  drbd_disk_size         = "1024000000"
+  shared_storage_type    = var.drbd_shared_storage_type
+  iscsi_srv_ip           = var.iscsi_srv_ip
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  devel_mode             = var.devel_mode
+  provisioner            = var.provisioner
+  background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  network_id             = libvirt_network.isolated_network.id
+  pool                   = var.storage_pool
+  sbd_disk_id            = module.drbd_sbd_disk.id
 }
 
 module "monitoring" {

@@ -65,6 +65,12 @@ variable "shared_storage_type" {
   default     = "iscsi"
 }
 
+variable "drbd_shared_storage_type" {
+  description = "used shared storage type for fencing (sbd) for DRBD cluster. Available options: iscsi, shared-disk."
+  type        = string
+  default     = "iscsi"
+}
+
 variable "iscsi_image" {
   description = "iscsi server base image (only used if shared_storage_type is iscsi)"
   type        = string
@@ -87,6 +93,12 @@ variable "monitoring_image" {
   description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
   type        = string
   default     = ""
+}
+
+variable "drbd_ips" {
+  description = "IP addresses of the drbd nodes"
+  type        = list(string)
+  default     = ["192.168.106.23", "192.168.106.24"]
 }
 
 variable "reg_code" {
@@ -150,6 +162,16 @@ variable "monitoring_enabled" {
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver deployment"
   default     = false
+}
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
+variable "drbd_count" {
+  description = "number of DRBD hosts for cluster"
+  default     = 2
 }
 
 variable "qa_mode" {

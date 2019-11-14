@@ -6,6 +6,7 @@
 - [Howto](#quickstart)
 - [Monitoring](../doc/monitoring.md)
 - [Netweaver](../doc/netweaver.md)
+- [DRBD](../doc/drbd.md)
 - [QA](../doc/qa.md)
 - [Design](#design)
 - [Specifications](#specifications)
@@ -53,26 +54,31 @@ all required components.
 
 
 ### Terraform modules
-- [base](modules/base): Base configuration of the cluster. The used SLES images, private
-network and generic data are managed here.
-- [host](modules/host): The generic SAP HANA node definition. This modules defines the most
-important features of the each node (attach used partitions, networks, OS parameters, etc).
-Besides that, the different kind of provisioners are available in this module. By now, only
-`salt` is supported but more could be added just adding other `provisioner` files like
-[salt_provisioner](modules/host/salt_provisioner.tf).
 - [hana_node](modules/hana_node): Specific SAP HANA node defintion. Basically it calls the
 host module with some particular updates.
- The hana node contains also:
- * sbd device definition. Currently a shared disk.
+- [netweaver_node](modules/netweaver_node): SAP Netweaver environment allows to have
+a Netweaver landscape working with the SAP Hana database.
+- [drbd_node](modules/drbd_node): DRBD cluster for NFS share.
 - [iscsi_server](modules/iscsi_server): Machine to host a iscsi target.
 - [monitoring](modules/monitoring): Machine to host the monitoring stack.
+- [shared_disk](modules/shared_disk): Shared disk, could be used as a sbd device.
 
 ### Salt modules
+- [pre_installation](../salt/pre_installation): Adjust the configuration needed for
+defult module.
 - [default](../salt/default): Default configuration for each node. Install the most
 basic packages and apply basic configuration.
 - [hana_node](../salt/hana_node): Apply SAP HANA nodes specific updates to install
-SAP HANA and enable system replication according [pillar](../../pillar_examples/libvirt/hana.sls)
+SAP HANA and enable system replication according [pillar](../pillar_examples/libvirt/hana.sls)
 data.
+- [drbd_node](../salt/drbd_node): Apply DRBD nodes specific updates to configure
+DRBD cluster for NFS share according [drbd pillar](../pillar_examples/libvirt/drbd/drbd.sls)
+and [cluster pillar](../pillar_examples/libvirt/drbd/cluster.sls). Or use
+pillars files which are in [DRBD automatic directory](../pillar_examples/automatic/DRBD).
+- [monitoring](../salt/monitoring): Apply prometheus monitoring service configuration.
+- [iscsi_srv](../salt/iscsi_srv): Apply configuration for iscsi target.
+- [netweaver_node](../salt/netweaver_node): Apply netweaver packages and formula.
+- [qa_mode](../salt/qa_mode): Apply configuration for Quality Assurance testing.
 
 # Specifications
 
