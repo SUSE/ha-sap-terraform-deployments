@@ -11,8 +11,8 @@ minion_id:
     - contents: {{ grains['hostname'] }}.{{ grains['network_domain'] }}
 
 minion_service:
-  service.running:
+  service.dead:
     - name: salt-minion
-    - enable: True
+    - enable: False
     - require:
       - pkg: salt-minion
