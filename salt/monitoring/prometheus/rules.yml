@@ -36,6 +36,30 @@ groups:
       severity: page
     annotations:
       summary: the rsc_SAPHana_PRD_HDB00 has exceeded the limit threshold
+  
+# drbd alerts
+- name: drbd-alerts
+  rules:
+  - alert: drbd-connections-in-a-bad-state
+    expr: count(ha_cluster_drbd_connections{peer_disk_state=~"inconsistent|outdated|dunknown|failed"}) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd connection is an bad state inconsistent|outdated|dunknown|failed
+
+  - alert: drbd-sync-connections-percentage-lower-then-expected
+    expr: ha_cluster_drbd_connections_sync < 90
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd disk sync is lower then 90 percent!
+
+  - alert: drbd-resource-in-a-bad-state
+    expr: count(ha_cluster_drbd_resources{peer_disk_state=~"inconsistent|outdated|dunknown|failed"}) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd resource is an bad state inconsistent|outdated|dunknown|failed
 
 # sbd alerts
 - name: sbd-device-alerts
