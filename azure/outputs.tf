@@ -83,17 +83,17 @@ data "azurerm_network_interface" "monitoring" {
 }
 
 output "monitoring_ip" {
-  value = length(azurerm_network_interface.monitoring.0) > 0 ? azurerm_network_interface.monitoring.0.private_ip_address : ""
+  value = join("", azurerm_network_interface.monitoring.*.private_ip_address)
 }
 
 output "monitoring_public_ip" {
-  value = length(azurerm_public_ip.monitoring.0) > 0 ? azurerm_public_ip.monitoring.0.ip_address : ""
+  value = join("", azurerm_public_ip.monitoring.*.ip_address)
 }
 
 output "monitoring_name" {
-  value = length(azurerm_virtual_machine.monitoring.0) > 0 ? azurerm_virtual_machine.monitoring.0.name : ""
+  value = join("", azurerm_virtual_machine.monitoring.*.name)
 }
 
 output "monitoring_public_name" {
-  value = length(azurerm_public_ip.monitoring.0) > 0 ? azurerm_public_ip.monitoring.0.fqdn : ""
+  value = join("", azurerm_public_ip.monitoring.*.fqdn)
 }

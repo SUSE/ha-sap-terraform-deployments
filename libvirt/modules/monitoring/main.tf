@@ -59,15 +59,10 @@ resource "libvirt_domain" "monitoring_domain" {
 }
 
 output "output_data" {
-  value = length(libvirt_domain.monitoring_domain) > 0 ? {
-    id              = libvirt_domain.monitoring_domain.0.id
-    hostname        = libvirt_domain.monitoring_domain.0.name
-    private_address = var.monitoring_srv_ip
-    address         = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
-    } : {
-    id              = ""
-    hostname        = ""
-    private_address = ""
-    address         = ""
+  value = {
+    id              = join("", libvirt_domain.monitoring_domain.*.id)
+    hostname        = join("", libvirt_domain.monitoring_domain.*.name)
+    address         = join("", libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0)
+    private_address = join("", libvirt_domain.monitoring_domain.*.network_interface.1.addresses.0)
   }
 }
