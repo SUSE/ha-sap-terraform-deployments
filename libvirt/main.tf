@@ -68,7 +68,7 @@ module "hana_node" {
   network_id             = libvirt_network.isolated_network.id
   host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
-  sap_inst_media         = var.sap_inst_media
+  hana_inst_media        = var.hana_inst_media
   hana_disk_size         = "68719476736"
   hana_fstype            = var.hana_fstype
   shared_storage_type    = var.shared_storage_type
@@ -162,7 +162,7 @@ module "netweaver_node" {
   network_id             = libvirt_network.isolated_network.id
   host_ips               = var.nw_ips
   shared_disk_id         = module.nw_shared_disk.id
-  sap_inst_media         = var.sap_inst_media
+  netweaver_inst_media   = var.netweaver_inst_media
   netweaver_nfs_share    = var.netweaver_nfs_share
   reg_code               = var.reg_code
   reg_email              = var.reg_email

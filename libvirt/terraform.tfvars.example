@@ -1,5 +1,5 @@
 qemu_uri = "qemu:///system"
-sap_inst_media = "url-to-your-nfs-share"
+hana_inst_media = "url-to-your-nfs-share"
 base_image = "url-to-your-sles4sap-image"
 iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
@@ -51,6 +51,9 @@ devel_mode = false
 monitoring_srv_ip = "192.168.XXX.Y+7"
 
 # Netweaver variables
+
+# NFS share with netweaver installation folders
+#netweaver_inst_media = "url-to-your-nfs-share"
 
 # NFS share to store the Netweaver shared files
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"

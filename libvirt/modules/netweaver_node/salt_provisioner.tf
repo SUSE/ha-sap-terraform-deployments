@@ -48,7 +48,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 provider: libvirt
 role: netweaver_node
-sap_inst_media: ${var.sap_inst_media}
+netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 sbd_disk_device: /dev/vdb1
