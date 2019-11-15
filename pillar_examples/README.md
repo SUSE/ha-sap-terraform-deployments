@@ -27,6 +27,7 @@ All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/saphanabootstrap-formula (to manipulate the hana.sls file)
 - https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
 
+
 ### Libvirt specifics
 
 One thing is different with Libvirt provider, in pillars directory, you will find two directories about HANA profiles (cost_optimized and performance_optimized).
@@ -35,3 +36,18 @@ Choose one according to your needs.
 Finally, if instead of deploying SAP HANA and the cluster together, to only
 deploy one of them update the salt/hana_node/files/salt/top.sls file only using
 the desired component and removing/commenting the other.
+
+
+# DRBD automatic pillars
+For a preconfigured environment, you can use pillars files which are in [DRBD automatic directory](./automatic/DRBD)
+
+**Could be used for testing purpose and not for production as they have default settings.**
+
+From git top-level folder, copy files:
+
+`cp pillar_examples/automatic/DRBD/{cluster.sls,drbd.sls} salt/drbd_node/files/pillar/`
+
+All the information about how to tune the deployment is available in:
+- https://github.com/SUSE/drbd-formula (to manipulate the drbd.sls file)
+- https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
+
