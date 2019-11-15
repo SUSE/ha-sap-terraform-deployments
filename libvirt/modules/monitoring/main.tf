@@ -62,7 +62,7 @@ output "output_data" {
   value = {
     id              = join("", libvirt_domain.monitoring_domain.*.id)
     hostname        = join("", libvirt_domain.monitoring_domain.*.name)
+    private_address = var.monitoring_srv_ip
     address         = join("", libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0)
-    private_address = join("", libvirt_domain.monitoring_domain.*.network_interface.1.addresses.0)
   }
 }
