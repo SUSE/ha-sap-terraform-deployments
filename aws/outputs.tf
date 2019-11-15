@@ -57,17 +57,17 @@ data "aws_instance" "monitoring" {
 }
 
 output "monitoring_ip" {
-  value = join("", aws_instance.monitoring.*.private_ip)
+  value = join("", data.aws_instance.monitoring.*.private_ip)
 }
 
 output "monitoring_public_ip" {
-  value = join("", aws_instance.monitoring.*.public_ip)
+  value = join("", data.aws_instance.monitoring.*.public_ip)
 }
 
 output "monitoring_name" {
-  value = join("", aws_instance.monitoring.*.id)
+  value = join("", data.aws_instance.monitoring.*.id)
 }
 
 output "monitoring_public_name" {
-  value = join("", aws_instance.monitoring.*.public_dns)
+  value = join("", data.aws_instance.monitoring.*.public_dns)
 }

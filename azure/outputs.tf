@@ -83,11 +83,11 @@ data "azurerm_network_interface" "monitoring" {
 }
 
 output "monitoring_ip" {
-  value = join("", azurerm_network_interface.monitoring.*.private_ip_address)
+  value = join("", data.azurerm_network_interface.monitoring.*.private_ip_address)
 }
 
 output "monitoring_public_ip" {
-  value = join("", azurerm_public_ip.monitoring.*.ip_address)
+  value = join("", data.azurerm_public_ip.monitoring.*.ip_address)
 }
 
 output "monitoring_name" {
@@ -95,5 +95,5 @@ output "monitoring_name" {
 }
 
 output "monitoring_public_name" {
-  value = join("", azurerm_public_ip.monitoring.*.fqdn)
+  value = join("", data.azurerm_public_ip.monitoring.*.fqdn)
 }
