@@ -3,6 +3,9 @@ include:
   - default.minimal
 {% endif %}
   - default.hostname
+{% if grains.get('host_ips') %}
+  - default.hosts
+{% endif %}
 {% if grains['os_family'] == 'Suse' %}
   - default.registration
 {% endif %}

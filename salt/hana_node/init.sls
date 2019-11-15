@@ -8,7 +8,6 @@ include:
   {% else %}
   - hana_node.sap_inst
   {% endif %}
-  - hana_node.hosts
   {% if grains['shared_storage_type'] == 'iscsi' %}
   - hana_node.iscsi_initiator
   {% endif %}
