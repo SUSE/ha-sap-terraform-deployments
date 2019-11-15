@@ -8,7 +8,7 @@ cluster:
   interface: eth0
   {% endif %}
   unicast: True
-  join_timer: 20
+  wait_for_initialization: 20
   watchdog:
     module: softdog
     device: /dev/watchdog
