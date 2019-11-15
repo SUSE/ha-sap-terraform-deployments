@@ -7,7 +7,7 @@ drbd:
 
   ## Pirmary node when promoting DRBD
   ## TODO: Only support single primary currently
-  promotion: "<HOSTNAME>"
+  promotion: {{ grains['name_prefix'] }}01
 
   ## Resource template for /etc/drbd.d/xxx.res
   #res_template: "res_single_vol_v9.j2"
@@ -70,48 +70,40 @@ drbd:
 
 
   resource:
-    - name: "<RESOURCE_NAME_1>"
-      device: "<DRBD_DEVICE_1>"
-      disk: "<BACKEND_DEVICE_1>"
+    - name: "beijing"
+      device: "/dev/drbd1"
+      disk: {{ grains['drbd_disk_device'] }}1
 
       # Salt specific
       file_system: "ext3"
-      mount_point: "<MOUNT_1>"
-      virtual_ip: "<VIRTUAL_IP_1>"
+      mount_point: "/mnt/fs-A"
+      virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.201
 
       nodes:
-        - name: "<HOSTNAME_1>"
-          ip: "<IP_1>"
-          port: <PORT_1>
+        - name: {{ grains['name_prefix'] }}01
+          ip: {{ grains['host_ips'][0] }}
+          port: 7990
           id: 1
-        - name: "<HOSTNAME_2>"
-          ip: "<IP_2>"
-          port: <PORT_1>
+        - name: {{ grains['name_prefix'] }}02
+          ip: {{ grains['host_ips'][1] }}
+          port: 7990
           id: 2
-        - name: "<HOSTNAME_3>"
-          ip: "<IP_3>"
-          port: <PORT_1>
-          id: 3
 
-    - name: "<RESOURCE_NAME_2>"
-      device: "<DRBD_DEVICE_2>"
-      disk: "<BACKEND_DEVICE_2>"
+    - name: "shanghai"
+      device: "/dev/drbd2"
+      disk: {{ grains['drbd_disk_device'] }}2
 
       # Salt specific
       file_system: "ext4"
-      mount_point: "<MOUNT_2>"
-      virtual_ip: "<VIRTUAL_IP_2>"
+      mount_point: "/mnt/fs-B"
+      virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.202
 
       nodes:
-        - name: "<HOSTNAME_1>"
-          ip: "<IP_1>"
-          port: <PORT_2>
+        - name: {{ grains['name_prefix'] }}01
+          ip: {{ grains['host_ips'][0] }}
+          port: 7992
           id: 1
-        - name: "<HOSTNAME_2>"
-          ip: "<IP_2>"
-          port: <PORT_2>
+        - name: {{ grains['name_prefix'] }}02
+          ip: {{ grains['host_ips'][1] }}
+          port: 7992
           id: 2
-        - name: "<HOSTNAME_3>"
-          ip: "<IP_3>"
-          port: <PORT_2>
-          id: 3

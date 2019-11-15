@@ -17,7 +17,7 @@ cluster:
   sbd:
     device: {{ grains['sbd_disk_device'] }}
   join_timeout: 180
-  join_timer: 20
+  wait_for_initialization: 20
   {% if grains['provider'] == 'libvirt' %}
   ntp: pool.ntp.org
   sshkeys:
