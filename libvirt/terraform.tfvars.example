@@ -53,7 +53,7 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 # Netweaver variables
 
 # NFS share with netweaver installation folders
-netweaver_inst_media = "url-to-your-nfs-share"
+#netweaver_inst_media = "url-to-your-nfs-share"
 
 # NFS share to store the Netweaver shared files
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"

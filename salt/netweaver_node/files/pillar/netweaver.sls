@@ -11,6 +11,9 @@ netweaver:
     {{ iprange }}.17: sapha1db
     {{ iprange }}.18: sapha1pas
     {{ iprange }}.19: sapha1aas
+  sidadm_user:
+    uid: 1001
+    gid: 1002
   sapmnt_inst_media: {{ grains['netweaver_nfs_share'] }}
   swpm_folder: /netweaver_inst_media/SWPM_10_SP26_6
   sapexe_folder: /netweaver_inst_media/kernel_nw75_sar
