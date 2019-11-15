@@ -2,8 +2,11 @@ cluster:
   install_packages: true
   name: 'drbd_cluster'
   init: {{ grains['name_prefix'] }}01
+  {% if grains['provider'] == 'libvirt' %}
+  interface: eth1
+  {% else %}
   interface: eth0
-
+  {% endif %}
   unicast: True
   join_timer: 20
   watchdog:
