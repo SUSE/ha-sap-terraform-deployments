@@ -43,15 +43,15 @@ output "cluster_nodes_public_name" {
 # Monitoring
 
 output "monitoring_ip" {
-  value = google_compute_instance.monitoring.0.network_interface.0.network_ip
+  value = length(google_compute_instance.monitoring) > 0 ? google_compute_instance.monitoring.0.network_interface.0.network_ip : ""
 }
 
 output "monitoring_public_ip" {
-  value = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
+  value = length(google_compute_instance.monitoring) > 0 ? google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip : ""
 }
 
 output "monitoring_name" {
-  value = google_compute_instance.monitoring.0.name
+  value = length(google_compute_instance.monitoring) > 0 ? google_compute_instance.monitoring.0.name : ""
 }
 
 output "monitoring_public_name" {

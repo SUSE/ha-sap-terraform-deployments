@@ -59,10 +59,15 @@ resource "libvirt_domain" "monitoring_domain" {
 }
 
 output "output_data" {
-  value = {
+  value = length(libvirt_domain.monitoring_domain) > 0 ? {
     id              = libvirt_domain.monitoring_domain.0.id
     hostname        = libvirt_domain.monitoring_domain.0.name
     private_address = var.monitoring_srv_ip
     address         = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
+    } : {
+    id              = ""
+    hostname        = ""
+    private_address = ""
+    address         = ""
   }
 }
