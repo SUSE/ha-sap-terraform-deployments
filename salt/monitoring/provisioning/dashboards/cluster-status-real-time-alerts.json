@@ -1,4 +1,43 @@
 {
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.3.5"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -16,6 +55,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "id": null,
   "iteration": 1573816128607,
   "links": [],
   "panels": [
@@ -36,7 +76,7 @@
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 5,
+        "h": 3,
         "w": 24,
         "x": 0,
         "y": 1
@@ -154,7 +194,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 4
       },
       "id": 149,
       "panels": [],
@@ -167,7 +207,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 7
+        "y": 5
       },
       "id": 104,
       "links": [],
@@ -210,37 +250,37 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "ha_cluster_pacemaker_nodes_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_pacemaker_nodes_total{instance=~\"$node_ip:9002\"}",
           "instant": true,
           "legendFormat": "Total nodes",
           "refId": "B"
         },
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"expected_up\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"expected_up\"})",
           "instant": true,
           "legendFormat": "Expected Up",
           "refId": "A"
         },
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"dc\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"dc\"})",
           "instant": true,
           "legendFormat": "DC",
           "refId": "C"
         },
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"member\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"online\", type=\"member\"})",
           "instant": true,
           "legendFormat": "Members",
           "refId": "D"
         },
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"remote\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"online\", type=\"remote\"})",
           "instant": true,
           "legendFormat": "Remote",
           "refId": "E"
         },
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\", type=\"ping\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"online\", type=\"ping\"})",
           "instant": true,
           "legendFormat": "Ping",
           "refId": "F"
@@ -256,7 +296,7 @@
         "h": 8,
         "w": 6,
         "x": 9,
-        "y": 7
+        "y": 5
       },
       "id": 92,
       "options": {
@@ -289,7 +329,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$hana_node_ip:9002\", status=\"online\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:9002\", status=\"online\"})",
           "instant": true,
           "refId": "A"
         }
@@ -304,7 +344,7 @@
         "h": 8,
         "w": 6,
         "x": 15,
-        "y": 7
+        "y": 5
       },
       "id": 140,
       "options": {
@@ -336,22 +376,22 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\",type=\"expected_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:9002\",type=\"expected_votes\"}",
           "legendFormat": "Expected votes",
           "refId": "A"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\",type=\"highest_expected\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:9002\",type=\"highest_expected\"}",
           "legendFormat": "Highest expected votes",
           "refId": "B"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\", type=\"total_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:9002\", type=\"total_votes\"}",
           "legendFormat": "Total votes",
           "refId": "C"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$hana_node_ip:9002\", type=\"quorum\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:9002\", type=\"quorum\"}",
           "legendFormat": "Quorum",
           "refId": "D"
         }
@@ -382,7 +422,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 7
+        "y": 5
       },
       "id": 136,
       "interval": null,
@@ -424,7 +464,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:9002\"}",
           "refId": "A"
         }
       ],
@@ -449,7 +489,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 11
+        "y": 9
       },
       "id": 98,
       "links": [],
@@ -496,21 +536,21 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$hana_node_ip:9002\", status=\"pending\"}) or up{instance=\"$hana_node_ip:9002\"} * 0)",
+          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$node_ip:9002\", status=\"pending\"}) or up{instance=\"$node_ip:9002\"} * 0)",
           "hide": false,
           "instant": true,
           "legendFormat": "Pending",
           "refId": "A"
         },
         {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$hana_node_ip:9002\", status=\"standby\"}) or up{instance=\"$hana_node_ip:9002\"} * 0)",
+          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$node_ip:9002\", status=\"standby\"}) or up{instance=\"$node_ip:9002\"} * 0)",
           "hide": false,
           "instant": true,
           "legendFormat": "Stand-by",
           "refId": "B"
         },
         {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$hana_node_ip:9002\", status=\"maintenance\"}) or up{instance=\"$hana_node_ip:9002\"} * 0)",
+          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$node_ip:9002\", status=\"maintenance\"}) or up{instance=\"$node_ip:9002\"} * 0)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -518,7 +558,7 @@
           "refId": "C"
         },
         {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$hana_node_ip:9002\", status=\"unclean\"}) or up{instance=\"$hana_node_ip:9002\"} * 0)",
+          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=\"$node_ip:9002\", status=\"unclean\"}) or up{instance=\"$node_ip:9002\"} * 0)",
           "hide": false,
           "instant": true,
           "legendFormat": "Unclean",
@@ -551,7 +591,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 11
+        "y": 9
       },
       "id": 138,
       "interval": null,
@@ -593,7 +633,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorate{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_quorate{instance=~\"$node_ip:9002\"}",
           "refId": "A"
         }
       ],
@@ -629,7 +669,7 @@
         "h": 8,
         "w": 5,
         "x": 0,
-        "y": 15
+        "y": 13
       },
       "id": 157,
       "options": {},
@@ -694,7 +734,7 @@
       ],
       "targets": [
         {
-          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=\"$hana_node_ip:9100\", state=\"active\"}",
+          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=\"$node_ip:9100\", state=\"active\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -714,7 +754,7 @@
         "h": 8,
         "w": 4,
         "x": 5,
-        "y": 15
+        "y": 13
       },
       "id": 142,
       "links": [],
@@ -790,7 +830,7 @@
       ],
       "targets": [
         {
-          "expr": "ha_cluster_sbd_device_status{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_sbd_device_status{instance=~\"$node_ip:9002\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "SBD device vdc  status",
@@ -824,7 +864,7 @@
         "h": 3,
         "w": 6,
         "x": 9,
-        "y": 15
+        "y": 13
       },
       "id": 112,
       "interval": null,
@@ -866,7 +906,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -907,7 +947,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 15
+        "y": 13
       },
       "id": 118,
       "interval": null,
@@ -949,7 +989,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"master\",status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", role=\"master\",status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -990,7 +1030,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 15
+        "y": 13
       },
       "id": 119,
       "interval": null,
@@ -1032,7 +1072,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", role=\"slave\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", role=\"slave\", status=\"active\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1074,7 +1114,7 @@
         "h": 3,
         "w": 3,
         "x": 21,
-        "y": 15
+        "y": 13
       },
       "id": 116,
       "interval": null,
@@ -1117,7 +1157,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"failed\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", status=\"failed\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1142,7 +1182,7 @@
         "h": 5,
         "w": 3,
         "x": 9,
-        "y": 18
+        "y": 16
       },
       "id": 108,
       "options": {
@@ -1165,7 +1205,7 @@
                 "value": 0
               }
             ],
-            "title": "$hana_node_name_1"
+            "title": "$node_name_1"
           },
           "override": {},
           "values": false
@@ -1175,7 +1215,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\",node=~\".*01\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\",node=~\".*01\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -1192,7 +1232,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 18
+        "y": 16
       },
       "id": 110,
       "options": {
@@ -1215,7 +1255,7 @@
                 "value": 0
               }
             ],
-            "title": "$hana_node_name_2",
+            "title": "$node_name_2",
             "unit": "none"
           },
           "override": {},
@@ -1226,7 +1266,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", node=~\".*02\", status=\"active\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", node=~\".*02\", status=\"active\"})",
           "format": "time_series",
           "instant": true,
           "legendFormat": "",
@@ -1259,7 +1299,7 @@
         "h": 3,
         "w": 3,
         "x": 15,
-        "y": 18
+        "y": 16
       },
       "id": 114,
       "interval": null,
@@ -1301,7 +1341,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$hana_node_ip:9002\", status=\"disabled\"})",
+          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:9002\", status=\"disabled\"})",
           "instant": true,
           "refId": "A"
         }
@@ -1343,7 +1383,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 18
+        "y": 16
       },
       "id": 159,
       "interval": null,
@@ -1385,7 +1425,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_pacemaker_config_last_change{instance=\"$hana_node_ip:9002\"} * 1000 - 3600000",
+          "expr": "ha_cluster_pacemaker_config_last_change{instance=\"$node_ip:9002\"} * 1000 - 3600000",
           "instant": false,
           "refId": "A"
         }
@@ -1544,30 +1584,13 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "Prometheus SHAP",
-          "value": "Prometheus SHAP"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": "Data Source",
-        "multi": false,
-        "name": "hanadb_data_source",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "type": "datasource"
-      },
-      {
         "allValue": null,
         "current": {},
-        "datasource": "Prometheus SHAP",
+        "datasource": "default",
         "definition": "label_values(job)",
         "hide": 0,
         "includeAll": false,
-        "label": "hacluster",
+        "label": "HA Cluster",
         "multi": false,
         "name": "hacluster",
         "options": [],
@@ -1585,13 +1608,13 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
+        "datasource": "default",
         "definition": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
         "hide": 0,
         "includeAll": false,
-        "label": "HANA Node",
+        "label": "Node",
         "multi": false,
-        "name": "hana_node_name",
+        "name": "node_name",
         "options": [],
         "query": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
         "refresh": 2,
@@ -1607,15 +1630,15 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\", job=\"$hacluster\"}, instance)",
+        "datasource": "default",
+        "definition": "label_values(node_uname_info{nodename=~\"$node_name\", job=\"$hacluster\"}, instance)",
         "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
-        "name": "hana_node_ip",
+        "name": "node_ip",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=~\"$hana_node_name\", job=\"$hacluster\"}, instance)",
+        "query": "label_values(node_uname_info{nodename=~\"$node_name\", job=\"$hacluster\"}, instance)",
         "refresh": 2,
         "regex": "^(.*):\\d+$",
         "skipUrlSync": false,
@@ -1625,59 +1648,6 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\".*1\", job=\"$hacluster\"}, nodename)",
-        "hide": 2,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "name": "hana_node_name_1",
-        "options": [],
-        "query": "label_values(node_uname_info{nodename=~\".*1\", job=\"$hacluster\"}, nodename)",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\".*2\", job=\"$hacluster\"}, nodename)",
-        "hide": 2,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "name": "hana_node_name_2",
-        "options": [],
-        "query": "label_values(node_uname_info{nodename=~\".*2\", job=\"$hacluster\"}, nodename)",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "datasource": null,
-        "filters": [],
-        "hide": 0,
-        "label": "",
-        "name": "Filters",
-        "skipUrlSync": false,
-        "type": "adhoc"
       }
     ]
   },
