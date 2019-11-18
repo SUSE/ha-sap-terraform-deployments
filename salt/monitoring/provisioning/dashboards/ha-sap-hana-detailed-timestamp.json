@@ -4729,9 +4729,26 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "data_source",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
         "allValue": null,
         "current": {},
-        "datasource": "default",
+        "datasource": "$data_source",
         "definition": "label_values(node_uname_info, nodename)",
         "hide": 0,
         "includeAll": false,
@@ -4753,7 +4770,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "default",
+        "datasource": "$data_source",
         "definition": "label_values(node_uname_info{nodename=~\"$node_name\"}, instance)",
         "hide": 2,
         "includeAll": false,
@@ -4775,7 +4792,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "default",
+        "datasource": "$data_source",
         "definition": "label_values(sid)",
         "hide": 0,
         "includeAll": false,
@@ -4797,7 +4814,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "default",
+        "datasource": "$data_source",
         "definition": "label_values(insnr)",
         "hide": 0,
         "includeAll": false,
@@ -4819,7 +4836,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "default",
+        "datasource": "$data_source",
         "definition": "label_values(database_name)",
         "hide": 0,
         "includeAll": false,
