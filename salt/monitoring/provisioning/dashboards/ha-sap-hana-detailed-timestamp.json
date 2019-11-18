@@ -105,42 +105,42 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"sbd.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"sbd.service\",state=\"active\"}",
           "legendFormat": "sbd",
           "refId": "A"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"pacemaker.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"pacemaker.service\",state=\"active\"}",
           "legendFormat": "pacemaker",
           "refId": "B"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"corosync.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"corosync.service\",state=\"active\"}",
           "legendFormat": "corosync",
           "refId": "C"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"prometheus-node_exporter.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"prometheus-node_exporter.service\",state=\"active\"}",
           "legendFormat": "node-exporter",
           "refId": "D"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"prometheus-ha_cluster_exporter.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"prometheus-ha_cluster_exporter.service\",state=\"active\"}",
           "legendFormat": "ha-cluster-exporter",
           "refId": "E"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hawk.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hawk.service\",state=\"active\"}",
           "legendFormat": "hawk",
           "refId": "F"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hawk-backend.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hawk-backend.service\",state=\"active\"}",
           "legendFormat": "hawk-backend",
           "refId": "G"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$hana_node_ip:9100\",name=\"hanadb_exporter@prd_00.service\",state=\"active\"}",
+          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hanadb_exporter@prd_00.service\",state=\"active\"}",
           "legendFormat": "hanadb-exporter",
           "refId": "H"
         }
@@ -225,7 +225,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$hana_node_ip:9002\"}",
+          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:9002\"}",
           "legendFormat": "ring errors",
           "refId": "A"
         }
@@ -290,7 +290,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "description": "",
       "fill": 1,
@@ -333,49 +333,49 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Total Physical Memory",
           "refId": "A"
         },
         {
-          "expr": "hanadb_host_memory_physical_free_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_physical_free_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Free Physical Memory",
           "refId": "B"
         },
         {
-          "expr": "hanadb_host_memory_resident_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_resident_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Resident Memory ",
           "refId": "F"
         },
         {
-          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Allocation Limit",
           "refId": "D"
         },
         {
-          "expr": "hanadb_host_memory_pool_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_pool_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Pool Size",
           "refId": "E"
         },
         {
-          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_used_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Used Pool",
           "refId": "L"
         },
         {
-          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 1,
@@ -430,7 +430,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "Average percent of CPU usage based on usage type.",
       "fill": 1,
       "fillGradient": 0,
@@ -470,7 +470,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -478,28 +478,28 @@
           "refId": "A"
         },
         {
-          "expr": "avg(hanadb_cpu_system_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_system_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% System Time",
           "refId": "B"
         },
         {
-          "expr": "avg(hanadb_cpu_idle_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_idle_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% Idle Time",
           "refId": "C"
         },
         {
-          "expr": "avg(hanadb_cpu_user_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_user_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "% User Time",
           "refId": "D"
         },
         {
-          "expr": "avg(hanadb_cpu_waitio_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_waitio_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -565,7 +565,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 1,
       "description": "Percent of Total Used RAM Memory compared to the HANA Allocation Limit value.",
       "format": "percent",
@@ -622,7 +622,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) / sum(hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) * 100",
+          "expr": "sum(hanadb_host_memory_used_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) / sum(hanadb_host_memory_alloc_limit_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) * 100",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -652,7 +652,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -692,7 +692,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_connections_total_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_connections_total_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -871,7 +871,7 @@
       ],
       "targets": [
         {
-          "expr": "node_filesystem_size_bytes{instance=~\"^$hana_node_ip:\\\\d+$\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes",
+          "expr": "node_filesystem_size_bytes{instance=~\"^$node_ip:\\\\d+$\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -881,7 +881,7 @@
           "refId": "A"
         },
         {
-          "expr": "node_filesystem_size_bytes{instance=~\"^$hana_node_ip:\\\\d+$\", fstype!=\"tmpfs\"}",
+          "expr": "node_filesystem_size_bytes{instance=~\"^$node_ip:\\\\d+$\", fstype!=\"tmpfs\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -890,7 +890,7 @@
           "refId": "B"
         },
         {
-          "expr": "(node_filesystem_size_bytes{instance=~\"^$hana_node_ip:\\\\d+$\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100",
+          "expr": "(node_filesystem_size_bytes{instance=~\"^$node_ip:\\\\d+$\", fstype!=\"tmpfs\"} - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -914,7 +914,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "Sum of the CPU busy time of all cores of all hosts.",
       "format": "percent",
       "gauge": {
@@ -969,7 +969,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
+          "expr": "avg(hanadb_cpu_busy_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -994,7 +994,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "Details HANA on how HANA uses the filesystem in its various directories",
       "fontSize": "100%",
       "gridPos": {
@@ -1090,7 +1090,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_disk_used_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_disk_used_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1099,7 +1099,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_disk_total_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_disk_total_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1107,7 +1107,7 @@
           "refId": "B"
         },
         {
-          "expr": "(hanadb_disk_used_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / hanadb_disk_total_size_mb) * 100",
+          "expr": "(hanadb_disk_used_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / hanadb_disk_total_size_mb) * 100",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1115,7 +1115,7 @@
           "refId": "C"
         },
         {
-          "expr": "hanadb_disk_total_device_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_total_device_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1138,7 +1138,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "Total Number of CPU Cores",
       "format": "none",
       "gauge": {
@@ -1193,7 +1193,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count (count by (core) (hanadb_cpu_busy_percent{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}))",
+          "expr": "count (count by (core) (hanadb_cpu_busy_percent{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -1224,7 +1224,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "description": "Total Physical RAM Memory available on the host.",
       "format": "decgbytes",
@@ -1280,7 +1280,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}/1024",
+          "expr": "hanadb_host_memory_physical_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}/1024",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -1311,7 +1311,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "format": "decgbytes",
       "gauge": {
@@ -1365,7 +1365,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_alloc_limit_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1397,7 +1397,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "format": "decgbytes",
       "gauge": {
@@ -1451,7 +1451,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_used_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_used_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1483,7 +1483,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "format": "decgbytes",
       "gauge": {
         "maxValue": 100,
@@ -1536,7 +1536,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_shared_alloc_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1568,7 +1568,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "format": "decgbytes",
       "gauge": {
@@ -1622,7 +1622,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_used_peak_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_used_peak_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1654,7 +1654,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "format": "decgbytes",
       "gauge": {
@@ -1709,7 +1709,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_code_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_code_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1741,7 +1741,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "format": "decgbytes",
       "gauge": {
@@ -1796,7 +1796,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_host_memory_swap_used_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
+          "expr": "hanadb_host_memory_swap_used_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / 1024",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1828,7 +1828,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "format": "decmbytes",
       "gauge": {
@@ -1883,7 +1883,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "hanadb_column_tables_used_memory_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_column_tables_used_memory_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1925,7 +1925,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "decimals": 2,
       "description": "",
       "fill": 1,
@@ -1966,7 +1966,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_memory_service_total_used_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_memory_service_total_used_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{service}}",
@@ -2018,7 +2018,7 @@
     {
       "cacheTimeout": null,
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fontSize": "100%",
       "gridPos": {
@@ -2158,7 +2158,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_service_executions_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
+          "expr": "sort(hanadb_sql_service_executions_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2166,7 +2166,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sql_service_elapsed_time_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sql_service_elapsed_time_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2174,21 +2174,21 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_sql_service_elap_per_exec_avg_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sql_service_elap_per_exec_avg_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
           "refId": "C"
         },
         {
-          "expr": "hanadb_sql_service_lock_per_exec_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sql_service_lock_per_exec_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
           "refId": "D"
         },
         {
-          "expr": "hanadb_sql_service_max_ela_time_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sql_service_max_ela_time_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2204,7 +2204,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fontSize": "100%",
       "gridPos": {
         "h": 10,
@@ -2295,7 +2295,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_top_time_consumers_mu{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
+          "expr": "sort(hanadb_sql_top_time_consumers_mu{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -2304,7 +2304,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sql_top_time_consumers_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sql_top_time_consumers_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2320,7 +2320,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fontSize": "100%",
       "gridPos": {
@@ -2380,7 +2380,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(sum(hanadb_schema_used_memory_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) by (schema_name))",
+          "expr": "sort(sum(hanadb_schema_used_memory_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) by (schema_name))",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -2397,7 +2397,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fontSize": "100%",
       "gridPos": {
         "h": 10,
@@ -2487,7 +2487,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_sql_top_mem_consumers_byte{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
+          "expr": "sort(hanadb_sql_top_mem_consumers_byte{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2495,7 +2495,7 @@
           "refId": "A"
         },
         {
-          "expr": "sort(hanadb_sql_top_mem_consumers_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
+          "expr": "sort(hanadb_sql_top_mem_consumers_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2511,7 +2511,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fontSize": "100%",
       "gridPos": {
@@ -2635,7 +2635,7 @@
       ],
       "targets": [
         {
-          "expr": "sort(hanadb_table_cs_top_mem_total_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) + 0",
+          "expr": "sort(hanadb_table_cs_top_mem_total_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2643,7 +2643,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_estimated_max_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_estimated_max_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2651,7 +2651,7 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_disk_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_disk_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2659,7 +2659,7 @@
           "refId": "C"
         },
         {
-          "expr": "hanadb_table_cs_top_mem_record_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_table_cs_top_mem_record_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2674,7 +2674,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fontSize": "100%",
       "gridPos": {
@@ -2769,7 +2769,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_disk_data_files_used_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_disk_data_files_used_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2777,7 +2777,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_disk_data_files_total_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_disk_data_files_total_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2785,7 +2785,7 @@
           "refId": "B"
         },
         {
-          "expr": "(hanadb_disk_data_files_used_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / hanadb_disk_data_files_total_size_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) * 100",
+          "expr": "(hanadb_disk_data_files_used_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} / hanadb_disk_data_files_total_size_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) * 100",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -2814,7 +2814,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fontSize": "100%",
       "gridPos": {
         "h": 6,
@@ -3058,7 +3058,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_sr_replication_status{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_replication_status{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3066,7 +3066,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sr_secondary_active_status{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_secondary_active_status{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3074,14 +3074,14 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_sr_secondary_reconnect_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_secondary_reconnect_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
           "refId": "C"
         },
         {
-          "expr": "hanadb_sr_secondary_failover_count{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_secondary_failover_count{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3100,7 +3100,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3137,7 +3137,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_sr_ship_delay_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_sr_ship_delay_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3191,7 +3191,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -3230,7 +3230,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_sr_async_used_shipping_buffer_mb{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_sr_async_used_shipping_buffer_mb{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3281,7 +3281,7 @@
     },
     {
       "columns": [],
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "System Replication Takeover history. When the values of end time cannot be collected, the duration time is presented as -1 and the end time as \"N/A\"",
       "fontSize": "100%",
       "gridPos": {
@@ -3543,7 +3543,7 @@
       ],
       "targets": [
         {
-          "expr": "hanadb_sr_takeover_replication_status{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_takeover_replication_status{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3551,7 +3551,7 @@
           "refId": "A"
         },
         {
-          "expr": "hanadb_sr_takeover_duration_time_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_takeover_duration_time_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3559,7 +3559,7 @@
           "refId": "B"
         },
         {
-          "expr": "hanadb_sr_takeover_log_position_bigint{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_takeover_log_position_bigint{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -3568,7 +3568,7 @@
           "refId": "C"
         },
         {
-          "expr": "hanadb_sr_takeover_shipped_log_position_bigint{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
+          "expr": "hanadb_sr_takeover_shipped_log_position_bigint{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"} + 0",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -3600,7 +3600,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3638,7 +3638,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_receive_rate_kb_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_receive_rate_kb_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3692,7 +3692,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -3732,7 +3732,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_transmission_rate_kb_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_transmission_rate_kb_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{interface}}",
@@ -3785,7 +3785,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -3824,14 +3824,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_receive_rate_errors_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_receive_rate_errors_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{interface}} - Rec. rate",
           "refId": "A"
         },
         {
-          "expr": "hanadb_network_transmission_rate_errors_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_transmission_rate_errors_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{interface}} - Trans. rate",
@@ -3885,7 +3885,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -3923,7 +3923,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_receive_requests_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_receive_requests_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -3978,7 +3978,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -4016,7 +4016,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_transmission_rate_requests_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_transmission_rate_requests_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -4071,7 +4071,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -4108,7 +4108,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_network_collisions_per_seconds{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_network_collisions_per_seconds{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -4177,7 +4177,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "I/O Throughput  per Disk in KB/Sec",
       "fill": 1,
       "fillGradient": 0,
@@ -4217,7 +4217,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_throughput_kb_second{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_throughput_kb_second{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4270,7 +4270,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "I/O Latency in miliseconds.",
       "fill": 1,
       "fillGradient": 0,
@@ -4309,7 +4309,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_latency_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_latency_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4362,7 +4362,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -4400,7 +4400,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_service_time_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_service_time_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4453,7 +4453,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -4490,7 +4490,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_requests_per_second{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_requests_per_second{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4543,7 +4543,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "average queue length of the requests that were issued to the Disk Device",
       "fill": 1,
       "fillGradient": 0,
@@ -4581,7 +4581,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_queue_length_requests{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_queue_length_requests{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4634,7 +4634,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "$hanadb_data_source",
+      "datasource": "default",
       "description": "",
       "fill": 1,
       "fillGradient": 0,
@@ -4673,7 +4673,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "hanadb_disk_io_wait_time_ms{host=~\"$hana_node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
+          "expr": "hanadb_disk_io_wait_time_ms{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{disk}}",
@@ -4730,14 +4730,14 @@
     "list": [
       {
         "current": {
-          "text": "Prometheus SHAP",
-          "value": "Prometheus SHAP"
+          "text": "Prometheus",
+          "value": "Prometheus"
         },
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "label": "Data Source",
         "multi": false,
-        "name": "hanadb_data_source",
+        "name": "data_source",
         "options": [],
         "query": "prometheus",
         "refresh": 1,
@@ -4748,13 +4748,13 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
+        "datasource": "$data_source",
         "definition": "label_values(node_uname_info, nodename)",
         "hide": 0,
         "includeAll": false,
-        "label": "HANA Node",
+        "label": "Node",
         "multi": false,
-        "name": "hana_node_name",
+        "name": "node_name",
         "options": [],
         "query": "label_values(node_uname_info, nodename)",
         "refresh": 2,
@@ -4770,15 +4770,15 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
-        "definition": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
-        "hide": 0,
+        "datasource": "$data_source",
+        "definition": "label_values(node_uname_info{nodename=~\"$node_name\"}, instance)",
+        "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
-        "name": "hana_node_ip",
+        "name": "node_ip",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=~\"$hana_node_name\"}, instance)",
+        "query": "label_values(node_uname_info{nodename=~\"$node_name\"}, instance)",
         "refresh": 2,
         "regex": "^(.*):\\d+$",
         "skipUrlSync": false,
@@ -4792,7 +4792,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
+        "datasource": "$data_source",
         "definition": "label_values(sid)",
         "hide": 0,
         "includeAll": false,
@@ -4814,7 +4814,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
+        "datasource": "$data_source",
         "definition": "label_values(insnr)",
         "hide": 0,
         "includeAll": false,
@@ -4836,7 +4836,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "$hanadb_data_source",
+        "datasource": "$data_source",
         "definition": "label_values(database_name)",
         "hide": 0,
         "includeAll": false,
