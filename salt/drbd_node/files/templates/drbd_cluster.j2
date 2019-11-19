@@ -31,7 +31,7 @@ ms ms_{{ res.name }} drbd-{{ res.name }} \
    meta notify=true target-role=Started
 
 primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
-   params device={{ res.device }} directory={{ res.mount_point}} fstype={{ res.file_system }} \
+   params device={{ res.device }} directory={{ res.mount_point }} fstype={{ res.file_system }} \
    options=noatime,nodiratime \
    op monitor interval="20" timeout="40s"
 
@@ -40,7 +40,7 @@ primitive test-IP_{{ res.name }} IPaddr2 \
 
 primitive exportfs_work_{{ res.name }} exportfs \
         params directory={{ res.mount_point }} fsid={{ nfsid + loop.index0 }} \
-        options="rw,async,no_subtree_check" clientspec="*" wait_for_leasetime_on_stop=true \
+        options="rw,no_root_squash,fsid=0" clientspec="*" wait_for_leasetime_on_stop=true \
         op monitor interval=30s
 group g-nfs_{{ res.name }} fs_{{ res.name }} test-IP_{{ res.name }} exportfs_work_{{ res.name }}
 
