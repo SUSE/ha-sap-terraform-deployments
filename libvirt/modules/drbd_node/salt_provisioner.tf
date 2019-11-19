@@ -56,6 +56,10 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
 drbd_nodes: ${var.drbd_count}
+partitions:
+  1:
+    start: 0%
+    end: 100%
 
 
 EOF
