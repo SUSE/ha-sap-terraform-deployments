@@ -3,14 +3,14 @@ groups:
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
-    expr: absent(ha_cluster_pacemaker_resources{id=~"rsc_saphana_.*",role="master"})
+    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="master",status="active"})
     labels:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
 
   - alert: sap-hana-secondary-resource-absent
-    expr: absent(ha_cluster_pacemaker_resources{id=~"rsc_saphana_.*",role="slave",status="active"})
+    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="slave",status="active"})
     labels:
       severity: page
     annotations:
@@ -35,8 +35,8 @@ groups:
     labels:
       severity: page
     annotations:
-      summary: the rsc_SAPHana_PRD_HDB00 has exceeded the limit threshold
-  
+      summary: a resource fail count exceeded its migration threshold
+
 # drbd alerts
 - name: drbd-alerts
   rules:
@@ -143,3 +143,10 @@ groups:
       severity: page
     annotations:
       summary: STONITH is disabled! Clusters without a fencing mechanism are not supported and have increased risk of data loss.
+
+  - alert: negative-location-constraint-detected
+    expr: ha_cluster_pacemaker_location_constraints < 0
+    labels:
+      severity: warning
+    annotations:
+      summary: A negative resource location constraint has been detected. Please ensure that no resource has been mistakenly banned from a node.

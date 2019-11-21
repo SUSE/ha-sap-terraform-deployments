@@ -1,12 +1,4 @@
 drbd:
-  ## Install required package to manage DRBD
-  #install_packages: false
-
-  ## Install required package to configure DRBD in pacemaker cluster
-  #with_ha: false
-
-  ## Pirmary node when promoting DRBD
-  ## TODO: Only support single primary currently
   promotion: {{ grains['name_prefix'] }}01
 
   ## Resource template for /etc/drbd.d/xxx.res
@@ -56,7 +48,7 @@ drbd:
   #    after_sb_2pri: "disconnect"
 
   #  # Define handlers (executables) that are started by the DRBD system in response to certain events.
-  #  handlers:
+  handlers:
   #    # Optional: This handler is called in case the node needs to fence the peer's disk
   #    fence_peer: "/usr/lib/drbd/crm-fence-peer.9.sh"
   #    # Optional: This handler is called in case the node needs to unfence the peer's disk
@@ -67,16 +59,14 @@ drbd:
   #    after_resync_target: "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh"
   #    # Optional: DRBD detected a split brain situation but remains unresolved. This handler should alert someone.
        split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
-
-
+       
   resource:
-    - name: "beijing"
+    - name: "sapdata"
       device: "/dev/drbd1"
       disk: {{ grains['drbd_disk_device'] }}1
 
-      # Salt specific
-      file_system: "ext3"
-      mount_point: "/mnt/fs-A"
+      file_system: "xfs"
+      mount_point: "/mnt/sapdata/HA1"
       virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.201
 
       nodes:
@@ -87,23 +77,4 @@ drbd:
         - name: {{ grains['name_prefix'] }}02
           ip: {{ grains['host_ips'][1] }}
           port: 7990
-          id: 2
-
-    - name: "shanghai"
-      device: "/dev/drbd2"
-      disk: {{ grains['drbd_disk_device'] }}2
-
-      # Salt specific
-      file_system: "ext4"
-      mount_point: "/mnt/fs-B"
-      virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.202
-
-      nodes:
-        - name: {{ grains['name_prefix'] }}01
-          ip: {{ grains['host_ips'][0] }}
-          port: 7992
-          id: 1
-        - name: {{ grains['name_prefix'] }}02
-          ip: {{ grains['host_ips'][1] }}
-          port: 7992
           id: 2
