@@ -64,15 +64,15 @@ This will add in prometheus a label `job="hacluster-01` and  `job="hacluster-01`
 
 # Drbd splitbrain metric enablement.
 
-In order to activate a specific metric for detecting the splitbrain occuring on drbd, you need to activate the custom handler. 
+In order to activate the metric for detecting the splitbrain occuring on drbd, you need to activate the custom handler via pillars.
 
 In the automatic pillar `drdb` directory this is already done.
 
-This handler will create a temporary file, which the `ha_cluster_exporter` will convert to a metric split brain.
+The handler will create a temporary file, which the `ha_cluster_exporter` will convert to a metric split brain.
 
 After the split brain occurs, the sysadmin/user should remove the file manually and taking other action on drbd.
 
-If the file persist, the ha_expoerter will alwasy detect the splitbrain mechanism
+If the file persist, the ha_expoerter will always detect the splitbrain mechanism.
 
 
 
