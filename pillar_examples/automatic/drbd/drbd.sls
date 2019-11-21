@@ -66,7 +66,7 @@ drbd:
   #    # Optional: This handler is called after a resync operation finished on the node.
   #    after_resync_target: "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh"
   #    # Optional: DRBD detected a split brain situation but remains unresolved. This handler should alert someone.
-  #    split_brain: "/usr/lib/drbd/notify-split-brain.sh root"
+       split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
 
 
   resource:
