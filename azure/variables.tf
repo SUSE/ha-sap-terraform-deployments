@@ -143,6 +143,11 @@ variable "background" {
   default     = false
 }
 
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
 # Specific QA variables
 
 variable "qa_mode" {
