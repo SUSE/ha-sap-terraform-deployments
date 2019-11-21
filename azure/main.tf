@@ -11,6 +11,7 @@ module "drbd_node" {
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   admin_user             = var.admin_user
+  host_ips               = var.drbd_ips
   iscsi_srv_ip           = azurerm_network_interface.iscsisrv.private_ip_address
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -19,4 +20,5 @@ module "drbd_node" {
   devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
 }

@@ -135,3 +135,8 @@ variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
   default     = false
 }
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = false
+}

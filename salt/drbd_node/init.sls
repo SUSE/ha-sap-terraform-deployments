@@ -7,3 +7,6 @@ include:
   {% if grains['shared_storage_type'] == 'iscsi' %}
   - drbd_node.iscsi_initiator
   {% endif %}
+  {% if grains.get('monitoring_enabled') %}
+  - hana_node.monitoring
+  {% endif %}
