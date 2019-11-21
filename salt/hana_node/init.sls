@@ -13,9 +13,6 @@ include:
   - hana_node.iscsi_initiator
   {% endif %}
   - hana_node.mount
-  {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
-  - hana_node.ssh
-  {% endif %}
   - hana_node.hana_packages
   - hana_node.cluster_packages
   - hana_node.formula

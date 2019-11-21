@@ -26,6 +26,9 @@ cluster:
     template:
       source: /srv/salt/drbd_files/templates/drbd_cluster.j2
       parameters:
-        virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.200
+        virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.201
         virtual_ip_mask: 24
-        platform: libvirt
+        platform: {{ grains['provider'] }}
+        {% if grains['provider']== "azure" %}
+        probe: 61000
+        {% endif %}
