@@ -59,7 +59,6 @@ drbd:
   #    after_resync_target: "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh"
   #    # Optional: DRBD detected a split brain situation but remains unresolved. This handler should alert someone.
        split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
-       
   resource:
     - name: "sapdata"
       device: "/dev/drbd1"
