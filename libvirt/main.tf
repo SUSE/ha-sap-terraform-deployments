@@ -105,7 +105,7 @@ module "drbd_node" {
   memory                 = 1024
   bridge                 = "br0"
   host_ips               = var.drbd_ips
-  drbd_disk_size         = "1024000000"
+  drbd_disk_size         = "10737418240" #10GB
   shared_storage_type    = var.drbd_shared_storage_type
   iscsi_srv_ip           = var.iscsi_srv_ip
   reg_code               = var.reg_code

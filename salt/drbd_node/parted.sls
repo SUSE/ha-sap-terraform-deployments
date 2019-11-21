@@ -1,11 +1,11 @@
-mklabel:
+mklabel_drbd:
   module.run:
     - partition.mklabel:
       - device: {{ grains['drbd_disk_device'] }}
       - label_type: gpt
 
 {% for id, data in grains['partitions'].items() %}
-mkpart{{ id }}:
+mkpart_{{ id }}:
   module.run:
     - partition.mkpart:
       - device: {{ grains['drbd_disk_device'] }}
