@@ -4,3 +4,4 @@ include:
   - drbd_node.cluster_packages
   - drbd_node.parted
   - drbd_node.formula
+  - drbd_node.custom_handlers
