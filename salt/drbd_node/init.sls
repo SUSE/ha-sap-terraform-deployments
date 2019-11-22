@@ -8,5 +8,5 @@ include:
   - drbd_node.iscsi_initiator
   {% endif %}
   {% if grains.get('monitoring_enabled') %}
-  - hana_node.monitoring
+  - drbd_node.monitoring
   {% endif %}

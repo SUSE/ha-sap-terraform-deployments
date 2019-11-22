@@ -8,5 +8,5 @@ include:
 {% else %}
   # Workaround to restart targetcli service
   # This need to be fixed in the formula
-  - iscsi_srv.targetcli
+  - iscsi_srv.workaround
 {% endif %}

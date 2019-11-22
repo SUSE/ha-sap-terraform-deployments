@@ -34,6 +34,6 @@ activate_node_exporter_systemd_collector:
         ARGS="--collector.systemd"
 
 # Workaround to make drbdsetup available among different SLE versions
-/sbin/drbdsetup:
+/usr/sbin/drbdsetup:
   file.symlink:
-    - target: /usr/sbin/drbdsetup
+    - target: /sbin/drbdsetup

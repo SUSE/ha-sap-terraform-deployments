@@ -17,6 +17,9 @@ open-iscsi:
 iscsid:
   service.running:
     - enable: True
+    - watch:
+      - file: /etc/iscsi/iscsid.conf
+      - file: /etc/iscsi/initiatorname.iscsi
 
 iscsi_discovery:
   cmd.run:
@@ -26,3 +29,12 @@ iscsi_discovery:
     - timeout: 2400
     - onchanges:
       - service: iscsid
+
+# Workaround to avoid issue with iscsi initiator
+# iscsid: Kernel reported iSCSI connection 2:0 error (1020 - ISCSI_ERR_TCP_CONN_CLOSE: TCP connection closed) state (3)
+restart_iscsid:
+  service.running:
+    - name: iscsid
+    - enable: True
+    - watch:
+      - iscsi_discovery
