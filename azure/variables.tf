@@ -122,6 +122,7 @@ variable "host_ips" {
 variable "drbd_ips" {
   description = "ip addresses to set to the drbd cluster nodes"
   type        = list(string)
+  default     = []
 }
 
 # Repository url used to install HA/SAP deployment packages"

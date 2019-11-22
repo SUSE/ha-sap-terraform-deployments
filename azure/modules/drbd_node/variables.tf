@@ -84,19 +84,16 @@ variable "private_key_location" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
-  default     = ""
 }
 
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string
-  default     = ""
 }
 
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-  default     = ""
 }
 
 variable "reg_code" {
