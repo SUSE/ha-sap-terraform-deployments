@@ -4,28 +4,10 @@
 
 # drbd load balancer
 
-resource "azurerm_lb" "drbd-load-balancer" {
-  count               = var.drbd_count > 0 ? 1 : 0
-  name                = "drbd-load-balancer"
-  location            = var.az_region
-  resource_group_name = var.resource_group_name
-
-  frontend_ip_configuration {
-    name                          = "drbd-frontend"
-    subnet_id                     = var.network_subnet_id
-    private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.201"
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 resource "azurerm_lb_backend_address_pool" "drbd-backend-pool" {
   count               = var.drbd_count > 0 ? 1 : 0
   resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.drbd-load-balancer[count.index].id
+  loadbalancer_id     = var.loadbalancer_id
   name                = "drbd-backend-pool"
 }
 
@@ -39,7 +21,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "drbd-node
 resource "azurerm_lb_probe" "drbd-health-probe" {
   count               = var.drbd_count > 0 ? 1 : 0
   resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.drbd-load-balancer[count.index].id
+  loadbalancer_id     = var.loadbalancer_id
   name                = "drbd-health-probe"
   protocol            = "Tcp"
   port                = 61000
@@ -66,7 +48,7 @@ resource "azurerm_lb_probe" "drbd-health-probe" {
 resource "azurerm_lb_rule" "drbd-lb-tcp-2049" {
   count                          = var.drbd_count > 0 ? 1 : 0
   resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.drbd-load-balancer[count.index].id
+  loadbalancer_id                = var.loadbalancer_id
   name                           = "drbd-lb-tcp-2049"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "drbd-frontend"
@@ -81,7 +63,7 @@ resource "azurerm_lb_rule" "drbd-lb-tcp-2049" {
 resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
   count                          = var.drbd_count > 0 ? 1 : 0
   resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.drbd-load-balancer[count.index].id
+  loadbalancer_id                = var.loadbalancer_id
   name                           = "drbd-lb-udp-2049"
   protocol                       = "Udp"
   frontend_ip_configuration_name = "drbd-frontend"

@@ -6,6 +6,7 @@ module "drbd_node" {
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   availability_set_id    = azurerm_availability_set.myas.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  loadbalancer_id        = azurerm_lb.mylb.id
   public_key_location    = "/home/xarbulu/.ssh/id_rsa_cloud.pub"
   private_key_location   = "/home/xarbulu/.ssh/id_rsa_cloud"
   cluster_ssh_pub        = var.cluster_ssh_pub

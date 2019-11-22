@@ -23,6 +23,10 @@ variable "storage_account" {
   type = string
 }
 
+variable "loadbalancer_id" {
+  type = string
+}
+
 variable "drbd_count" {
   type    = string
   default = "2"
@@ -113,7 +117,7 @@ variable "reg_additional_modules" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "devel_mode" {
