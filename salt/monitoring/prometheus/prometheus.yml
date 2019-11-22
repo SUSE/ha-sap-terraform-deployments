@@ -16,7 +16,7 @@ rule_files:
 scrape_configs:
   # in a multi-cluster scenario, add another job name called
   #  hacluster-02
-  - job_name: hacluster-01
+  - job_name: hana-cluster
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
@@ -30,7 +30,7 @@ scrape_configs:
         {% endfor %}
 
   {% if grains['drbd_monitored_hosts']|length > 0 %}
-  - job_name: hacluster-02
+  - job_name: drbd-cluster
     static_configs:
       - targets:
         {% for ip in grains['drbd_monitored_hosts'] %}

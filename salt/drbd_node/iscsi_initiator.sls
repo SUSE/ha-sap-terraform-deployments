@@ -7,14 +7,14 @@ open-iscsi:
 /etc/iscsi/initiatorname.iscsi:
   file.replace:
     - pattern: "^InitiatorName=.*"
-    - repl: "InitiatorName=iqn.{{ grains['server_id'] }}.suse.qa"
+    - repl: "InitiatorName=iqn.drbd.{{ grains['server_id'] }}.suse.qa"
 
 /etc/iscsi/iscsid.conf:
   file.replace:
     - pattern: "^node.startup = manual"
     - repl: "node.startup = automatic"
 
-iscsid:
+iscsi:
   service.running:
     - enable: True
     - watch:
@@ -27,14 +27,10 @@ iscsi_discovery:
     - output_loglevel: quiet
     - hide_output: True
     - timeout: 2400
-    - onchanges:
-      - service: iscsid
+    - require:
+      - iscsi
 
-# Workaround to avoid issue with iscsi initiator
-# iscsid: Kernel reported iSCSI connection 2:0 error (1020 - ISCSI_ERR_TCP_CONN_CLOSE: TCP connection closed) state (3)
-restart_iscsid:
+iscsid:
   service.running:
-    - name: iscsid
-    - enable: True
     - watch:
-      - iscsi_discovery
+      - cmd: iscsi_discovery
