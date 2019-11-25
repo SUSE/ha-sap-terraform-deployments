@@ -27,9 +27,8 @@ variable "reg_additional_modules" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
-
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
@@ -53,7 +52,7 @@ variable "host_ips" {
 
 variable "shared_disk_id" {
   description = "ASCS and ERS shared disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "netweaver_inst_media" {

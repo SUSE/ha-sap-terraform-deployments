@@ -1,6 +1,6 @@
 variable "monitoring_image" {
   description = "monitoring server base image"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
@@ -63,7 +63,7 @@ variable "additional_packages" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "public_key_location" {
