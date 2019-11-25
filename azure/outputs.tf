@@ -97,3 +97,21 @@ output "monitoring_name" {
 output "monitoring_public_name" {
   value = join("", data.azurerm_public_ip.monitoring.*.fqdn)
 }
+
+# drbd
+
+output "drbd_ip" {
+  value = module.drbd_node.drbd_ip
+}
+
+output "drbd_public_ip" {
+  value = module.drbd_node.drbd_public_ip
+}
+
+output "drbd_name" {
+  value = module.drbd_node.drbd_name
+}
+
+output "drbd_public_name" {
+  value = module.drbd_node.drbd_public_name
+}

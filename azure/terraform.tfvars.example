@@ -84,6 +84,10 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 # example : host_ips = ["10.0.1.0", "10.0.1.1"]
 host_ips = ["10.74.1.11", "10.74.1.12"]
 
+# Each drbd cluster host IP address (sequential order).
+# example : drbd_host_ips = ["10.0.1.10", "10.0.1.11"]
+drbd_ips = ["10.74.1.21", "10.74.1.22"]
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -117,6 +121,9 @@ ha_sap_deployment_repo = ""
 
 # IP address of the machine where Prometheus and Grafana are running
 monitoring_srv_ip = "10.74.1.13"
+
+# Enable drbd cluster
+#drbd_enabled = true
 
 # QA variables
 

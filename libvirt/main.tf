@@ -140,6 +140,7 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_hosts        = var.host_ips
+  drbd_monitored_hosts   = var.drbd_ips
 }
 
 module "nw_shared_disk" {

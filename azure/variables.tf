@@ -119,6 +119,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -140,6 +146,11 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  default     = false
+}
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
   default     = false
 }
 

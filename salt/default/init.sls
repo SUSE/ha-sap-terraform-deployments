@@ -12,3 +12,6 @@ include:
   - default.timezone
   - default.auth_keys
 {% endif %}
+{% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
+  - default.ssh
+{% endif %}

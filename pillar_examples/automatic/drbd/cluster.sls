@@ -9,6 +9,7 @@ cluster:
   {% endif %}
   unicast: True
   wait_for_initialization: 20
+  join_timeout: 180
   watchdog:
     module: softdog
     device: /dev/watchdog
@@ -20,12 +21,20 @@ cluster:
     overwrite: true
     password: linux
   {% endif %}
+  {% if grains.get('monitoring_enabled', False) %}
+  ha_exporter: true
+  {% else %}
+  ha_exporter: false
+  {% endif %}
 
   configure:
     method: 'update'
     template:
       source: /srv/salt/drbd_files/templates/drbd_cluster.j2
       parameters:
-        virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.200
+        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.201
         virtual_ip_mask: 24
-        platform: libvirt
+        platform: {{ grains['provider'] }}
+        {% if grains['provider']== "azure" %}
+        probe: 61000
+        {% endif %}
