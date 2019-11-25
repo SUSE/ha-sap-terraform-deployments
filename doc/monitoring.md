@@ -1,38 +1,63 @@
 # Monitoring
 
-# Highlevel description
 
-The monitoring feature will deploy and install the required tools (grafana, prometheus) to monitor your HA and SAP stack (SAP HANA, HA cluster, etc).
-Additionally with different variables you can install and control the various metrics exporters.
+### Overview
 
-**The monitoring feature will need an extra instance, that will host grafana/prometheus server for the dashboard visualisation.**
+The monitoring feature will install and configure all the tools required to monitor the various components of the HA SAP cluster (Pacemaker, Corosync, SBD, DRBD, SAP HANA, etc).
 
-# How to use the monitoring solution
+**Note:** an extra instance, hosting a Prometheus/Grafana server, will be provisioned.
 
-In order to enable/disable (disabled by default) the monitoring feature, you need to:
 
-* libvirt: set `monitoring_enabled` variable to true/false (or just remove or add the `monitoring` module in your main.tf)
+### Usage
 
-* azure/aws/gcp: set `monitoring_enabled` variable to true/false.
+The monitoring stack is disabled by default.  
+In order to enable it, you will need to set the set `monitoring_enabled` Terraform variable to `true`.
 
-This configuration will create an additional VM in the chosen provider and install all the required packages in the monitored hosts.
-IP address to the Grafana dashboard will be available in the final terraform output.
+This configuration will create an additional VM with the chosen provider and install all the required packages in the monitored nodes.
+  
+The address of the Grafana dashboard will be made available in the final Terraform output.
 
-`NOTE`: In future monitoring in cloud providers are going to be refactored and unified later with module similar to libvirt see https://github.com/SUSE/ha-sap-terraform-deployments/issues/107
 
-# Hosts Exporters
+### Prometheus metric exporters
 
-Currently supported exporters:
+These are the exporters installed in the cluster nodes, which provide metrics to be scraped by the Prometheus server: 
 
-- [Node exporter](https://github.com/prometheus/node_exporter)
-- SAP-HANA database exporter
-- HA Cluster exporter (hawk-apiserver)
+- [ClusterLabs/ha_cluster_exporter](http://github.com/ClusterLabs/ha_cluster_exporter)
+- [SUSE/hanadb_exporter](https://github.com/SUSE/hanadb_exporter) 
+- [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
 
-# Multi-cluster monitoring:
+#### `ha_cluster_exporter`
 
-For enabling multi-cluster in prometheus and in our monitoring solution, you need to follow the schema in `/etc/prometheus/prometheus.yaml`.
+In order to enable `ha_cluster_exporter` for each cluster node, the `cluster` pillar must be as follows:
 
-Each cluster is a different jobname. So if you have 2 cluster you will add 2 jobnames. like :
+```
+cluster:
+  // etc.
+  ha_exporter: true
+```
+
+#### `hanadb_exporter`
+
+In order to enable `hanadb_exporter` for each HANA node, the `hana` pillar entries must be modified as follows:
+
+```
+hana:
+  nodes:
+    - // etc.
+      exporter:
+        exposition_port: 8001 # http port where the data is exported
+        user: SYSTEM # HANA db user
+        password: YourPassword1234 # HANA db password
+```
+
+**Note**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
+
+
+### Multi-cluster monitoring
+
+To enable multiple clusters in our monitoring solution, you will need to manually apply some changes to the `/etc/prometheus/prometheus.yaml` configuration.
+
+Each cluster is a different "job" grouping all the exporters (aka "targets") to scrape, so if you had two clusters you would have 2 jobs, e.g.:
 
 ```
 scrape_configs:
@@ -58,55 +83,18 @@ scrape_configs:
         - "10.162.32.238:9002" # 9002: ha_cluster_exporter metrics
 ```
 
-This will add in prometheus a label `job="hacluster-01` and  `job="hacluster-01`. In the grafana dashboard you will have a special switch on the top to switch clusters.
+This will add a `job` label in all the Prometheus metrics, in this example `job="hacluster-01"` and `job="hacluster-02"`.
+
+You will find a dedicated cluster selector switch at the top of the Grafana dashboard.
 
 
-### SAP HANA database exporter
+### DRBD split-brain detection
 
-The SAP HANA database data is exporter using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.
-In order to enable the exporters for each HANA database the `hana` pillar entries must be modified.
+DRBD has a hook mechanism to trigger some script execution when a split-brain occurs.  
+We leverage this to let `ha_cluster_exporter` detect the split-brain status and record it. 
 
-Here an example:
+In order to enable this, you'll need to activate the custom hook handler via pillars; in the [automatic DRBD pillar](../pillar_examples/automatic/drbd/drbd.sls), this is already configured for you and it will work OOTB.
 
-```
-hana:
-  nodes:
-    - host: {{ grains['name_prefix'] }}01
-      sid: prd
-      instance: 00
-      password: YourPassword1234
-      # Any other additional data
-      exporter:
-        exposition_port: 8001 # http port where the data is exported
-        user: SYSTEM # HANA db user
-        password: YourPassword1234 # HANA db password
-```
+The handler is just a simple shell script that will create a temporary file in `/var/run/drbd/splitbrain` when a split-brain is detected; `ha_cluster_exporter` will check for files in this directory and will expose dedicated Prometheus metrics accordingly.
 
-**Attention**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
-
-
-### HA Cluster exporter
-
-The HA Prometheus metrics are exported using the hawk-apiserver [hawk-apiserver](https://github.com/ClusterLabs/hawk-apiserver).
-In order to enable the exporter for each cluster node `cluster` pillar entries must be modified.
-
-Here an example:
-
-```
-cluster:
-  name: 'hacluster'
-  init: 'hana01'
-  interface: 'eth1'
-  watchdog:
-    module: softdog
-    device: /dev/watchdog
-  sbd:
-    device: '/dev/vdc'
-  ntp: pool.ntp.org
-  sshkeys:
-    overwrite: true
-    password: linux
-  resource_agents:
-    - SAPHanaSR
-  ha_exporter: true
-```
+After the split-brain is fixed, the temporary files must be removed manually: as long as these files exist, the exporter will continue reporting the split-brain occurrence.

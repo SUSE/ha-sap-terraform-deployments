@@ -10,3 +10,4 @@ include:
   {% if grains.get('monitoring_enabled') %}
   - drbd_node.monitoring
   {% endif %}
+  - drbd_node.custom_handlers
