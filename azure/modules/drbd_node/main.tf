@@ -2,8 +2,6 @@
 # official documentation: https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs
 # disclaimer: only supports a single NW installation
 
-# drbd load balancer
-
 resource "azurerm_lb_backend_address_pool" "drbd-backend-pool" {
   count               = var.drbd_count > 0 ? 1 : 0
   resource_group_name = var.resource_group_name

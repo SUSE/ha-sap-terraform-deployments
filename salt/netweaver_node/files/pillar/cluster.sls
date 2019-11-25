@@ -18,11 +18,16 @@ cluster:
     device: {{ grains['sbd_disk_device'] }}
   join_timeout: 180
   wait_for_initialization: 20
-  {% if grains['provider'] == 'libvirt' %}
   ntp: pool.ntp.org
+  {% if grains['provider'] == 'libvirt' %}
   sshkeys:
     overwrite: true
     password: linux
+  {% endif %}
+  {% if grains.get('monitoring_enabled', False) %}
+  ha_exporter: true
+  {% else %}
+  ha_exporter: false
   {% endif %}
 
   configure:

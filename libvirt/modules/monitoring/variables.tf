@@ -126,7 +126,13 @@ variable "monitored_hosts" {
 }
 
 variable "drbd_monitored_hosts" {
-  description = "IPs of hosts you want to monitor"
+  description = "IPs of DRBD hosts you want to monitor"
+  type        = list(string)
+  default     = []
+}
+
+variable "nw_monitored_hosts" {
+  description = "IPs of Netweaver hosts you want to monitor"
   type        = list(string)
   default     = []
 }

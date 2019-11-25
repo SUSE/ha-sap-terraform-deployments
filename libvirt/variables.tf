@@ -137,7 +137,7 @@ variable "reg_additional_modules" {
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "devel_mode" {

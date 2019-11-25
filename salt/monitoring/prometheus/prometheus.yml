@@ -29,7 +29,7 @@ scrape_configs:
         - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
         {% endfor %}
 
-  {% if grains['drbd_monitored_hosts']|length > 0 %}
+  {% if grains.get('drbd_monitored_hosts', [])|length > 0 %}
   - job_name: drbd-cluster
     static_configs:
       - targets:
@@ -37,6 +37,18 @@ scrape_configs:
         - "{{ ip }}:9100" # 9100: node exporter port
         {% endfor %}
         {% for ip in grains['drbd_monitored_hosts'] %}
+        - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
+        {% endfor %}
+  {% endif %}
+
+  {% if grains.get('nw_monitored_hosts', [])|length > 0 %}
+  - job_name: netweaver-cluster
+    static_configs:
+      - targets:
+        {% for ip in grains['nw_monitored_hosts'] %}
+        - "{{ ip }}:9100" # 9100: node exporter port
+        {% endfor %}
+        {% for ip in grains['nw_monitored_hosts'] %}
         - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
         {% endfor %}
   {% endif %}
