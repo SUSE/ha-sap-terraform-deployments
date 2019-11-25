@@ -8,7 +8,7 @@ More details in the official [SAP on SUSE HA NFS](https://docs.microsoft.com/en-
 
 The deployment is performed using the [drbd-formula](https://github.com/SUSE/drbd-formula) and [habootstrap-formula](https://github.com/SUSE/habootstrap-formula).
 
-**Disclaimer: Only available for libvirt by now.**
+**Disclaimer: Only available for libvirt and azure by now.**
 
 ## Quickstart
 
@@ -16,10 +16,14 @@ In order to deploy a DRBD environment for NFS, some changes must be executed in 
 
 - In order to enable/disable the DRBD deployment update the value of `drbd_enabled` variable to true/false in the `terraform.tfvars` file, update the `drbd_count` if want to use more than 2 nodes.
 
-- Choose the `drbd_shared_storage_type` to use different type of storage to *sbd* for HA cluster.
+- Update the `drbd_ips` entry in the `terraform.tfvars` file with available addresses that will be given to the drbd cluster nodes.
+
+### Additional options
+
+- Choose the `drbd_shared_storage_type` to use different type of storage to *sbd* for HA cluster (azure only uses the `iscsi` option).
 
 - Configure the `drbd_disk_size` for the size of attached DRBD backing device. Modify the `partitions` grain in [salt_provisioner.tf](../libvirt/modules/drbd_node/salt_provisioner.tf) for the layout of the disk for DRBD resouce.
 
-- Modify the [drbd_cluster.j2](../salt/drbd_node/files/templates/drbd_cluster.j2) for the pacemaker resource configuration including *NFS* share mount options. To use customized template, need to adapt [formula.sls](../salt/drbd_node/formula.sls) and pillar file [cluster.sls](../salt/drbd_node/files/pillar/cluster.sls).
+- Modify the [drbd_cluster.j2](../salt/drbd_node/files/templates/drbd_cluster.j2) for the pacemaker resource configuration including *NFS* share mount options. To use customized template, need to adapt [formula.sls](../salt/drbd_node/formula.sls) and pillar file [cluster.sls](../salt/drbd_node/files/pillar/cluster.sls). **The default option deploys a NFS share in top of a single DRBD cluster**.
 
 - Modify the content of [cluster.sls](../salt/drbd_node/files/pillar/cluster.sls) and [drbd.sls](../salt/drbd_node/files/pillar/drbd.sls). The unique mandatory changes are `promotion` and `resource` in the `drbd.sls` file. Change `res_template` if want to use customized template. These values must match with the environment(hostname, ip, ports, etc...), the current values are just an example.
