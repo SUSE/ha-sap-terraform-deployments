@@ -172,4 +172,5 @@ module "netweaver_node" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
 }

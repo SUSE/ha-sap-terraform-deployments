@@ -75,6 +75,13 @@ variable "background" {
   default     = false
 }
 
+// monitoring
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = false
+}
+
 // Provider-specific variables
 
 variable "base_image_id" {

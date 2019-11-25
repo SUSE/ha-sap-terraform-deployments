@@ -51,7 +51,9 @@ role: netweaver_node
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
+shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
+monitoring_enabled: ${var.monitoring_enabled}
 EOF
       destination = "/tmp/grains"
       }
