@@ -1,4 +1,7 @@
 include:
+  {% if grains['provider'] in ['aws', 'azure', 'gcp'] %}
+  - network
+  {% endif %}
   - cluster_node.hosts
   - cluster_node.cluster_packages
   {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
