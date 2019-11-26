@@ -1,6 +1,6 @@
 include:
   {% if grains['provider'] in ['aws', 'azure', 'gcp'] %}
-  - network
+  - cluster_node.network
   {% endif %}
   - cluster_node.hosts
   - cluster_node.cluster_packages
