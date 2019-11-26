@@ -9,6 +9,6 @@
 
 # remember to remove the file once the drbd splitbrain is over, otherwise the exporter will always set the metric of splitbrain to present
 
-TMP_LOCATION="/var/run/drbd/splitbrain"
+TMP_LOCATION="/var/tmp/drbd/splitbrain"
 mkdir -p $TMP_LOCATION
 echo "DRBD split-brain detected! Please remove this file once the split-brain is fixed." > ${TMP_LOCATION}/drbd-split-brain-detected-$DRBD_RESOURCE-$DRBD_VOLUME
