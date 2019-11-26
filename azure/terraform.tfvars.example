@@ -27,23 +27,32 @@ init_type = "all"
 # Custom monitoring server image
 #monitoring_uri = "/path/to/your/monitoring/image"
 
+# Custom drbd nodes image
+#drbd_image_uri = "/path/to/your/monitoring/image"
+
 # Public sles4sap image
 hana_public_publisher = "SUSE"
 hana_public_offer     = "SLES-SAP-BYOS"
 hana_public_sku       = "12-sp4"
-hana_public_version   = "2019.03.06"
+hana_public_version   = "latest"
 
 # Public iscsi server image
 iscsi_public_publisher = "SUSE"
 iscsi_public_offer     = "SLES-SAP-BYOS"
 iscsi_public_sku       = "15"
-iscsi_public_version   = "2019.07.17"
+iscsi_public_version   = "latest"
 
 # Public monitoring server image
 monitoring_public_publisher = "SUSE"
 monitoring_public_offer     = "SLES-SAP-BYOS"
 monitoring_public_sku       = "15"
-monitoring_public_version   = "2019.07.17"
+monitoring_public_version   = "latest"
+
+# Public drbd nodes image
+drbd_public_publisher = "SUSE"
+drbd_public_offer     = "SLES-SAP-BYOS"
+drbd_public_sku       = "15"
+drbd_public_version   = "latest"
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"

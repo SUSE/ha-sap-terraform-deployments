@@ -15,15 +15,7 @@ variable "sec_group_id" {
   type = string
 }
 
-variable "availability_set_id" {
-  type = string
-}
-
 variable "storage_account" {
-  type = string
-}
-
-variable "loadbalancer_id" {
   type = string
 }
 

@@ -1,12 +1,16 @@
 module "drbd_node" {
   source                 = "./modules/drbd_node"
+  az_region              = var.az_region
   drbd_count             = var.drbd_enabled == true ? 2 : 0
+  drbd_image_uri         = var.drbd_image_uri
+  drbd_public_publisher  = var.drbd_public_publisher
+  drbd_public_offer      = var.drbd_public_offer
+  drbd_public_sku        = var.drbd_public_sku
+  drbd_public_version    = var.drbd_public_version
   resource_group_name    = azurerm_resource_group.myrg.name
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
-  availability_set_id    = azurerm_availability_set.myas.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  loadbalancer_id        = azurerm_lb.mylb.id
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub

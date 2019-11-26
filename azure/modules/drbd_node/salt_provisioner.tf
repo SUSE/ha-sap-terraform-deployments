@@ -34,8 +34,8 @@ resource "null_resource" "drbd_provisioner" {
     content     = <<EOF
 provider: azure
 role: drbd_node
-name_prefix: ${terraform.workspace}-drbd
-hostname: ${terraform.workspace}-drbd0${count.index + 1}
+name_prefix: drbd
+hostname: drbd0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}
