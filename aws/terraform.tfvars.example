@@ -33,12 +33,12 @@ name = "hana"
 hana_inst_master = "s3://path/to/your/hana/installation/master"
 
 # Local folder where HANA installation master will be downloaded from S3
-hana_inst_folder = "/root/sap_inst/"
+hana_inst_folder = "/root/hana_inst_media/"
 
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/xvdd"
 
-# Variable for init-nodes.tpl script. Can be all, skip-hana or skip-cluster
+# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
 # Device used by the iSCSI server to provide LUNs
@@ -65,6 +65,8 @@ ha_sap_deployment_repo = ""
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
+
+# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
 #reg_additional_modules = {
 #    "sle-module-adv-systems-management/12/x86_64" = ""
 #    "sle-module-containers/12/x86_64" = ""

@@ -1,5 +1,5 @@
 cluster:
-  name: 'hacluster'
+  name: 'hana_cluster'
   init: 'hana01'
   interface: 'eth1'
   watchdog:
@@ -17,7 +17,7 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /srv/salt/hana/templates/scale_up_resources.j2 #This path changes beyond SLES15SP1
+      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
       parameters:
         sid: prd
         instance: "00"

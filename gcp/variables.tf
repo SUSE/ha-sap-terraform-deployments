@@ -89,7 +89,8 @@ variable "sap_hana_deployment_bucket" {
 }
 
 variable "hana_inst_folder" {
-  type = string
+  type    = string
+  default = "/root/hana_inst_media"
 }
 
 variable "hana_disk_device" {

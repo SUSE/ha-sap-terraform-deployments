@@ -8,7 +8,7 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-// repo and pkgs 
+// repo and pkgs
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -79,14 +79,19 @@ variable "shared_storage_type" {
   default     = "iscsi"
 }
 
+variable "sbd_disk_id" {
+  description = "SBD disk volume id"
+  type        = "string"
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
   default     = ""
 }
 
-variable "sap_inst_media" {
-  description = "URL of the NFS share where the SAP software installer is stored. This media shall be mounted in /root/sap_inst"
+variable "hana_inst_media" {
+  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
 }
 
@@ -147,6 +152,11 @@ variable "bridge" {
   default     = ""
 }
 
+variable "pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
+}
+
 // monitoring
 
 variable "monitoring_enabled" {
@@ -154,22 +164,7 @@ variable "monitoring_enabled" {
   default     = false
 }
 
-// sbd disks
-
-variable "sbd_disk_size" {
-  description = "sbd partition disk size"
-  default     = "104857600" # 100MB
-}
-
-variable "sbd_count" {
-  description = "variable used to decide to create or not the sbd shared disk device"
-  default     = 1
-}
-
-variable "pool" {
-  description = "libvirt storage pool name for VM disks"
-  default     = "default"
-}
+// QA mode variables
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"

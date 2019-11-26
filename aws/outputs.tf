@@ -53,21 +53,21 @@ output "cluster_nodes_public_name" {
 
 data "aws_instance" "monitoring" {
   count       = var.monitoring_enabled == true ? 1 : 0
-  instance_id = element(aws_instance.monitoring.*.id, count.index)
+  instance_id = aws_instance.monitoring.0.id
 }
 
 output "monitoring_ip" {
-  value = data.aws_instance.monitoring.*.private_ip
+  value = join("", data.aws_instance.monitoring.*.private_ip)
 }
 
 output "monitoring_public_ip" {
-  value = data.aws_instance.monitoring.*.public_ip
+  value = join("", data.aws_instance.monitoring.*.public_ip)
 }
 
 output "monitoring_name" {
-  value = data.aws_instance.monitoring.*.id
+  value = join("", data.aws_instance.monitoring.*.id)
 }
 
 output "monitoring_public_name" {
-  value = data.aws_instance.monitoring.*.public_dns
+  value = join("", data.aws_instance.monitoring.*.public_dns)
 }

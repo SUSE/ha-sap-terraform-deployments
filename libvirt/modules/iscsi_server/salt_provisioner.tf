@@ -8,7 +8,7 @@ data "template_file" "salt_provisioner" {
 }
 
 resource "null_resource" "iscsi_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.iscsisrv) : 0
+  count = var.provisioner == "salt" ? var.iscsi_count : 0
 
   triggers = {
     iscsi_id = libvirt_domain.iscsisrv[count.index].id

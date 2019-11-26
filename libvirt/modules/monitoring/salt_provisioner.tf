@@ -8,13 +8,13 @@ data "template_file" "monitoring_salt_provisioner" {
 }
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(libvirt_domain.monitoring_domain) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
   triggers = {
-    monitoring_id = libvirt_domain.monitoring_domain[count.index].id
+    monitoring_id = libvirt_domain.monitoring_domain.0.id
   }
 
   connection {
-    host     = libvirt_domain.monitoring_domain[count.index].network_interface.0.addresses.0
+    host     = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
     user     = "root"
     password = "linux"
   }
@@ -39,7 +39,7 @@ reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
+authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
 role: monitoring

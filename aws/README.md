@@ -1,32 +1,26 @@
-
-## AWS Public Cloud deployment with terraform and Salt
+# AWS Public Cloud deployment with terraform and Salt
 
 - [quickstart](#quickstart)
 - [highlevel description](#highlevel-description)
 - [advanced usage](#advanced-usage)
 - [monitoring](../doc/monitoring.md)
+- [QA](../doc/qa.md)
 - [specification](#specification)
 
 # Quickstart
 
-1) **Rename terraform.tfvars** `mv terraform.tfvars.example terraform.tfvars`
+1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
 
-2) **Generate private and public keys for the cluster nodes with**
+2) **Generate private and public keys for the cluster nodes with:**
 
 ```
-mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+mkdir ../salt/hana_node/files/sshkeys
+ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 
 The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
 
-3) **Adapt saltstack pillars**:
-
-
-  * **From git top-level folder, copy files:**
-`cp pillar_examples/aws/*  salt/hana_node/files/pillar`
-
-For more informations have a look at [pillar-doc](https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples)
-
+3) **[Adapt saltstack pillars](../pillar_examples/)**
 
 4) **Configure API access to AWS**
 
@@ -60,11 +54,12 @@ This file is also used by the `aws` command line tool, so it can be created with
 **Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
 
 
-5) **Deploy with**: 
-
+5) **Deploy**: 
 
 ```
 terraform init
+terraform workspace new my-execution # optional
+terraform workspace select my-execution # optional
 terraform plan
 terraform apply
 ```
@@ -90,9 +85,10 @@ The infrastructure deployed includes:
 - EC2 instances.
 
 By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
-Also, the salt provisioning can be configured to deploy single SAP HANA instances, SAP HANA instances with System Replication enabled or the SUSE SAP HANA cluster based on the SAPHanaSR resource agent.
-Once the infrastructure is created provisioning is made  with Salt in background.
 
+## Provisioning by Salt
+By default, the cluster and HANA installation is done using Salt Formulas in foreground.
+To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](../pillar_examples) folder (more information in the dedicated [README](../pillar_examples/README.md))
 
 # Specification:
 
@@ -130,7 +126,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
 * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
 * **name**: hostname for the hana node without the domain part.
-* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
+* **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
 * **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
 * **hana_disk_device**: device used by node where HANA will be installed.
@@ -159,10 +155,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **additional_packages**: Additional packages to add to the guest machines.
 * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
- Specific QA variables
-* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
-* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
-
+[Specific QA variables](../doc/qa.md#specific-qa-variables)
 
 ### Relevant Details
 

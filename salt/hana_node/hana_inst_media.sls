@@ -4,7 +4,7 @@ nfs-client:
      attempts: 3
      interval: 15
 
-sap_inst_directory:
+hana_inst_directory:
   file.directory:
     - name: {{ grains['hana_inst_folder'] }}
     - user: root
@@ -13,7 +13,7 @@ sap_inst_directory:
   {% if grains['provider'] == 'libvirt' %}
   mount.mounted:
     - name: {{ grains['hana_inst_folder'] }}
-    - device: {{ grains['sap_inst_media'] }}
+    - device: {{ grains['hana_inst_media'] }}
     - fstype: nfs
     - mkmnt: True
     - persist: True

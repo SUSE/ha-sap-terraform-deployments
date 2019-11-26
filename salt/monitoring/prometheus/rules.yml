@@ -1,29 +1,77 @@
 groups:
+# sap alerts
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
-    expr: absent(cluster_node_resources{resource_name=~"rsc_saphana_.*",role="master"})
+    expr: absent(ha_cluster_pacemaker_resources{id=~"rsc_saphana_.*",role="master"})
     labels:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
 
   - alert: sap-hana-secondary-resource-absent
-    expr: absent(cluster_node_resources{resource_name=~"rsc_saphana_.*",role="slave",status="active"})
+    expr: absent(ha_cluster_pacemaker_resources{id=~"rsc_saphana_.*",role="slave",status="active"})
     labels:
       severity: page
     annotations:
-      summary: slave resource absent
+      summary: Slave SAP-HANA resource absent
 
+# ha cluster alerts
 - name: cluster-resources-monitoring
   rules:
   - alert: cluster-resources-a-resource-failed
-    expr: count(cluster_node_resources{status="failed"}) > 0
+    expr: count(ha_cluster_pacemaker_resources{status="failed"}) > 0
     labels:
       severity: page
     annotations:
-      summary: a cluster resource failed
+      summary: A cluster resource failed
 
+
+# failcount exceed migration threshold (example on saphana specific resource)
+- name: resource-failcount-higher-threshold
+  rules:
+  - alert: resource-failcount-higher-threshold
+    expr: count(ha_cluster_pacemaker_fail_count > ha_cluster_pacemaker_migration_threshold) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: the rsc_SAPHana_PRD_HDB00 has exceeded the limit threshold
+  
+# drbd alerts
+- name: drbd-alerts
+  rules:
+  - alert: drbd-connections-in-a-bad-state
+    expr: count(ha_cluster_drbd_connections{peer_disk_state=~"inconsistent|outdated|dunknown|failed"}) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd connection is an bad state inconsistent|outdated|dunknown|failed
+
+  - alert: drbd-sync-connections-percentage-lower-then-expected
+    expr: ha_cluster_drbd_connections_sync < 90
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd disk sync is lower then 90 percent!
+
+  - alert: drbd-resource-in-a-bad-state
+    expr: count(ha_cluster_drbd_resources{peer_disk_state=~"inconsistent|outdated|dunknown|failed"}) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: a drbd resource is an bad state inconsistent|outdated|dunknown|failed
+
+# sbd alerts
+- name: sbd-device-alerts
+  rules:
+  - alert: a-sbd-device-unhealthy
+    expr: ha_cluster_sbd_device_status == 0
+    labels:
+      severity: page
+    annotations:
+      summary: An SBD device in the HA cluster is unhealthy
+
+# systemd services alerts
 - name: systemd-services-monitoring
   rules:
   - alert: service-down-pacemaker
@@ -31,53 +79,67 @@ groups:
     labels:
       severity: page
     annotations:
-      summary: pacemaker service not running
+      summary: Pacemaker service not running
 
   - alert: service-down-corosync
     expr: node_systemd_unit_state{name="pacemaker.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: corosync service not running
+      summary: Corosync service not running
 
   - alert: service-down-sbd
     expr: node_systemd_unit_state{name="sbd.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: sbd service not running
+      summary: SBD service not running
 
   - alert: service-down-hawk
     expr: node_systemd_unit_state{name="hawk.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: hawk service not running
+      summary: Hawk service not running
 
   - alert: service-down-hawk-backend
     expr: node_systemd_unit_state{name="hawk-backend.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: hawk-backend service not running
+      summary: Hawk backend service not running
 
   - alert: service-down-node-exporter
     expr: node_systemd_unit_state{name="prometheus-node_exporter.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: ha-cluster-exporter service not running
+      summary: Node exporter service not running
 
   - alert: service-down-ha-cluster-exporter
     expr: node_systemd_unit_state{name="prometheus-ha_cluster_exporter.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: ha cluster exporter service not running
- 
+      summary: HA Cluster Exporter service not running
+
   - alert: service-down-hanadb-exporter
     expr: node_systemd_unit_state{name=~"hanadb_exporter@.*.service", state="active"} == 0
     labels:
       severity: page
     annotations:
-      summary: hanadb exporter service not running
+      summary: HANA exporter service not running
+
+  - alert: node-filesystem-space-low
+    expr: ((node_filesystem_size_bytes{fstype!="tmpfs"} - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100) > 85
+    labels:
+      severity: page
+    annotations:
+      summary: Node filesystem space usage is higher than 85%
+
+  - alert: stonith-disabled
+    expr: ha_cluster_pacemaker_stonith_enabled == 0
+    labels:
+      severity: page
+    annotations:
+      summary: STONITH is disabled! Clusters without a fencing mechanism are not supported and have increased risk of data loss.

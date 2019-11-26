@@ -80,7 +80,7 @@ EOF
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? length(azurerm_virtual_machine.clusternodes) : 0
+  count = var.provisioner == "salt" ? var.ninstances : 0
 
   triggers = {
     cluster_instance_ids = join(",", azurerm_virtual_machine.clusternodes.*.id)
@@ -153,17 +153,14 @@ EOF
 
 
 resource "null_resource" "monitoring_provisioner" {
-  count = var.provisioner == "salt" ? length(azurerm_virtual_machine.monitoring) : 0
+  count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
   triggers = {
-    monitoring_id = join(",", azurerm_virtual_machine.monitoring.*.id)
+    monitoring_id = azurerm_virtual_machine.monitoring.0.id
   }
 
   connection {
-    host = element(
-      data.azurerm_public_ip.monitoring.*.ip_address,
-      count.index,
-    )
+    host        = data.azurerm_public_ip.monitoring.0.ip_address
     type        = "ssh"
     user        = var.admin_user
     private_key = file(var.private_key_location)

@@ -1,15 +1,4 @@
-resource "libvirt_volume" "sbd" {
-  name  = "${terraform.workspace}-sbd.raw"
-  pool  = var.pool
-  size  = var.sbd_disk_size
-  count = var.sbd_count
-
-  xml {
-    xslt = file("modules/hana_node/raw.xsl")
-  }
-}
-
-resource "libvirt_volume" "main_disk" {
+resource "libvirt_volume" "hana_main_disk" {
   name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   base_volume_id   = var.base_image_id
   pool             = var.pool
@@ -32,7 +21,7 @@ resource "libvirt_domain" "hana_domain" {
    dynamic "disk" {
     for_each = [
         {
-          "vol_id" = element(libvirt_volume.main_disk.*.id, count.index)
+          "vol_id" = element(libvirt_volume.hana_main_disk.*.id, count.index)
         },
         {
           "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)
@@ -49,7 +38,7 @@ resource "libvirt_domain" "hana_domain" {
     [
       {
        // we set null but it will never reached because the slice with 0 cut it off
-        "volume_id" =  var.shared_storage_type == "shared-disk" ?  libvirt_volume.sbd.0.id : "null"
+        "volume_id" =  var.shared_storage_type == "shared-disk" ?  var.sbd_disk_id : "null"
       },
     ], 0,  var.shared_storage_type == "shared-disk" ? 1 : 0,  )
    content {

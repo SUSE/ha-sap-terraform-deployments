@@ -28,6 +28,39 @@ Currently supported exporters:
 - SAP-HANA database exporter
 - HA Cluster exporter (hawk-apiserver)
 
+# Multi-cluster monitoring:
+
+For enabling multi-cluster in prometheus and in our monitoring solution, you need to follow the schema in `/etc/prometheus/prometheus.yaml`.
+
+Each cluster is a different jobname. So if you have 2 cluster you will add 2 jobnames. like :
+
+```
+scrape_configs:
+  - job_name: hacluster-01
+    static_configs:
+      - targets:
+        - "192.168.110.19:8001" # 8001: hanadb exporter port
+        - "192.168.110.20:8001" # 8001: hanadb exporter port
+        - "192.168.110.19:9100" # 9100: node exporter port
+        - "192.168.110.20:9100" # 9100: node exporter port
+        - "192.168.110.19:9002" # 9002: ha_cluster_exporter metrics
+        - "192.168.110.20:9002" # 9002: ha_cluster_exporter metrics
+
+
+  - job_name: hacluster-02
+    static_configs:
+      - targets:
+        - "10.162.32.117:8001" # 8001: hanadb exporter port
+        - "10.162.32.238:8001" # 8001: hanadb exporter port
+        - "10.162.32.117:9100" # 9100: node exporter port
+        - "10.162.32.238:9100" # 9100: node exporter port
+        - "10.162.32.117:9002" # 9002: ha_cluster_exporter metrics
+        - "10.162.32.238:9002" # 9002: ha_cluster_exporter metrics
+```
+
+This will add in prometheus a label `job="hacluster-01` and  `job="hacluster-01`. In the grafana dashboard you will have a special switch on the top to switch clusters.
+
+
 ### SAP HANA database exporter
 
 The SAP HANA database data is exporter using the [hanadb_exporter](https://github.com/SUSE/hanadb_exporter) prometheus exporter.

@@ -7,12 +7,18 @@ server_monitoring_repo:
     - baseurl: https://download.opensuse.org/repositories/server:/monitoring/{{ repository }}/
     - refresh: True
     - gpgautoimport: True
+    - retry:
+        attempts: 3
+        interval: 15
 
 prometheus:
   pkg.installed:
     - name: golang-github-prometheus-prometheus
     - require:
       - pkgrepo: server_monitoring_repo
+    - retry:
+        attempts: 3
+        interval: 15
 
 prometheus_shap_configuration:
   file.recurse:
@@ -36,6 +42,9 @@ grafana:
     - name: grafana
     - require:
       - pkgrepo: server_monitoring_repo
+    - retry:
+        attempts: 3
+        interval: 15
 
 grafana_anonymous_login_configuration:
   file.blockreplace:
@@ -102,3 +111,6 @@ prometheus-alertmanager:
       - file: prometheus_shap_configuration
     - watch:
       - file: prometheus_shap_configuration
+    - retry:
+        attempts: 3
+        interval: 15

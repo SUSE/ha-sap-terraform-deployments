@@ -4,7 +4,7 @@ cluster:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
-  name: hacluster
+  name: hana_cluster
   init: {{ grains['name_prefix'] }}01
   {% if grains['provider'] == 'libvirt' %}
   interface: eth1
@@ -17,7 +17,6 @@ cluster:
     device: /dev/watchdog
   sbd:
     device: {{ grains['sbd_disk_device'] }}
-  join_timer: 20
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:
@@ -35,12 +34,7 @@ cluster:
   configure:
     method: update
     template:
-      # When the package salt-standalone-formulas-configuration is finally released, only the first path will be used
-      {% if grains['osrelease_info'][0] == 15 and grains['osrelease_info']|length > 1 and grains['osrelease_info'][1] >= 1 %}
       source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
-      {% else %}
-      source: /srv/salt/hana/templates/scale_up_resources.j2
-      {% endif %}
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}

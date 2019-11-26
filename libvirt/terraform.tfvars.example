@@ -1,12 +1,12 @@
 qemu_uri = "qemu:///system"
-sap_inst_media = "url-to-your-nfs-share"
+hana_inst_media = "url-to-your-nfs-share"
 base_image = "url-to-your-sles4sap-image"
 iprange = "192.168.XXX.Y/24"
 host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
-iscsi_srv_ip = "192.168.XXX.Y+2"
+iscsi_srv_ip = "192.168.XXX.Y+6"
 iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 
 # Repository url used to install HA/SAP deployment packages"
@@ -22,6 +22,8 @@ devel_mode = false
 # Optional SUSE Customer Center Registration parameters
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
+
+# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
 #reg_additional_modules = {
 #    "sle-module-adv-systems-management/12/x86_64" = ""
 #    "sle-module-containers/12/x86_64" = ""
@@ -46,12 +48,34 @@ devel_mode = false
 #monitoring_enabled = true
 
 # IP address of the machine where prometheus and grafana are running
-monitoring_srv_ip = "192.168.XXX.Y+2"
+monitoring_srv_ip = "192.168.XXX.Y+7"
+
+# Netweaver variables
+
+# NFS share with netweaver installation folders
+#netweaver_inst_media = "url-to-your-nfs-share"
+
+# NFS share to store the Netweaver shared files
+#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
+
+# IP addresses of the machines hosting Netweaver instances
+#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+
+# Enable/disable Netweaver deployment
+#netweaver_enabled = true
+
+# Enable the DRBD cluster for nfs
+#drbd_enabled = true
+
+# Nodes number of DRBD cluster for nfs
+#drbd_count = 2
+
+# IP of DRBD cluster
+#drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
 # storage_pool = "terraform"
-
 
 # QA variables
 

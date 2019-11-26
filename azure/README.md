@@ -4,29 +4,28 @@
 - [highlevel description](#highlevel-description)
 - [advanced usage](#advanced-usage)
 - [monitoring](../doc/monitoring.md)
+- [QA](../doc/qa.md)
 - [specification](#specification)
 
 # Quickstart
 
-## 1) Install the azure client
+1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
 
-* [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
-
-
-### 2) Configuration of terraform
-
-1) Rename terraform.tfvars `mv terraform.tfvars.example terraform.tfvars`
-
-2) Generate private and public keys for the cluster nodes with:
+2) **Generate private and public keys for the cluster nodes with:**
 
 ```
-mkdir ../salt/hana_node/files/sshkeys; ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+mkdir ../salt/hana_node/files/sshkeys
+ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 The key files must be named as you define them in the `terraform.tfvars` file
 
-After that we need to update the `terraform.tfvars` file and copy the pillar files to `salt/hana_node/files/pillar` folder.
+3) **[Adapt saltstack pillars](../pillar_examples/)**
 
-### 3) Configure Terraform Access to Azure
+4) **Configure Terraform Access to Azure**
+
+Install the azure client
+
+* [azure commandline](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest)
 
 Setup Azure account:
 
@@ -46,12 +45,12 @@ To verify which subscription is the active one, use the command `az account show
 
 If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
 
-### 4) Deploy
+5) **Deploy**
 
 ```
 terraform init
 terraform workspace new my-execution # optional
-terrafomr workspace select my-execution # optional
+terraform workspace select my-execution # optional
 terraform plan
 terraform apply
 ```
@@ -86,9 +85,9 @@ By default, this configuration will create 3 virtual machines in Azure: one for 
 
 Once the infrastructure is created by Terraform, the servers are provisioned with Salt.
 
- ## Provisioning by Salt
- The cluster and HANA installation is done using Salt Formulas.
- To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples) folder (more information in the dedicated [README](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples/README.md))
+## Provisioning by Salt
+By default, the cluster and HANA installation is done using Salt Formulas in foreground.
+To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](../pillar_examples) folder (more information in the dedicated [README](../pillar_examples/README.md))
 
 ## Specification
 
@@ -139,7 +138,7 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **hana_data_disk_caching**: caching mode for HANA disk, could be None, ReadOnly or ReadWrite (ReadWrite by default).
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **az_region**: Azure region where to deploy the configuration.
-* **init-type**: initilization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
+* **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
@@ -163,9 +162,7 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
  * **additional_packages**: Additional packages to add to the guest machines.
  * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
 
- Specific QA variables
-* **qa_mode**: If set to true, it disables extra packages not already present in the image. For example, set this value to true if performing the validation of a new AWS Public Cloud image.
-* **hwcct**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /tmp/provisioning.log.
+[Specific QA variables](../doc/qa.md#specific-qa-variables)
 
 ### The pillar files hana.sls and cluster.sls
 
@@ -174,7 +171,7 @@ Find more information about the hana and cluster formulas in (check the pillar.e
 -   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
 -   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
 
-As a good example, you could find some pillar examples into the folder [pillar_examples](https://github.com/SUSE/ha-sap-terraform-deployments/blob/master/pillar_examples)
+As a good example, you could find some pillar examples into the folder [pillar_examples](../pillar_examples)
 These files **aren't ready for deployment**, be careful to customize them or create your own files.
 
 # Advanced usage

@@ -16,6 +16,22 @@ output "cluster_nodes_public_name" {
   value = []
 }
 
+output "drbd_ip" {
+  value = module.drbd_node.output_data.private_addresses
+}
+
+output "drbd_public_ip" {
+  value = module.drbd_node.output_data.addresses
+}
+
+output "drbd_name" {
+  value = module.drbd_node.output_data.hostname
+}
+
+output "drbd_public_name" {
+  value = []
+}
+
 output "iscsisrv_ip" {
   value = module.iscsi_server.output_data.private_addresses
 }
@@ -33,11 +49,11 @@ output "iscsisrv_public_name" {
 }
 
 output "monitoring_ip" {
-  value = module.monitoring.output_data.private_addresses
+  value = module.monitoring.output_data.private_address
 }
 
 output "monitoring_public_ip" {
-  value = module.monitoring.output_data.addresses
+  value = module.monitoring.output_data.address
 }
 
 output "monitoring_name" {
@@ -45,5 +61,21 @@ output "monitoring_name" {
 }
 
 output "monitoring_public_name" {
+  value = ""
+}
+
+output "netweaver_nodes_ip" {
+  value = module.netweaver_node.output_data.private_addresses
+}
+
+output "netweaver_nodes_public_ip" {
+  value = module.netweaver_node.output_data.addresses
+}
+
+output "netweaver_nodes_name" {
+  value = module.netweaver_node.output_data.hostname
+}
+
+output "netweaver_nodes_public_name" {
   value = []
 }

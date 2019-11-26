@@ -136,7 +136,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   count                 = var.monitoring_enabled == true ? 1 : 0
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
-  network_interface_ids = [element(azurerm_network_interface.monitoring.*.id, count.index)]
+  network_interface_ids = [azurerm_network_interface.monitoring.0.id]
   availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
@@ -148,11 +148,11 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   storage_image_reference {
-    id        = azurerm_image.monitoring.0.id
-    publisher = "SUSE"
-    offer     = "SLES-SAP-BYOS"
-    sku       = "15"
-    version   = "latest"
+    id        = var.monitoring_uri != "" ? azurerm_image.monitoring.0.id : ""
+    publisher = var.monitoring_uri != "" ? "" : var.monitoring_public_publisher
+    offer     = var.monitoring_uri != "" ? "" : var.monitoring_public_offer
+    sku       = var.monitoring_uri != "" ? "" : var.monitoring_public_sku
+    version   = var.monitoring_uri != "" ? "" : var.monitoring_public_version
   }
 
   storage_data_disk {
