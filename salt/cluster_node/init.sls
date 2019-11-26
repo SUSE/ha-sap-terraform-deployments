@@ -5,7 +5,7 @@ include:
   - cluster_node.hosts
   - cluster_node.cluster_packages
   {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
-    - default.ssh
+  - cluster_node.ssh
   {% endif %}
   {% if grains['shared_storage_type'] == 'iscsi' %}
   - cluster_node.iscsi_initiator
