@@ -165,12 +165,12 @@ resource "azurerm_image" "drbd-image" {
 
 resource "azurerm_virtual_machine" "drbd" {
   count                 = var.drbd_count
-  name                  = "drbd-vm-${count.index}"
+  name                  = "drbd0${count.index + 1}"
   location              = var.az_region
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.drbd.*.id, count.index)]
   availability_set_id   = azurerm_availability_set.drbd-availability-set[0].id
-  vm_size               = "Standard_D2s_v3"
+  vm_size               = var.instancetype
 
   storage_os_disk {
     name              = "drbd-os-disk-${count.index}"

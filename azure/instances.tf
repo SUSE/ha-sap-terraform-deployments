@@ -76,7 +76,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
 resource "azurerm_virtual_machine" "clusternodes" {
   count                 = var.ninstances
-  name                  = "${terraform.workspace}-node-${count.index}"
+  name                  = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [element(azurerm_network_interface.clusternodes.*.id, count.index)]

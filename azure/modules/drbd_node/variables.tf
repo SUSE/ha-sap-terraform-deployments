@@ -55,6 +55,11 @@ variable "drbd_public_version" {
   default = "latest"
 }
 
+variable "instancetype" {
+  type    = string
+  default = "Standard_D2s_v3"
+}
+
 variable "admin_user" {
   type    = string
   default = "azadmin"
