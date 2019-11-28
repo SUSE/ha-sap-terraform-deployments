@@ -1,5 +1,5 @@
 variable "aws_region" {
-  type    = "string"
+  type    = string
   default = "eu-central-1"
 }
 

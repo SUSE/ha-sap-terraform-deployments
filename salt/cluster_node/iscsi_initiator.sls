@@ -7,7 +7,7 @@ open-iscsi:
 /etc/iscsi/initiatorname.iscsi:
   file.replace:
     - pattern: "^InitiatorName=.*"
-    - repl: "InitiatorName=iqn.drbd.{{ grains['server_id'] }}.suse.qa"
+    - repl: "InitiatorName=iqn.{{ grains['server_id'] }}.suse.qa"
 
 /etc/iscsi/iscsid.conf:
   file.replace:

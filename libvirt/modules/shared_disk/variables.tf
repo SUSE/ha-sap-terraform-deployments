@@ -1,6 +1,6 @@
 variable "name" {
   description = "name of the disk"
-  type        = "string"
+  type        = string
 }
 
 variable "pool" {

@@ -140,7 +140,8 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_hosts        = var.host_ips
-  drbd_monitored_hosts   = var.drbd_ips
+  drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
+  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_ips : []
 }
 
 module "nw_shared_disk" {
@@ -171,4 +172,5 @@ module "netweaver_node" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
 }

@@ -14,16 +14,20 @@ The monitoring stack is disabled by default.
 In order to enable it, you will need to set the set `monitoring_enabled` Terraform variable to `true`.
 
 This configuration will create an additional VM with the chosen provider and install all the required packages in the monitored nodes.
-  
+
 The address of the Grafana dashboard will be made available in the final Terraform output.
+
+### DRBD and Netweaver monitoring
+
+If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
 
 
 ### Prometheus metric exporters
 
-These are the exporters installed in the cluster nodes, which provide metrics to be scraped by the Prometheus server: 
+These are the exporters installed in the cluster nodes, which provide metrics to be scraped by the Prometheus server:
 
 - [ClusterLabs/ha_cluster_exporter](http://github.com/ClusterLabs/ha_cluster_exporter)
-- [SUSE/hanadb_exporter](https://github.com/SUSE/hanadb_exporter) 
+- [SUSE/hanadb_exporter](https://github.com/SUSE/hanadb_exporter)
 - [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
 
 #### `ha_cluster_exporter`
@@ -91,7 +95,7 @@ You will find a dedicated cluster selector switch at the top of the Grafana dash
 ### DRBD split-brain detection
 
 DRBD has a hook mechanism to trigger some script execution when a split-brain occurs.  
-We leverage this to let `ha_cluster_exporter` detect the split-brain status and record it. 
+We leverage this to let `ha_cluster_exporter` detect the split-brain status and record it.
 
 In order to enable this, you'll need to activate the custom hook handler via pillars; in the [automatic DRBD pillar](../pillar_examples/automatic/drbd/drbd.sls), this is already configured for you and it will work OOTB.
 

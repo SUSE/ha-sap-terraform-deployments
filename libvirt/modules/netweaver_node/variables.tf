@@ -27,9 +27,8 @@ variable "reg_additional_modules" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
-
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
@@ -53,7 +52,7 @@ variable "host_ips" {
 
 variable "shared_disk_id" {
   description = "ASCS and ERS shared disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "netweaver_inst_media" {
@@ -73,6 +72,13 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  default     = false
+}
+
+// monitoring
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false
 }
 

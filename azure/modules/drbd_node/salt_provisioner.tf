@@ -54,7 +54,6 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
-drbd_nodes: ${var.drbd_count}
 partitions:
   1:
     start: 0%

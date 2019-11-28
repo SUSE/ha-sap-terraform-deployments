@@ -47,6 +47,7 @@ provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_monitored_hosts))}]
+nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.nw_monitored_hosts))}]
 EOF
       destination = "/tmp/grains"
       }

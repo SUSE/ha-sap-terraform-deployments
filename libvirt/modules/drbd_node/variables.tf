@@ -28,7 +28,7 @@ variable "reg_additional_modules" {
 // hana/drbd
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "devel_mode" {
@@ -136,7 +136,7 @@ variable "monitoring_enabled" {
 // sbd disks
 variable "sbd_disk_id" {
   description = "SBD disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "pool" {

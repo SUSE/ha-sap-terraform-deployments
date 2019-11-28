@@ -1,21 +1,21 @@
 variable "iscsi_image" {
   description = "iscsi server base image"
-  type        = "string"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
-  type        = "string"
+  type        = string
 }
 
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
-  type        = "string"
+  type        = string
 }
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "reg_code" {
@@ -30,7 +30,7 @@ variable "reg_email" {
 
 variable "reg_additional_modules" {
   description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = "map"
+  type        = map
   default     = {}
 }
 
