@@ -15,15 +15,7 @@ variable "sec_group_id" {
   type = string
 }
 
-variable "availability_set_id" {
-  type = string
-}
-
 variable "storage_account" {
-  type = string
-}
-
-variable "loadbalancer_id" {
   type = string
 }
 
@@ -61,6 +53,11 @@ variable "drbd_public_sku" {
 variable "drbd_public_version" {
   type    = string
   default = "latest"
+}
+
+variable "instancetype" {
+  type    = string
+  default = "Standard_D2s_v3"
 }
 
 variable "admin_user" {

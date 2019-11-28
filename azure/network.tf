@@ -45,15 +45,6 @@ resource "azurerm_lb" "mylb" {
     private_ip_address            = "10.74.1.5"
   }
 
-  # drbd nodes entry point
-  # improve this entry to be enabled only when drbd is deployed
-  frontend_ip_configuration {
-    name                          = "drbd-frontend"
-    subnet_id                     = azurerm_subnet.mysubnet.id
-    private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.201"
-  }
-
   tags = {
     workspace = terraform.workspace
   }
