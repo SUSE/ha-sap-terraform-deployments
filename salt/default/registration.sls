@@ -18,5 +18,4 @@ register_system:
         interval: 15
 {% endfor %}
 {% endif %}
-  pkg.uptodate
 {% endif %}

@@ -7,4 +7,5 @@ install_additional_packages:
 {% endfor %}
     - require:
       - sls: default.repos
+      - sls: default.update
 {% endif %}

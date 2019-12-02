@@ -7,6 +7,7 @@ include:
   - default.registration
 {% endif %}
   - default.repos
+  - default.update
   - default.pkgs
 {% if grains['provider'] == 'libvirt' %}
   - default.timezone
