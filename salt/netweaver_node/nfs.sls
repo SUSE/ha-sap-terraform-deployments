@@ -23,6 +23,9 @@ wait_for_nfs_share:
     - require:
       - wait_for_nfs_machine
 
+# Initialized NFS share folders, only with the first node
+# Executing these states in all the nodes might cause errors during deletion, as they try to delete the same files
+{% if grains['host_ip'] == grains['host_ips'][0] %}
 mount_sapmnt:
   mount.mounted:
     - name: /tmp/sapmnt
@@ -59,3 +62,4 @@ unmount_sapmnt:
     - device: {{ grains['netweaver_nfs_share'] }}
     - require:
       - wait_for_nfs_share
+{% endif %}
