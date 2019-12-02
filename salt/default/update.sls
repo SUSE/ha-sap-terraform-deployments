@@ -1,5 +1,5 @@
 {% if grains['os_family'] == 'Suse' %}
-refresh_repos:
+update_repos:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys update
     - retry:
