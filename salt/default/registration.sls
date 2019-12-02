@@ -17,6 +17,6 @@ register_system:
         attempts: 3
         interval: 15
 {% endfor %}
-  pkg.uptodate 
+  pkg.uptodate
 {% endif %}
 {% endif %}
