@@ -1780,7 +1780,7 @@
       ],
       "targets": [
         {
-          "expr": "ha_cluster_drbd_resources",
+          "expr": "ha_cluster_drbd_resources{job=\"$hacluster\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
