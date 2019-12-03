@@ -1,3 +1,4 @@
+{% if not grains.get('qa_mode') %}
 {% if grains['os_family'] == 'Suse' %}
 update_repos:
   cmd.run:
@@ -5,4 +6,5 @@ update_repos:
     - retry:
         attempts: 3
         interval: 15
+{% endif %}
 {% endif %}
