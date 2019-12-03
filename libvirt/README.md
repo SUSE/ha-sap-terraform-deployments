@@ -70,11 +70,11 @@ defult module.
 basic packages and apply basic configuration.
 - [hana_node](../salt/hana_node): Apply SAP HANA nodes specific updates to install
 SAP HANA and enable system replication according [pillar](../pillar_examples/libvirt/hana.sls)
-data.
+data. You can also use the provided [automatic pillars](../pillar_examples/automatic/hana).
 - [drbd_node](../salt/drbd_node): Apply DRBD nodes specific updates to configure
 DRBD cluster for NFS share according [drbd pillar](../pillar_examples/libvirt/drbd/drbd.sls)
-and [cluster pillar](../pillar_examples/libvirt/drbd/cluster.sls). Or use
-pillars files which are in [DRBD automatic directory](../pillar_examples/automatic/DRBD).
+and [cluster pillar](../pillar_examples/libvirt/drbd/cluster.sls). You can also use the
+provided [automatic pillars](../pillar_examples/automatic/drbd).
 - [monitoring](../salt/monitoring): Apply prometheus monitoring service configuration.
 - [iscsi_srv](../salt/iscsi_srv): Apply configuration for iscsi target.
 - [netweaver_node](../salt/netweaver_node): Apply netweaver packages and formula.

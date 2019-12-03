@@ -13,13 +13,13 @@ Two possibilities here:
 
       From git top-level folder, copy files:
 
-      `cp pillar_examples/automatic/{cluster.sls,hana.sls,top.sls} salt/hana_node/files/pillar/`
+      `cp pillar_examples/automatic/hana/*.sls salt/hana_node/files/pillar/`
 
   - For a customize and production environment, you must use pillar files which are in your choosen [provider directory](../pillar_examples) (AWS, Azure, GCP, Libvirt).
 
       From git top-level folder, copy files:
 
-      `cp pillar_examples/**SELECTED_PROVIDER**/{cluster.sls,hana.sls,top.sls} salt/hana_node/files/pillar`
+      `cp pillar_examples/$PROVIDER/*.sls salt/hana_node/files/pillar`
 
       Please, **pay attention:** different from the previous case (preconfigured environment or automatic), the pillars must be customized, otherwise deployment will fail.
 
@@ -45,7 +45,7 @@ For a preconfigured environment, you can use pillar files which are in [DRBD aut
 
 From git top-level folder, copy files:
 
-`cp pillar_examples/automatic/drbd/{cluster.sls,drbd.sls} salt/drbd_node/files/pillar/`
+`cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
 
 All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/drbd-formula (to manipulate the drbd.sls file)
