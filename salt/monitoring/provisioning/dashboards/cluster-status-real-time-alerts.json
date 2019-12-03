@@ -175,7 +175,7 @@
       ],
       "targets": [
         {
-          "expr": "ALERTS",
+          "expr": "ALERTS{job=\"$hacluster\"}",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
