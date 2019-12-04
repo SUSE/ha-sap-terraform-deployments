@@ -21,7 +21,6 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.iscsisrv.id]
-  availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
@@ -137,7 +136,6 @@ resource "azurerm_virtual_machine" "monitoring" {
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.monitoring.0.id]
-  availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
