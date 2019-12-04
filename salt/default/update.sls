@@ -1,6 +1,6 @@
 {% if not grains.get('qa_mode') %}
 {% if grains['os_family'] == 'Suse' %}
-update_repos:
+update_system_packages:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys update
     - retry:
