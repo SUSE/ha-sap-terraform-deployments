@@ -233,7 +233,7 @@ resource "azurerm_public_ip" "iscsisrv" {
   }
 }
 
-resource "azurerm_network_interface" "clusternodes" {
+resource "azurerm_network_interface" "hana" {
   count                     = var.ninstances
   name                      = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location                  = var.az_region
@@ -245,7 +245,7 @@ resource "azurerm_network_interface" "clusternodes" {
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = element(azurerm_public_ip.clusternodes.*.id, count.index)
+    public_ip_address_id          = element(azurerm_public_ip.hana.*.id, count.index)
   }
 
   tags = {
@@ -253,7 +253,7 @@ resource "azurerm_network_interface" "clusternodes" {
   }
 }
 
-resource "azurerm_public_ip" "clusternodes" {
+resource "azurerm_public_ip" "hana" {
   count                   = var.ninstances
   name                    = "pip-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location                = var.az_region
@@ -266,9 +266,9 @@ resource "azurerm_public_ip" "clusternodes" {
   }
 }
 
-resource "azurerm_network_interface_backend_address_pool_association" "clusternodes" {
+resource "azurerm_network_interface_backend_address_pool_association" "hana" {
   count                   = var.ninstances
-  network_interface_id    = element(azurerm_network_interface.clusternodes.*.id, count.index)
+  network_interface_id    = element(azurerm_network_interface.hana.*.id, count.index)
   ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.mylb.id
 }

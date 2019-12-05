@@ -71,14 +71,14 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 }
 
-# Hana Cluster Nodes
+# Hana Nodes
 #
-resource "azurerm_virtual_machine" "clusternodes" {
+resource "azurerm_virtual_machine" "hana" {
   count                 = var.ninstances
   name                  = "vm${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
-  network_interface_ids = [element(azurerm_network_interface.clusternodes.*.id, count.index)]
+  network_interface_ids = [element(azurerm_network_interface.hana.*.id, count.index)]
   availability_set_id   = azurerm_availability_set.hana-availability-set.id
   vm_size               = var.instancetype
 
