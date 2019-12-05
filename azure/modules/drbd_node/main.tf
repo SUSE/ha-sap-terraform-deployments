@@ -4,7 +4,7 @@
 
 resource "azurerm_availability_set" "drbd-availability-set" {
   count                       = var.drbd_count > 0 ? 1 : 0
-  name                        = "drbd-availability-set"
+  name                        = "avset-drbd"
   location                    = var.az_region
   resource_group_name         = var.resource_group_name
   managed                     = "true"
@@ -19,12 +19,12 @@ resource "azurerm_availability_set" "drbd-availability-set" {
 
 resource "azurerm_lb" "drbd-load-balancer" {
   count               = var.drbd_count > 0 ? 1 : 0
-  name                = "drbd-load-balancer"
+  name                = "lb-drbd"
   location            = var.az_region
   resource_group_name = var.resource_group_name
 
   frontend_ip_configuration {
-    name                          = "drbd-frontend"
+    name                          = "lbfe-drbd"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = "10.74.1.201"
@@ -39,13 +39,13 @@ resource "azurerm_lb_backend_address_pool" "drbd-backend-pool" {
   count               = var.drbd_count > 0 ? 1 : 0
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.drbd-load-balancer[0].id
-  name                = "drbd-backend-pool"
+  name                = "lbbe-drbd"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "drbd-nodes" {
   count                   = var.drbd_count
   network_interface_id    = element(azurerm_network_interface.drbd.*.id, count.index)
-  ip_configuration_name   = "drbd-ip-configuration-${count.index}"
+  ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.drbd-backend-pool[0].id
 }
 
@@ -53,7 +53,7 @@ resource "azurerm_lb_probe" "drbd-health-probe" {
   count               = var.drbd_count > 0 ? 1 : 0
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.drbd-load-balancer[0].id
-  name                = "drbd-health-probe"
+  name                = "lbhp-drbd"
   protocol            = "Tcp"
   port                = 61000
   interval_in_seconds = 5
@@ -80,9 +80,9 @@ resource "azurerm_lb_rule" "drbd-lb-tcp-2049" {
   count                          = var.drbd_count > 0 ? 1 : 0
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.drbd-load-balancer[0].id
-  name                           = "drbd-lb-tcp-2049"
+  name                           = "lbrule-drbd-tcp-2049"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "drbd-frontend"
+  frontend_ip_configuration_name = "lbfe-drbd"
   frontend_port                  = 2049
   backend_port                   = 2049
   backend_address_pool_id        = azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id
@@ -95,9 +95,9 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
   count                          = var.drbd_count > 0 ? 1 : 0
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.drbd-load-balancer[0].id
-  name                           = "drbd-lb-udp-2049"
+  name                           = "lbrule-drbd-udp-2049"
   protocol                       = "Udp"
-  frontend_ip_configuration_name = "drbd-frontend"
+  frontend_ip_configuration_name = "lbfe-drbd"
   frontend_port                  = 2049
   backend_port                   = 2049
   backend_address_pool_id        = azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id
@@ -110,7 +110,7 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
 
 resource "azurerm_public_ip" "drbd" {
   count                   = var.drbd_count
-  name                    = "drbd-ip-${count.index}"
+  name                    = "pip-drbd0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -123,13 +123,13 @@ resource "azurerm_public_ip" "drbd" {
 
 resource "azurerm_network_interface" "drbd" {
   count                     = var.drbd_count
-  name                      = "drbd-nic-${count.index}"
+  name                      = "nic-drbd0${count.index + 1}"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
   network_security_group_id = var.sec_group_id
 
   ip_configuration {
-    name                          = "drbd-ip-configuration-${count.index}"
+    name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
@@ -165,7 +165,7 @@ resource "azurerm_image" "drbd-image" {
 
 resource "azurerm_virtual_machine" "drbd" {
   count                 = var.drbd_count
-  name                  = "drbd0${count.index + 1}"
+  name                  = "vm${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}"
   location              = var.az_region
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.drbd.*.id, count.index)]
@@ -173,7 +173,7 @@ resource "azurerm_virtual_machine" "drbd" {
   vm_size               = var.instancetype
 
   storage_os_disk {
-    name              = "drbd-os-disk-${count.index}"
+    name              = "disk-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -188,7 +188,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   storage_data_disk {
-    name              = "drbd-data-disk-${count.index}"
+    name              = "disk-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"

@@ -4,7 +4,7 @@
 
 # Network resources: Virtual Network, Subnet
 resource "azurerm_virtual_network" "mynet" {
-  name                = "mynet"
+  name                = "vnet-${lower(terraform.workspace)}"
   address_space       = ["10.74.0.0/16"]
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
@@ -15,7 +15,7 @@ resource "azurerm_virtual_network" "mynet" {
 }
 
 resource "azurerm_subnet" "mysubnet" {
-  name                 = "mysubnet"
+  name                 = "snet-default"
   resource_group_name  = azurerm_resource_group.myrg.name
   virtual_network_name = azurerm_virtual_network.mynet.name
   address_prefix       = "10.74.1.0/24"
@@ -34,12 +34,12 @@ resource "azurerm_subnet_route_table_association" "mysubnet" {
 # Load Balancer
 
 resource "azurerm_lb" "mylb" {
-  name                = "my-load-balancer"
+  name                = "lb-hana"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
 
   frontend_ip_configuration {
-    name                          = "mylb-frontend"
+    name                          = "lbfe-hana"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = "10.74.1.5"
@@ -53,13 +53,13 @@ resource "azurerm_lb" "mylb" {
 resource "azurerm_lb_backend_address_pool" "mylb" {
   resource_group_name = azurerm_resource_group.myrg.name
   loadbalancer_id     = azurerm_lb.mylb.id
-  name                = "my-backend-address-pool"
+  name                = "lbbe-hana"
 }
 
 resource "azurerm_lb_probe" "mylb" {
   resource_group_name = azurerm_resource_group.myrg.name
   loadbalancer_id     = azurerm_lb.mylb.id
-  name                = "my-hp"
+  name                = "lbhp-hana"
   protocol            = "Tcp"
   port                = 62503
   interval_in_seconds = 5
@@ -70,9 +70,9 @@ resource "azurerm_lb_probe" "mylb" {
 resource "azurerm_lb_rule" "lb_30313" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30313"
+  name                           = "lbrule-hana-tcp-30313"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30313
   backend_port                   = 30313
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -84,9 +84,9 @@ resource "azurerm_lb_rule" "lb_30313" {
 resource "azurerm_lb_rule" "lb_30314" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30314"
+  name                           = "lbrule-hana-tcp-30314"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30314
   backend_port                   = 30314
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -98,9 +98,9 @@ resource "azurerm_lb_rule" "lb_30314" {
 resource "azurerm_lb_rule" "lb_30340" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30340"
+  name                           = "lbrule-hana-tcp-30340"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30340
   backend_port                   = 30340
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -112,9 +112,9 @@ resource "azurerm_lb_rule" "lb_30340" {
 resource "azurerm_lb_rule" "lb_30341" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30341"
+  name                           = "lbrule-hana-tcp-30341"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30341
   backend_port                   = 30341
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -126,9 +126,9 @@ resource "azurerm_lb_rule" "lb_30341" {
 resource "azurerm_lb_rule" "lb_30342" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30342"
+  name                           = "lbrule-hana-tcp-30342"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30342
   backend_port                   = 30342
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -142,9 +142,9 @@ resource "azurerm_lb_rule" "lb_30342" {
 resource "azurerm_lb_rule" "lb_30315" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30315"
+  name                           = "lbrule-hana-tcp-30315"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30315
   backend_port                   = 30315
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -156,9 +156,9 @@ resource "azurerm_lb_rule" "lb_30315" {
 resource "azurerm_lb_rule" "lb_30317" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "hana-lb-30317"
+  name                           = "lbrule-hana-tcp-30317"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "mylb-frontend"
+  frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 30317
   backend_port                   = 30317
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
@@ -170,14 +170,14 @@ resource "azurerm_lb_rule" "lb_30317" {
 # NICs & Public IP resources
 
 resource "azurerm_network_interface" "monitoring" {
-  name                      = "monitoring-nic"
+  name                      = "nic-monitoring"
   count                     = var.monitoring_enabled == true ? 1 : 0
   location                  = var.az_region
   resource_group_name       = azurerm_resource_group.myrg.name
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
 
   ip_configuration {
-    name                          = "monitoring-nic"
+    name                          = "ipconf-primary"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
@@ -190,7 +190,7 @@ resource "azurerm_network_interface" "monitoring" {
 }
 
 resource "azurerm_public_ip" "monitoring" {
-  name                    = "monitoring-ip"
+  name                    = "pip-monitoring"
   count                   = var.monitoring_enabled == true ? 1 : 0
   location                = var.az_region
   resource_group_name     = azurerm_resource_group.myrg.name
@@ -203,13 +203,13 @@ resource "azurerm_public_ip" "monitoring" {
 }
 
 resource "azurerm_network_interface" "iscsisrv" {
-  name                      = "iscsisrv-nic"
+  name                      = "nic-iscsisrv"
   location                  = var.az_region
   resource_group_name       = azurerm_resource_group.myrg.name
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
 
   ip_configuration {
-    name                          = "MyNicConfiguration"
+    name                          = "ipconf-primary"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = "10.74.1.10"
@@ -222,7 +222,7 @@ resource "azurerm_network_interface" "iscsisrv" {
 }
 
 resource "azurerm_public_ip" "iscsisrv" {
-  name                    = "iscsisrv-ip"
+  name                    = "pip-iscsisrv"
   location                = var.az_region
   resource_group_name     = azurerm_resource_group.myrg.name
   allocation_method       = "Dynamic"
@@ -235,13 +235,13 @@ resource "azurerm_public_ip" "iscsisrv" {
 
 resource "azurerm_network_interface" "clusternodes" {
   count                     = var.ninstances
-  name                      = "clusternodes-nic-${count.index}"
+  name                      = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location                  = var.az_region
   resource_group_name       = azurerm_resource_group.myrg.name
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
 
   ip_configuration {
-    name                          = "MyNicConfiguration-${count.index}"
+    name                          = "ipconf-primary"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
@@ -255,7 +255,7 @@ resource "azurerm_network_interface" "clusternodes" {
 
 resource "azurerm_public_ip" "clusternodes" {
   count                   = var.ninstances
-  name                    = "clusternodes-ip-${count.index}"
+  name                    = "pip-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location                = var.az_region
   resource_group_name     = azurerm_resource_group.myrg.name
   allocation_method       = "Dynamic"
@@ -269,19 +269,19 @@ resource "azurerm_public_ip" "clusternodes" {
 resource "azurerm_network_interface_backend_address_pool_association" "clusternodes" {
   count                   = var.ninstances
   network_interface_id    = element(azurerm_network_interface.clusternodes.*.id, count.index)
-  ip_configuration_name   = "MyNicConfiguration-${count.index}"
+  ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.mylb.id
 }
 
 # Subnet route table
 
 resource "azurerm_route_table" "myroutes" {
-  name                = "myroutes"
+  name                = "route-${lower(terraform.workspace)}"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
 
   route {
-    name           = "routes"
+    name           = "default"
     address_prefix = "10.74.0.0/16"
     next_hop_type  = "vnetlocal"
   }
@@ -294,7 +294,7 @@ resource "azurerm_route_table" "myroutes" {
 # Security group
 
 resource "azurerm_network_security_group" "mysecgroup" {
-  name                = "mysecgroup"
+  name                = "nsg-${lower(terraform.workspace)}"
   location            = var.az_region
   resource_group_name = azurerm_resource_group.myrg.name
   security_rule {
