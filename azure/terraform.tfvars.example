@@ -4,6 +4,9 @@ instancetype = "Standard_E4s_v3"
 # Disk type for HANA
 hana_data_disk_type = "StandardSSD_LRS"
 
+# Disk size for HANA
+hana_data_disk_size = "60"
+
 # Caching used for HANA disk
 hana_data_disk_caching = "ReadWrite"
 
