@@ -10,7 +10,7 @@ resource "null_resource" "netweaver_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
 
   triggers = {
-    iscsi_id = join(",", azurerm_virtual_machine.netweaver.*.id)
+    netweaver_id = join(",", azurerm_virtual_machine.netweaver.*.id)
   }
 
   connection {
