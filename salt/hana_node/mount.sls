@@ -66,8 +66,8 @@ hana_data_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
       - cmd: hana_format_lv_azure
 
@@ -83,8 +83,8 @@ hana_log_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
       - cmd: hana_format_lv_azure
 
@@ -100,8 +100,8 @@ hana_shared_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
       - cmd: hana_format_lv_azure            
 
