@@ -154,6 +154,40 @@ variable "drbd_enabled" {
   default     = false
 }
 
+# Netweaver variables
+
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver cluster deployment"
+  default     = false
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_storage_account_name" {
+  description = "Azure storage account where SAP Netweaver installation files are stored"
+  type        = string
+}
+
+variable "netweaver_storage_account_key" {
+  description = "Azure storage account access key"
+  type        = string
+}
+
+variable "netweaver_storage_account" {
+  description = "Azure storage account path"
+  type        = string
+}
+
 # Specific QA variables
 
 variable "qa_mode" {

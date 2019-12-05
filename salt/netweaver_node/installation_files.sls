@@ -1,10 +1,4 @@
 {% if grains['provider'] == 'libvirt' %}
-nfs-client:
-  pkg.installed:
-    - retry:
-        attempts: 3
-        interval: 15
-
 mount_swpm:
   mount.mounted:
     - name: /netweaver_inst_media
@@ -14,4 +8,15 @@ mount_swpm:
     - persist: True
     - opts:
       - defaults
+
+{% elif grains['provider'] == 'azure' %}
+mount_swpm:
+  mount.mounted:
+    - name: /netweaver_inst_media
+    - device: {{ grains['storage_account_path'] }}
+    - fstype: cifs
+    - mkmnt: True
+    - persist: True
+    - opts:
+      - vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0777,file_mode=0777,sec=ntlmssp
 {% endif %}
