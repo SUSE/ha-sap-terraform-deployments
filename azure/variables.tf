@@ -176,16 +176,19 @@ variable "netweaver_virtual_ips" {
 variable "netweaver_storage_account_name" {
   description = "Azure storage account where SAP Netweaver installation files are stored"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_storage_account_key" {
   description = "Azure storage account access key"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
+  default     = ""
 }
 
 # Specific QA variables
