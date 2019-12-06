@@ -17,6 +17,8 @@ scrape_configs:
   # in a multi-cluster scenario, add another job name called
   #  hacluster-02
   - job_name: hana-cluster
+    scrape_interval: 30s
+    scrape_timeout: 30s
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
