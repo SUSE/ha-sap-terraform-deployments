@@ -32,7 +32,7 @@ workaround_susecloud_register:
   cmd.run:
     - name: |
         rm /etc/SUSEConnect && /
-        rm -f /etc/zypp/{repos,services,credentials}.d/* && /
+        rm -f $(ls /etc/zypp/{repos,services,credentials}.d/* | grep -v -e 'ha-factory' -e 'server_monitoring') && /
         rm -f /usr/lib/zypp/plugins/services/* && /
         sed -i '/^# Added by SMT reg/,+1d' /etc/hosts && /
         /usr/sbin/registercloudguest --force-new && /

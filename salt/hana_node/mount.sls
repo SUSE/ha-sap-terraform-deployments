@@ -9,26 +9,26 @@ parted:
 hana_lvm_pvcreate_lun0_azure:
   lvm.pv_present:
     - name: /dev/disk/azure/scsi1/lun0
-hana_lvm_pvcreate_lun1_azure:    
+hana_lvm_pvcreate_lun1_azure:
   lvm.pv_present:
     - name: /dev/disk/azure/scsi1/lun1
 hana_lvm_pvcreate_lun2_azure:
   lvm.pv_present:
-    - name: /dev/disk/azure/scsi1/lun2    
+    - name: /dev/disk/azure/scsi1/lun2
 
 # TODO: Allow VG creation wih more disks
 hana_lvm_vgcreate_lun0_azure:
   lvm.vg_present:
     - name: vg_hana_data
     - devices: /dev/disk/azure/scsi1/lun0
-hana_lvm_vgcreate_lun1_azure:    
+hana_lvm_vgcreate_lun1_azure:
   lvm.vg_present:
     - name: vg_hana_log
     - devices: /dev/disk/azure/scsi1/lun1
 hana_lvm_vgcreate_lun2_azure:
   lvm.vg_present:
     - name: vg_hana_shared
-    - devices: /dev/disk/azure/scsi1/lun2  
+    - devices: /dev/disk/azure/scsi1/lun2
 
 
 hana_data_lvm_lvcreate_azure:
@@ -41,7 +41,7 @@ hana_log_lvm_lvcreate_azure:
     - name: hana_log
     - vgname: vg_hana_log
     - extents: 100%FREE
-hana_shared_lvm_lvcreate_azure:  
+hana_shared_lvm_lvcreate_azure:
   lvm.lv_present:
     - name: hana_shared
     - vgname: vg_hana_shared
@@ -66,8 +66,8 @@ hana_data_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
       - cmd: hana_format_lv_azure
 
@@ -83,8 +83,8 @@ hana_log_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
       - cmd: hana_format_lv_azure
 
@@ -100,10 +100,10 @@ hana_shared_directory_mount_azure:
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
-    - opts:
-      - defaults
+    - opts: defaults,nofail
+    - pass_num: 2
     - require:
-      - cmd: hana_format_lv_azure            
+      - cmd: hana_format_lv_azure
 
 {% else %}
 
