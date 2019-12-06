@@ -25,6 +25,11 @@ variable "hana_data_disk_type" {
   default = "Standard_LRS"
 }
 
+variable "hana_data_disk_size" {
+  type    = string
+  default = "60"
+}
+
 variable "hana_data_disk_caching" {
   type    = string
   default = "ReadWrite"
