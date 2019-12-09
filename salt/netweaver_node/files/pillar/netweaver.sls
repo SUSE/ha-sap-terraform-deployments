@@ -14,6 +14,9 @@ netweaver:
   sidadm_user:
     uid: 1001
     gid: 1002
+  sid_adm_password: SuSE1234
+  sap_adm_password: SuSE1234
+  master_password: SuSE1234
   sapmnt_inst_media: {{ grains['netweaver_nfs_share'] }}
   swpm_folder: /netweaver_inst_media/SWPM_10_SP26_6
   sapexe_folder: /netweaver_inst_media/kernel_nw75_sar
@@ -38,7 +41,6 @@ netweaver:
       instance: '00'
       root_user: root
       root_password: linux
-      master_password: SuSE1234
       shared_disk_dev: /dev/vdb
       init_shared_disk: True
       sap_instance: ascs
@@ -49,7 +51,6 @@ netweaver:
       instance: '10'
       root_user: root
       root_password: linux
-      master_password: SuSE1234
       shared_disk_dev: /dev/vdb
       sap_instance: ers
 
@@ -59,7 +60,6 @@ netweaver:
       instance: '00'
       root_user: root
       root_password: linux
-      master_password: SuSE1234
       sap_instance: db
 
     - host: {{ grains['name_prefix'] }}03
@@ -69,7 +69,6 @@ netweaver:
       instance: '01'
       root_user: root
       root_password: linux
-      master_password: SuSE1234
       sap_instance: pas
 
     - host: {{ grains['name_prefix'] }}04
@@ -78,5 +77,4 @@ netweaver:
       instance: '02'
       root_user: root
       root_password: linux
-      master_password: SuSE1234
       sap_instance: aas
