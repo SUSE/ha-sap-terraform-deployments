@@ -61,7 +61,7 @@ resource "azurerm_lb_probe" "mylb" {
   loadbalancer_id     = azurerm_lb.mylb.id
   name                = "lbhp-hana"
   protocol            = "Tcp"
-  port                = 62503
+  port                = 62500
   interval_in_seconds = 5
   number_of_probes    = 2
 }
@@ -70,11 +70,11 @@ resource "azurerm_lb_probe" "mylb" {
 resource "azurerm_lb_rule" "lb_30313" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30313"
+  name                           = "lbrule-hana-tcp-30013"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30313
-  backend_port                   = 30313
+  frontend_port                  = 30013
+  backend_port                   = 30013
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -84,11 +84,11 @@ resource "azurerm_lb_rule" "lb_30313" {
 resource "azurerm_lb_rule" "lb_30314" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30314"
+  name                           = "lbrule-hana-tcp-30014"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30314
-  backend_port                   = 30314
+  frontend_port                  = 30014
+  backend_port                   = 30014
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -98,11 +98,11 @@ resource "azurerm_lb_rule" "lb_30314" {
 resource "azurerm_lb_rule" "lb_30340" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30340"
+  name                           = "lbrule-hana-tcp-30040"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30340
-  backend_port                   = 30340
+  frontend_port                  = 30040
+  backend_port                   = 30040
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -112,11 +112,11 @@ resource "azurerm_lb_rule" "lb_30340" {
 resource "azurerm_lb_rule" "lb_30341" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30341"
+  name                           = "lbrule-hana-tcp-30041"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30341
-  backend_port                   = 30341
+  frontend_port                  = 30041
+  backend_port                   = 30041
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -126,11 +126,11 @@ resource "azurerm_lb_rule" "lb_30341" {
 resource "azurerm_lb_rule" "lb_30342" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30342"
+  name                           = "lbrule-hana-tcp-30042"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30342
-  backend_port                   = 30342
+  frontend_port                  = 30042
+  backend_port                   = 30042
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -142,11 +142,11 @@ resource "azurerm_lb_rule" "lb_30342" {
 resource "azurerm_lb_rule" "lb_30315" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30315"
+  name                           = "lbrule-hana-tcp-30015"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30315
-  backend_port                   = 30315
+  frontend_port                  = 30015
+  backend_port                   = 30015
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -156,11 +156,11 @@ resource "azurerm_lb_rule" "lb_30315" {
 resource "azurerm_lb_rule" "lb_30317" {
   resource_group_name            = azurerm_resource_group.myrg.name
   loadbalancer_id                = azurerm_lb.mylb.id
-  name                           = "lbrule-hana-tcp-30317"
+  name                           = "lbrule-hana-tcp-30017"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30317
-  backend_port                   = 30317
+  frontend_port                  = 30017
+  backend_port                   = 30017
   backend_address_pool_id        = azurerm_lb_backend_address_pool.mylb.id
   probe_id                       = azurerm_lb_probe.mylb.id
   idle_timeout_in_minutes        = 30
@@ -234,11 +234,12 @@ resource "azurerm_public_ip" "iscsisrv" {
 }
 
 resource "azurerm_network_interface" "hana" {
-  count                     = var.ninstances
-  name                      = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
-  location                  = var.az_region
-  resource_group_name       = azurerm_resource_group.myrg.name
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
+  count                         = var.ninstances
+  name                          = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  location                      = var.az_region
+  resource_group_name           = azurerm_resource_group.myrg.name
+  network_security_group_id     = azurerm_network_security_group.mysecgroup.id
+  enable_accelerated_networking = true
 
   ip_configuration {
     name                          = "ipconf-primary"
