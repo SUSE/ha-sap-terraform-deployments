@@ -17,7 +17,7 @@ workaround_susecloud_register:
         interval: 15
     - onlyif: 'test -e /usr/sbin/registercloudguest'
 
-refresh_repos:
+refresh_repos_after_registration:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys refresh
     - retry:

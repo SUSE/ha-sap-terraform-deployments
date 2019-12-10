@@ -21,7 +21,7 @@ allow_all_vendor_changes:
     - text: solver.allowVendorChange = true
 {% endif %}
 
-refresh_repos:
+refresh_ha_factory_repos:
   cmd.run:
     - name: zypper --non-interactive --gpg-auto-import-keys refresh
     - requre:
