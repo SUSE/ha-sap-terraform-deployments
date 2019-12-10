@@ -17,6 +17,8 @@ scrape_configs:
   # in a multi-cluster scenario, add another job name called
   #  hacluster-02
   - job_name: hana-cluster
+    # The HANA scrapping follows a different scrapping time to reduce the execution load into the database
+    # This time was based on users feedback, but should be set accordingly with your environment needs.
     scrape_interval: 30s
     scrape_timeout: 30s
     static_configs:
