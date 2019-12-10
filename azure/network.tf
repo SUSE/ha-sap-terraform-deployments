@@ -234,11 +234,11 @@ resource "azurerm_public_ip" "iscsisrv" {
 }
 
 resource "azurerm_network_interface" "hana" {
-  count                     = var.ninstances
-  name                      = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
-  location                  = var.az_region
-  resource_group_name       = azurerm_resource_group.myrg.name
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
+  count                         = var.ninstances
+  name                          = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  location                      = var.az_region
+  resource_group_name           = azurerm_resource_group.myrg.name
+  network_security_group_id     = azurerm_network_security_group.mysecgroup.id
   enable_accelerated_networking = true
 
   ip_configuration {
