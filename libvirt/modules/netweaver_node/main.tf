@@ -36,7 +36,6 @@ resource "libvirt_domain" "netweaver_domain" {
   network_interface {
     wait_for_lease = false
     network_id     = var.network_id
-    hostname       = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
     addresses      = [element(var.host_ips, count.index)]
   }
 

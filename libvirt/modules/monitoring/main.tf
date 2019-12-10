@@ -31,7 +31,6 @@ resource "libvirt_domain" "monitoring_domain" {
   network_interface {
     wait_for_lease = false
     network_id     = var.network_id
-    hostname       = "${terraform.workspace}-${var.name}"
     addresses      = [var.monitoring_srv_ip]
   }
 
