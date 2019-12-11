@@ -104,6 +104,31 @@ variable "drbd_image_uri" {
   default = ""
 }
 
+variable "netweaver_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "netweaver_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "netweaver_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "netweaver_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "netweaver_image_uri" {
+  type    = string
+  default = ""
+}
+
 resource "azurerm_image" "sles4sap" {
   count               = var.sles4sap_uri != "" ? 1 : 0
   name                = "BVSles4SapImg"

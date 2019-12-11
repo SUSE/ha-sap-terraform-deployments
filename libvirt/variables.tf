@@ -65,6 +65,12 @@ variable "nw_ips" {
   default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
 }
 
+variable "nw_virtual_ips" {
+  description = "IP addresses of the netweaver nodes"
+  type        = list(string)
+  default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
+}
+
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string

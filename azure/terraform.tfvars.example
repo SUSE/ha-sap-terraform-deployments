@@ -137,6 +137,15 @@ monitoring_srv_ip = "10.74.1.13"
 # Enable drbd cluster
 #drbd_enabled = true
 
+# Netweaver variables
+
+#netweaver_enabled = true
+#netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
+#netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+#netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
+#netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
+#netweaver_storage_account = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/nw/installation/master"
+
 # QA variables
 
 # Define if the deployment is using for testing purpose
