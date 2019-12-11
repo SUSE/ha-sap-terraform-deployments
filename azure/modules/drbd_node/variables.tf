@@ -24,6 +24,12 @@ variable "drbd_count" {
   default = "2"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "drbd"
+}
+
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)

@@ -83,12 +83,12 @@ resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.ninstances : 0
 
   triggers = {
-    cluster_instance_ids = join(",", azurerm_virtual_machine.clusternodes.*.id)
+    cluster_instance_ids = join(",", azurerm_virtual_machine.hana.*.id)
   }
 
   connection {
     host = element(
-      data.azurerm_public_ip.clusternodes.*.ip_address,
+      data.azurerm_public_ip.hana.*.ip_address,
       count.index,
     )
     type        = "ssh"
@@ -112,12 +112,12 @@ provider: azure
 role: hana_node
 devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
-name_prefix: ${terraform.workspace}-${var.name}
+name_prefix: vm${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
+hostname: vm${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdd
+sbd_disk_device: /dev/sdf
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
@@ -180,8 +180,8 @@ resource "null_resource" "monitoring_provisioner" {
     content = <<EOF
 provider: azure
 role: monitoring
-name_prefix: ${terraform.workspace}-monitoring
-hostname: ${terraform.workspace}-monitoring
+name_prefix: vmmonitoring
+hostname: "vmmonitoring"
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
