@@ -50,6 +50,11 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "virtual_host_ips" {
+  description = "virtual host ip addresses to set to the nodes"
+  type        = list(string)
+}
+
 variable "shared_disk_id" {
   description = "ASCS and ERS shared disk volume id"
   type        = string
@@ -63,6 +68,30 @@ variable "netweaver_inst_media" {
 variable "netweaver_nfs_share" {
   description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
   type        = string
+}
+
+variable "ascs_instance_number" {
+  description = "ASCS instance number"
+  type        = string
+  default     = "00"
+}
+
+variable "ers_instance_number" {
+  description = "ERS instance number"
+  type        = string
+  default     = "10"
+}
+
+variable "pas_instance_number" {
+  description = "PAS instance number"
+  type        = string
+  default     = "01"
+}
+
+variable "aas_instance_number" {
+  description = "AAS instance number"
+  type        = string
+  default     = "02"
 }
 
 variable "provisioner" {
