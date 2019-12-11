@@ -35,6 +35,11 @@ variable "hana_data_disk_caching" {
   default = "ReadWrite"
 }
 
+variable "hana_enable_accelerated_networking" {
+  description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  default     = true
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
