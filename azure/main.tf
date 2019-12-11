@@ -2,7 +2,7 @@ module "drbd_node" {
   source                 = "./modules/drbd_node"
   az_region              = var.az_region
   drbd_count             = var.drbd_enabled == true ? 2 : 0
-  instancetype           = "Standard_B1ms"
+  instancetype           = "Standard_D2s_v3"
   drbd_image_uri         = var.drbd_image_uri
   drbd_public_publisher  = var.drbd_public_publisher
   drbd_public_offer      = var.drbd_public_offer

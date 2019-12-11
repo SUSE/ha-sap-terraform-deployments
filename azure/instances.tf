@@ -21,7 +21,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.iscsisrv.id]
-  vm_size               = "Standard_B1ms"
+  vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
     name              = "disk-iscsisrv-Os"
@@ -154,7 +154,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.monitoring.0.id]
-  vm_size               = "Standard_B1ms"
+  vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
     name              = "disk-monitoring-Os"
