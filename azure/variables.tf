@@ -35,6 +35,12 @@ variable "hana_data_disk_caching" {
   default = "ReadWrite"
 }
 
+variable "hana_enable_accelerated_networking" {
+  description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
+  default     = true
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -166,6 +172,28 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_vm_size" {
+  description = "VM size for the Netweaver machines. Default to Standard_D2s_v3"
+  type        = string
+  default     = "Standard_D4s_v3"
+}
+
+variable "netweaver_data_disk_type" {
+  type    = string
+  default = "Standard_LRS"
+}
+
+variable "netweaver_data_disk_size" {
+  description = "Size of the Netweaver data disks, informed in GB"
+  type        = string
+  default     = "60"
+}
+
+variable "netweaver_data_disk_caching" {
+  type    = string
+  default = "ReadWrite"
+}
+
 variable "netweaver_ips" {
   description = "ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
@@ -194,6 +222,12 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
+}
+
+variable "netweaver_enable_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables
