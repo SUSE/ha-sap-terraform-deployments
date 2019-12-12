@@ -68,7 +68,7 @@
     },
     {
       "columns": [],
-      "datasource": "$data_source",
+      "datasource": "default",
       "description": "Alerts raised from the HANA database internal alerting system",
       "fontSize": "100%",
       "gridPos": {
