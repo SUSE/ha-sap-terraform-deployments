@@ -35,6 +35,7 @@ variable "data_disk_type" {
 }
 
 variable "data_disk_size" {
+  description = "Size of the Netweaver data disks, informed in GB"
   type    = string
   default = "60"
 }
@@ -90,6 +91,7 @@ variable "storage_account_path" {
 
 variable "enable_accelerated_networking" {
   description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type = bool
   default     = true
 }
 

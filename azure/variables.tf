@@ -37,6 +37,7 @@ variable "hana_data_disk_caching" {
 
 variable "hana_enable_accelerated_networking" {
   description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
   default     = true
 }
 
@@ -183,8 +184,9 @@ variable "netweaver_data_disk_type" {
 }
 
 variable "netweaver_data_disk_size" {
-  type    = string
-  default = "60"
+  description = "Size of the Netweaver data disks, informed in GB"
+  type        = string
+  default     = "60"
 }
 
 variable "netweaver_data_disk_caching" {
@@ -224,6 +226,7 @@ variable "netweaver_storage_account" {
 
 variable "netweaver_enable_accelerated_networking" {
   description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
   default     = true
 }
 
