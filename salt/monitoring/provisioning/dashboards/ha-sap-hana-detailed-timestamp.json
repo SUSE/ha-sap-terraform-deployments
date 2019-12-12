@@ -95,35 +95,15 @@
         },
         {
           "alias": "Alert Details",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
           "pattern": "alert_details",
           "thresholds": [],
-          "type": "string",
-          "unit": "short"
+          "type": "string"
         },
         {
           "alias": "User Action",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
           "pattern": "alert_useraction",
           "thresholds": [],
-          "type": "string",
-          "unit": "short"
+          "type": "string"
         },
         {
           "alias": "Rating",
@@ -133,7 +113,6 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(245, 54, 54, 0.9)"
           ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
           "mappingType": 1,
           "pattern": "Value",
@@ -145,18 +124,8 @@
           "unit": "short"
         },
         {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
           "pattern": "/.*/",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
+          "type": "hidden"
         }
       ],
       "targets": [
