@@ -335,7 +335,7 @@ resource "azurerm_network_interface" "netweaver" {
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   network_security_group_id     = var.sec_group_id
-  enable_accelerated_networking = true
+  enable_accelerated_networking = var.enable_accelerated_networking
 
   ip_configuration {
     name                          = "ipconf-primary"
@@ -379,7 +379,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.netweaver.*.id, count.index)]
   availability_set_id   = azurerm_availability_set.netweaver-availability-set[0].id
-  vm_size               = "Standard_D2s_v3"
+  vm_size               = var.vm_size
 
   storage_os_disk {
     name              = "disk-netweaver0${count.index + 1}-Os"
@@ -398,11 +398,11 @@ resource "azurerm_virtual_machine" "netweaver" {
 
   storage_data_disk {
     name              = "disk-netweaver0${count.index + 1}-Data01"
-    caching           = "ReadWrite"
+    caching           = var.data_disk_caching
     create_option     = "Empty"
-    disk_size_gb      = "10"
+    disk_size_gb      = var.data_disk_size
     lun               = "0"
-    managed_disk_type = "Standard_LRS"
+    managed_disk_type = var.data_disk_type
   }
 
   os_profile {
