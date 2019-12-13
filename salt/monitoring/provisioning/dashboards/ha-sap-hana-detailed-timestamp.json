@@ -63,213 +63,84 @@
       },
       "id": 94,
       "panels": [],
-      "title": "HA Cluster",
+      "title": "HANA Alerts",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "fillGradient": 0,
+      "columns": [],
+      "datasource": "default",
+      "description": "Alerts raised from the HANA database internal alerting system",
+      "fontSize": "100%",
       "gridPos": {
-        "h": 9,
-        "w": 13,
+        "h": 6,
+        "w": 24,
         "x": 0,
         "y": 1
       },
-      "id": 92,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
+      "id": 99,
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 3,
+        "desc": false
       },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
+      "styles": [
         {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"sbd.service\",state=\"active\"}",
-          "legendFormat": "sbd",
-          "refId": "A"
+          "alias": "Alert Timestamp",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "alert_timestamp",
+          "type": "date"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"pacemaker.service\",state=\"active\"}",
-          "legendFormat": "pacemaker",
-          "refId": "B"
+          "alias": "Alert Details",
+          "pattern": "alert_details",
+          "thresholds": [],
+          "type": "string"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"corosync.service\",state=\"active\"}",
-          "legendFormat": "corosync",
-          "refId": "C"
+          "alias": "User Action",
+          "pattern": "alert_useraction",
+          "thresholds": [],
+          "type": "string"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"prometheus-node_exporter.service\",state=\"active\"}",
-          "legendFormat": "node-exporter",
-          "refId": "D"
+          "alias": "Rating",
+          "colorMode": "row",
+          "colors": [
+            "#FADE2A",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "Value",
+          "thresholds": [
+            "2",
+            "5"
+          ],
+          "type": "number",
+          "unit": "short"
         },
         {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"prometheus-ha_cluster_exporter.service\",state=\"active\"}",
-          "legendFormat": "ha-cluster-exporter",
-          "refId": "E"
-        },
-        {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hawk.service\",state=\"active\"}",
-          "legendFormat": "hawk",
-          "refId": "F"
-        },
-        {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hawk-backend.service\",state=\"active\"}",
-          "legendFormat": "hawk-backend",
-          "refId": "G"
-        },
-        {
-          "expr": "node_systemd_unit_state{instance=~\"$node_ip:9100\",name=\"hanadb_exporter@prd_00.service\",state=\"active\"}",
-          "legendFormat": "hanadb-exporter",
-          "refId": "H"
+          "pattern": "/.*/",
+          "type": "hidden"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Cluster services",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 11,
-        "x": 13,
-        "y": 1
-      },
-      "id": 96,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:9002\"}",
-          "legendFormat": "ring errors",
+          "expr": "sort_desc(hanadb_alerts_current_rating{host=~\"$node_name\",sid=~\"$sid\",insnr=~\"$instance_number\",database_name=~\"$database_name\"}) ",
+          "format": "table",
+          "instant": true,
           "refId": "A"
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Corosync Ring errors",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "HANA Database Alerts",
+      "transform": "table",
+      "type": "table"
     },
     {
       "collapsed": false,
