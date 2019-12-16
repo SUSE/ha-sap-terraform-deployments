@@ -124,6 +124,7 @@
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -144,7 +145,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (job) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (job)",
+          "expr": "avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (job,instance) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (job,instance)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
@@ -153,7 +154,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Avg Cluster Network Traffic",
+      "title": "Node Network Traffic",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -209,6 +210,7 @@
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -229,7 +231,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (job)",
+          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (job,instance)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
@@ -238,7 +240,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Avg Cluster Memory Consumption",
+      "title": "Node Memory Consumption",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -324,7 +326,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Nodes",
+      "title": "Up Nodes over time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -376,10 +378,12 @@
       },
       "id": 8,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -400,7 +404,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg (sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, job, cpu)) by (job)",
+          "expr": "avg(sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, job, cpu)) by (job,instance)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
@@ -409,7 +413,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Avg Cluster CPU Load",
+      "title": "Node CPU Load",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -465,6 +469,7 @@
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -485,8 +490,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (job)",
-          "legendFormat": "{{job}}",
+          "expr": "avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (job,instance,device)",
+          "legendFormat": "{{job}} {{device}}",
           "refId": "A"
         }
       ],
@@ -494,7 +499,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Avg Cluster Storage Consumption",
+      "title": "Node Storage Consumption",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -608,7 +613,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Online Pacemaker nodes",
+      "title": "Online Pacemaker Nodes",
       "type": "gauge"
     },
     {
@@ -662,7 +667,56 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Active resources",
+      "title": "Active Resources",
+      "type": "gauge"
+    },
+    {
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 14
+      },
+      "id": 27,
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ],
+            "unit": "percentunit"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "count(ha_cluster_sbd_device_status == 1) by (job) / count(ha_cluster_sbd_device_status) by (job) ",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Healthy SBD Devices",
       "type": "gauge"
     },
     {
@@ -719,7 +773,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Online nodes over time",
+      "title": "Online Pacemaker Nodes over time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -806,7 +860,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active resources over time",
+      "title": "Active Resources over time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -843,9 +897,79 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "cacheTimeout": null,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 20
+      },
+      "id": 25,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "from": "",
+                "id": 1,
+                "operator": "",
+                "text": "OK",
+                "to": "",
+                "type": 1,
+                "value": "1"
+              },
+              {
+                "from": "",
+                "id": 2,
+                "operator": "",
+                "text": "KO",
+                "to": "",
+                "type": 1,
+                "value": "0"
+              }
+            ],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ],
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "sum(ha_cluster_corosync_quorate) by (job) / count(ha_cluster_corosync_quorate) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Corosync Quorum",
+      "type": "gauge"
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
