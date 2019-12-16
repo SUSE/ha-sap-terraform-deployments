@@ -67,7 +67,7 @@
           ],
           "defaults": {
             "mappings": [],
-            "max": 4,
+            "max": 1,
             "min": 0,
             "thresholds": [
               {
@@ -76,13 +76,14 @@
               },
               {
                 "color": "#EAB839",
-                "value": 1
+                "value": 0.5
               },
               {
                 "color": "green",
-                "value": 2
+                "value": 1
               }
-            ]
+            ],
+            "unit": "percentunit"
           },
           "override": {},
           "values": false
@@ -94,7 +95,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "sum(up{instance=~\".*:9100\"}) by (job)",
+          "expr": "count(up{instance=~\".*:9100\"} == 1) by (job) / count(up{instance=~\".*:9100\"}) by (job)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
@@ -560,7 +561,7 @@
           ],
           "defaults": {
             "mappings": [],
-            "max": 2,
+            "max": 1,
             "min": 0,
             "thresholds": [
               {
@@ -569,15 +570,15 @@
               },
               {
                 "color": "#EAB839",
-                "value": 1
+                "value": 0.5
               },
               {
                 "color": "green",
-                "value": 2
+                "value": 1
               }
             ],
             "title": "$__series_name",
-            "unit": "short"
+            "unit": "percentunit"
           },
           "override": {},
           "values": false
@@ -598,7 +599,7 @@
       },
       "targets": [
         {
-          "expr": "max(sum(ha_cluster_pacemaker_nodes{status=\"online\"} or up == 0) by (instance, job)) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_nodes) by (node,job)) by (job) / count(up{instance=~\".*:9002\"}) by (job)",
           "hide": false,
           "instant": false,
           "legendFormat": "{{job}}",
@@ -707,7 +708,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "max(sum(ha_cluster_pacemaker_nodes{status=\"online\"} or up == 0) by (instance, job)) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (node,job)) by (job)",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{job}}",
