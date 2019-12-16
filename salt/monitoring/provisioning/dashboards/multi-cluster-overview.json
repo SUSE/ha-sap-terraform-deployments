@@ -831,6 +831,7 @@
         "current": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -851,8 +852,9 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "min(count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job,instance))  by (job) / max(count(ha_cluster_pacemaker_resources) by (job,instance)) by (job)",
-          "legendFormat": "{{job}}",
+          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (node,job) / count(count(ha_cluster_pacemaker_resources) by (node,instance,job)) by (node,job)",
+          "interval": "",
+          "legendFormat": "{{node}}",
           "refId": "A"
         }
       ],
@@ -860,7 +862,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active Resources over time",
+      "title": "Active Resources per Node over time ",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -877,10 +879,10 @@
       "yaxes": [
         {
           "decimals": null,
-          "format": "percentunit",
+          "format": "short",
           "label": null,
           "logBase": 1,
-          "max": "1",
+          "max": null,
           "min": null,
           "show": true
         },
@@ -888,9 +890,9 @@
           "format": "short",
           "label": null,
           "logBase": 1,
-          "max": "1",
+          "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
