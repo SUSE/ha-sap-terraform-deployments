@@ -48,7 +48,6 @@ cluster:
         {% else %}
         virtual_ip_mask: 24
         {% endif %}
-        platform: {{ grains['provider'] }}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}
