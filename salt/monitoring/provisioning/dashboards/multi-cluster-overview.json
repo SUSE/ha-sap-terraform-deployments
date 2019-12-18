@@ -604,7 +604,7 @@
       },
       "targets": [
         {
-          "expr": "count(count(ha_cluster_pacemaker_nodes) by (node,job)) by (job) / count(up{instance=~\".*:9002\"}) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (node,job)) by (job) / (count(ha_cluster_pacemaker_nodes_total) by (job))",
           "hide": false,
           "instant": false,
           "legendFormat": "{{job}}",
@@ -681,7 +681,7 @@
       "options": {
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -710,6 +710,7 @@
       "targets": [
         {
           "expr": "count(ha_cluster_sbd_device_status == 1) by (job) / count(ha_cluster_sbd_device_status) by (job) ",
+          "instant": false,
           "legendFormat": "{{job}}",
           "refId": "A"
         }
@@ -878,7 +879,93 @@
       },
       "yaxes": [
         {
-          "decimals": null,
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 20
+      },
+      "id": 29,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "count(ha_cluster_sbd_device_status == 1) by (job) / count(ha_cluster_sbd_devices_total) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Healthy SBD devices over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -905,8 +992,8 @@
       "gridPos": {
         "h": 6,
         "w": 8,
-        "x": 16,
-        "y": 20
+        "x": 0,
+        "y": 26
       },
       "id": 25,
       "links": [],
@@ -960,18 +1047,104 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "sum(ha_cluster_corosync_quorate) by (job) / count(ha_cluster_corosync_quorate) by (job)",
+          "expr": "count(ha_cluster_corosync_quorate == 1) by (job) / count(ha_cluster_corosync_quorate) by (job)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Corosync Quorum",
+      "title": "Corosync Quorate",
       "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 32
+      },
+      "id": 31,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(ha_cluster_corosync_quorate) by (job) / count(ha_cluster_corosync_quorate) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Corosync Quorate over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": "1",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
@@ -998,6 +1171,6 @@
   },
   "timezone": "",
   "title": "Multi-Cluster Overview",
-  "uid": "5b0v3y-Wz",
-  "version": 1
+  "uid": "5b0v3y-Wz1",
+  "version": 3
 }
