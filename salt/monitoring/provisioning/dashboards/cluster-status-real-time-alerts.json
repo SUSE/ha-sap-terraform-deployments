@@ -56,7 +56,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1574253832881,
+  "iteration": 1576677137053,
   "links": [],
   "panels": [
     {
@@ -377,21 +377,25 @@
       "targets": [
         {
           "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\",type=\"expected_votes\"}",
+          "instant": true,
           "legendFormat": "Expected votes",
           "refId": "A"
         },
         {
           "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\",type=\"highest_expected\"}",
+          "instant": true,
           "legendFormat": "Highest expected votes",
           "refId": "B"
         },
         {
           "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\", type=\"total_votes\"}",
+          "instant": true,
           "legendFormat": "Total votes",
           "refId": "C"
         },
         {
           "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\", type=\"quorum\"}",
+          "instant": true,
           "legendFormat": "Quorum",
           "refId": "D"
         }
@@ -465,6 +469,7 @@
       "targets": [
         {
           "expr": "ha_cluster_corosync_quorate{instance=~\"$node_ip:\\\\d+\"}",
+          "instant": true,
           "refId": "A"
         }
       ],
@@ -724,6 +729,7 @@
       "targets": [
         {
           "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:\\\\d+\"}",
+          "instant": true,
           "refId": "A"
         }
       ],
@@ -1332,7 +1338,6 @@
           "expr": "ha_cluster_sbd_device_status{instance=~\"$node_ip:\\\\d+\"}",
           "format": "table",
           "instant": true,
-          "legendFormat": "SBD device vdc  status",
           "refId": "A"
         }
       ],
@@ -1801,6 +1806,7 @@
     "list": [
       {
         "current": {
+          "selected": true,
           "text": "Prometheus",
           "value": "Prometheus"
         },
@@ -1885,7 +1891,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1916,5 +1922,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 7
+  "version": 1
 }
