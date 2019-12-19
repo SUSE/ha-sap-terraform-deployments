@@ -659,7 +659,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "min(count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job,instance))  by (job) / max(count(ha_cluster_pacemaker_resources) by (job,instance)) by (job)",
+          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job) / sum(ha_cluster_pacemaker_resources_total) by (job)",
           "interval": "",
           "legendFormat": "{{job}}",
           "refId": "A"
@@ -1172,5 +1172,5 @@
   "timezone": "",
   "title": "Multi-Cluster Overview",
   "uid": "5b0v3y-Wz1",
-  "version": 3
+  "version": 1
 }
