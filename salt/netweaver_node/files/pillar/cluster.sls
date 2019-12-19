@@ -35,7 +35,6 @@ cluster:
     template:
       source: /usr/share/salt-formulas/states/netweaver/templates/cluster_resources.j2
       parameters:
-        platform: {{ grains['provider'] }}
         sid: {{ netweaver.netweaver.nodes[0].sid }}
         ascs_instance: {{ grains['ascs_instance_number'] }}
         ers_instance: {{ grains['ers_instance_number'] }}

@@ -21,6 +21,5 @@ cluster:
         instance: "00"
         virtual_ip: 10.0.1.50
         virtual_ip_mask: 16
-        platform: aws
         prefer_takeover: true
         auto_register: false
