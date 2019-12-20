@@ -16,6 +16,14 @@ groups:
     annotations:
       summary: Slave SAP-HANA resource absent
 
+  - alert: sap-hana-internal-alerts
+    expr: hanadb_alerts_current_rating > 3
+    labels:
+      severity: page
+    annotations:
+      summary: "HANA Internal alert raised for SID {{ $labels.sid }} InsNr {{ $labels.insnr }} DBName {{ $labels.database_name }}"
+      description: "Alert Details: {{ $labels.alert_details }} User Action: {{ $labels.alert_useraction }}"
+
 # ha cluster alerts
 - name: cluster-resources-monitoring
   rules:

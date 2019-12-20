@@ -239,7 +239,7 @@ resource "azurerm_network_interface" "hana" {
   location                      = var.az_region
   resource_group_name           = azurerm_resource_group.myrg.name
   network_security_group_id     = azurerm_network_security_group.mysecgroup.id
-  enable_accelerated_networking = true
+  enable_accelerated_networking = var.hana_enable_accelerated_networking
 
   ip_configuration {
     name                          = "ipconf-primary"

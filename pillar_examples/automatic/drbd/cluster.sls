@@ -34,7 +34,6 @@ cluster:
       parameters:
         virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.201
         virtual_ip_mask: 24
-        platform: {{ grains['provider'] }}
         {% if grains['provider']== "azure" %}
         probe: 61000
         {% endif %}

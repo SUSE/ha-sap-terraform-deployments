@@ -1,4 +1,5 @@
 {% set data = pillar.cluster.configure.template.parameters %}
+{% set cloud_provider = grains['cloud_provider'] %}
 {% set drbd = salt['pillar.get']('drbd', merge=True) %}
 {% set nfsid = 1 %}
 
@@ -39,7 +40,7 @@ primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
 primitive vip-{{ res.name }}-nfs IPaddr2 \
         params ip={{ res.virtual_ip }} cidr_netmask=24 op monitor interval=10 timeout=20
 
-{% if data.platform == "azure" %}
+{% if cloud_provider == "microsoft-azure" %}
 primitive nc_{{ res.name }}_nfs anything \
   params binfile="/usr/bin/socat" cmdline_options="-U TCP-LISTEN:{{ data.probe }},backlog=10,fork,reuseaddr /dev/null" \
   op monitor timeout=20s interval=10 depth=0
@@ -50,7 +51,7 @@ primitive exportfs_work_{{ res.name }} exportfs \
         options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
         op monitor interval=30s
 
-group g-nfs_{{ res.name }} fs_{{ res.name }} test-IP_{{ res.name }} exportfs_work_{{ res.name }} {% if data.platform == "azure" %} nc_{{ res.name }}_nfs {% endif %}
+group g-nfs_{{ res.name }} fs_{{ res.name }} test-IP_{{ res.name }} exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
 
 order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
   ms_{{ res.name }}:promote g-nfs_{{ res.name }}:start
