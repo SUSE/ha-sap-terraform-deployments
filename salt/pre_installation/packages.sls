@@ -8,7 +8,7 @@ iscsi-formula:
 {% if grains.get('devel_mode') %}
 update_systems_packages_from_devel:
   cmd.run:
-    - name: zypper --non-interactive --gpg-auto-import-keys update
+    - name: zypper --non-interactive --gpg-auto-import-keys update --auto-agree-with-licenses
     - retry:
         attempts: 3
         interval: 15
