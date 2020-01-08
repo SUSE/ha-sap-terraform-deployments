@@ -1,7 +1,4 @@
 include:
-{% if grains['provider'] == 'libvirt' %}
-  - default.minimal
-{% endif %}
   - default.hostname
 {% if grains['os_family'] == 'Suse' %}
   - default.registration
