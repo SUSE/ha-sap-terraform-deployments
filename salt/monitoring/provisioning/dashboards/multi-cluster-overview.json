@@ -146,8 +146,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, job, cpu)) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "avg(sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, cpu)) by (instance) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
@@ -232,8 +232,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (instance) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
@@ -404,8 +404,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (job,instance) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "(avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (instance) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (instance)) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
@@ -490,8 +490,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (job,instance,device)",
-          "legendFormat": "{{job}} {{device}}",
+          "expr": "(avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (instance,device)) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}} {{device}}",
           "refId": "A"
         }
       ],
@@ -1172,5 +1172,5 @@
   "timezone": "",
   "title": "Multi-Cluster Overview",
   "uid": "5b0v3y-Wz1",
-  "version": 1
+  "version": 2
 }
