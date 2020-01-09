@@ -1,5 +1,4 @@
 include:
-  - iscsi_srv.registration
   - iscsi_srv.parted
   - iscsi_srv.iscsi_kernel_mod
   - iscsi.target

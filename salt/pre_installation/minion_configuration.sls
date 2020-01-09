@@ -25,8 +25,3 @@ minion_service:
   service.dead:
     - name: salt-minion
     - enable: False
-
-minion_id:
-  file.managed:
-    - name: /etc/salt/minion_id
-    - contents: {{ grains['hostname'] }}.{{ grains['network_domain'] }}
