@@ -595,8 +595,8 @@
     {
       "cacheTimeout": null,
       "gridPos": {
-        "h": 6,
-        "w": 8,
+        "h": 4,
+        "w": 6,
         "x": 0,
         "y": 14
       },
@@ -661,9 +661,9 @@
     },
     {
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 8,
+        "h": 4,
+        "w": 6,
+        "x": 6,
         "y": 14
       },
       "id": 18,
@@ -715,9 +715,9 @@
     },
     {
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 16,
+        "h": 4,
+        "w": 6,
+        "x": 12,
         "y": 14
       },
       "id": 27,
@@ -764,6 +764,76 @@
       "type": "gauge"
     },
     {
+      "cacheTimeout": null,
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 14
+      },
+      "id": 25,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "from": "",
+                "id": 1,
+                "operator": "",
+                "text": "OK",
+                "to": "",
+                "type": 1,
+                "value": "1"
+              },
+              {
+                "from": "",
+                "id": 2,
+                "operator": "",
+                "text": "KO",
+                "to": "",
+                "type": 1,
+                "value": "0"
+              }
+            ],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ],
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "count(ha_cluster_corosync_quorate == 1) by (job) / count(ha_cluster_corosync_quorate) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Corosync Quorate",
+      "type": "gauge"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -772,9 +842,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
+        "w": 6,
         "x": 0,
-        "y": 20
+        "y": 18
       },
       "hideTimeOverride": false,
       "id": 4,
@@ -865,9 +935,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 8,
-        "y": 20
+        "w": 6,
+        "x": 6,
+        "y": 18
       },
       "id": 20,
       "legend": {
@@ -953,9 +1023,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 16,
-        "y": 20
+        "w": 6,
+        "x": 12,
+        "y": 18
       },
       "id": 29,
       "legend": {
@@ -1031,76 +1101,6 @@
       }
     },
     {
-      "cacheTimeout": null,
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 26
-      },
-      "id": 25,
-      "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "OK",
-                "to": "",
-                "type": 1,
-                "value": "1"
-              },
-              {
-                "from": "",
-                "id": 2,
-                "operator": "",
-                "text": "KO",
-                "to": "",
-                "type": 1,
-                "value": "0"
-              }
-            ],
-            "max": 1,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ],
-            "unit": "none"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_corosync_quorate == 1) by (job) / count(ha_cluster_corosync_quorate) by (job)",
-          "legendFormat": "{{job}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Corosync Quorate",
-      "type": "gauge"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -1109,9 +1109,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 32
+        "w": 6,
+        "x": 18,
+        "y": 18
       },
       "id": 31,
       "legend": {
@@ -1215,5 +1215,5 @@
   "timezone": "",
   "title": "Multi-Cluster Overview",
   "uid": "5b0v3y-Wz1",
-  "version": 3
+  "version": 6
 }
