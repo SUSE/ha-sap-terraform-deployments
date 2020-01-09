@@ -137,6 +137,18 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
+variable "cluster_ssh_pub" {
+  description = "path for the public key needed by the cluster"
+  type        = string
+  default     = ""
+}
+
+variable "cluster_ssh_key" {
+  description = "path for the private key needed by the cluster"
+  type        = string
+  default     = ""
+}
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}

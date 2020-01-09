@@ -77,6 +77,8 @@ module "hana_node" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  cluster_ssh_pub        = var.cluster_ssh_pub
+  cluster_ssh_key        = var.cluster_ssh_key
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   qa_mode                = var.qa_mode
   hwcct                  = var.hwcct
@@ -111,6 +113,8 @@ module "drbd_node" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  cluster_ssh_pub        = var.cluster_ssh_pub
+  cluster_ssh_key        = var.cluster_ssh_key
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   devel_mode             = var.devel_mode
   provisioner            = var.provisioner
@@ -170,6 +174,8 @@ module "netweaver_node" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  cluster_ssh_pub        = var.cluster_ssh_pub
+  cluster_ssh_key        = var.cluster_ssh_key
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background

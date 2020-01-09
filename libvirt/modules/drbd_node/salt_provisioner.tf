@@ -45,6 +45,8 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
+cluster_ssh_pub:  ${var.cluster_ssh_pub}
+cluster_ssh_key: ${var.cluster_ssh_key}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 provider: libvirt
