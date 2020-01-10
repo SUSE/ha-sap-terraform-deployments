@@ -1,3 +1,10 @@
+{% if grains.get('devel_mode') %}
+allow_all_vendor_changes:
+  file.append:
+    - name: /etc/zypp/zypp.conf
+    - text: solver.allowVendorChange = true
+{% endif %}
+
 ha-factory-repo:
   pkgrepo.managed:
     - name: ha-factory
@@ -13,16 +20,3 @@ ha-factory-repo:
     - retry:
         attempts: 3
         interval: 15
-
-{% if grains.get('devel_mode') %}
-allow_all_vendor_changes:
-  file.append:
-    - name: /etc/zypp/zypp.conf
-    - text: solver.allowVendorChange = true
-{% endif %}
-
-refresh_ha_factory_repos:
-  cmd.run:
-    - name: zypper --non-interactive --gpg-auto-import-keys refresh
-    - requre:
-      - pkgrepo: ha-factory-repo
