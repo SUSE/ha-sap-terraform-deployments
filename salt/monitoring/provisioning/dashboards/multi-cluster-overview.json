@@ -106,6 +106,41 @@
       "type": "gauge"
     },
     {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0.95
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Node CPU Load alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -125,8 +160,8 @@
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
-        "show": true,
+        "rightSide": false,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -146,12 +181,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, job, cpu)) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "avg(sum(irate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (instance, cpu)) by (instance) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.95,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -193,6 +237,41 @@
       }
     },
     {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0.9
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Node Memory Consumption alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -212,7 +291,7 @@
         "max": false,
         "min": false,
         "rightSide": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -232,12 +311,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "avg(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) by (instance) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.9,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -343,6 +431,7 @@
       },
       "yaxes": [
         {
+          "decimals": 0,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -356,7 +445,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -384,7 +473,7 @@
         "max": false,
         "min": false,
         "rightSide": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -404,8 +493,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (job,instance) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (job,instance)",
-          "legendFormat": "{{job}}",
+          "expr": "(avg(irate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])) by (instance) + avg(irate(node_network_receive_bytes_total{device!=\"lo\"}[5m])) by (instance)) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
@@ -451,6 +540,41 @@
       }
     },
     {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0.9
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Node Storage Consumption alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -465,12 +589,13 @@
       },
       "id": 16,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
         "rightSide": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -490,12 +615,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (job,instance,device)",
-          "legendFormat": "{{job}} {{device}}",
+          "expr": "(avg(1 - node_filesystem_avail_bytes{device=~\"/dev.+\"} / node_filesystem_size_bytes{device=~\"/dev.+\"}) by (instance,device)) + on(instance) group_left(nodename) (0 * node_uname_info)",
+          "legendFormat": "{{nodename}} {{device}}",
           "refId": "A"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.9,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -552,8 +686,8 @@
     {
       "cacheTimeout": null,
       "gridPos": {
-        "h": 6,
-        "w": 8,
+        "h": 4,
+        "w": 6,
         "x": 0,
         "y": 14
       },
@@ -618,9 +752,9 @@
     },
     {
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 8,
+        "h": 4,
+        "w": 6,
+        "x": 6,
         "y": 14
       },
       "id": 18,
@@ -672,9 +806,9 @@
     },
     {
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 16,
+        "h": 4,
+        "w": 6,
+        "x": 12,
         "y": 14
       },
       "id": 27,
@@ -721,6 +855,76 @@
       "type": "gauge"
     },
     {
+      "cacheTimeout": null,
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 14
+      },
+      "id": 25,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "from": "",
+                "id": 1,
+                "operator": "",
+                "text": "OK",
+                "to": "",
+                "type": 1,
+                "value": "1"
+              },
+              {
+                "from": "",
+                "id": 2,
+                "operator": "",
+                "text": "KO",
+                "to": "",
+                "type": 1,
+                "value": "0"
+              }
+            ],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ],
+            "unit": "none"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "count(ha_cluster_corosync_quorate == 1) by (job) / count(ha_cluster_corosync_quorate) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Corosync Quorate",
+      "type": "gauge"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -729,9 +933,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
+        "w": 6,
         "x": 0,
-        "y": 20
+        "y": 18
       },
       "hideTimeOverride": false,
       "id": 4,
@@ -822,9 +1026,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 8,
-        "y": 20
+        "w": 6,
+        "x": 6,
+        "y": 18
       },
       "id": 20,
       "legend": {
@@ -833,7 +1037,7 @@
         "max": false,
         "min": false,
         "rightSide": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -910,9 +1114,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 16,
-        "y": 20
+        "w": 6,
+        "x": 12,
+        "y": 18
       },
       "id": 29,
       "legend": {
@@ -988,76 +1192,41 @@
       }
     },
     {
-      "cacheTimeout": null,
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 26
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Corosync Quorate over time alert",
+        "noDataState": "no_data",
+        "notifications": []
       },
-      "id": 25,
-      "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "OK",
-                "to": "",
-                "type": 1,
-                "value": "1"
-              },
-              {
-                "from": "",
-                "id": 2,
-                "operator": "",
-                "text": "KO",
-                "to": "",
-                "type": 1,
-                "value": "0"
-              }
-            ],
-            "max": 1,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ],
-            "unit": "none"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_corosync_quorate == 1) by (job) / count(ha_cluster_corosync_quorate) by (job)",
-          "legendFormat": "{{job}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Corosync Quorate",
-      "type": "gauge"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -1066,9 +1235,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 32
+        "w": 6,
+        "x": 18,
+        "y": 18
       },
       "id": 31,
       "legend": {
@@ -1101,7 +1270,15 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 1
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -1172,5 +1349,5 @@
   "timezone": "",
   "title": "Multi-Cluster Overview",
   "uid": "5b0v3y-Wz1",
-  "version": 1
+  "version": 7
 }
