@@ -25,9 +25,20 @@ variable "hana_data_disk_type" {
   default = "Standard_LRS"
 }
 
+variable "hana_data_disk_size" {
+  type    = string
+  default = "60"
+}
+
 variable "hana_data_disk_caching" {
   type    = string
   default = "ReadWrite"
+}
+
+variable "hana_enable_accelerated_networking" {
+  description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
+  default     = true
 }
 
 variable "name" {
@@ -119,6 +130,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -141,6 +158,76 @@ variable "provisioner" {
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
   default     = false
+}
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
+# Netweaver variables
+
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver cluster deployment"
+  default     = false
+}
+
+variable "netweaver_vm_size" {
+  description = "VM size for the Netweaver machines. Default to Standard_D2s_v3"
+  type        = string
+  default     = "Standard_D4s_v3"
+}
+
+variable "netweaver_data_disk_type" {
+  type    = string
+  default = "Standard_LRS"
+}
+
+variable "netweaver_data_disk_size" {
+  description = "Size of the Netweaver data disks, informed in GB"
+  type        = string
+  default     = "60"
+}
+
+variable "netweaver_data_disk_caching" {
+  type    = string
+  default = "ReadWrite"
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_storage_account_name" {
+  description = "Azure storage account where SAP Netweaver installation files are stored"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_storage_account_key" {
+  description = "Azure storage account access key"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_storage_account" {
+  description = "Azure storage account path"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_enable_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

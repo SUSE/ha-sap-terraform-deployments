@@ -105,7 +105,7 @@ module "drbd_node" {
   memory                 = 1024
   bridge                 = "br0"
   host_ips               = var.drbd_ips
-  drbd_disk_size         = "1024000000"
+  drbd_disk_size         = "10737418240" #10GB
   shared_storage_type    = var.drbd_shared_storage_type
   iscsi_srv_ip           = var.iscsi_srv_ip
   reg_code               = var.reg_code
@@ -140,6 +140,8 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitored_hosts        = var.host_ips
+  drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
+  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_ips : []
 }
 
 module "nw_shared_disk" {
@@ -161,6 +163,7 @@ module "netweaver_node" {
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
   host_ips               = var.nw_ips
+  virtual_host_ips       = var.nw_virtual_ips
   shared_disk_id         = module.nw_shared_disk.id
   netweaver_inst_media   = var.netweaver_inst_media
   netweaver_nfs_share    = var.netweaver_nfs_share
@@ -170,4 +173,5 @@ module "netweaver_node" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
 }

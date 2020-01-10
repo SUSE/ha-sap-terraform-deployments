@@ -4,6 +4,9 @@ instancetype = "Standard_E4s_v3"
 # Disk type for HANA
 hana_data_disk_type = "StandardSSD_LRS"
 
+# Disk size for HANA
+hana_data_disk_size = "60"
+
 # Caching used for HANA disk
 hana_data_disk_caching = "ReadWrite"
 
@@ -27,23 +30,32 @@ init_type = "all"
 # Custom monitoring server image
 #monitoring_uri = "/path/to/your/monitoring/image"
 
+# Custom drbd nodes image
+#drbd_image_uri = "/path/to/your/monitoring/image"
+
 # Public sles4sap image
 hana_public_publisher = "SUSE"
 hana_public_offer     = "SLES-SAP-BYOS"
 hana_public_sku       = "12-sp4"
-hana_public_version   = "2019.03.06"
+hana_public_version   = "latest"
 
 # Public iscsi server image
 iscsi_public_publisher = "SUSE"
 iscsi_public_offer     = "SLES-SAP-BYOS"
 iscsi_public_sku       = "15"
-iscsi_public_version   = "2019.07.17"
+iscsi_public_version   = "latest"
 
 # Public monitoring server image
 monitoring_public_publisher = "SUSE"
 monitoring_public_offer     = "SLES-SAP-BYOS"
 monitoring_public_sku       = "15"
-monitoring_public_version   = "2019.07.17"
+monitoring_public_version   = "latest"
+
+# Public drbd nodes image
+drbd_public_publisher = "SUSE"
+drbd_public_offer     = "SLES-SAP-BYOS"
+drbd_public_sku       = "15"
+drbd_public_version   = "latest"
 
 # Admin user
 admin_user = "YOUR_USERNAME_HERE"
@@ -84,6 +96,10 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 # example : host_ips = ["10.0.1.0", "10.0.1.1"]
 host_ips = ["10.74.1.11", "10.74.1.12"]
 
+# Each drbd cluster host IP address (sequential order).
+# example : drbd_host_ips = ["10.0.1.10", "10.0.1.11"]
+drbd_ips = ["10.74.1.21", "10.74.1.22"]
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -117,6 +133,18 @@ ha_sap_deployment_repo = ""
 
 # IP address of the machine where Prometheus and Grafana are running
 monitoring_srv_ip = "10.74.1.13"
+
+# Enable drbd cluster
+#drbd_enabled = true
+
+# Netweaver variables
+
+#netweaver_enabled = true
+#netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
+#netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+#netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
+#netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
+#netweaver_storage_account = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/nw/installation/master"
 
 # QA variables
 

@@ -27,9 +27,8 @@ variable "reg_additional_modules" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
-
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
@@ -51,9 +50,14 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "virtual_host_ips" {
+  description = "virtual host ip addresses to set to the nodes"
+  type        = list(string)
+}
+
 variable "shared_disk_id" {
   description = "ASCS and ERS shared disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "netweaver_inst_media" {
@@ -66,6 +70,30 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
+variable "ascs_instance_number" {
+  description = "ASCS instance number"
+  type        = string
+  default     = "00"
+}
+
+variable "ers_instance_number" {
+  description = "ERS instance number"
+  type        = string
+  default     = "10"
+}
+
+variable "pas_instance_number" {
+  description = "PAS instance number"
+  type        = string
+  default     = "01"
+}
+
+variable "aas_instance_number" {
+  description = "AAS instance number"
+  type        = string
+  default     = "02"
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
@@ -73,6 +101,13 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  default     = false
+}
+
+// monitoring
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false
 }
 

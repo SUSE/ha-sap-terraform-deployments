@@ -1,6 +1,6 @@
 variable "monitoring_image" {
   description = "monitoring server base image"
-  type        = "string"
+  type        = string
   default     = ""
 }
 
@@ -63,7 +63,7 @@ variable "additional_packages" {
 
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "public_key_location" {
@@ -123,4 +123,16 @@ variable "pool" {
 variable "monitored_hosts" {
   description = "IPs of hosts you want to monitor"
   type        = list(string)
+}
+
+variable "drbd_monitored_hosts" {
+  description = "IPs of DRBD hosts you want to monitor"
+  type        = list(string)
+  default     = []
+}
+
+variable "nw_monitored_hosts" {
+  description = "IPs of Netweaver hosts you want to monitor"
+  type        = list(string)
+  default     = []
 }

@@ -14,9 +14,12 @@ open-iscsi:
     - pattern: "^node.startup = manual"
     - repl: "node.startup = automatic"
 
-iscsid:
+iscsi:
   service.running:
     - enable: True
+    - watch:
+      - file: /etc/iscsi/iscsid.conf
+      - file: /etc/iscsi/initiatorname.iscsi
 
 iscsi_discovery:
   cmd.run:
@@ -24,5 +27,10 @@ iscsi_discovery:
     - output_loglevel: quiet
     - hide_output: True
     - timeout: 2400
-    - onchanges:
-      - service: iscsid
+    - require:
+      - iscsi
+
+iscsid:
+  service.running:
+    - watch:
+      - cmd: iscsi_discovery

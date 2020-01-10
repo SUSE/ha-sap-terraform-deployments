@@ -1,5 +1,4 @@
 include:
-  - iscsi_srv.registration
   - iscsi_srv.parted
   - iscsi_srv.iscsi_kernel_mod
   - iscsi.target
@@ -8,5 +7,5 @@ include:
 {% else %}
   # Workaround to restart targetcli service
   # This need to be fixed in the formula
-  - iscsi_srv.targetcli
+  - iscsi_srv.workaround
 {% endif %}

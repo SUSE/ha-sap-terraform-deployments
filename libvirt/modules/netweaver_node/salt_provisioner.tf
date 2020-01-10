@@ -45,13 +45,20 @@ reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 provider: libvirt
 role: netweaver_node
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_nfs_share: ${var.netweaver_nfs_share}
+ascs_instance_number: ${var.ascs_instance_number}
+ers_instance_number: ${var.ers_instance_number}
+pas_instance_number: ${var.pas_instance_number}
+aas_instance_number: ${var.aas_instance_number}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
+shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
+monitoring_enabled: ${var.monitoring_enabled}
 EOF
       destination = "/tmp/grains"
       }

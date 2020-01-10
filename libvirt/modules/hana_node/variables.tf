@@ -28,7 +28,7 @@ variable "reg_additional_modules" {
 // hana
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
-  type        = "string"
+  type        = string
 }
 
 variable "devel_mode" {
@@ -81,7 +81,7 @@ variable "shared_storage_type" {
 
 variable "sbd_disk_id" {
   description = "SBD disk volume id"
-  type        = "string"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {

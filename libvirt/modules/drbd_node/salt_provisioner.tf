@@ -55,25 +55,20 @@ sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
-
-drbd_nodes: ${var.drbd_count}
-
 partitions:
   1:
-    start: 1
-    end: 30%
-  2:
-    start: 30%
+    start: 0%
     end: 100%
 
-EOF
-      destination = "/tmp/grains"
-      }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+EOF
+  destination = "/tmp/grains"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}

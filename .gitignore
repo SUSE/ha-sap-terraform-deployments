@@ -8,7 +8,9 @@ azure/terraform/provision/node1_id_rsa.pub
 
 salt/hana_node/files/sshkeys
 salt/hana_node/files/pillar/*
+salt/drbd_node/files/pillar/*
 !salt/hana_node/files/pillar/top.sls
+!salt/drbd_node/files/pillar/top.sls
 
 # Dev specific
 **/*.swp

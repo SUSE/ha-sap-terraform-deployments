@@ -2,8 +2,8 @@
 
 # Availability set for the VMs
 
-resource "azurerm_availability_set" "myas" {
-  name                        = "myas"
+resource "azurerm_availability_set" "hana-availability-set" {
+  name                        = "avset-hana"
   location                    = var.az_region
   resource_group_name         = azurerm_resource_group.myrg.name
   managed                     = "true"
@@ -17,15 +17,14 @@ resource "azurerm_availability_set" "myas" {
 # iSCSI server VM
 
 resource "azurerm_virtual_machine" "iscsisrv" {
-  name                  = "${terraform.workspace}-iscsisrv"
+  name                  = "vmiscsisrv"
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.iscsisrv.id]
-  availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
-    name              = "iscsiOsDisk"
+    name              = "disk-iscsisrv-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -40,12 +39,12 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_data_disk {
-    name              = "iscsiDevices"
+    name              = "disk-iscsisrv-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"
     lun               = "0"
-    managed_disk_type = "Standard_LRS"
+    managed_disk_type = "StandardSSD_LRS"
   }
 
   os_profile {
@@ -72,19 +71,19 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 }
 
-# Cluster Nodes
-
-resource "azurerm_virtual_machine" "clusternodes" {
+# Hana Nodes
+#
+resource "azurerm_virtual_machine" "hana" {
   count                 = var.ninstances
-  name                  = "${terraform.workspace}-node-${count.index}"
+  name                  = "vm${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
-  network_interface_ids = [element(azurerm_network_interface.clusternodes.*.id, count.index)]
-  availability_set_id   = azurerm_availability_set.myas.id
+  network_interface_ids = [element(azurerm_network_interface.hana.*.id, count.index)]
+  availability_set_id   = azurerm_availability_set.hana-availability-set.id
   vm_size               = var.instancetype
 
   storage_os_disk {
-    name              = "NodeOsDisk-${count.index}"
+    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -99,12 +98,30 @@ resource "azurerm_virtual_machine" "clusternodes" {
   }
 
   storage_data_disk {
-    name              = "node-data-disk-${count.index}"
-    managed_disk_type = "${var.hana_data_disk_type}"
+    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data01"
+    managed_disk_type = var.hana_data_disk_type
     create_option     = "Empty"
     lun               = 0
-    disk_size_gb      = "60"
-    caching           = "${var.hana_data_disk_caching}"
+    disk_size_gb      = var.hana_data_disk_size
+    caching           = var.hana_data_disk_caching
+  }
+
+  storage_data_disk {
+    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data02"
+    managed_disk_type = var.hana_data_disk_type
+    create_option     = "Empty"
+    lun               = 1
+    disk_size_gb      = var.hana_data_disk_size
+    caching           = var.hana_data_disk_caching
+  }
+
+  storage_data_disk {
+    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data03"
+    managed_disk_type = var.hana_data_disk_type
+    create_option     = "Empty"
+    lun               = 2
+    disk_size_gb      = var.hana_data_disk_size
+    caching           = var.hana_data_disk_caching
   }
 
   os_profile {
@@ -132,16 +149,15 @@ resource "azurerm_virtual_machine" "clusternodes" {
 }
 
 resource "azurerm_virtual_machine" "monitoring" {
-  name                  = "${terraform.workspace}-monitoring"
+  name                  = "vmmonitoring"
   count                 = var.monitoring_enabled == true ? 1 : 0
   location              = var.az_region
   resource_group_name   = azurerm_resource_group.myrg.name
   network_interface_ids = [azurerm_network_interface.monitoring.0.id]
-  availability_set_id   = azurerm_availability_set.myas.id
   vm_size               = "Standard_D2s_v3"
 
   storage_os_disk {
-    name              = "monitoringOsDisk"
+    name              = "disk-monitoring-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -156,7 +172,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   storage_data_disk {
-    name              = "monitoringDevices"
+    name              = "disk-monitoring-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"
