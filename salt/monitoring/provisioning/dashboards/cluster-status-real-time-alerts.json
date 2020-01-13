@@ -1239,7 +1239,7 @@
       ],
       "targets": [
         {
-          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=~\"$node_ip:9100\", state=\"active\"}",
+          "expr": "node_systemd_unit_state{name=~\"(corosync|pacemaker|sbd|hanadb_exporter|prometheus-ha_cluster_exporter|hawk).*\", instance=~\"$node_ip:9100\", state=\"active\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
