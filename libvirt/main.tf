@@ -141,7 +141,7 @@ module "monitoring" {
   background             = var.background
   monitored_hosts        = var.host_ips
   drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
-  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_ips : []
+  nw_monitored_hosts     = var.netweaver_enabled ? slice(var.nw_ips, 0, 2) : []
 }
 
 module "nw_shared_disk" {
