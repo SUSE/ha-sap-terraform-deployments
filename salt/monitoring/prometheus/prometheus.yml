@@ -24,13 +24,13 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:8001" # 8001: hanadb exporter port
+        - "{{ ip }}:8001" # hanadb_exporter
         {% endfor %}
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:9100" # 9100: node exporter port
+        - "{{ ip }}:9100" # node_exporter
         {% endfor %}
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
+        - "{{ ip }}:9002" # ha_cluster_exporter
         {% endfor %}
 
   {% if grains.get('drbd_monitored_hosts', [])|length > 0 %}
@@ -38,10 +38,10 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['drbd_monitored_hosts'] %}
-        - "{{ ip }}:9100" # 9100: node exporter port
+        - "{{ ip }}:9100" # node_exporter
         {% endfor %}
         {% for ip in grains['drbd_monitored_hosts'] %}
-        - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
+        - "{{ ip }}:9002" # ha_cluster_exporter
         {% endfor %}
   {% endif %}
 
@@ -50,9 +50,9 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['nw_monitored_hosts'] %}
-        - "{{ ip }}:9100" # 9100: node exporter port
+        - "{{ ip }}:9100" # node_exporter
         {% endfor %}
-        {% for ip in grains['nw_monitored_hosts'] %}
-        - "{{ ip }}:9002" # 9002: ha_cluster_exporter metrics
+        {% for ip in grains['nw_monitored_hosts'][0:2] %}
+        - "{{ ip }}:9002" # ha_cluster_exporter
         {% endfor %}
   {% endif %}
