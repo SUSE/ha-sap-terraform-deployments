@@ -45,7 +45,7 @@ variable "iscsi_srv" {
 
 variable "instancetype" {
   type    = string
-  default = "t2.micro"
+  default = "r3.8xlarge"
 }
 
 variable "hana_data_disk_type" {

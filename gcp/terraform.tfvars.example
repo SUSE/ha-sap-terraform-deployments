@@ -10,7 +10,7 @@ ip_cidr_range = "10.0.0.0/24"
 iscsi_ip = "10.0.0.253"
 
 # Type of VM (vCPUs and RAM)
-machine_type = "n1-highmem-8"
+machine_type = "n1-highmem-32"
 machine_type_iscsi_server = "custom-1-2048"
 
 # Disk type for HANA

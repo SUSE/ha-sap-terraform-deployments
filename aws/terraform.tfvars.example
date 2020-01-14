@@ -1,7 +1,7 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 # Instance type to use for the cluster nodes
-instancetype = "m4.2xlarge"
+instancetype = "r3.8xlarge"
 
 # Disk type for HANA
 hana_data_disk_type = "gp2"
