@@ -1057,21 +1057,21 @@
       ],
       "targets": [
         {
-          "expr": "sum(ha_cluster_pacemaker_resources{instance=~\"$node_ip.*\"}) by(resource, status, node, role)",
+          "expr": "sum(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\"}) by(resource, status, node, role)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=~\"$node_ip.*\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=~\"$node_ip.*\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1239,7 +1239,7 @@
       ],
       "targets": [
         {
-          "expr": "node_systemd_unit_state{name=~\".*(corosync|pacemaker|sbd|hana|ha_cluster_exporter|hawk|drbd).*\", instance=~\"$node_ip:9100\", state=\"active\"}",
+          "expr": "node_systemd_unit_state{name=~\"(corosync|pacemaker|sbd|hanadb_exporter|prometheus-ha_cluster_exporter|hawk).*\", instance=~\"$node_ip:9100\", state=\"active\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -1848,21 +1848,21 @@
         "allValue": null,
         "current": {},
         "datasource": "$data_source",
-        "definition": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
+        "definition": "query_result(label_replace(ha_cluster_pacemaker_nodes_total{job='$hacluster'}, 'ip', '$1', 'instance','(.*):.*') + on(ip) group_left(nodename) label_replace(node_uname_info, 'ip', '$1', 'instance','(.*):.*'))",
         "hide": 0,
         "includeAll": false,
         "label": "Node",
         "multi": false,
         "name": "node_name",
         "options": [],
-        "query": "label_values(node_uname_info{job=\"$hacluster\"}, nodename)",
+        "query": "query_result(label_replace(ha_cluster_pacemaker_nodes_total{job='$hacluster'}, 'ip', '$1', 'instance','(.*):.*') + on(ip) group_left(nodename) label_replace(node_uname_info, 'ip', '$1', 'instance','(.*):.*'))",
         "refresh": 2,
-        "regex": "",
+        "regex": ".*nodename=\"([^,]+)\".*",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],
-        "tagsQuery": "label_values(node_uname_info, nodename)",
+        "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
