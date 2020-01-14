@@ -5,7 +5,7 @@
 
 variable "instancetype" {
   type    = string
-  default = "Standard_E4s_v3"
+  default = "Standard_M128s"
 }
 
 # For reference:

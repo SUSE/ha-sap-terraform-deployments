@@ -18,7 +18,7 @@ variable "private_key_location" {
 
 variable "machine_type" {
   type    = string
-  default = "n1-highmem-8"
+  default = "n1-highmem-32"
 }
 
 variable "hana_data_disk_type" {
