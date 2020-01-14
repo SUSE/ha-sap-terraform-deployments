@@ -1057,21 +1057,21 @@
       ],
       "targets": [
         {
-          "expr": "sum(ha_cluster_pacemaker_resources{instance=~\"$node_ip.*\"}) by(resource, status, node, role)",
+          "expr": "sum(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\"}) by(resource, status, node, role)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=~\"$node_ip.*\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=~\"$node_ip.*\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
