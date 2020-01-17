@@ -1,5 +1,5 @@
 {% if grains['os_family'] == 'Suse' %}
-{% if not grains.get('qa_mode') or '.*_node' not in grains.get('role') %}
+{% if not grains.get('qa_mode') or '_node' not in grains.get('role') %}
 {% if grains['reg_code'] %}
 register_system:
   cmd.run:
