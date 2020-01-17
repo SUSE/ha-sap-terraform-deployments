@@ -24,6 +24,12 @@ cluster:
     - repl: 'PasswordAuthentication yes'
     - append_if_not_found: True
 
+/etc/ssh/ssh_config:
+  file.replace:
+    - pattern: '# *StrictHostKeyChecking ask'
+    - repl: 'StrictHostKeyChecking no'
+    - append_if_not_found: True
+
 sshd:
   service.running:
     - watch:
