@@ -27,5 +27,6 @@ refresh_repos_after_registration:
     - retry:
         attempts: 3
         interval: 15
+    - onlyif: 'zypper lr'
 
 {% endif %}

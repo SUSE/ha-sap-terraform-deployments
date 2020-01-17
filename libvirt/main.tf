@@ -43,6 +43,7 @@ module "iscsi_server" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  qa_mode                = var.qa_mode
   provisioner            = var.provisioner
   background             = var.background
 }
