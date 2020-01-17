@@ -1,6 +1,6 @@
 {% set data = pillar.cluster.configure.template.parameters %}
 {% set cloud_provider = grains['cloud_provider'] %}
-{% set drbd = salt['pillar.get']('drbd', merge=True) %}
+{% set drbd = salt['pillar.get']('drbd', default={}, merge=True) %}
 {% set nfsid = 1 %}
 
 #
@@ -51,7 +51,7 @@ primitive exportfs_work_{{ res.name }} exportfs \
         options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
         op monitor interval=30s
 
-group g-nfs_{{ res.name }} fs_{{ res.name }} test-IP_{{ res.name }} exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
+group g-nfs_{{ res.name }} fs_{{ res.name }} exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
 
 order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
   ms_{{ res.name }}:promote g-nfs_{{ res.name }}:start
