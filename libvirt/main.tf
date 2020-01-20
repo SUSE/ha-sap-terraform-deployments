@@ -33,6 +33,7 @@ module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   iscsi_image            = var.iscsi_image
+  iscsi_disks            = var.iscsi_disks
   vcpu                   = 2
   memory                 = 4096
   bridge                 = "br0"

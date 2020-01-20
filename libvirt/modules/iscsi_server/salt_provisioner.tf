@@ -37,6 +37,7 @@ role: iscsi_srv
 host_ip: ${var.iscsi_srv_ip}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 iscsidev: ${var.iscsidev}
+iscsi_disks: ${var.iscsi_disks}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}

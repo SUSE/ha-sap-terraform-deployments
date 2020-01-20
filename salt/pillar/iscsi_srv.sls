@@ -1,8 +1,9 @@
 {% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
-{% set partitions = salt['grains.get']('partitions') %}
+{% set partitions = grains['partitions'] %}
+{% set num = grains['iscsi_disks'] %}
 
-{% if not grains.get('qa_mode', False) %}
-{% set partitions = (partitions|list)[:3] %}
+{% if num > 0 and num < partitions|length %}
+{% set partitions = (partitions|list)[:num] %}
 {% endif %}
 
 iscsi:
