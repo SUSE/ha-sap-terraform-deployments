@@ -139,6 +139,8 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **az_region**: Azure region where to deploy the configuration.
 * **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
+* **iscsidev**: device used by the iSCSI server to provide LUNs.
+* **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)

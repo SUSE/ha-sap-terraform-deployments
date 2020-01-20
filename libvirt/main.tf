@@ -33,7 +33,6 @@ module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   iscsi_image            = var.iscsi_image
-  iscsi_disks            = var.iscsi_disks
   vcpu                   = 2
   memory                 = 4096
   bridge                 = "br0"
@@ -41,6 +40,7 @@ module "iscsi_server" {
   network_id             = libvirt_network.isolated_network.id
   iscsi_srv_ip           = var.iscsi_srv_ip
   iscsidev               = "/dev/vdb"
+  iscsi_disks            = var.iscsi_disks
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   ha_sap_deployment_repo = var.ha_sap_deployment_repo

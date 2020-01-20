@@ -41,6 +41,7 @@ provider: gcp
 role: iscsi_srv
 iscsi_srv_ip: ${var.iscsi_ip}
 iscsidev: ${var.iscsidev}
+iscsi_disks: ${var.iscsi_disks}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
