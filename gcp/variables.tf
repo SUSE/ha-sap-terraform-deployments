@@ -21,11 +21,6 @@ variable "machine_type" {
   default = "n1-highmem-32"
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "pd-standard"
-}
-
 variable "iscsi_server_boot_image" {
   type    = string
   default = "suse-byos-cloud/sles-15-sap-byos"
@@ -91,6 +86,26 @@ variable "sap_hana_deployment_bucket" {
 variable "hana_inst_folder" {
   type    = string
   default = "/root/hana_inst_media"
+}
+
+variable "hana_data_disk_type" {
+  type    = string
+  default = "pd-ssd"
+}
+
+variable "hana_data_disk_size" {
+  type    = string
+  default = "834"
+}
+
+variable "hana_backup_disk_type" {
+  type    = string
+  default = "pd-standard"
+}
+
+variable "hana_backup_disk_size" {
+  type    = string
+  default = "416"
 }
 
 variable "hana_disk_device" {

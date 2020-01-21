@@ -16,6 +16,15 @@ machine_type_iscsi_server = "custom-1-2048"
 # Disk type for HANA
 hana_data_disk_type = "pd-ssd"
 
+# Disk size for HANA in GB
+hana_data_disk_size = "834"
+
+# Disk type for HANA backup
+hana_backup_disk_type = "pd-standard"
+
+# Disk size for HANA backup in GB
+hana_backup_disk_size = "416"
+
 # SSH private key file
 private_key_location = "/path/to/your/private/ssh/key"
 

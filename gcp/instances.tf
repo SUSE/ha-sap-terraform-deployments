@@ -74,14 +74,14 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   attached_disk {
-    source      = element(google_compute_disk.node_data.*.self_link, count.index)
-    device_name = element(google_compute_disk.node_data.*.name, count.index)
+    source      = element(google_compute_disk.data.*.self_link, count.index)
+    device_name = element(google_compute_disk.data.*.name, count.index)
     mode        = "READ_WRITE"
   }
 
   attached_disk {
-    source      = element(google_compute_disk.node_data2.*.self_link, count.index)
-    device_name = element(google_compute_disk.node_data2.*.name, count.index)
+    source      = element(google_compute_disk.backup.*.self_link, count.index)
+    device_name = element(google_compute_disk.backup.*.name, count.index)
     mode        = "READ_WRITE"
   }
 

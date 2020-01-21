@@ -6,6 +6,7 @@ resource "google_compute_network" "ha_network" {
 resource "google_compute_subnetwork" "ha_subnet" {
   name          = "${terraform.workspace}-${var.name}-subnet"
   network       = google_compute_network.ha_network.self_link
+  region        = var.region
   ip_cidr_range = var.ip_cidr_range
 }
 
@@ -47,4 +48,3 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
     ports    = ["22", "80", "443", "7630", "8001", "9100", "9002", "9090"]
   }
 }
-
