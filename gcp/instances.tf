@@ -85,6 +85,12 @@ resource "google_compute_instance" "clusternodes" {
     mode        = "READ_WRITE"
   }
 
+  attached_disk {
+    source      = element(google_compute_disk.hana-software.*.self_link, count.index)
+    device_name = element(google_compute_disk.hana-software.*.name, count.index)
+    mode        = "READ_WRITE"
+  }
+
   metadata = {
     sshKeys = "root:${file(var.public_key_location)}"
   }

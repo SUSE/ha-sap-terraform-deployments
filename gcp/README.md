@@ -121,8 +121,9 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **cluster_ssh_pub**: path to a custom ssh public key to upload to the nodes.
 * **cluster_ssh_key**: path to a custom ssh private key to upload to the nodes.
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `GCP Bucket`.
-* **hana_inst_disk_device**: device used by node where HANA will be downloaded.
-* **hana_disk_device**: device used by node where HANA will be installed.
+* **hana_disk_device**: device used by node where HANA will be installed (/dev/sdb by default).
+* **hana_backup_device**: device used by node where HANA backup will be stored (/dev/sdc by default).
+* **hana_inst_disk_device**: device used by node where HANA will be downloaded (/dev/sdd by default).
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 * **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
 * **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
