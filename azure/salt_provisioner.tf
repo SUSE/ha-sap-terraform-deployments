@@ -52,18 +52,12 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 partitions:
   1:
     start: 1
-    end: 20%
+    end: 33%
   2:
-    start: 20%
-    end: 40%
+    start: 33%
+    end: 67%
   3:
-    start: 40%
-    end: 60%
-  4:
-    start: 60%
-    end: 80%
-  5:
-    start: 80%
+    start: 67%
     end: 100%
 
 EOF
