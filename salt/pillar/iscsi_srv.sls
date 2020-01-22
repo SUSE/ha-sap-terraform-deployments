@@ -1,17 +1,21 @@
 iscsi:
-  server:
-    enabled: False
-  isns:
-    enabled: False
   target:
-    lio:
-      myconf:
+    pkgs:
+      wanted:
+        - targetcli-fb-common
+        - python3-targetcli-fb
+        - yast2-iscsi-lio-server
+  config:
+    data:
+      lio:
         fabric_modules:
-          - authenticate_target: 'false'
+          iscsi_server:
+            authenticate_target: 'false'
             enforce_discovery_auth: 'false'
             name: "iscsi"
         storage_objects:
-          - attributes:
+          sda:
+            attributes:
               block_size: 512
               emulate_write_cache: 0
               queue_depth: 64
@@ -19,7 +23,8 @@ iscsi:
             dev: {{ grains['iscsidev'] }}1
             name: "sda"
             plugin: "block"
-          - attributes:
+          sdb:
+            attributes:
               block_size: 512
               emulate_write_cache: 0
               queue_depth: 64
@@ -27,7 +32,8 @@ iscsi:
             dev: {{ grains['iscsidev'] }}2
             name: "sdb"
             plugin: "block"
-          - attributes:
+          sdc:
+            attributes:
               block_size: 512
               emulate_write_cache: 0
               queue_depth: 64
@@ -36,9 +42,10 @@ iscsi:
             name: "sdc"
             plugin: "block"
         targets:
-          - fabric: iscsi
+          iscsi_server:
+            fabric: iscsi
             tpgs:
-              - attributes:
+              attributes:
                   authentication: 0
                   cache_dynamic_acls: 0
                   default_cmdsn_depth: 16
@@ -47,15 +54,19 @@ iscsi:
                   login_timeout: 15
                   netif_timeout: 2
                   prod_mode_write_protect: 0
-                luns:
-                  - index: 0
-                    storage_object: /backstores/block/sda
-                  - index: 1
-                    storage_object: /backstores/block/sdb
-                  - index: 2
-                    storage_object: /backstores/block/sdc
-                portals:
-                  - ip_address: {{ grains['iscsi_srv_ip'] }}
-                    port: 3260
-                tag: 1
+              luns:
+                sda:
+                  index: 0
+                  storage_object: /backstores/block/sda
+                sdb:
+                  index: 1
+                  storage_object: /backstores/block/sdb
+                sdc:
+                  index: 2
+                  storage_object: /backstores/block/sdc
+              portals:
+                iscsi_server:
+                  ip_address: {{ grains['iscsi_srv_ip'] }}
+                  port: 3260
+              tag: 1
             wwn: "iqn.1996-04.de.suse:01:a66aed20e2f3"
