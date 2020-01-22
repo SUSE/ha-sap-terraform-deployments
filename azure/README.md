@@ -49,8 +49,8 @@ If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
 
 ```
 terraform init
-terraform workspace new my-execution # optional
-terraform workspace select my-execution # optional
+terraform workspace new myexecution # optional
+terraform workspace select myexecution # optional
 terraform plan
 terraform apply
 ```
