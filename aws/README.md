@@ -132,6 +132,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **hana_disk_device**: device used by node where HANA will be installed.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
 * **iscsidev**: device used by the iscsi server.
+* **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
