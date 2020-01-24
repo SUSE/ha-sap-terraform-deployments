@@ -8,7 +8,7 @@ data "template_file" "salt_provisioner" {
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? var.ninstances : 0
+  count = var.provisioner == "salt" ? var.hana_count : 0
 
   triggers = {
     cluster_instance_ids = join(",", azurerm_virtual_machine.hana.*.id)
@@ -42,7 +42,7 @@ devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: vm${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
+hostname: vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sdf

@@ -77,6 +77,7 @@ module "hana_node" {
   resource_group_name           = azurerm_resource_group.myrg.name
   network_subnet_id             = azurerm_subnet.mysubnet.id
   sec_group_id                  = azurerm_network_security_group.mysecgroup.id
+  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
   storage_account_key           = var.storage_account_key
   enable_accelerated_networking = var.hana_enable_accelerated_networking

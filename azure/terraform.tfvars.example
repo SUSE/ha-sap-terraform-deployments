@@ -11,7 +11,7 @@ hana_data_disk_size = "60"
 hana_data_disk_caching = "ReadWrite"
 
 # Number of nodes in the cluster
-ninstances = "2"
+hana_count = "2"
 
 # Region where to deploy the configuration
 az_region = "westeurope"

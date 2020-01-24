@@ -40,7 +40,7 @@ resource "azurerm_lb_backend_address_pool" "hana-load-balancer" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "hana" {
-  count                   = var.ninstances
+  count                   = var.hana_count
   network_interface_id    = element(azurerm_network_interface.hana.*.id, count.index)
   ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.hana-load-balancer.id
@@ -160,8 +160,8 @@ resource "azurerm_lb_rule" "lb_30017" {
 # hana network configuration
 
 resource "azurerm_network_interface" "hana" {
-  count                         = var.ninstances
-  name                          = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  count                         = var.hana_count
+  name                          = "nic-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   network_security_group_id     = var.sec_group_id
@@ -181,8 +181,8 @@ resource "azurerm_network_interface" "hana" {
 }
 
 resource "azurerm_public_ip" "hana" {
-  count                   = var.ninstances
-  name                    = "pip-hana0${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  count                   = var.hana_count
+  name                    = "pip-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -214,8 +214,8 @@ resource "azurerm_image" "sles4sap" {
 # hana instances
 
 resource "azurerm_virtual_machine" "hana" {
-  count                 = var.ninstances
-  name                  = "vm${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  count                 = var.hana_count
+  name                  = "vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
   location              = var.az_region
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.hana.*.id, count.index)]
@@ -223,7 +223,7 @@ resource "azurerm_virtual_machine" "hana" {
   vm_size               = var.instancetype
 
   storage_os_disk {
-    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Os"
+    name              = "disk-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -238,7 +238,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   storage_data_disk {
-    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data01"
+    name              = "disk-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}-Data01"
     managed_disk_type = var.hana_data_disk_type
     create_option     = "Empty"
     lun               = 0
@@ -247,7 +247,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   storage_data_disk {
-    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data02"
+    name              = "disk-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}-Data02"
     managed_disk_type = var.hana_data_disk_type
     create_option     = "Empty"
     lun               = 1
@@ -256,7 +256,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   storage_data_disk {
-    name              = "disk-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}-Data03"
+    name              = "disk-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}-Data03"
     managed_disk_type = var.hana_data_disk_type
     create_option     = "Empty"
     lun               = 2
@@ -265,7 +265,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   os_profile {
-    computer_name  = "${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+    computer_name  = "${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
     admin_username = var.admin_user
   }
 
@@ -276,6 +276,11 @@ resource "azurerm_virtual_machine" "hana" {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
       key_data = file(var.public_key_location)
     }
+  }
+
+  boot_diagnostics {
+    enabled     = "true"
+    storage_uri = var.storage_account
   }
 
   tags = {
