@@ -72,6 +72,8 @@ module "netweaver_node" {
 module "hana_node" {
   source                        = "./modules/hana_node"
   az_region                     = var.az_region
+  hana_count                    = var.hana_count
+  instancetype                  = var.instancetype
   host_ips                      = var.host_ips
   scenario_type                 = var.scenario_type
   resource_group_name           = azurerm_resource_group.myrg.name
@@ -89,7 +91,6 @@ module "hana_node" {
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
-  instancetype                  = var.instancetype
   public_key_location           = var.public_key_location
   private_key_location          = var.private_key_location
   hana_data_disk_type           = var.hana_data_disk_type
@@ -106,9 +107,9 @@ module "hana_node" {
   reg_additional_modules        = var.reg_additional_modules
   ha_sap_deployment_repo        = var.ha_sap_deployment_repo
   devel_mode                    = var.devel_mode
-  qa_mode                       = var.qa_mode
   provisioner                   = var.provisioner
   background                    = var.background
   monitoring_enabled            = var.monitoring_enabled
   hwcct                         = var.hwcct
+  qa_mode                       = var.qa_mode
 }
