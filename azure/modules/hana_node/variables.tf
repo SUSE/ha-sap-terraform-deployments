@@ -29,6 +29,12 @@ variable "name" {
   default     = "hana"
 }
 
+variable "hana_instance_number" {
+  description = "HANA database instance number"
+  type        = string
+  default     = "00"
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"

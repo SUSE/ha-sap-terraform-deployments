@@ -51,76 +51,76 @@ resource "azurerm_lb_probe" "hana-load-balancer" {
   loadbalancer_id     = azurerm_lb.hana-load-balancer.id
   name                = "lbhp-hana"
   protocol            = "Tcp"
-  port                = 62500 # This cannot to hardcode, the port is composed by 625{{instance}}
+  port                = tonumber("625${var.hana_instance_number}")
   interval_in_seconds = 5
   number_of_probes    = 2
 }
 
 # Load balancing rules for HANA 2.0
-resource "azurerm_lb_rule" "lb_30013" {
+resource "azurerm_lb_rule" "lb_3xx13" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30013"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}13"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30013 # This cannot to hardcode, the port is composed by 3{{instance}}13, this applies for all the rules
-  backend_port                   = 30013
+  frontend_port                  = tonumber("3${var.hana_instance_number}13")
+  backend_port                   = tonumber("3${var.hana_instance_number}13")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_30014" {
+resource "azurerm_lb_rule" "lb_3xx14" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30014"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}14"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30014
-  backend_port                   = 30014
+  frontend_port                  = tonumber("3${var.hana_instance_number}14")
+  backend_port                   = tonumber("3${var.hana_instance_number}14")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_30040" {
+resource "azurerm_lb_rule" "lb_3xx40" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30040"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}40"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30040
-  backend_port                   = 30040
+  frontend_port                  = tonumber("3${var.hana_instance_number}40")
+  backend_port                   = tonumber("3${var.hana_instance_number}40")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_30041" {
+resource "azurerm_lb_rule" "lb_3xx41" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30041"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}41"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30041
-  backend_port                   = 30041
+  frontend_port                  = tonumber("3${var.hana_instance_number}41")
+  backend_port                   = tonumber("3${var.hana_instance_number}41")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_30042" {
+resource "azurerm_lb_rule" "lb_3xx42" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30042"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}42"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30042
-  backend_port                   = 30042
+  frontend_port                  = tonumber("3${var.hana_instance_number}42")
+  backend_port                   = tonumber("3${var.hana_instance_number}42")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
@@ -129,28 +129,28 @@ resource "azurerm_lb_rule" "lb_30042" {
 
 
 # Load balancing rules for HANA 1.0
-resource "azurerm_lb_rule" "lb_30015" {
+resource "azurerm_lb_rule" "lb_3xx15" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30015"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}15"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30015
-  backend_port                   = 30015
+  frontend_port                  = tonumber("3${var.hana_instance_number}15")
+  backend_port                   = tonumber("3${var.hana_instance_number}15")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_30017" {
+resource "azurerm_lb_rule" "lb_3xx17" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer.id
-  name                           = "lbrule-hana-tcp-30017"
+  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}17"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = 30017
-  backend_port                   = 30017
+  frontend_port                  = tonumber("3${var.hana_instance_number}17")
+  backend_port                   = tonumber("3${var.hana_instance_number}17")
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
   probe_id                       = azurerm_lb_probe.hana-load-balancer.id
   idle_timeout_in_minutes        = 30

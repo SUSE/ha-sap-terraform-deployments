@@ -39,6 +39,7 @@ resource "null_resource" "hana_node_provisioner" {
 provider: azure
 role: hana_node
 devel_mode: ${var.devel_mode}
+hana_instance_number: ${var.hana_instance_number}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
