@@ -1,17 +1,3 @@
-# Availability set for the monitoring VMs
-
-resource "azurerm_availability_set" "hana-availability-set" {
-  name                        = "avset-monitoring"
-  location                    = var.az_region
-  resource_group_name         = var.resource_group_name
-  managed                     = "true"
-  platform_fault_domain_count = 2
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 # monitoring network configuration
 
 resource "azurerm_network_interface" "monitoring" {
@@ -102,7 +88,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   os_profile {
-    computer_name  = "monitoring"
+    computer_name  = "vmmonitoring"
     admin_username = var.admin_user
   }
 
