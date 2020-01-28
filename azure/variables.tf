@@ -47,6 +47,12 @@ variable "name" {
   default     = "hana"
 }
 
+variable "hana_instance_number" {
+  description = "HANA instance number"
+  type        = string
+  default     = "00"
+}
+
 # Variable for default region where to deploy resources
 
 variable "az_region" {
