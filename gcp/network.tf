@@ -3,6 +3,16 @@ resource "google_compute_network" "ha_network" {
   auto_create_subnetworks = "false"
 }
 
+# temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
+resource "google_compute_route" "hana-route" {
+  name                   = "hana-route"
+  dest_range             = "10.0.1.200/32"
+  network                = google_compute_network.ha_network.name
+  next_hop_instance      = google_compute_instance.clusternodes.0.name
+  next_hop_instance_zone = element(data.google_compute_zones.available.names, 0)
+  priority               = 1000
+}
+
 resource "google_compute_subnetwork" "ha_subnet" {
   name          = "${terraform.workspace}-${var.name}-subnet"
   network       = google_compute_network.ha_network.self_link
