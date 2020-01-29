@@ -33,39 +33,6 @@ resource "azurerm_subnet_route_table_association" "mysubnet" {
 
 # NICs & Public IP resources
 
-resource "azurerm_network_interface" "monitoring" {
-  name                      = "nic-monitoring"
-  count                     = var.monitoring_enabled == true ? 1 : 0
-  location                  = var.az_region
-  resource_group_name       = azurerm_resource_group.myrg.name
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
-
-  ip_configuration {
-    name                          = "ipconf-primary"
-    subnet_id                     = azurerm_subnet.mysubnet.id
-    private_ip_address_allocation = "static"
-    private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id          = azurerm_public_ip.monitoring.0.id
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
-resource "azurerm_public_ip" "monitoring" {
-  name                    = "pip-monitoring"
-  count                   = var.monitoring_enabled == true ? 1 : 0
-  location                = var.az_region
-  resource_group_name     = azurerm_resource_group.myrg.name
-  allocation_method       = "Dynamic"
-  idle_timeout_in_minutes = 30
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 resource "azurerm_network_interface" "iscsisrv" {
   name                      = "nic-iscsisrv"
   location                  = var.az_region
