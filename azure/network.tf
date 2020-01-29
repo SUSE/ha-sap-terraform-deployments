@@ -202,37 +202,6 @@ resource "azurerm_public_ip" "monitoring" {
   }
 }
 
-resource "azurerm_network_interface" "iscsisrv" {
-  name                      = "nic-iscsisrv"
-  location                  = var.az_region
-  resource_group_name       = azurerm_resource_group.myrg.name
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
-
-  ip_configuration {
-    name                          = "ipconf-primary"
-    subnet_id                     = azurerm_subnet.mysubnet.id
-    private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.10"
-    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
-resource "azurerm_public_ip" "iscsisrv" {
-  name                    = "pip-iscsisrv"
-  location                = var.az_region
-  resource_group_name     = azurerm_resource_group.myrg.name
-  allocation_method       = "Dynamic"
-  idle_timeout_in_minutes = 30
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 resource "azurerm_network_interface" "hana" {
   count                         = var.ninstances
   name                          = "nic-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"

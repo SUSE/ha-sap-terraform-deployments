@@ -84,6 +84,9 @@ hana_disk_device = "/dev/sdc"
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/sdc"
 
+# IP address of the iSCSI server
+iscsi_srv_ip = "10.74.1.14"
+
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
 cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"

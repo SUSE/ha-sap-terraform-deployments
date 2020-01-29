@@ -79,6 +79,11 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
+  type        = string
+}
+
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
   type        = string
