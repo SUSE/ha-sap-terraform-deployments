@@ -31,7 +31,11 @@ netweaver:
     - /netweaver_inst_media/51053381 # HANA HDB Client folder
 
   hana:
-    host: 10.0.1.200 # {{ iprange }}.200
+{%- if grains['provider'] == 'gcp' %}
+    host: {{ grains['hana_cluster_vip'] }}
+{%- else %}
+    host: {{ iprange }}.200
+{%- endif %}
     sid: PRD
     instance: '00'
     password: YourPassword1234

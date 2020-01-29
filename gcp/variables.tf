@@ -138,6 +138,11 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 # SUSE subscription variables
 
 variable "reg_code" {
@@ -261,6 +266,11 @@ variable "drbd_ips" {
   default     = []
 }
 
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 # netweaver realted variables
 
 variable "netweaver_enabled" {
@@ -292,6 +302,6 @@ variable "netweaver_ips" {
 }
 
 variable "netweaver_virtual_ips" {
-  description = "virtual ip addresses to set to the nodes"
+  description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
   type        = list(string)
 }

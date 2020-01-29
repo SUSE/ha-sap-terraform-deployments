@@ -12,7 +12,7 @@ resource "google_compute_disk" "data" {
 # temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
 resource "google_compute_route" "drbd-route" {
   name                   = "drbd-route"
-  dest_range             = "10.0.1.201/32"
+  dest_range             = "${var.drbd_cluster_vip}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.drbd.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)

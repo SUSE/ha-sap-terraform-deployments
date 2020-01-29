@@ -69,6 +69,7 @@ pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 nw_inst_disk_device : /dev/sdb
+hana_cluster_vip: ${var.hana_cluster_vip}
 
 EOF
   destination = "/tmp/grains"

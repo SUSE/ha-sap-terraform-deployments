@@ -42,6 +42,11 @@ variable "drbd_data_disk_type" {
   default     = "pd-standard"
 }
 
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 variable "gcp_credentials_file" {
   description = "Path to your local gcp credentials file"
   type        = string

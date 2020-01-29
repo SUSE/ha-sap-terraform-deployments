@@ -25,6 +25,9 @@ hana_backup_disk_type = "pd-standard"
 # Disk size for HANA backup in GB
 hana_backup_disk_size = "416"
 
+# HANA cluster vip
+hana_cluster_vip = "10.0.1.200"
+
 # SSH private key file
 private_key_location = "/path/to/your/private/ssh/key"
 
@@ -133,6 +136,7 @@ monitoring_srv_ip = "10.0.0.4"
 # Each drbd cluster host IP address (sequential order).
 # example : drbd_host_ips = ["10.0.0.10", "10.0.0.11"]
 #drbd_ips = ["10.0.0.10", "10.0.0.11"]
+#drbd_cluster_vip = "10.0.1.201"
 
 # netweaver related variables
 
@@ -147,4 +151,4 @@ monitoring_srv_ip = "10.0.0.4"
 
 #netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
 
-#netweaver_virtual_ips = ["10.0.0.25", "10.0.0.26", "10.0.0.27", "10.0.0.28"]
+#netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]

@@ -6,7 +6,7 @@ resource "google_compute_network" "ha_network" {
 # temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
 resource "google_compute_route" "hana-route" {
   name                   = "hana-route"
-  dest_range             = "10.0.1.200/32"
+  dest_range             = "${var.hana_cluster_vip}/32"
   network                = google_compute_network.ha_network.name
   next_hop_instance      = google_compute_instance.clusternodes.0.name
   next_hop_instance_zone = element(data.google_compute_zones.available.names, 0)

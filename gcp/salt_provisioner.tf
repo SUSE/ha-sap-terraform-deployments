@@ -130,6 +130,7 @@ hana_disk_device: ${var.hana_disk_device}
 hana_backup_device: ${var.hana_backup_device}
 hana_inst_disk_device: ${var.hana_inst_disk_device}
 hana_fstype: ${var.hana_fstype}
+hana_cluster_vip: ${var.hana_cluster_vip}
 gcp_credentials_file: ${var.gcp_credentials_file}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_ip}

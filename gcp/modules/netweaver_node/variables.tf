@@ -103,6 +103,11 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
+variable "hana_cluster_vip" {
+  description = "HANA cluster vip"
+  type        = string
+}
+
 variable "virtual_host_ips" {
   description = "virtual ip addresses to set to the nodes"
   type        = list(string)

@@ -12,7 +12,7 @@ resource "google_compute_disk" "netweaver-software" {
 # temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
 resource "google_compute_route" "nw-route" {
   name                   = "nw-route"
-  dest_range             = "10.0.1.25/32"
+  dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)

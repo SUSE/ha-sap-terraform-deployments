@@ -8,6 +8,7 @@ module "drbd_node" {
   drbd_image             = var.drbd_image
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type
+  drbd_cluster_vip       = var.drbd_cluster_vip
   gcp_credentials_file   = var.gcp_credentials_file
   network_domain         = "tf.local"
   host_ips               = var.drbd_ips
@@ -43,7 +44,8 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
-  netweaver_nfs_share       = "10.0.1.201:/HA1" # drbd cluster ip address is hardcoded by now
+  netweaver_nfs_share       = "${var.drbd_cluster_vip}:/HA1" # drbd cluster ip address is hardcoded by now
+  hana_cluster_vip          = var.hana_cluster_vip
   virtual_host_ips          = var.netweaver_virtual_ips
   reg_code                  = var.reg_code
   reg_email                 = var.reg_email
