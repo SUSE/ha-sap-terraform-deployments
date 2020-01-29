@@ -137,3 +137,24 @@ module "monitoring" {
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
 }
+
+module "iscsi_server" {
+  source                 = "./modules/iscsi_server"
+  az_region              = var.az_region
+  resource_group_name    = azurerm_resource_group.myrg.name
+  network_subnet_id      = azurerm_subnet.mysubnet.id
+  sec_group_id           = azurerm_network_security_group.mysecgroup.id
+  storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
+  iscsidev               = var.iscsidev
+  iscsi_disks            = var.iscsi_disks
+  admin_user             = var.admin_user
+  iscsi_srv_ip           = var.iscsi_srv_ip
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  provisioner            = var.provisioner
+  background             = var.background
+}
