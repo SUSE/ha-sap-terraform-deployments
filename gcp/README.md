@@ -125,6 +125,7 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **hana_disk_device**: device used by node where HANA will be installed (/dev/sdb by default).
 * **hana_backup_device**: device used by node where HANA backup will be stored (/dev/sdc by default).
 * **hana_inst_disk_device**: device used by node where HANA will be downloaded (/dev/sdd by default).
+* **hana_cluster_vip**: IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 * **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
 * **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
