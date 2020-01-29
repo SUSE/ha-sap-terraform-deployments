@@ -69,23 +69,71 @@ module "netweaver_node" {
   monitoring_enabled            = var.monitoring_enabled
 }
 
-module "iscsi_server" {
-  source                 = "./modules/iscsi_server"
+module "hana_node" {
+  source                        = "./modules/hana_node"
+  az_region                     = var.az_region
+  hana_count                    = var.hana_count
+  hana_instance_number          = var.hana_instance_number
+  instancetype                  = var.instancetype
+  host_ips                      = var.host_ips
+  scenario_type                 = var.scenario_type
+  resource_group_name           = azurerm_resource_group.myrg.name
+  network_subnet_id             = azurerm_subnet.mysubnet.id
+  sec_group_id                  = azurerm_network_security_group.mysecgroup.id
+  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account_name          = var.storage_account_name
+  storage_account_key           = var.storage_account_key
+  enable_accelerated_networking = var.hana_enable_accelerated_networking
+  sles4sap_uri                  = var.sles4sap_uri
+  init_type                     = var.init_type
+  hana_inst_master              = var.hana_inst_master
+  hana_inst_folder              = var.hana_inst_folder
+  hana_disk_device              = var.hana_disk_device
+  hana_fstype                   = var.hana_fstype
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  public_key_location           = var.public_key_location
+  private_key_location          = var.private_key_location
+  hana_data_disk_type           = var.hana_data_disk_type
+  hana_data_disk_size           = var.hana_data_disk_size
+  hana_data_disk_caching        = var.hana_data_disk_caching
+  hana_public_publisher         = var.hana_public_publisher
+  hana_public_offer             = var.hana_public_offer
+  hana_public_sku               = var.hana_public_sku
+  hana_public_version           = var.hana_public_version
+  admin_user                    = var.admin_user
+  iscsi_srv_ip                  = var.iscsi_srv_ip
+  reg_code                      = var.reg_code
+  reg_email                     = var.reg_email
+  reg_additional_modules        = var.reg_additional_modules
+  ha_sap_deployment_repo        = var.ha_sap_deployment_repo
+  devel_mode                    = var.devel_mode
+  provisioner                   = var.provisioner
+  background                    = var.background
+  monitoring_enabled            = var.monitoring_enabled
+  hwcct                         = var.hwcct
+  qa_mode                       = var.qa_mode
+}
+
+module "monitoring" {
+  source                 = "./modules/monitoring"
   az_region              = var.az_region
+  instancetype           = "Standard_D2s_v3"
   resource_group_name    = azurerm_resource_group.myrg.name
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  monitoring_uri         = var.monitoring_uri
+  monitoring_srv_ip      = var.monitoring_srv_ip
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
-  iscsidev               = var.iscsidev
-  iscsi_disks            = var.iscsi_disks
   admin_user             = var.admin_user
-  iscsi_srv_ip           = var.iscsi_srv_ip
+  host_ips               = var.host_ips
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
 }

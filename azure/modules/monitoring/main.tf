@@ -1,7 +1,8 @@
-# iscsi server network configuration
+# monitoring network configuration
 
-resource "azurerm_network_interface" "iscsisrv" {
-  name                      = "nic-iscsisrv"
+resource "azurerm_network_interface" "monitoring" {
+  name                      = "nic-monitoring"
+  count                     = var.monitoring_enabled == true ? 1 : 0
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
   network_security_group_id = var.sec_group_id
@@ -10,8 +11,8 @@ resource "azurerm_network_interface" "iscsisrv" {
     name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = var.iscsi_srv_ip
-    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
+    private_ip_address            = var.monitoring_srv_ip
+    public_ip_address_id          = azurerm_public_ip.monitoring.0.id
   }
 
   tags = {
@@ -19,8 +20,9 @@ resource "azurerm_network_interface" "iscsisrv" {
   }
 }
 
-resource "azurerm_public_ip" "iscsisrv" {
-  name                    = "pip-iscsisrv"
+resource "azurerm_public_ip" "monitoring" {
+  name                    = "pip-monitoring"
+  count                   = var.monitoring_enabled == true ? 1 : 0
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -31,18 +33,18 @@ resource "azurerm_public_ip" "iscsisrv" {
   }
 }
 
-# iscsi server custom image. only available if iscsi_image_uri is used
+# monitoring custom image. only available if monitoring_image_uri is used
 
-resource "azurerm_image" "iscsi_srv" {
-  count               = var.iscsi_srv_uri != "" ? 1 : 0
-  name                = "IscsiSrvImg"
+resource "azurerm_image" "monitoring" {
+  count               = var.monitoring_uri != "" ? 1 : 0
+  name                = "monitoringSrvImg"
   location            = var.az_region
   resource_group_name = var.resource_group_name
 
   os_disk {
     os_type  = "Linux"
     os_state = "Generalized"
-    blob_uri = var.iscsi_srv_uri
+    blob_uri = var.monitoring_uri
     size_gb  = "32"
   }
 
@@ -51,41 +53,42 @@ resource "azurerm_image" "iscsi_srv" {
   }
 }
 
-# iSCSI server VM
+# monitoring VM
 
-resource "azurerm_virtual_machine" "iscsisrv" {
-  name                  = "vmiscsisrv"
+resource "azurerm_virtual_machine" "monitoring" {
+  name                  = "vmmonitoring"
+  count                 = var.monitoring_enabled == true ? 1 : 0
   location              = var.az_region
   resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.iscsisrv.id]
-  vm_size               = "Standard_D2s_v3"
+  network_interface_ids = [azurerm_network_interface.monitoring.0.id]
+  vm_size               = var.instancetype
 
   storage_os_disk {
-    name              = "disk-iscsisrv-Os"
+    name              = "disk-monitoring-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
 
   storage_image_reference {
-    id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_publisher
-    offer     = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_offer
-    sku       = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_sku
-    version   = var.iscsi_srv_uri != "" ? "" : var.iscsi_public_version
+    id        = var.monitoring_uri != "" ? azurerm_image.monitoring.0.id : ""
+    publisher = var.monitoring_uri != "" ? "" : var.monitoring_public_publisher
+    offer     = var.monitoring_uri != "" ? "" : var.monitoring_public_offer
+    sku       = var.monitoring_uri != "" ? "" : var.monitoring_public_sku
+    version   = var.monitoring_uri != "" ? "" : var.monitoring_public_version
   }
 
   storage_data_disk {
-    name              = "disk-iscsisrv-Data01"
+    name              = "disk-monitoring-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"
     lun               = "0"
-    managed_disk_type = "StandardSSD_LRS"
+    managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "vmiscsisrv"
+    computer_name  = "vmmonitoring"
     admin_username = var.admin_user
   }
 
