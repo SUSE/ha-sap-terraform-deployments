@@ -75,3 +75,21 @@ output "drbd_name" {
 output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
+
+# netweaver
+
+output "netweaver_ip" {
+  value = module.netweaver_node.netweaver_ip
+}
+
+output "netweaver_public_ip" {
+  value = module.netweaver_node.netweaver_public_ip
+}
+
+output "netweaver_name" {
+  value = module.netweaver_node.netweaver_name
+}
+
+output "netweaver_public_name" {
+  value = module.netweaver_node.netweaver_public_name
+}

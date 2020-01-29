@@ -260,3 +260,38 @@ variable "drbd_ips" {
   type        = list(string)
   default     = []
 }
+
+# netweaver realted variables
+
+variable "netweaver_enabled" {
+  description = "enable netweaver cluster creation"
+  default     = false
+}
+
+variable "netweaver_machine_type" {
+  description = "machine type for netweaver nodes"
+  type        = string
+  default     = "n1-highmem-8"
+}
+
+variable "netweaver_image" {
+  description = "image of the netweaver nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "netweaver_software_bucket" {
+  description = "gcp bucket where netweaver software is available"
+  type        = string
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the nodes"
+  type        = list(string)
+}
