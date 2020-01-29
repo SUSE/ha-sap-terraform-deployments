@@ -223,3 +223,40 @@ variable "hwcct" {
   type        = bool
   default     = false
 }
+
+# drbd related variables
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
+variable "drbd_machine_type" {
+  description = "machine type for drbd nodes"
+  type        = string
+  default     = "n1-standard-4"
+}
+
+variable "drbd_image" {
+  description = "image of the drbd nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "drbd_data_disk_size" {
+  description = "drbd data disk size"
+  type        = string
+  default     = "10"
+}
+
+variable "drbd_data_disk_type" {
+  description = "drbd data disk type"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}

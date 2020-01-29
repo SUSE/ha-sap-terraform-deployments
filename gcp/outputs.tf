@@ -57,3 +57,21 @@ output "monitoring_name" {
 output "monitoring_public_name" {
   value = ""
 }
+
+# drbd
+
+output "drbd_ip" {
+  value = module.drbd_node.drbd_ip
+}
+
+output "drbd_public_ip" {
+  value = module.drbd_node.drbd_public_ip
+}
+
+output "drbd_name" {
+  value = module.drbd_node.drbd_name
+}
+
+output "drbd_public_name" {
+  value = module.drbd_node.drbd_public_name
+}
