@@ -73,6 +73,7 @@ module "hana_node" {
   source                        = "./modules/hana_node"
   az_region                     = var.az_region
   hana_count                    = var.hana_count
+  hana_instance_number          = var.hana_instance_number
   instancetype                  = var.instancetype
   host_ips                      = var.host_ips
   scenario_type                 = var.scenario_type
