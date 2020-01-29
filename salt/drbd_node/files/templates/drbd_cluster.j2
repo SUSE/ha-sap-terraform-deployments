@@ -1,6 +1,6 @@
 {% set data = pillar.cluster.configure.template.parameters %}
 {% set cloud_provider = grains['cloud_provider'] %}
-{% set drbd = salt['pillar.get']('drbd', merge=True) %}
+{% set drbd = salt['pillar.get']('drbd', default={}, merge=True) %}
 {% set nfsid = 1 %}
 
 #
