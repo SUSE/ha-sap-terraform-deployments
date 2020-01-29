@@ -67,6 +67,11 @@ variable "iscsidev" {
   default     = "/dev/sdb"
 }
 
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string

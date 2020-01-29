@@ -118,6 +118,7 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **iscsi_server_boot_image**: the name of the SLES image for the iSCSI server used for SBD stonith.
 * **init_type**: variable controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster). Defaults to `all`.
 * **iscsidev**: device used by the iSCSI server to provide LUNs.
+* **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: path to a custom ssh public key to upload to the nodes.
 * **cluster_ssh_key**: path to a custom ssh private key to upload to the nodes.
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `GCP Bucket`.

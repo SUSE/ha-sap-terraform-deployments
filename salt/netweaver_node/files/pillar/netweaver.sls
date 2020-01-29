@@ -35,6 +35,8 @@ netweaver:
     name: SAPABAP1
     password: SuSE1234
 
+  product_id: NW750.HDB.ABAPHA
+
   nodes:
     - host: {{ grains['name_prefix'] }}01
       virtual_host: sapha1as

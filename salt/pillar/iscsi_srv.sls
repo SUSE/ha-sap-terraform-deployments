@@ -1,3 +1,11 @@
+{% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
+{% set partitions = grains['partitions'] %}
+{% set num = grains['iscsi_disks'] %}
+
+{% if num > 0 and num < partitions|length %}
+{% set partitions = (partitions|list)[:num] %}
+{% endif %}
+
 iscsi:
   target:
     pkgs:
@@ -14,33 +22,17 @@ iscsi:
             enforce_discovery_auth: 'false'
             name: "iscsi"
         storage_objects:
-          sda:
+{%- for partition in partitions %}
+          sd{{ devicenum[loop.index0] }}:
             attributes:
               block_size: 512
               emulate_write_cache: 0
               queue_depth: 64
               unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}1
-            name: "sda"
+            dev: {{ grains['iscsidev'] }}{{ loop.index }}
+            name: sd{{ devicenum[loop.index0] }}
             plugin: "block"
-          sdb:
-            attributes:
-              block_size: 512
-              emulate_write_cache: 0
-              queue_depth: 64
-              unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}2
-            name: "sdb"
-            plugin: "block"
-          sdc:
-            attributes:
-              block_size: 512
-              emulate_write_cache: 0
-              queue_depth: 64
-              unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}3
-            name: "sdc"
-            plugin: "block"
+{%- endfor %}
         targets:
           iscsi_server:
             fabric: iscsi
@@ -55,15 +47,11 @@ iscsi:
                   netif_timeout: 2
                   prod_mode_write_protect: 0
               luns:
-                sda:
-                  index: 0
-                  storage_object: /backstores/block/sda
-                sdb:
-                  index: 1
-                  storage_object: /backstores/block/sdb
-                sdc:
-                  index: 2
-                  storage_object: /backstores/block/sdc
+{%- for partition in partitions %}
+                sd{{ devicenum[loop.index0] }}:
+                  index: {{ loop.index0 }}
+                  storage_object: /backstores/block/sd{{ devicenum[loop.index0] }}
+{%- endfor %}
               portals:
                 iscsi_server:
                   ip_address: {{ grains['iscsi_srv_ip'] }}
