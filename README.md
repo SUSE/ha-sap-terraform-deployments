@@ -27,4 +27,4 @@ This project is organized in folders containing the Terraform configuration file
 
 This project uses Terraform for the deployment and Saltstack for the provisioning.
 
-**Be carreful what instance type you will use because default choice is systems certified by SAP, so cost could be expensive if you let default value.**
+**Be careful with what instance type you will use because default choice is systems certified by SAP, so cost could be expensive if you leave the default value.**
