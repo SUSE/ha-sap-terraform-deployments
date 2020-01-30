@@ -44,7 +44,7 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
-  netweaver_nfs_share       = "${var.drbd_cluster_vip}:/HA1" # drbd cluster ip address is hardcoded by now
+  netweaver_nfs_share       = "${var.drbd_cluster_vip}:/HA1"
   hana_cluster_vip          = var.hana_cluster_vip
   virtual_host_ips          = var.netweaver_virtual_ips
   reg_code                  = var.reg_code
