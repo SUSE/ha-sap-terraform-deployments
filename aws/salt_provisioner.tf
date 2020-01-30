@@ -89,11 +89,6 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = var.aws_credentials
-    destination = "/tmp/credentials"
-  }
-
-  provisioner "file" {
     source      = "../salt"
     destination = "/tmp/salt"
   }
@@ -108,6 +103,9 @@ resource "null_resource" "hana_node_provisioner" {
 provider: aws
 region: ${var.aws_region}
 role: hana_node
+aws_cluster_profile: Cluster
+aws_access_key_id: ${var.aws_access_key_id}
+aws_secret_access_key: ${var.aws_secret_access_key}
 devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
@@ -157,11 +155,6 @@ resource "null_resource" "monitoring_provisioner" {
     type        = "ssh"
     user        = "ec2-user"
     private_key = file(var.private_key_location)
-  }
-
-  provisioner "file" {
-    source      = var.aws_credentials
-    destination = "/tmp/credentials"
   }
 
   provisioner "file" {

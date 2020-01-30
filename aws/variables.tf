@@ -75,9 +75,12 @@ variable "private_key_location" {
   type = string
 }
 
-variable "aws_credentials" {
+variable "aws_access_key_id" {
   type    = string
-  default = "~/.aws/credentials"
+}
+
+variable "aws_secret_access_key" {
+  type    = string
 }
 
 variable "init_type" {
