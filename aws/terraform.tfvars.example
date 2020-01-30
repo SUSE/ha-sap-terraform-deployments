@@ -39,6 +39,9 @@ hana_inst_folder = "/root/hana_inst_media/"
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/xvdd"
 
+# IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
+hana_cluster_vip = "192.168.1.10"
+
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 

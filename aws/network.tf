@@ -54,6 +54,13 @@ resource "aws_route" "public" {
   gateway_id             = aws_internet_gateway.igw.id
 }
 
+resource "aws_route" "hana-cluster-vip" {
+  route_table_id         = aws_route_table.route-table.id
+  destination_cidr_block = "${var.hana_cluster_vip}/32"
+  instance_id            = aws_instance.clusternodes.0.id
+}
+
+
 resource "aws_security_group" "secgroup" {
   name   = "${terraform.workspace}-sg"
   vpc_id = aws_vpc.vpc.id

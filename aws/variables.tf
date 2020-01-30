@@ -53,6 +53,12 @@ variable "hana_data_disk_type" {
   default = "gp2"
 }
 
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = "192.168.1.10"
+}
+
 variable "ninstances" {
   type    = string
   default = "2"
