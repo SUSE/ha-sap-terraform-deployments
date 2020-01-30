@@ -32,70 +32,40 @@ output "iscsisrv_public_name" {
   value = [data.azurerm_public_ip.iscsisrv.fqdn]
 }
 
-# Hana nodes
-
-data "azurerm_public_ip" "hana" {
-  count = var.ninstances
-  name  = element(azurerm_public_ip.hana.*.name, count.index)
-  resource_group_name = element(
-    azurerm_virtual_machine.hana.*.resource_group_name,
-    count.index,
-  )
-}
-
-data "azurerm_network_interface" "hana" {
-  count = var.ninstances
-  name  = element(azurerm_network_interface.hana.*.name, count.index)
-  resource_group_name = element(
-    azurerm_virtual_machine.hana.*.resource_group_name,
-    count.index,
-  )
-}
-
-output "cluster_nodes_ip" {
-  value = data.azurerm_network_interface.hana.*.private_ip_address
-}
-
-output "cluster_nodes_public_ip" {
-  value = data.azurerm_public_ip.hana.*.ip_address
-}
-
-output "cluster_nodes_name" {
-  value = azurerm_virtual_machine.hana.*.name
-}
-
-output "cluster_nodes_public_name" {
-  value = data.azurerm_public_ip.hana.*.fqdn
-}
-
 # Monitoring
 
-data "azurerm_public_ip" "monitoring" {
-  count               = var.monitoring_enabled == true ? 1 : 0
-  name                = azurerm_public_ip.monitoring.0.name
-  resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
-}
-
-data "azurerm_network_interface" "monitoring" {
-  count               = var.monitoring_enabled == true ? 1 : 0
-  name                = azurerm_network_interface.monitoring.0.name
-  resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
-}
-
 output "monitoring_ip" {
-  value = join("", data.azurerm_network_interface.monitoring.*.private_ip_address)
+  value = module.monitoring.monitoring_ip
 }
 
 output "monitoring_public_ip" {
-  value = join("", data.azurerm_public_ip.monitoring.*.ip_address)
+  value = module.monitoring.monitoring_public_ip
 }
 
 output "monitoring_name" {
-  value = join("", azurerm_virtual_machine.monitoring.*.name)
+  value = module.monitoring.monitoring_name
 }
 
 output "monitoring_public_name" {
-  value = join("", data.azurerm_public_ip.monitoring.*.fqdn)
+  value = module.monitoring.monitoring_public_name
+}
+
+# Hana nodes
+
+output "cluster_nodes_ip" {
+  value = module.hana_node.cluster_nodes_ip
+}
+
+output "cluster_nodes_public_ip" {
+  value = module.hana_node.cluster_nodes_public_ip
+}
+
+output "cluster_nodes_name" {
+  value = module.hana_node.cluster_nodes_name
+}
+
+output "cluster_nodes_public_name" {
+  value = module.hana_node.cluster_nodes_public_name
 }
 
 # drbd
