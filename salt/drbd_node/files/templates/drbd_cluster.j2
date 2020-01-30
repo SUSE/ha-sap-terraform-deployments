@@ -37,8 +37,12 @@ primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
    options=noatime,nodiratime \
    op monitor interval="20" timeout="40s"
 
-primitive vip-{{ res.name }}-nfs IPaddr2 \
-        params ip={{ res.virtual_ip }} cidr_netmask=24 op monitor interval=10 timeout=20
+{% set nic = "nic="~pillar.cluster.interface|default('eth0')|json if cloud_provider == "google-cloud-platform" else "nic="~pillar.cluster.interface|json if pillar.cluster.interface is defined else "" %}
+{%- set cidr_netmask = "cidr_netmask=32" if cloud_provider == "google-cloud-platform" else "" %}
+
+primitive vip_{{ res.name }}_nfs IPaddr2 \
+        params ip={{ res.virtual_ip }} {{ cidr_netmask }} {{ nic }} \
+        op monitor interval=10 timeout=20
 
 {% if cloud_provider == "microsoft-azure" %}
 primitive nc_{{ res.name }}_nfs anything \
@@ -51,7 +55,7 @@ primitive exportfs_work_{{ res.name }} exportfs \
         options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
         op monitor interval=30s
 
-group g-nfs_{{ res.name }} fs_{{ res.name }} exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
+group g-nfs_{{ res.name }} fs_{{ res.name }} vip_{{ res.name }}_nfs exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
 
 order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
   ms_{{ res.name }}:promote g-nfs_{{ res.name }}:start

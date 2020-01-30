@@ -2,7 +2,7 @@ resource "google_compute_disk" "iscsi_data" {
   name = "${terraform.workspace}-${var.name}-iscsi-data"
   type = "pd-standard"
   size = "10"
-  zone = element(data.google_compute_zones.available.names, 1)
+  zone = element(data.google_compute_zones.available.names, 0)
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
@@ -36,5 +36,5 @@ resource "google_compute_disk" "monitoring_data" {
   name  = "${terraform.workspace}-${var.name}-monitoring-data"
   type  = "pd-standard"
   size  = "20"
-  zone  = element(data.google_compute_zones.available.names, 1)
+  zone  = element(data.google_compute_zones.available.names, 0)
 }
