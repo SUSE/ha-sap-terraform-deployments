@@ -15,6 +15,7 @@ mount_sapmnt:
     - device: {{ grains['netweaver_nfs_share'] }}
     - fstype: nfs
     - mkmnt: True
+    - persist: False
     - opts:
       - defaults
     - retry:

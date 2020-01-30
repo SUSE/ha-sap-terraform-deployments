@@ -138,6 +138,11 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 # SUSE subscription variables
 
 variable "reg_code" {
@@ -222,4 +227,81 @@ variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
   default     = false
+}
+
+# drbd related variables
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
+variable "drbd_machine_type" {
+  description = "machine type for drbd nodes"
+  type        = string
+  default     = "n1-standard-4"
+}
+
+variable "drbd_image" {
+  description = "image of the drbd nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "drbd_data_disk_size" {
+  description = "drbd data disk size"
+  type        = string
+  default     = "10"
+}
+
+variable "drbd_data_disk_type" {
+  description = "drbd data disk type"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
+# netweaver realted variables
+
+variable "netweaver_enabled" {
+  description = "enable netweaver cluster creation"
+  default     = false
+}
+
+variable "netweaver_machine_type" {
+  description = "machine type for netweaver nodes"
+  type        = string
+  default     = "n1-highmem-8"
+}
+
+variable "netweaver_image" {
+  description = "image of the netweaver nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "netweaver_software_bucket" {
+  description = "gcp bucket where netweaver software is available"
+  type        = string
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
+  type        = list(string)
 }

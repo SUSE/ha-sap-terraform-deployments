@@ -8,7 +8,7 @@ More details in the official [SAP on SUSE HA NFS](https://docs.microsoft.com/en-
 
 The deployment is performed using the [drbd-formula](https://github.com/SUSE/drbd-formula) and [habootstrap-formula](https://github.com/SUSE/habootstrap-formula).
 
-**Disclaimer: Only available for libvirt and azure by now.**
+**Disclaimer: Only available for libvirt, azure and gcp by now.**
 
 ## Quickstart
 
@@ -21,6 +21,8 @@ In order to deploy a DRBD environment for NFS, some changes must be executed in 
 ### Additional options
 
 - Choose the `drbd_shared_storage_type` to use different type of storage to *sbd* for HA cluster (azure only uses the `iscsi` option).
+
+- Choose the `drbd_cluster_vip` to be used as the drbd cluster floating ip address. This address must be outside of the subnet ip range (gcp only).
 
 - Configure the `drbd_disk_size` for the size of attached DRBD backing device. Modify the `partitions` grain in [salt_provisioner.tf](../libvirt/modules/drbd_node/salt_provisioner.tf) for the layout of the disk for DRBD resouce.
 
