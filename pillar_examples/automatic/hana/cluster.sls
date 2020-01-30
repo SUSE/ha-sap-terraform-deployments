@@ -46,7 +46,7 @@ cluster:
         virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
         {% endif %}
         {% if grains['provider'] == 'aws' %}
-        virtual_ip_mask: 16
+        virtual_ip_mask: 32
         {% else %}
         virtual_ip_mask: 24
         {% endif %}

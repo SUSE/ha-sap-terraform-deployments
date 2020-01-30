@@ -53,8 +53,8 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order).
-# example : host_ips = ["10.0.1.0", "10.0.1.1"]
-host_ips = ["10.0.1.0", "10.0.1.1"]
+# example : host_ips = ["10.0.0.5", "10.0.1.6"]
+host_ips = ["10.0.0.5", "10.0.1.6"]
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -88,7 +88,7 @@ ha_sap_deployment_repo = ""
 #monitoring_enabled = true
 
 # IP address of the machine where Prometheus and Grafana are running
-monitoring_srv_ip = "10.0.1.2"
+monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
