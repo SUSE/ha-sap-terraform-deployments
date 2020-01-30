@@ -1,13 +1,50 @@
-# Launch SLES-HAE of SLES4SAP cluster nodes
+# iscsi server network configuration
 
-# Availability set for the VMs
+resource "azurerm_network_interface" "iscsisrv" {
+  name                      = "nic-iscsisrv"
+  location                  = var.az_region
+  resource_group_name       = var.resource_group_name
+  network_security_group_id = var.sec_group_id
 
-resource "azurerm_availability_set" "hana-availability-set" {
-  name                        = "avset-hana"
-  location                    = var.az_region
-  resource_group_name         = azurerm_resource_group.myrg.name
-  managed                     = "true"
-  platform_fault_domain_count = 2
+  ip_configuration {
+    name                          = "ipconf-primary"
+    subnet_id                     = var.network_subnet_id
+    private_ip_address_allocation = "static"
+    private_ip_address            = var.iscsi_srv_ip
+    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
+  }
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+resource "azurerm_public_ip" "iscsisrv" {
+  name                    = "pip-iscsisrv"
+  location                = var.az_region
+  resource_group_name     = var.resource_group_name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
+# iscsi server custom image. only available if iscsi_image_uri is used
+
+resource "azurerm_image" "iscsi_srv" {
+  count               = var.iscsi_srv_uri != "" ? 1 : 0
+  name                = "IscsiSrvImg"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+
+  os_disk {
+    os_type  = "Linux"
+    os_state = "Generalized"
+    blob_uri = var.iscsi_srv_uri
+    size_gb  = "32"
+  }
 
   tags = {
     workspace = terraform.workspace
@@ -19,7 +56,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
 resource "azurerm_virtual_machine" "iscsisrv" {
   name                  = "vmiscsisrv"
   location              = var.az_region
-  resource_group_name   = azurerm_resource_group.myrg.name
+  resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.iscsisrv.id]
   vm_size               = "Standard_D2s_v3"
 
@@ -48,7 +85,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   os_profile {
-    computer_name  = "iscsisrv"
+    computer_name  = "vmiscsisrv"
     admin_username = var.admin_user
   }
 
@@ -63,13 +100,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   boot_diagnostics {
     enabled     = "true"
-    storage_uri = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+    storage_uri = var.storage_account
   }
 
   tags = {
     workspace = terraform.workspace
   }
 }
-
-# monitoring VM
-
