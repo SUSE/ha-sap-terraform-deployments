@@ -15,7 +15,6 @@ resource "aws_instance" "iscsisrv" {
   private_ip                  = "10.0.0.254"
   security_groups             = [aws_security_group.secgroup.id]
   availability_zone           = element(data.aws_availability_zones.available.names, 0)
-  source_dest_check           = false
 
   root_block_device {
     volume_type = "gp2"
@@ -48,6 +47,7 @@ resource "aws_instance" "clusternodes" {
   private_ip                  = element(var.host_ips, count.index)
   security_groups             = [aws_security_group.secgroup.id]
   availability_zone           = element(data.aws_availability_zones.available.names, count.index)
+  source_dest_check           = false
 
   root_block_device {
     volume_type = "gp2"
