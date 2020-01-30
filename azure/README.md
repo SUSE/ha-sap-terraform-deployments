@@ -133,7 +133,7 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **storage_account_key**: Azure storage account secret key (key1 or key2).
 * **hana_inst_master**: path to the storage account where SAP HANA installation files are stored.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
-* **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
+* **hana_vm_size**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
 * **hana_data_disk_type**: disk type to use for HANA (Standard_LRS by default).
 * **hana_data_disk_caching**: caching mode for HANA disk, could be None, ReadOnly or ReadWrite (ReadWrite by default).
 * **hana_count**: number of cluster nodes to deploy. 2 by default.

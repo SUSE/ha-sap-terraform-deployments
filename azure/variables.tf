@@ -1,9 +1,9 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 # Variables for type of instances to use and number of cluster nodes
-# Use with: terraform apply -var instancetype=Small -var hana_count=2
+# Use with: terraform apply -var hana_vm_size=Standard_M128s -var hana_count=2
 
-variable "instancetype" {
+variable "hana_vm_size" {
   type    = string
   default = "Standard_M128s"
 }
@@ -91,6 +91,12 @@ variable "iscsi_srv_ip" {
   default     = "10.74.1.10"
 }
 
+variable "iscsi_vm_size" {
+  description = "VM size for the iscsi server machine. Default to Standard_D2s_v3"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
   type        = string
@@ -153,6 +159,18 @@ variable "drbd_ips" {
   default     = []
 }
 
+variable "drbd_vm_size" {
+  description = "VM size for the DRBD machine. Default to Standard_D2s_v3"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
+variable "monitoring_vm_size" {
+  description = "VM size for the monitoring machine. Default to Standard_D2s_v3"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -190,7 +208,7 @@ variable "netweaver_enabled" {
 }
 
 variable "netweaver_vm_size" {
-  description = "VM size for the Netweaver machines. Default to Standard_D2s_v3"
+  description = "VM size for the Netweaver machines. Default to Standard_D4s_v3"
   type        = string
   default     = "Standard_D4s_v3"
 }

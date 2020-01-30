@@ -80,7 +80,7 @@ variable "hana_public_version" {
   type    = string
 }
 
-variable "instancetype" {
+variable "vm_size" {
   type    = string
 }
 
