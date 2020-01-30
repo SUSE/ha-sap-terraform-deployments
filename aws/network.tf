@@ -7,6 +7,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
+    Name      = "${terraform.workspace}-vpc"
     Workspace = terraform.workspace
   }
 }
@@ -15,7 +16,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Network   = "Public"
+    Name      = "${terraform.workspace}-igw"
     Workspace = terraform.workspace
   }
 }
@@ -27,6 +28,7 @@ resource "aws_subnet" "hana-subnet" {
   availability_zone  = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
+    Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"
     Workspace = terraform.workspace
   }
 }
@@ -35,6 +37,7 @@ resource "aws_route_table" "route-table" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
+    Name      = "${terraform.workspace}-hana-route-table"
     Workspace = terraform.workspace
   }
 }
@@ -52,10 +55,11 @@ resource "aws_route" "public" {
 }
 
 resource "aws_security_group" "secgroup" {
-  name   = "secgroup"
+  name   = "${terraform.workspace}-sg"
   vpc_id = aws_vpc.vpc.id
 
   tags = {
+    Name      = "${terraform.workspace}-sg"
     Workspace = terraform.workspace
   }
 }

@@ -27,6 +27,10 @@ resource "aws_instance" "iscsisrv" {
     device_name = "/dev/xvdd"
   }
 
+  volume_tags = {
+    Name = "${terraform.workspace}-iscsi"
+  }
+
   tags = {
     Name      = "${terraform.workspace} - iSCSI Server"
     Workspace = terraform.workspace
@@ -55,8 +59,14 @@ resource "aws_instance" "clusternodes" {
     device_name = "/dev/xvdd"
   }
 
+  volume_tags = {
+    Name = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+  }
+
   tags = {
-    Name = "${terraform.workspace} - Node-${count.index}"
+    Name      = "${terraform.workspace} - ${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
+    Workspace = terraform.workspace
+    Cluster   = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
   }
 }
 
@@ -83,7 +93,12 @@ resource "aws_instance" "monitoring" {
     device_name = "/dev/xvdd"
   }
 
+  volume_tags = {
+    Name = "${terraform.workspace}-monitoring"
+  }
+
   tags = {
     Name = "${terraform.workspace} - Monitoring"
+    Workspace = terraform.workspace
   }
 }
