@@ -11,8 +11,9 @@ variable "sec_group_id" {
   type = string
 }
 
-variable "instancetype" {
+variable "vm_size" {
   type    = string
+  default = "Standard_D2s_v3"
 }
 
 variable "network_subnet_id" {

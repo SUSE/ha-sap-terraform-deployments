@@ -61,7 +61,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   location              = var.az_region
   resource_group_name   = var.resource_group_name
   network_interface_ids = [azurerm_network_interface.monitoring.0.id]
-  vm_size               = var.instancetype
+  vm_size               = var.vm_size
 
   storage_os_disk {
     name              = "disk-monitoring-Os"
