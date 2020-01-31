@@ -166,7 +166,7 @@ variable "additional_packages" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)
 }
 

@@ -56,7 +56,7 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 # Used for cluster communication for example
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
-# Each host IP address (sequential order).
+# Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
 # example : host_ips = ["10.0.0.5", "10.0.1.6"]
 host_ips = ["10.0.0.5", "10.0.1.6"]
 
@@ -91,7 +91,7 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
-# IP address of the machine where Prometheus and Grafana are running
+# IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
 monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
