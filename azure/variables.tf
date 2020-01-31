@@ -4,8 +4,9 @@
 # Use with: terraform apply -var hana_vm_size=Standard_M128s -var hana_count=2
 
 variable "hana_vm_size" {
-  type    = string
-  default = "Standard_M128s"
+  description = "VM size for the hana machine"
+  type        = string
+  default     = "Standard_M128s"
 }
 
 # For reference:
@@ -92,7 +93,7 @@ variable "iscsi_srv_ip" {
 }
 
 variable "iscsi_vm_size" {
-  description = "VM size for the iscsi server machine. Default to Standard_D2s_v3"
+  description = "VM size for the iscsi server machine"
   type        = string
   default     = "Standard_D2s_v3"
 }
@@ -160,13 +161,13 @@ variable "drbd_ips" {
 }
 
 variable "drbd_vm_size" {
-  description = "VM size for the DRBD machine. Default to Standard_D2s_v3"
+  description = "VM size for the DRBD machine"
   type        = string
   default     = "Standard_D2s_v3"
 }
 
 variable "monitoring_vm_size" {
-  description = "VM size for the monitoring machine. Default to Standard_D2s_v3"
+  description = "VM size for the monitoring machine"
   type        = string
   default     = "Standard_D2s_v3"
 }
@@ -208,7 +209,7 @@ variable "netweaver_enabled" {
 }
 
 variable "netweaver_vm_size" {
-  description = "VM size for the Netweaver machines. Default to Standard_D4s_v3"
+  description = "VM size for the Netweaver machines"
   type        = string
   default     = "Standard_D4s_v3"
 }
