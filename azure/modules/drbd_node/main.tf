@@ -170,7 +170,7 @@ resource "azurerm_virtual_machine" "drbd" {
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.drbd.*.id, count.index)]
   availability_set_id   = azurerm_availability_set.drbd-availability-set[0].id
-  vm_size               = var.instancetype
+  vm_size               = var.vm_size
 
   storage_os_disk {
     name              = "disk-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}-Os"

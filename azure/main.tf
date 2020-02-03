@@ -2,7 +2,7 @@ module "drbd_node" {
   source                 = "./modules/drbd_node"
   az_region              = var.az_region
   drbd_count             = var.drbd_enabled == true ? 2 : 0
-  instancetype           = "Standard_D2s_v3"
+  vm_size                = var.drbd_vm_size
   drbd_image_uri         = var.drbd_image_uri
   drbd_public_publisher  = var.drbd_public_publisher
   drbd_public_offer      = var.drbd_public_offer
@@ -74,7 +74,7 @@ module "hana_node" {
   az_region                     = var.az_region
   hana_count                    = var.hana_count
   hana_instance_number          = var.hana_instance_number
-  instancetype                  = var.instancetype
+  vm_size                       = var.hana_vm_size
   host_ips                      = var.host_ips
   scenario_type                 = var.scenario_type
   resource_group_name           = azurerm_resource_group.myrg.name
@@ -118,7 +118,7 @@ module "hana_node" {
 module "monitoring" {
   source                 = "./modules/monitoring"
   az_region              = var.az_region
-  instancetype           = "Standard_D2s_v3"
+  vm_size                = var.monitoring_vm_size
   resource_group_name    = azurerm_resource_group.myrg.name
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
@@ -141,6 +141,7 @@ module "monitoring" {
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   az_region              = var.az_region
+  vm_size                = var.iscsi_vm_size
   resource_group_name    = azurerm_resource_group.myrg.name
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
