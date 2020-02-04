@@ -25,6 +25,18 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
+variable "cluster_ssh_pub" {
+  description = "path for the public key needed by the cluster"
+  type        = string
+  default     = ""
+}
+
+variable "cluster_ssh_key" {
+  description = "path for the private key needed by the cluster"
+  type        = string
+  default     = ""
+}
+
 // hana
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"

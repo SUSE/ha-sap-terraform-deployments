@@ -4,7 +4,7 @@ include:
   {% endif %}
   - cluster_node.hosts
   - cluster_node.cluster_packages
-  {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
+  {% if grains.get('cluster_ssh_pub', None) and grains.get('cluster_ssh_key', None) %}
   - cluster_node.ssh
   {% endif %}
   {% if grains['shared_storage_type'] == 'iscsi' %}
