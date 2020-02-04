@@ -388,7 +388,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "8001"
+    destination_port_range     = "9668"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
