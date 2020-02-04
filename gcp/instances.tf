@@ -2,7 +2,7 @@ resource "google_compute_instance" "iscsisrv" {
   name         = "${terraform.workspace}-iscsisrv"
   description  = "iSCSI server"
   machine_type = var.machine_type_iscsi_server
-  zone         = element(data.google_compute_zones.available.names, 1)
+  zone         = element(data.google_compute_zones.available.names, 0)
 
   lifecycle {
     create_before_destroy = true
@@ -74,14 +74,20 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   attached_disk {
-    source      = element(google_compute_disk.node_data.*.self_link, count.index)
-    device_name = element(google_compute_disk.node_data.*.name, count.index)
+    source      = element(google_compute_disk.data.*.self_link, count.index)
+    device_name = element(google_compute_disk.data.*.name, count.index)
     mode        = "READ_WRITE"
   }
 
   attached_disk {
-    source      = element(google_compute_disk.node_data2.*.self_link, count.index)
-    device_name = element(google_compute_disk.node_data2.*.name, count.index)
+    source      = element(google_compute_disk.backup.*.self_link, count.index)
+    device_name = element(google_compute_disk.backup.*.name, count.index)
+    mode        = "READ_WRITE"
+  }
+
+  attached_disk {
+    source      = element(google_compute_disk.hana-software.*.self_link, count.index)
+    device_name = element(google_compute_disk.hana-software.*.name, count.index)
     mode        = "READ_WRITE"
   }
 
@@ -99,7 +105,7 @@ resource "google_compute_instance" "monitoring" {
   name         = "${terraform.workspace}-monitoring"
   description  = "Monitoring server"
   machine_type = "custom-1-2048"
-  zone         = element(data.google_compute_zones.available.names, 1)
+  zone         = element(data.google_compute_zones.available.names, 0)
 
   lifecycle {
     create_before_destroy = true

@@ -38,10 +38,12 @@ cluster:
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
-        {% if grains['provider'] != 'azure' %}
-        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
-        {% else %}
+        {% if grains['provider'] == 'azure' %}
         virtual_ip: {{ grains['azure_lb_ip'] }}
+        {% elif grains['provider'] == 'gcp' %}
+        virtual_ip: {{ grains['hana_cluster_vip'] }}
+        {% else %}
+        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
         {% endif %}
         {% if grains['provider'] == 'aws' %}
         virtual_ip_mask: 16

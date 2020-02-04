@@ -21,11 +21,6 @@ variable "machine_type" {
   default = "n1-highmem-32"
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "pd-standard"
-}
-
 variable "iscsi_server_boot_image" {
   type    = string
   default = "suse-byos-cloud/sles-15-sap-byos"
@@ -69,6 +64,12 @@ variable "init_type" {
 variable "iscsidev" {
   description = "device iscsi for iscsi server"
   type        = string
+  default     = "/dev/sdb"
+}
+
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
 }
 
 variable "cluster_ssh_pub" {
@@ -93,20 +94,53 @@ variable "hana_inst_folder" {
   default = "/root/hana_inst_media"
 }
 
+variable "hana_data_disk_type" {
+  type    = string
+  default = "pd-ssd"
+}
+
+variable "hana_data_disk_size" {
+  type    = string
+  default = "834"
+}
+
+variable "hana_backup_disk_type" {
+  type    = string
+  default = "pd-standard"
+}
+
+variable "hana_backup_disk_size" {
+  type    = string
+  default = "416"
+}
+
 variable "hana_disk_device" {
   description = "device where to install HANA"
   type        = string
+  default     = "/dev/sdb"
+}
+
+variable "hana_backup_device" {
+  description = "device where HANA backup is stored"
+  type        = string
+  default     = "/dev/sdc"
 }
 
 variable "hana_inst_disk_device" {
   description = "device where to download HANA"
   type        = string
+  default     = "/dev/sdd"
 }
 
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
   type        = string
   default     = "xfs"
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
 }
 
 # SUSE subscription variables
@@ -193,4 +227,81 @@ variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
   default     = false
+}
+
+# drbd related variables
+
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  default     = false
+}
+
+variable "drbd_machine_type" {
+  description = "machine type for drbd nodes"
+  type        = string
+  default     = "n1-standard-4"
+}
+
+variable "drbd_image" {
+  description = "image of the drbd nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "drbd_data_disk_size" {
+  description = "drbd data disk size"
+  type        = string
+  default     = "10"
+}
+
+variable "drbd_data_disk_type" {
+  description = "drbd data disk type"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
+# netweaver realted variables
+
+variable "netweaver_enabled" {
+  description = "enable netweaver cluster creation"
+  default     = false
+}
+
+variable "netweaver_machine_type" {
+  description = "machine type for netweaver nodes"
+  type        = string
+  default     = "n1-highmem-8"
+}
+
+variable "netweaver_image" {
+  description = "image of the netweaver nodes"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
+}
+
+variable "netweaver_software_bucket" {
+  description = "gcp bucket where netweaver software is available"
+  type        = string
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
+  type        = list(string)
 }

@@ -49,8 +49,8 @@ If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
 
 ```
 terraform init
-terraform workspace new my-execution # optional
-terraform workspace select my-execution # optional
+terraform workspace new myexecution # optional
+terraform workspace select myexecution # optional
 terraform plan
 terraform apply
 ```
@@ -133,12 +133,15 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **storage_account_key**: Azure storage account secret key (key1 or key2).
 * **hana_inst_master**: path to the storage account where SAP HANA installation files are stored.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
-* **instancetype**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
+* **hana_vm_size**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
 * **hana_data_disk_type**: disk type to use for HANA (Standard_LRS by default).
 * **hana_data_disk_caching**: caching mode for HANA disk, could be None, ReadOnly or ReadWrite (ReadWrite by default).
-* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
+* **hana_count**: number of cluster nodes to deploy. 2 by default.
+* **hana_instance_number**: Instance number for SAP HANA. 00 by default.
 * **az_region**: Azure region where to deploy the configuration.
 * **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
+* **iscsidev**: device used by the iSCSI server to provide LUNs.
+* **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)

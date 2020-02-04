@@ -95,6 +95,11 @@ variable "iscsi_srv_ip" {
   default     = "192.168.106.21"
 }
 
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string

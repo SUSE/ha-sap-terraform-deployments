@@ -66,7 +66,11 @@ drbd:
 
       file_system: "xfs"
       mount_point: "/mnt/sapdata/HA1"
+      {%- if grains['provider'] == 'gcp' %}
+      virtual_ip: {{ grains['drbd_cluster_vip'] }}
+      {%- else %}
       virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.201
+      {%- endif %}
 
       nodes:
         - name: {{ grains['name_prefix'] }}01

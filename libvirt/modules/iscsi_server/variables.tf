@@ -13,6 +13,11 @@ variable "iscsidev" {
   type        = string
 }
 
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = string

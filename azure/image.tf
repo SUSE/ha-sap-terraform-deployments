@@ -129,24 +129,6 @@ variable "netweaver_image_uri" {
   default = ""
 }
 
-resource "azurerm_image" "sles4sap" {
-  count               = var.sles4sap_uri != "" ? 1 : 0
-  name                = "BVSles4SapImg"
-  location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
-
-  os_disk {
-    os_type  = "Linux"
-    os_state = "Generalized"
-    blob_uri = var.sles4sap_uri
-    size_gb  = "32"
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 resource "azurerm_image" "iscsi_srv" {
   count               = var.iscsi_srv_uri != "" ? 1 : 0
   name                = "IscsiSrvImg"
@@ -165,20 +147,3 @@ resource "azurerm_image" "iscsi_srv" {
   }
 }
 
-resource "azurerm_image" "monitoring" {
-  count               = var.monitoring_uri != "" ? 1 : 0
-  name                = "monitoringSrvImg"
-  location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
-
-  os_disk {
-    os_type  = "Linux"
-    os_state = "Generalized"
-    blob_uri = var.monitoring_uri
-    size_gb  = "32"
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}

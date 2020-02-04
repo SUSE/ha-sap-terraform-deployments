@@ -41,6 +41,7 @@ provider: gcp
 role: iscsi_srv
 iscsi_srv_ip: ${var.iscsi_ip}
 iscsidev: ${var.iscsidev}
+iscsi_disks: ${var.iscsi_disks}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
@@ -58,18 +59,12 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 partitions:
   1:
     start: 1
-    end: 20%
+    end: 33%
   2:
-    start: 20%
-    end: 40%
+    start: 33%
+    end: 67%
   3:
-    start: 40%
-    end: 60%
-  4:
-    start: 60%
-    end: 80%
-  5:
-    start: 80%
+    start: 67%
     end: 100%
 
 EOF
@@ -129,11 +124,13 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdd
+sbd_disk_device: /dev/sde
 hana_inst_folder: ${var.hana_inst_folder}
 hana_disk_device: ${var.hana_disk_device}
+hana_backup_device: ${var.hana_backup_device}
 hana_inst_disk_device: ${var.hana_inst_disk_device}
 hana_fstype: ${var.hana_fstype}
+hana_cluster_vip: ${var.hana_cluster_vip}
 gcp_credentials_file: ${var.gcp_credentials_file}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_ip}
