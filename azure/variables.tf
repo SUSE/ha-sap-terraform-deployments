@@ -293,27 +293,27 @@ variable "monitoring_vm_size" {
 
 variable "admin_user" {
   description = "administration user to deploy in Azure VMs"
-  type = string
+  type        = string
 }
 
 variable "storage_account_name" {
   description = "Azure storage account name"
-  type = string
+  type        = string
 }
 
 variable "storage_account_key" {
   description = "Azure storage account secret key"
-  type = string
+  type        = string
 }
 
 variable "public_key_location" {
   description = "SSH Public key location to configure access to the remote instances"
-  type = string
+  type        = string
 }
 
 variable "private_key_location" {
   description = "SSH Private key location"
-  type = string
+  type        = string
 }
 
 # Variable for the image URI. Run as terraform apply -var sles4sap_uri https://blob.azure.microsoft.com/this/is/my/image.vhd
