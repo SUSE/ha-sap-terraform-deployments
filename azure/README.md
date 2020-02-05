@@ -93,20 +93,9 @@ To customize this provisioning, you have to create the pillar files (cluster.sls
 
 These are the relevant files and what each provides:
 
-- [provider.tf](provider.tf): definition of the providers being used in the terraform configuration. Mainly azurerm and template.
-
 - [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, Azure region, etc.
 
-- [keys.tf](keys.tf): definition of variables with information of key to include in the instances to allow connection via SSH. Edit this to add your own SSH key.
-
-- [resources.tf](resources.tf): definition of the resource group and storage account to use.
-
-- [image.tf](image.tf): definition of the custom images to use for the virtual machines. The image resources will be only created if the **sles4sap_uri** or **iscsi_srv_uri** are set in the
-**terraform.tfvars** file. Otherwise, a public image will be used.
-
-- [network.tf](network.tf): definition of network resources (virtual network, subnet, NICs, public IPs and network security group) used by the infrastructure.
-
-- [instances.tf](instances.tf): definition of the virtual machines to create on deployment.
+- [main.tf](main.tf): definition of the network resources, Azure resource group and storage account to use.
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
@@ -119,6 +108,7 @@ These are the relevant files and what each provides:
 ### Variables
 
 **Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the      iSCSI salt formula is not compatible with lower versions.
+**Custom Images:** The custom images for the virtual machines are defined in the each terraform module's main.tf. The image resources will be only created if the specific uri such as sles4sap_uri, iscsi_srv_uri are set in the terraform.tfvars file. Otherwise, a public image will be used.
 
 In the file [terraform.tfvars.example](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
@@ -220,7 +210,7 @@ Once all four required parameters are known, there are several ways to configure
 
 * In provider definition
 
-Add the values for subscription id, tenant id, client id and client secret in the file [provider.tf](provider.tf).
+Add the values for subscription id, tenant id, client id and client secret in the file [main.tf](main.tf).
 
 * Via Environment Variables
 
@@ -237,7 +227,7 @@ export ARM_ACCESS_KEY=access_key
 
 ## How to upload a custom image
 
-In the terraform configuration we are using a custom images (defined in the file [image.tf](image.tf)) referenced as `azurerm_image.iscsi_srv.*.id` and `azurerm_image.sles4sap.*.id` in the file [instances.tf](instances.tf) (in the `storage_image_reference` block).
+In the terraform configuration we are using a custom images which are defined in the main.tf files of terraform modules (under the `storage_image_reference` block) and referenced as `azurerm_image.iscsi_srv.*.id` and `azurerm_image.sles4sap.*.id`.
 
 This custom images need to be already uploaded to Azure before attempting to use it with terraform, as terraform does not have a mechanism to upload images as of yet.
 
@@ -361,7 +351,7 @@ Once the image is successfully uploaded, get its URL/URI with the command:
 az storage blob url --name SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd --container-name MyStorageContainer --account-name MyStorageAccount
 ```
 
-This URI will be used in the terraform configuration, specifically in the [image.tf](image.tf) file or via the command line, so keep it on hand.
+This URI will be used in the terraform configuration, specifically in the main.tf file of corrosponding terraform module or via the command line, so keep it on hand.
 
 ### Remove resources
 
