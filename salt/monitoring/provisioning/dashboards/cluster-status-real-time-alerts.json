@@ -56,7 +56,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1576677137053,
+  "iteration": 1580985999834,
   "links": [],
   "panels": [
     {
@@ -240,7 +240,8 @@
                 "color": "dark-green",
                 "value": 0
               }
-            ]
+            ],
+            "title": ""
           },
           "override": {},
           "values": false
@@ -249,12 +250,6 @@
       },
       "pluginVersion": "6.3.5",
       "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\"})",
-          "instant": true,
-          "legendFormat": "Total nodes",
-          "refId": "B"
-        },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"expected_up\"})",
           "instant": true,
@@ -288,7 +283,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Nodes",
       "type": "bargauge"
     },
     {
@@ -1335,7 +1330,7 @@
       ],
       "targets": [
         {
-          "expr": "ha_cluster_sbd_device_status{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -1806,7 +1801,6 @@
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "Prometheus",
           "value": "Prometheus"
         },
@@ -1922,5 +1916,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 1
+  "version": 2
 }
