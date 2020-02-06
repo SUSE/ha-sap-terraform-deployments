@@ -729,13 +729,6 @@
       "pluginVersion": "6.3.5",
       "repeat": null,
       "repeatDirection": "h",
-      "scopedVars": {
-        "hacluster": {
-          "selected": false,
-          "text": "drbd-cluster",
-          "value": "drbd-cluster"
-        }
-      },
       "targets": [
         {
           "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (node,job)) by (job) / (count(ha_cluster_pacemaker_nodes_total) by (job))",

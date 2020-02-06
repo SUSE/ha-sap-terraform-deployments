@@ -250,7 +250,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "ha_cluster_pacemaker_nodes_total{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\"})",
           "instant": true,
           "legendFormat": "Total nodes",
           "refId": "B"
@@ -728,7 +728,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "ha_cluster_corosync_ring_errors{instance=~\"$node_ip:\\\\d+\"}",
           "instant": true,
           "refId": "A"
         }
