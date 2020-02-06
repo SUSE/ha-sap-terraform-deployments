@@ -731,7 +731,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (node,job)) by (job) / (count(ha_cluster_pacemaker_nodes_total) by (job))",
+          "expr": "count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (job) / count(ha_cluster_pacemaker_nodes{status=\"expected_up\"}) by (job)",
           "hide": false,
           "instant": false,
           "legendFormat": "{{job}}",
@@ -786,7 +786,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job) / sum(ha_cluster_pacemaker_resources_total) by (job)",
+          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job) / count(ha_cluster_pacemaker_resources) by (job)",
           "interval": "",
           "legendFormat": "{{job}}",
           "refId": "A"
@@ -1137,7 +1137,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count(ha_cluster_sbd_device_status == 1) by (job) / count(ha_cluster_sbd_devices_total) by (job)",
+          "expr": "count(ha_cluster_sbd_devices{status=\"healthy\"}) by (job) / count(ha_cluster_sbd_devices) by (job)",
           "legendFormat": "{{job}}",
           "refId": "A"
         }
