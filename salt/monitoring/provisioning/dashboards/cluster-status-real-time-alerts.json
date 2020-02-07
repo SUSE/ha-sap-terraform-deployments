@@ -56,7 +56,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1580985999834,
+  "iteration": 1580985999837,
   "links": [],
   "panels": [
     {
@@ -1293,7 +1293,7 @@
           ],
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "Value",
+          "pattern": "Value #B",
           "thresholds": [
             "1",
             "1"
@@ -1330,10 +1330,16 @@
       ],
       "targets": [
         {
-          "expr": "ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\"}) by (device,status)",
           "format": "table",
           "instant": true,
           "refId": "A"
+        },
+        {
+          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\",status=\"healthy\"}) by (device,status)",
+          "format": "table",
+          "instant": true,
+          "refId": "B"
         }
       ],
       "timeFrom": null,
