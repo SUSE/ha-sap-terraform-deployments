@@ -132,10 +132,15 @@ module "monitoring" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  additional_packages    = var.additional_packages
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  drbd_enabled           = var.drbd_enabled
+  drbd_ips               = var.drbd_ips
+  netweaver_enabled      = var.netweaver_enabled
+  netweaver_ips          = var.netweaver_ips
 }
 
 module "iscsi_server" {
@@ -155,7 +160,9 @@ module "iscsi_server" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  additional_packages    = var.additional_packages
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  qa_mode                = var.qa_mode
 }
