@@ -72,8 +72,8 @@ scrape_configs:
         - "192.168.110.20:9668" # 9668: hanadb exporter port
         - "192.168.110.19:9100" # 9100: node exporter port
         - "192.168.110.20:9100" # 9100: node exporter port
-        - "192.168.110.19:9964" # 9964: ha_cluster_exporter metrics
-        - "192.168.110.20:9964" # 9964: ha_cluster_exporter metrics
+        - "192.168.110.19:9664" # 9664: ha_cluster_exporter metrics
+        - "192.168.110.20:9664" # 9664: ha_cluster_exporter metrics
 
 
   - job_name: hacluster-02
@@ -83,8 +83,8 @@ scrape_configs:
         - "10.162.32.238:9668" # 9668: hanadb exporter port
         - "10.162.32.117:9100" # 9100: node exporter port
         - "10.162.32.238:9100" # 9100: node exporter port
-        - "10.162.32.117:9964" # 9964: ha_cluster_exporter metrics
-        - "10.162.32.238:9964" # 9964: ha_cluster_exporter metrics
+        - "10.162.32.117:9664" # 9664: ha_cluster_exporter metrics
+        - "10.162.32.238:9664" # 9664: ha_cluster_exporter metrics
 ```
 
 This will add a `job` label in all the Prometheus metrics, in this example `job="hacluster-01"` and `job="hacluster-02"`.

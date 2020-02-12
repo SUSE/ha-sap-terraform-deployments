@@ -145,8 +145,8 @@ resource "aws_security_group_rule" "node_exporter" {
 resource "aws_security_group_rule" "ha_exporter" {
   count       = var.monitoring_enabled == true ? 1 : 0
   type        = "ingress"
-  from_port   = 9964
-  to_port     = 9964
+  from_port   = 9664
+  to_port     = 9664
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 

@@ -30,7 +30,7 @@ scrape_configs:
         - "{{ ip }}:9100" # node_exporter
         {% endfor %}
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:9964" # ha_cluster_exporter
+        - "{{ ip }}:9664" # ha_cluster_exporter
         {% endfor %}
 
   {% if grains.get('drbd_monitored_hosts', [])|length > 0 %}
@@ -41,7 +41,7 @@ scrape_configs:
         - "{{ ip }}:9100" # node_exporter
         {% endfor %}
         {% for ip in grains['drbd_monitored_hosts'] %}
-        - "{{ ip }}:9964" # ha_cluster_exporter
+        - "{{ ip }}:9664" # ha_cluster_exporter
         {% endfor %}
   {% endif %}
 
@@ -53,6 +53,6 @@ scrape_configs:
         - "{{ ip }}:9100" # node_exporter
         {% endfor %}
         {% for ip in grains['nw_monitored_hosts'][0:2] %}
-        - "{{ ip }}:9964" # ha_cluster_exporter
+        - "{{ ip }}:9664" # ha_cluster_exporter
         {% endfor %}
   {% endif %}
