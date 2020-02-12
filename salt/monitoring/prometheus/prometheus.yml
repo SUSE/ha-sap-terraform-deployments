@@ -24,7 +24,7 @@ scrape_configs:
     static_configs:
       - targets:
         {% for ip in grains['monitored_hosts'] %}
-        - "{{ ip }}:8001" # hanadb_exporter
+        - "{{ ip }}:9668" # hanadb_exporter
         {% endfor %}
         {% for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9100" # node_exporter
