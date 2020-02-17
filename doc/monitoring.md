@@ -49,7 +49,7 @@ hana:
   nodes:
     - // etc.
       exporter:
-        exposition_port: 8001 # http port where the data is exported
+        exposition_port: 9668 # http port where the data is exported
         user: SYSTEM # HANA db user
         password: YourPassword1234 # HANA db password
 ```
@@ -68,23 +68,23 @@ scrape_configs:
   - job_name: hacluster-01
     static_configs:
       - targets:
-        - "192.168.110.19:8001" # 8001: hanadb exporter port
-        - "192.168.110.20:8001" # 8001: hanadb exporter port
+        - "192.168.110.19:9668" # 9668: hanadb exporter port
+        - "192.168.110.20:9668" # 9668: hanadb exporter port
         - "192.168.110.19:9100" # 9100: node exporter port
         - "192.168.110.20:9100" # 9100: node exporter port
-        - "192.168.110.19:9964" # 9964: ha_cluster_exporter metrics
-        - "192.168.110.20:9964" # 9964: ha_cluster_exporter metrics
+        - "192.168.110.19:9664" # 9664: ha_cluster_exporter metrics
+        - "192.168.110.20:9664" # 9664: ha_cluster_exporter metrics
 
 
   - job_name: hacluster-02
     static_configs:
       - targets:
-        - "10.162.32.117:8001" # 8001: hanadb exporter port
-        - "10.162.32.238:8001" # 8001: hanadb exporter port
+        - "10.162.32.117:9668" # 9668: hanadb exporter port
+        - "10.162.32.238:9668" # 9668: hanadb exporter port
         - "10.162.32.117:9100" # 9100: node exporter port
         - "10.162.32.238:9100" # 9100: node exporter port
-        - "10.162.32.117:9964" # 9964: ha_cluster_exporter metrics
-        - "10.162.32.238:9964" # 9964: ha_cluster_exporter metrics
+        - "10.162.32.117:9664" # 9664: ha_cluster_exporter metrics
+        - "10.162.32.238:9664" # 9664: ha_cluster_exporter metrics
 ```
 
 This will add a `job` label in all the Prometheus metrics, in this example `job="hacluster-01"` and `job="hacluster-02"`.
