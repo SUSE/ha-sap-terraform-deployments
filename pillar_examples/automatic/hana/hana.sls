@@ -2,6 +2,7 @@ hana:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
+  saptune_solution: 'HANA'
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
