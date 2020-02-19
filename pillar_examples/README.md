@@ -1,13 +1,22 @@
 # Pillar examples
 This folder stores pillar examples to use in the Salt provisioning.
 
+---
+- [SAP HANA and HA cluster](#sap-hana-and-ha-cluster)
+- [DRBD cluster](#drbd-cluster-for-nfs)
+
+---
+## SAP HANA and HA cluster
 Depending on the provider used to deploy SAP HANA and the HA cluster,
 the required parameters are slightly different, even though most of them
 match.
 
+For user wants to deploy DRBD(NFS) cluster with HANA,
+[DRBD cluster](#drbd-cluster-for-nfs) is also necessary to configure.
+
 Two possibilities here:
 
-  - For a preconfigured environment, you can use pillar files which are in [automatic directory](./automatic).
+  - For a preconfigured environment, you can use pillar files which are in [HANA automatic directory](./automatic/hana).
 
       **Could be used for testing purpose and not for production as they have default settings.**
 
@@ -27,7 +36,6 @@ All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/saphanabootstrap-formula (to manipulate the hana.sls file)
 - https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
 
-
 ### Libvirt specifics
 
 One thing is different with Libvirt provider, in pillar's directory, you will find two directories about HANA profiles (cost_optimized and performance_optimized).
@@ -38,16 +46,19 @@ deploy one of them update the salt/hana_node/files/salt/top.sls file only using
 the desired component and removing/commenting the other.
 
 
-# DRBD automatic pillar
-For a preconfigured environment, you can use pillar files which are in [DRBD automatic directory](./automatic/drbd)
+## DRBD cluster (for NFS)
+Depending on the provider used to deploy DRBD cluster for NFS,
+the required parameters are slightly different, even though most
+of them match.
 
-**Could be used for testing purpose and not for production as they have default settings.**
+  - For a preconfigured environment, you can use pillar files which are in [DRBD automatic directory](./automatic/drbd)
 
-From git top-level folder, copy files:
+      **Could be used for testing purpose and not for production as they have default settings.**
 
-`cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
+      From git top-level folder, copy files:
+
+      `cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
 
 All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/drbd-formula (to manipulate the drbd.sls file)
 - https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
-
