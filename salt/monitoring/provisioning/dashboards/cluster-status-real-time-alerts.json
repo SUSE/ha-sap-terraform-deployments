@@ -56,7 +56,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1576677137053,
+  "iteration": 1580985999837,
   "links": [],
   "panels": [
     {
@@ -240,7 +240,8 @@
                 "color": "dark-green",
                 "value": 0
               }
-            ]
+            ],
+            "title": ""
           },
           "override": {},
           "values": false
@@ -249,12 +250,6 @@
       },
       "pluginVersion": "6.3.5",
       "targets": [
-        {
-          "expr": "ha_cluster_pacemaker_nodes_total{instance=~\"$node_ip:\\\\d+\"}",
-          "instant": true,
-          "legendFormat": "Total nodes",
-          "refId": "B"
-        },
         {
           "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"expected_up\"})",
           "instant": true,
@@ -288,7 +283,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Nodes",
       "type": "bargauge"
     },
     {
@@ -728,7 +723,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors_total{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "ha_cluster_corosync_ring_errors{instance=~\"$node_ip:\\\\d+\"}",
           "instant": true,
           "refId": "A"
         }
@@ -1298,7 +1293,7 @@
           ],
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "Value",
+          "pattern": "Value #B",
           "thresholds": [
             "1",
             "1"
@@ -1335,10 +1330,16 @@
       ],
       "targets": [
         {
-          "expr": "ha_cluster_sbd_device_status{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\"}) by (device,status)",
           "format": "table",
           "instant": true,
           "refId": "A"
+        },
+        {
+          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\",status=\"healthy\"}) by (device,status)",
+          "format": "table",
+          "instant": true,
+          "refId": "B"
         }
       ],
       "timeFrom": null,
@@ -1806,7 +1807,6 @@
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "Prometheus",
           "value": "Prometheus"
         },
@@ -1922,5 +1922,5 @@
   "timezone": "",
   "title": "HA Cluster Status",
   "uid": "Q5YJpwtZk1",
-  "version": 1
+  "version": 2
 }
