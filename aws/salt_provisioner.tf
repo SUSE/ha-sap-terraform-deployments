@@ -89,6 +89,11 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
+    source      = var.aws_access_key_id == "" || var.aws_secret_access_key == "" ? var.aws_credentials : "/dev/null"
+    destination = "/tmp/credentials"
+  }
+
+  provisioner "file" {
     source      = "../salt"
     destination = "/tmp/salt"
   }
@@ -105,6 +110,7 @@ region: ${var.aws_region}
 role: hana_node
 aws_cluster_profile: Cluster
 aws_instance_tag: Cluster
+aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 hana_cluster_vip: ${var.hana_cluster_vip}

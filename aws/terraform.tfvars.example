@@ -24,8 +24,11 @@ private_key_location = "/path/to/your/private/ssh/key"
 #}
 
 # aws-cli credentials data
+# access keys parameters have preference over the credentials file (they are self exclusive)
 aws_access_key_id = my-access-key-id
 aws_secret_access_key = my-secret-access-key
+# aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
+aws_credentials = "~/.aws/credentials"
 
 # Hostname, without the domain part
 name = "hana"

@@ -13,3 +13,4 @@ include:
   {% if grains.get('monitoring_enabled') %}
   - cluster_node.monitoring
   {% endif %}
+  - cluster_node.add_credentials

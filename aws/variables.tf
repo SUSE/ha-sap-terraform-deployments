@@ -81,12 +81,20 @@ variable "private_key_location" {
   type = string
 }
 
+variable "aws_credentials" {
+  description = "AWS credentials file path in local machine"
+  type        = string
+  default     = "~/.aws/credentials"
+}
+
 variable "aws_access_key_id" {
   type    = string
+  default = ""
 }
 
 variable "aws_secret_access_key" {
   type    = string
+  default = ""
 }
 
 variable "init_type" {
