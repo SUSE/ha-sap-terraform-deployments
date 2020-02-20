@@ -22,10 +22,10 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "hana-subnet" {
-  count              = var.ninstances
-  vpc_id             = aws_vpc.vpc.id
-  cidr_block         = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
-  availability_zone  = element(data.aws_availability_zones.available.names, count.index)
+  count             = var.ninstances
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
     Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"

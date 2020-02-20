@@ -99,7 +99,7 @@ resource "aws_instance" "monitoring" {
   }
 
   tags = {
-    Name = "${terraform.workspace} - Monitoring"
+    Name      = "${terraform.workspace} - Monitoring"
     Workspace = terraform.workspace
   }
 }
