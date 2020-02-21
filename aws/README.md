@@ -56,6 +56,15 @@ This file is also used by the `aws` command line tool, so it can be created with
 
 **Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
 
+- AWS user authorizations
+
+In order to execute the deployment properly using terraform, the used user must have some policies enabled. Mostly, it needs access to manage EC2 instances, S3 buckets, IAM (to create roles and policies) and EFS storage.
+
+Here how it should look like:
+
+
+![AWS policies](./images/policies.png?raw=true)
+
 
 5) **Deploy**:
 
