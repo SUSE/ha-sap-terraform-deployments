@@ -37,6 +37,15 @@ resource "aws_instance" "iscsisrv" {
   }
 }
 
+module "sap_cluster_policies" {
+  source            = "./modules/sap_cluster_policies"
+  name              = var.name
+  aws_region        = var.aws_region
+  aws_account_id    = var.aws_account_id
+  cluster_instances = aws_instance.clusternodes.*.id
+  route_table_id    = aws_route_table.route-table.id
+}
+
 resource "aws_instance" "clusternodes" {
   count                       = var.ninstances
   ami                         = var.sles4sap[var.aws_region]
@@ -48,6 +57,7 @@ resource "aws_instance" "clusternodes" {
   security_groups             = [aws_security_group.secgroup.id]
   availability_zone           = element(data.aws_availability_zones.available.names, count.index)
   source_dest_check           = false
+  iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name
 
   root_block_device {
     volume_type = "gp2"

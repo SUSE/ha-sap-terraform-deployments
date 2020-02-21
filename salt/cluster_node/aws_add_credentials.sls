@@ -1,5 +1,3 @@
-{%- if grains['provider'] == 'aws' %}
-
 {%- set aws_config_file = "~"~grains['username']~"/.aws/config" %}
 
 {%- if grains['aws_access_key_id'] and grains['aws_secret_access_key'] %}
@@ -41,5 +39,3 @@ add_cluster_profile:
     - unless: cat {{ aws_config_file }} | grep "profile {{ grains['aws_cluster_profile'] }}"
     - require:
       - create_credentials_file
-
-{%- endif %}
