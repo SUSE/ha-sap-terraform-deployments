@@ -9,6 +9,7 @@ salt-call --local --file-root=/root/salt \
 
 salt-call --local \
     --pillar-root=/root/salt/pillar/ \
+    --file-root=/root/salt \
     --log-level=info \
     --log-file=/tmp/salt-deployment.log \
     --log-file-level=debug \

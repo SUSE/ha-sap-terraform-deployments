@@ -30,6 +30,9 @@ netweaver:
     - /netweaver_inst_media/51050829_3 # NW Export folder
     - /netweaver_inst_media/51053381 # HANA HDB Client folder
 
+  # apply by default the netweaver solution
+  saptune_solution: 'NETWEAVER'
+
   hana:
 {%- if grains['provider'] == 'gcp' %}
     host: {{ grains['hana_cluster_vip'] }}
