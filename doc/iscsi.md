@@ -12,7 +12,4 @@ iscsi_srv_ip,
 iscsi_image,
 ```
 
-For a full examples check out:
-
-
-
+For a full examples check out: doc/deployment-templates.md

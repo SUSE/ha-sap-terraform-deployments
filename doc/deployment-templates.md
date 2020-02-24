@@ -4,9 +4,9 @@ This doc is an invetory of common functional templates, use-cases of the deploym
 This examples were used with KVM libvrt but the other providers will have the same vars or differ not significantly. 
 
 
-- [Hana cluster (the simplest one)](hana_cluster)
-- [ISCSI Server](ISCSI Server)
-- [Monitoring hana cluster](Monitoring_hana_cluster)
+- Hana cluster (the simplest one)
+- Monitoring hana cluster
+- ISCSI Server
 
 ( Not yet avail)
 - NETWEAVER
@@ -17,7 +17,7 @@ Additionally you need to set up pillars. In dev-mode we use mostly `automatic`.
 See https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples#pillar-examples for more details.
 
 
-# Hana cluster
+# hana cluster
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
@@ -32,14 +32,12 @@ shared_storage_type = "shared-disk"
 storage_pool           = "terraform"
 ```
 
-# Monitoring hana cluster
+# monitoring hana cluster
 
 To monitoring ha_cluster you need only 2 vars more then hana_cluster deployment.
 
-```
-monitoring_srv_ip = "yourIP"
-monitoring_enabled = true
-```
+
+`monitoring_srv_ip = "yourIP"` and `monitoring_enabled = true`
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
@@ -56,7 +54,7 @@ shared_storage_type = "shared-disk"
 storage_pool           = "terraform"
 ```
 
-# ISCSI Server
+# iscsi server
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
@@ -68,8 +66,9 @@ reg_code = "YOUR_REG_CODE"
 reg_email = "MY_EMAIL"
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
 shared_storage_type = "iscsi"
-iscs_srv_ip = "192.168.110.31"
+iscsi_srv_ip = "192.168.110.31"
+iscsi_image = "SLE15 IMAGE"
 storage_pool           = "terraform"
 ```
 
-If you use a lower version then SLE15 of the `base_image`, you need to set `iscsi_image` to a sle15 image, since it doesn't work with lower version.
+NOTE: ISCSI server works with a sle15 or higher image
