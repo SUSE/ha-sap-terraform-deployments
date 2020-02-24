@@ -22,6 +22,13 @@ ___
 - [Saptune](doc/saptune.md)
 - [ISCSI](doc/iscsi.md)
 
+## Templates:
+
+We provide minimal templates for setting up the minimal templates variables in order to get started with the project.
+For fine tuning refer to variable specification.
+
+- [templates](doc/deployment-templates.md)
+
 ## Rationale
 
 This project is organized in folders containing the Terraform configuration files per Public or Private Cloud providers, each also containing documentation relevant to the use of the configuration files and to the cloud provider itself.
