@@ -45,6 +45,20 @@ Finally, if instead of deploying SAP HANA and the cluster together, to only
 deploy one of them update the salt/hana_node/files/salt/top.sls file only using
 the desired component and removing/commenting the other.
 
+# Pillar encryption
+
+Pillars are expected to contain private data such as user passwords required for the automated installation or other operations. Therefore, such pillar data need to be stored in an encrypted state, which can be decrypted during pillar compilation.
+
+SaltStack GPG renderer provides a secure encryption/decryption of pillar data. The configuration of GPG keys and procedure for pillar encryption are desribed in the Saltstack documentation guide:
+
+- [SaltStack pillar encryption](https://docs.saltstack.com/en/latest/topics/pillar/#pillar-encryption)
+
+- [SALT GPG RENDERERS](https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html)
+
+**Note:**
+- Only passwordless gpg keys are supported, and the already existing keys cannot be used.
+
+- If a masterless approach is used (as in the current automated deployment) the gpg private key must be imported in all the nodes. This might require the copy/paste of the keys.
 
 ## DRBD cluster (for NFS)
 Depending on the provider used to deploy DRBD cluster for NFS,
