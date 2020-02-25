@@ -156,6 +156,11 @@ module "iscsi_server" {
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  iscsi_srv_uri          = var.iscsi_srv_uri
+  iscsi_public_publisher = var.iscsi_public_publisher
+  iscsi_public_offer     = var.iscsi_public_offer
+  iscsi_public_sku       = var.iscsi_public_sku
+  iscsi_public_version   = var.iscsi_public_version
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   iscsidev               = var.iscsidev
