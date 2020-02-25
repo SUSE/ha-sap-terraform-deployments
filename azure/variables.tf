@@ -1,3 +1,8 @@
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 # Variables for type of instances to use and number of cluster nodes
@@ -175,6 +180,11 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
+variable "devel_mode" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -262,20 +272,10 @@ variable "netweaver_enable_accelerated_networking" {
 
 # Monitoring variables
 
-variable "timezone" {
-  description = "Timezone setting for all VMs"
-  default     = "Europe/Berlin"
-}
-
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string
   default     = ""
-}
-
-variable "devel_mode" {
-  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
-  default     = false
 }
 
 variable "monitoring_enabled" {
