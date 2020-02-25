@@ -106,6 +106,7 @@ module "hana_node" {
   reg_code                      = var.reg_code
   reg_email                     = var.reg_email
   reg_additional_modules        = var.reg_additional_modules
+  additional_packages           = var.additional_packages
   ha_sap_deployment_repo        = var.ha_sap_deployment_repo
   devel_mode                    = var.devel_mode
   provisioner                   = var.provisioner
