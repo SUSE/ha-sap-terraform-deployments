@@ -172,18 +172,18 @@ resource "azurerm_network_security_group" "mysecgroup" {
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "8001"
+    destination_port_range     = "9668"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
   security_rule {
-    name                       = "ha-exporter"
+    name                       = "haExporter"
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "9964"
+    destination_port_range     = "9664"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
