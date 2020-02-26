@@ -207,6 +207,36 @@ variable "background" {
   default     = false
 }
 
+# Netweaver variables
+
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver cluster deployment"
+  default     = false
+}
+
+variable "netweaver_instancetype" {
+  description = "VM size for the Netweaver machines. Default to r3.8xlarge"
+  type        = string
+  default     = "r3.8xlarge"
+}
+
+variable "netweaver_s3_bucket" {
+  description = "S3 bucket where Netwaever installation files are stored"
+  type        = string
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "virtual ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
 # Specific QA variables
 
 variable "qa_mode" {
