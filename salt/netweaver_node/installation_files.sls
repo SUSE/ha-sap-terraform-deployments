@@ -50,7 +50,9 @@ download_nw_files_from_s3:
 
 wait_until_sw_downloaded:
     cmd.run:
-      - name: until ! aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ sapcd }} --region {{ grains['region'] }} | grep download > /dev/null 2>&1;do sleep 30;done
+      - name: |
+          until ! aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ sapcd }} \
+          --region {{ grains['region'] }} | grep download > /dev/null 2>&1;do sleep 30;done
       - output_loglevel: quiet
       - hide_output: True
       - timeout: 600
