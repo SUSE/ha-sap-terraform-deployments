@@ -22,9 +22,9 @@ ___
 - [Saptune](doc/saptune.md)
 - [ISCSI](doc/iscsi.md)
 
-## Templates:
+## Templates
 
-We provide minimal templates for setting up the minimal templates variables in order to get started with the project.
+We provide minimal templates for setting up the terraform variables in order to get started with the project.
 For fine tuning refer to variable specification.
 
 - [templates](doc/deployment-templates.md)
