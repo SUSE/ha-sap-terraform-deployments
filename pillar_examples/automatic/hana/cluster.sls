@@ -42,14 +42,15 @@ cluster:
         virtual_ip: {{ grains['azure_lb_ip'] }}
         {% elif grains['provider'] == 'gcp' %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
+        {% elif grains['provider'] == 'aws' %}
+        virtual_ip: {{ grains['hana_cluster_vip'] }}
+        route_table: {{ grains['route_table'] }}
+        cluster_profile: {{ grains['aws_cluster_profile'] }}
+        instance_tag: {{ grains['aws_instance_tag'] }}
         {% else %}
         virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
         {% endif %}
-        {% if grains['provider'] == 'aws' %}
-        virtual_ip_mask: 16
-        {% else %}
         virtual_ip_mask: 24
-        {% endif %}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}

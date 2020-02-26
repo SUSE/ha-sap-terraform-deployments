@@ -38,23 +38,35 @@ $ export AWS_DEFAULT_REGION="eu-central-1"
 $ terraform plan
 ```
 
-- Credentials file
+- AWS credentials
 
-Configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
+There are 2 ways of using the AWS credentials. Using the access key id and the secret access key or using an already existing credentials file, being both options self exclusive (the first option has preference).
+
+To use the first option basically set the values `aws_access_key_id` and `aws_secret_access_key` in the `terraform.tfvars`.
+
+To use the credentials file, configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
 
 ```
 [default]
 aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
 aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
-region = eu-central-1
 ```
 
 This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
 
 **Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
 
+- AWS user authorizations
 
-5) **Deploy**: 
+In order to execute the deployment properly using terraform, the used user must have some policies enabled. Mostly, it needs access to manage EC2 instances, S3 buckets, IAM (to create roles and policies) and EFS storage.
+
+Here how it should look like:
+
+
+![AWS policies](./images/policies.png?raw=true)
+
+
+5) **Deploy**:
 
 ```
 terraform init
@@ -124,6 +136,9 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **aws_region**: AWS region where to deploy the configuration.
 * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
 * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
+* **aws_account_id**: AWS account id (12 digit id available to the right of the user in the AWS portal).
+* **aws_access_key_id**: AWS access key id.
+* **aws_secret_access_key**: AWS secret access key.
 * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
 * **name**: hostname for the hana node without the domain part.
 * **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
