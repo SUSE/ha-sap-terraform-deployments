@@ -1,6 +1,6 @@
 module "netweaver_node" {
   source                 = "./modules/netweaver_node"
-  netweaver_count        = var.netweaver_enabled == true ? 2 : 0
+  netweaver_count        = var.netweaver_enabled == true ? 4 : 0
   instancetype           = var.netweaver_instancetype
   name                   = "netweaver"
   aws_account_id         = var.aws_account_id
