@@ -53,6 +53,12 @@ variable "hana_data_disk_type" {
   default = "gp2"
 }
 
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = "192.168.1.10"
+}
+
 variable "ninstances" {
   type    = string
   default = "2"
@@ -60,6 +66,11 @@ variable "ninstances" {
 
 variable "aws_region" {
   type = string
+}
+
+variable "aws_account_id" {
+  type        = string
+  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
 }
 
 variable "name" {
@@ -76,8 +87,19 @@ variable "private_key_location" {
 }
 
 variable "aws_credentials" {
+  description = "AWS credentials file path in local machine"
+  type        = string
+  default     = "~/.aws/credentials"
+}
+
+variable "aws_access_key_id" {
   type    = string
-  default = "~/.aws/credentials"
+  default = ""
+}
+
+variable "aws_secret_access_key" {
+  type    = string
+  default = ""
 }
 
 variable "init_type" {
@@ -157,7 +179,7 @@ variable "additional_packages" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)
 }
 

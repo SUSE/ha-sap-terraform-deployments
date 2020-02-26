@@ -7,6 +7,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
+    Name      = "${terraform.workspace}-vpc"
     Workspace = terraform.workspace
   }
 }
@@ -15,44 +16,57 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Network   = "Public"
+    Name      = "${terraform.workspace}-igw"
     Workspace = terraform.workspace
   }
 }
 
-resource "aws_route_table" "routetable" {
+resource "aws_subnet" "hana-subnet" {
+  count             = var.ninstances
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+
+  tags = {
+    Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"
+    Workspace = terraform.workspace
+  }
+}
+
+resource "aws_route_table" "route-table" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
+    Name      = "${terraform.workspace}-hana-route-table"
     Workspace = terraform.workspace
   }
 }
 
+resource "aws_route_table_association" "hana-subnet-route-association" {
+  count          = var.ninstances
+  subnet_id      = element(aws_subnet.hana-subnet.*.id, count.index)
+  route_table_id = aws_route_table.route-table.id
+}
+
 resource "aws_route" "public" {
-  route_table_id         = aws_route_table.routetable.id
+  route_table_id         = aws_route_table.route-table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
 
-resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.local.id
-  route_table_id = aws_route_table.routetable.id
+resource "aws_route" "hana-cluster-vip" {
+  route_table_id         = aws_route_table.route-table.id
+  destination_cidr_block = "${var.hana_cluster_vip}/32"
+  instance_id            = aws_instance.clusternodes.0.id
 }
 
-resource "aws_subnet" "local" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = aws_vpc.vpc.cidr_block
-
-  tags = {
-    Workspace = terraform.workspace
-  }
-}
 
 resource "aws_security_group" "secgroup" {
-  name   = "secgroup"
+  name   = "${terraform.workspace}-sg"
   vpc_id = aws_vpc.vpc.id
 
   tags = {
+    Name      = "${terraform.workspace}-sg"
     Workspace = terraform.workspace
   }
 }
