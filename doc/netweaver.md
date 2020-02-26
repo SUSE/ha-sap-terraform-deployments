@@ -15,7 +15,7 @@ More details in the official [Suse documentation](https://www.suse.com/media/whi
 
 The deployment is performed using the [sapnwbootstrap-formula](https://github.com/SUSE/sapnwbootstrap-formula).
 
-**Disclaimer: Only available for libvirt, azure and gcp by now.**
+Available for libvirt, azure, gcp and aws.
 
 ## Quickstart
 
@@ -23,13 +23,15 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - In order to enable/disable the Netweaver deployment update the value of `netweaver_enabled` variable to true/false in the `terraform.tfvars` file.
 
-- In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders `sapmnt` and `usrsapsys` in the exposed folder. It's a good practice the store this folder with the Netweaver SID name (for example `/sapdata/HA1/sapmnt` and `/sapdata/HA1/usrsapsys`). **This subfolders content is removed by default during the deployment**. This NFS share can be created using the provided `drbd` module deployment that fully automatize this (`drbd` deployment is required for **azure**).
+- In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders `sapmnt` and `usrsapsys` in the exposed folder. It's a good practice to store this folder with the Netweaver SID name (for example `/sapdata/HA1/sapmnt` and `/sapdata/HA1/usrsapsys`). **This subfolders content is removed by default during the deployment**. This NFS share can be created using the provided `drbd` module deployment that fully automatize this (`drbd` deployment is required for **azure and gcp**, **aws** uses the EFS storage by default).
 
 - **For libvirt**: Add the `netweaver_inst_media` variable to the `terraform.tfvars` with the address to the NFS share containing the netweaver installation software (`swpm`) folder, `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
 - **For azure**: Add the azure storage account variables to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
-- **For gcp**: Add the gcp storage bucket variable to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
+- **For gcp**: Add the aws S3 bucket variable (`netweaver_s3_bucket`) to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
+
+- **For aws**: Add the gcp storage bucket variable to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
 - Add new additional IP addresses to the variable `nw_ips` and `nw_virtual_ips` in the `terraform.tfvars`. This variable is a list containing the IP addresses of the new virtual machines hosting the Netweaver components, so if 4 virtual machines are used (default option) 4 addresses must be added there in the same range than the machines hosting the Hana database.
 
