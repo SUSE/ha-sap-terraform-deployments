@@ -1,13 +1,22 @@
 # Pillar examples
 This folder stores pillar examples to use in the Salt provisioning.
 
+---
+- [SAP HANA and HA cluster](#sap-hana-and-ha-cluster)
+- [DRBD cluster](#drbd-cluster-for-nfs)
+
+---
+## SAP HANA and HA cluster
 Depending on the provider used to deploy SAP HANA and the HA cluster,
 the required parameters are slightly different, even though most of them
 match.
 
+For user wants to deploy DRBD(NFS) cluster with HANA,
+[DRBD cluster](#drbd-cluster-for-nfs) is also necessary to configure.
+
 Two possibilities here:
 
-  - For a preconfigured environment, you can use pillar files which are in [automatic directory](./automatic).
+  - For a preconfigured environment, you can use pillar files which are in [HANA automatic directory](./automatic/hana).
 
       **Could be used for testing purpose and not for production as they have default settings.**
 
@@ -27,7 +36,6 @@ All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/saphanabootstrap-formula (to manipulate the hana.sls file)
 - https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
 
-
 ### Libvirt specifics
 
 One thing is different with Libvirt provider, in pillar's directory, you will find two directories about HANA profiles (cost_optimized and performance_optimized).
@@ -37,17 +45,34 @@ Finally, if instead of deploying SAP HANA and the cluster together, to only
 deploy one of them update the salt/hana_node/files/salt/top.sls file only using
 the desired component and removing/commenting the other.
 
+# Pillar encryption
 
-# DRBD automatic pillar
-For a preconfigured environment, you can use pillar files which are in [DRBD automatic directory](./automatic/drbd)
+Pillars are expected to contain private data such as user passwords required for the automated installation or other operations. Therefore, such pillar data need to be stored in an encrypted state, which can be decrypted during pillar compilation.
 
-**Could be used for testing purpose and not for production as they have default settings.**
+SaltStack GPG renderer provides a secure encryption/decryption of pillar data. The configuration of GPG keys and procedure for pillar encryption are desribed in the Saltstack documentation guide:
 
-From git top-level folder, copy files:
+- [SaltStack pillar encryption](https://docs.saltstack.com/en/latest/topics/pillar/#pillar-encryption)
 
-`cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
+- [SALT GPG RENDERERS](https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html)
+
+**Note:**
+- Only passwordless gpg keys are supported, and the already existing keys cannot be used.
+
+- If a masterless approach is used (as in the current automated deployment) the gpg private key must be imported in all the nodes. This might require the copy/paste of the keys.
+
+## DRBD cluster (for NFS)
+Depending on the provider used to deploy DRBD cluster for NFS,
+the required parameters are slightly different, even though most
+of them match.
+
+  - For a preconfigured environment, you can use pillar files which are in [DRBD automatic directory](./automatic/drbd)
+
+      **Could be used for testing purpose and not for production as they have default settings.**
+
+      From git top-level folder, copy files:
+
+      `cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
 
 All the information about how to tune the deployment is available in:
 - https://github.com/SUSE/drbd-formula (to manipulate the drbd.sls file)
 - https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
-

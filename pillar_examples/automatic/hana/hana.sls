@@ -2,6 +2,7 @@ hana:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
+  saptune_solution: 'HANA'
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
@@ -31,7 +32,7 @@ hana:
           database: SYSTEMDB
     {% if grains.get('monitoring_enabled', False) %}
       exporter:
-        exposition_port: 8001
+        exposition_port: 9668
         user: SYSTEM
         password: YourPassword1234
     {% endif %}
@@ -84,7 +85,7 @@ hana:
         sapadm_password: YourPassword1234
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
-        exposition_port: 8002
+        exposition_port: 9669
         user: SYSTEM
         password: YourPassword1234
       {% endif %}

@@ -7,62 +7,46 @@ variable "resource_group_name" {
   type = string
 }
 
-variable "sec_group_id" {
-  type = string
-}
-
-variable "vm_size" {
-  type    = string
-  default = "Standard_D2s_v3"
-}
-
 variable "network_subnet_id" {
   type = string
 }
 
-variable "timezone" {
-  description = "Timezone setting for all VMs"
-  default     = "Europe/Berlin"
+variable "sec_group_id" {
+  type = string
 }
 
 variable "storage_account" {
   type = string
 }
 
-variable "monitoring_public_publisher" {
+variable "iscsi_public_publisher" {
   type    = string
   default = "SUSE"
 }
 
-variable "monitoring_public_offer" {
+variable "iscsi_public_offer" {
   type    = string
   default = "SLES-SAP-BYOS"
 }
 
-variable "monitoring_public_sku" {
+variable "iscsi_public_sku" {
   type    = string
   default = "15"
 }
 
-variable "monitoring_public_version" {
+variable "iscsi_public_version" {
   type    = string
   default = "latest"
 }
 
-variable "monitoring_uri" {
+variable "iscsi_srv_uri" {
   type    = string
   default = ""
 }
 
-variable "monitoring_srv_ip" {
-  description = "monitoring server address"
-  type        = string
-  default     = ""
-}
-
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
-  type        = list(string)
+variable "vm_size" {
+  type    = string
+  default = "Standard_D2s_v3"
 }
 
 variable "admin_user" {
@@ -76,6 +60,21 @@ variable "public_key_location" {
 
 variable "private_key_location" {
   type = string
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
+  type        = string
+}
+
+variable "iscsidev" {
+  description = "device iscsi for iscsi server"
+  type        = string
+}
+
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
 }
 
 variable "reg_code" {
@@ -104,6 +103,11 @@ variable "additional_packages" {
   default     = []
 }
 
+variable "qa_mode" {
+  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  default     = false
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
@@ -111,32 +115,5 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  default     = false
-}
-
-variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
-  default     = false
-}
-
-variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
-  type        = list(string)
-  default     = []
-}
-
-variable "netweaver_enabled" {
-  description = "enable SAP Netweaver cluster deployment"
-  default     = false
-}
-
-variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
-  type        = list(string)
-  default     = []
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
   default     = false
 }

@@ -1,4 +1,5 @@
 hana:
+  saptune_solution: 'HANA'
   nodes:
     - host: 'hana01'
       sid: 'prd'

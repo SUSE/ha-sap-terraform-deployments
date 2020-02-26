@@ -1,7 +1,3 @@
-# This file contains the salt provisioning logic.
-# It will be executed if 'provisioner' is set to salt (default option) and the
-# iscsi and hana node resources are created (check triggers option).
-
 # Template file to launch the salt provisioing script
 data "template_file" "salt_provisioner" {
   template = file("../salt/salt_provisioner_script.tpl")
@@ -39,7 +35,7 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 provider: azure
 role: iscsi_srv
-iscsi_srv_ip: ${azurerm_network_interface.iscsisrv.private_ip_address}
+iscsi_srv_ip: ${var.iscsi_srv_ip}
 iscsidev: ${var.iscsidev}
 iscsi_disks: ${var.iscsi_disks}
 qa_mode: ${var.qa_mode}

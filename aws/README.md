@@ -118,7 +118,7 @@ These are the relevant files and what each provides:
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
@@ -152,7 +152,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 * **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
 * **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
@@ -198,6 +198,7 @@ If the use of a private/custom image is required (for example, to perform the Bu
 **Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions.
 
 To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
+
 ```
  # Custom AMI for nodes
 sles4sap = {

@@ -61,7 +61,7 @@ variable "drbd_public_version" {
   default = "latest"
 }
 
-variable "instancetype" {
+variable "vm_size" {
   type    = string
   default = "Standard_D2s_v3"
 }

@@ -7,7 +7,6 @@ nfs-client:
 hana_inst_directory:
   file.directory:
     - name: {{ grains['hana_inst_folder'] }}
-    - user: root
     - mode: "0755"
     - makedirs: True
   {% if grains['provider'] == 'libvirt' %}

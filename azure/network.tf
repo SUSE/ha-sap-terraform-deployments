@@ -31,39 +31,6 @@ resource "azurerm_subnet_route_table_association" "mysubnet" {
   route_table_id = azurerm_route_table.myroutes.id
 }
 
-# NICs & Public IP resources
-
-resource "azurerm_network_interface" "iscsisrv" {
-  name                      = "nic-iscsisrv"
-  location                  = var.az_region
-  resource_group_name       = azurerm_resource_group.myrg.name
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
-
-  ip_configuration {
-    name                          = "ipconf-primary"
-    subnet_id                     = azurerm_subnet.mysubnet.id
-    private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.10"
-    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
-  }
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
-resource "azurerm_public_ip" "iscsisrv" {
-  name                    = "pip-iscsisrv"
-  location                = var.az_region
-  resource_group_name     = azurerm_resource_group.myrg.name
-  allocation_method       = "Dynamic"
-  idle_timeout_in_minutes = 30
-
-  tags = {
-    workspace = terraform.workspace
-  }
-}
-
 # Subnet route table
 
 resource "azurerm_route_table" "myroutes" {
@@ -178,7 +145,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "8001"
+    destination_port_range     = "9668"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -189,7 +156,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "9002"
+    destination_port_range     = "9664"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }

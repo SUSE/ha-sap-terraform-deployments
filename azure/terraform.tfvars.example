@@ -1,5 +1,5 @@
-# Instance type to use for the cluster nodes
-instancetype = "Standard_M128s"
+# VM size to use for the cluster nodes
+hana_vm_size = "Standard_M128s"
 
 # Disk type for HANA
 hana_data_disk_type = "StandardSSD_LRS"
@@ -86,6 +86,9 @@ hana_disk_device = "/dev/sdc"
 
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/sdc"
+
+# IP address of the iSCSI server
+iscsi_srv_ip = "10.74.1.14"
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
