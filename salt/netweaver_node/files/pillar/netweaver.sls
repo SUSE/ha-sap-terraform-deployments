@@ -5,7 +5,7 @@
 {%- else %}
 {%- set virtual_host_interface = 'eth0' %}
 {%- endif %}
-{%- if grains['provider'] == 'gcp' %}
+{%- if grains['provider'] in ['gcp', 'aws'] %}
 {%- set virtual_host_mask = 32 %}
 {%- else %}
 {%- set virtual_host_mask = 24 %}
@@ -23,7 +23,7 @@ netweaver:
   sid_adm_password: SuSE1234
   sap_adm_password: SuSE1234
   master_password: SuSE1234
-  sapmnt_inst_media: {{ grains['netweaver_nfs_share'] }}
+  sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
   swpm_folder: /netweaver_inst_media/SWPM_10_SP26_6
   sapexe_folder: /netweaver_inst_media/kernel_nw75_sar
   additional_dvds:
@@ -34,8 +34,11 @@ netweaver:
   saptune_solution: 'NETWEAVER'
 
   hana:
+# We have to unify the usage of this parameter, the aws option looks better
 {%- if grains['provider'] == 'gcp' %}
     host: {{ grains['hana_cluster_vip'] }}
+{%- elif grains['provider'] == 'aws' %}
+    host: {{ grains['hana_ip'] }}
 {%- else %}
     host: {{ iprange }}.200
 {%- endif %}
@@ -48,6 +51,10 @@ netweaver:
     password: SuSE1234
 
   product_id: NW750.HDB.ABAPHA
+
+{%- if grains['provider'] == 'aws' %}
+  nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
+{%- endif %}
 
   nodes:
     - host: {{ grains['name_prefix'] }}01

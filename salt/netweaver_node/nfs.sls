@@ -12,7 +12,7 @@ install_nfs_client:
 mount_sapmnt:
   mount.mounted:
     - name: /tmp/sapmnt
-    - device: {{ grains['netweaver_nfs_share'] }}
+    - device: "{{ grains['netweaver_nfs_share'] }}"
     - fstype: nfs
     - mkmnt: True
     - persist: False
@@ -62,12 +62,21 @@ mount_sapmnt:
     - require:
       - mount_sapmnt
 
+/tmp/sapmnt/sapcd:
+  file.directory:
+    - user: root
+    - mode: '0755'
+    - makedirs: True
+    - clean: True
+    - require:
+      - mount_sapmnt
+
 {% endif %}
 
 unmount_sapmnt:
   mount.unmounted:
     - name: /tmp/sapmnt
-    - device: {{ grains['netweaver_nfs_share'] }}
+    - device: "{{ grains['netweaver_nfs_share'] }}"
     - require:
       - mount_sapmnt
 

@@ -55,3 +55,8 @@ cluster:
         ers_ip_address: {{ grains['virtual_host_ips'][1] }}
         ascs_virtual_host: {{ netweaver.netweaver.nodes[0].virtual_host }}
         ers_virtual_host: {{ netweaver.netweaver.nodes[1].virtual_host }}
+        {%- if grains['provider'] == 'aws' %}
+        route_table: {{ grains['route_table'] }}
+        cluster_profile: {{ grains['aws_cluster_profile'] }}
+        instance_tag: {{ grains['aws_instance_tag'] }}
+        {%- endif %}
