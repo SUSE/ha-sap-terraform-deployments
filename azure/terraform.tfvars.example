@@ -1,5 +1,5 @@
 # Instance type to use for the cluster nodes
-instancetype = "Standard_M128s"
+instancetype = "Standard_M32ls"
 
 # Disk type for HANA
 hana_data_disk_type = "StandardSSD_LRS"

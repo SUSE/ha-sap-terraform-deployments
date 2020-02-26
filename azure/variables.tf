@@ -5,15 +5,12 @@
 
 variable "instancetype" {
   type    = string
-  default = "Standard_M128s"
+  default = "Standard_M32ls"
 }
 
 # For reference:
-# Standard_B1ms has 1 VCPU, 2GiB RAM, 1 NIC, 2 data disks and 4GiB SSD
-# Standard_D2s_v3 has 2 VCPU, 8GiB RAM, 2 NICs, 4 data disks and 16GiB SSD disk
-# Standard_D8s_v3 has 8 VCPU, 32GiB RAM, 2 NICs, 16 data disks and 64GiB SSD disk
-# Standard_E4s_v3 has 4 VCPU, 32GiB RAM, 2 NICs, 64GiB SSD disk
-# Standard_M32ts has 32 VCPU, 192GiB RAM, 1000 GiB SSD
+# Standard_M32ls has 32 VCPU, 256GiB RAM, 1000 GiB SSD
+# You could find other supported instances in Azure documentation
 
 variable "ninstances" {
   type    = string
