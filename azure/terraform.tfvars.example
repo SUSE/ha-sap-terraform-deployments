@@ -1,5 +1,5 @@
 # VM size to use for the cluster nodes
-hana_vm_size = "Standard_M128s"
+hana_vm_size = "Standard_M32ls"
 
 # Disk type for HANA
 hana_data_disk_type = "StandardSSD_LRS"
