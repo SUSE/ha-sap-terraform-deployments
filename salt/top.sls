@@ -1,4 +1,4 @@
-base:
+predeployment:
   'role:hana_node':
     - match: grain
     - default

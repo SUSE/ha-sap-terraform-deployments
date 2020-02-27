@@ -5,4 +5,4 @@ salt-call --local \
     --log-file=/tmp/salt-formula.log \
     --log-file-level=debug \
     --retcode-passthrough \
-    --force-color state.highstate || exit 1
+    --force-color state.highstate saltenv=base || exit 1

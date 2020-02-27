@@ -20,6 +20,14 @@ ___
 - [DRBD](doc/drbd.md)
 - [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
+- [ISCSI](doc/iscsi.md)
+
+## Templates
+
+We provide minimal templates for setting up the terraform variables in order to get started with the project.
+For fine tuning refer to variable specification.
+
+- [templates](doc/deployment-templates.md)
 
 ## Rationale
 
