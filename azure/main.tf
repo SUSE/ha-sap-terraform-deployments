@@ -106,6 +106,7 @@ module "hana_node" {
   reg_code                      = var.reg_code
   reg_email                     = var.reg_email
   reg_additional_modules        = var.reg_additional_modules
+  additional_packages           = var.additional_packages
   ha_sap_deployment_repo        = var.ha_sap_deployment_repo
   devel_mode                    = var.devel_mode
   provisioner                   = var.provisioner
@@ -116,26 +117,35 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source                 = "./modules/monitoring"
-  az_region              = var.az_region
-  vm_size                = var.monitoring_vm_size
-  resource_group_name    = azurerm_resource_group.myrg.name
-  network_subnet_id      = azurerm_subnet.mysubnet.id
-  sec_group_id           = azurerm_network_security_group.mysecgroup.id
-  storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  monitoring_uri         = var.monitoring_uri
-  monitoring_srv_ip      = var.monitoring_srv_ip
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
-  admin_user             = var.admin_user
-  host_ips               = var.host_ips
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
+  source                      = "./modules/monitoring"
+  az_region                   = var.az_region
+  vm_size                     = var.monitoring_vm_size
+  resource_group_name         = azurerm_resource_group.myrg.name
+  network_subnet_id           = azurerm_subnet.mysubnet.id
+  sec_group_id                = azurerm_network_security_group.mysecgroup.id
+  storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  monitoring_uri              = var.monitoring_uri
+  monitoring_public_publisher = var.monitoring_public_publisher
+  monitoring_public_offer     = var.monitoring_public_offer
+  monitoring_public_sku       = var.monitoring_public_sku
+  monitoring_public_version   = var.monitoring_public_version
+  monitoring_srv_ip           = var.monitoring_srv_ip
+  public_key_location         = var.public_key_location
+  private_key_location        = var.private_key_location
+  admin_user                  = var.admin_user
+  host_ips                    = var.host_ips
+  reg_code                    = var.reg_code
+  reg_email                   = var.reg_email
+  reg_additional_modules      = var.reg_additional_modules
+  additional_packages         = var.additional_packages
+  ha_sap_deployment_repo      = var.ha_sap_deployment_repo
+  provisioner                 = var.provisioner
+  background                  = var.background
+  monitoring_enabled          = var.monitoring_enabled
+  drbd_enabled                = var.drbd_enabled
+  drbd_ips                    = var.drbd_ips
+  netweaver_enabled           = var.netweaver_enabled
+  netweaver_ips               = var.netweaver_ips
 }
 
 module "iscsi_server" {
@@ -146,6 +156,11 @@ module "iscsi_server" {
   network_subnet_id      = azurerm_subnet.mysubnet.id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  iscsi_srv_uri          = var.iscsi_srv_uri
+  iscsi_public_publisher = var.iscsi_public_publisher
+  iscsi_public_offer     = var.iscsi_public_offer
+  iscsi_public_sku       = var.iscsi_public_sku
+  iscsi_public_version   = var.iscsi_public_version
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   iscsidev               = var.iscsidev
@@ -155,7 +170,9 @@ module "iscsi_server" {
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
+  additional_packages    = var.additional_packages
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
+  qa_mode                = var.qa_mode
 }
