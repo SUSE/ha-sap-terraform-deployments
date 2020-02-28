@@ -1,6 +1,6 @@
 # Network resources: subnets, routes, etc
 resource "aws_subnet" "netweaver-subnet" {
-  count              = var.netweaver_count > 2 ? 2 : var.netweaver_count # Create 2 subnets max
+  count              = min(var.netweaver_count, 2) # Create 2 subnets max
   vpc_id             = var.vpc_id
   cidr_block         = cidrsubnet(var.vpc_cidr_block, 8, count.index+2) # +2 is done to don't conflict with hana subnets addresses
   availability_zone  = element(var.availability_zones, count.index)
@@ -11,7 +11,7 @@ resource "aws_subnet" "netweaver-subnet" {
 }
 
 resource "aws_route_table_association" "netweaver-subnet-route-association" {
-  count          = var.netweaver_count > 2 ? 2 : var.netweaver_count
+  count          = min(var.netweaver_count, 2)
   subnet_id      = element(aws_subnet.netweaver-subnet.*.id, count.index)
   route_table_id = var.route_table_id
 }
@@ -42,7 +42,7 @@ resource "aws_efs_file_system" "netweaver-efs" {
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
-  count           = var.netweaver_count > 2 ? 2 : var.netweaver_count
+  count           = min(var.netweaver_count, 2)
   file_system_id  = element(aws_efs_file_system.netweaver-efs.*.id, 0)
   subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
   security_groups = [var.security_group_id]
