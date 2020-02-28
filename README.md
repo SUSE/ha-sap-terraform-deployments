@@ -20,6 +20,14 @@ ___
 - [DRBD](doc/drbd.md)
 - [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
+- [ISCSI](doc/iscsi.md)
+
+## Templates
+
+We provide minimal templates for setting up the terraform variables in order to get started with the project.
+For fine tuning refer to variable specification.
+
+- [templates](doc/deployment-templates.md)
 
 ## Rationale
 
@@ -28,3 +36,11 @@ This project is organized in folders containing the Terraform configuration file
 This project uses Terraform for the deployment and Saltstack for the provisioning.
 
 **Be careful with what instance type you will use because default choice is systems certified by SAP, so cost could be expensive if you leave the default value.**
+
+These are links to find certified systems for each provider:
+
+- [SAP Certified IaaS Platforms for AWS](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Amazon%20Web%20Services)
+
+- [SAP Certified IaaS Platforms for GCP](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Google%20Cloud%20Platform)
+
+- [SAP Certified IaaS Platforms for Azure](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Microsoft%20Azure) (Be carreful with Azure, **clustering** means scale-out scenario)
