@@ -68,6 +68,12 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
+variable "efs_performance_mode" {
+  type        = string
+  description = "Performance mode of the EFS storage"
+  default     = "generalPurpose"
+}
+
 variable "aws_credentials" {
   description = "AWS credentials file path in local machine"
   type        = string

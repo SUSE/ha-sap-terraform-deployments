@@ -12,6 +12,7 @@ module "netweaver_node" {
   key_name               = aws_key_pair.hana-key-pair.key_name
   security_group_id      = aws_security_group.secgroup.id
   route_table_id         = aws_route_table.route-table.id
+  efs_performance_mode   = var.netweaver_efs_performance_mode
   aws_credentials        = var.aws_credentials
   aws_access_key_id      = var.aws_access_key_id
   aws_secret_access_key  = var.aws_secret_access_key

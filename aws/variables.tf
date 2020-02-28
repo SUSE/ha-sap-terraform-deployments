@@ -225,6 +225,12 @@ variable "netweaver_s3_bucket" {
   type        = string
 }
 
+variable "netweaver_efs_performance_mode" {
+  type        = string
+  description = "Performance mode of the EFS storage used by Netweaver"
+  default     = "generalPurpose"
+}
+
 variable "netweaver_ips" {
   description = "ip addresses to set to the netweaver cluster nodes"
   type        = list(string)

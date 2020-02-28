@@ -34,7 +34,7 @@ resource "aws_route" "ers-cluster-vip" {
 resource "aws_efs_file_system" "netweaver-efs" {
   count            = var.netweaver_count > 0 ? 1 : 0
   creation_token   = "${terraform.workspace}-netweaver-efs"
-  performance_mode = "generalPurpose"
+  performance_mode = var.efs_performance_mode
 
   tags = {
     Name = "${terraform.workspace}-efs"
