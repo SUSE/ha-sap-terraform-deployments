@@ -38,6 +38,7 @@ resource "aws_instance" "iscsisrv" {
 }
 
 module "sap_cluster_policies" {
+  enabled           = var.ninstances > 0 ? true : false
   source            = "./modules/sap_cluster_policies"
   name              = var.name
   aws_region        = var.aws_region
@@ -57,7 +58,7 @@ resource "aws_instance" "clusternodes" {
   security_groups             = [aws_security_group.secgroup.id]
   availability_zone           = element(data.aws_availability_zones.available.names, count.index)
   source_dest_check           = false
-  iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name
+  iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name[0]
 
   root_block_device {
     volume_type = "gp2"
