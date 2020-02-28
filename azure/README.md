@@ -95,7 +95,7 @@ These are the relevant files and what each provides:
 
 - [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, Azure region, etc.
 
-- [main.tf](main.tf): definition of the network resources, Azure resource group and storage account to use.
+- [infrastructure.tf](infrastructure.tf): definition of the Azure provider, network resources, resource group and storage account to use.
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
