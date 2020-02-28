@@ -69,7 +69,7 @@ mount_sapmnt_temporary:
     - makedirs: True
     - clean: True
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
 
 {% endif %}
 
