@@ -166,7 +166,11 @@ These are the relevant files and what each provides:
 
 In [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
 
-* **instancetype**: instance type to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
+* **instancetype**: instance type to use for the hana cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `r3.8xlarge`.
+* **netweaver_instancetype**: instance type of netweaver node; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `r3.8xlarge`.
+* **min_instancetype**: instance type of minimun capacity; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
+* **iscsi_instancetype**: instance type of iscsi server; an empty string will follow the **min_instancetype**. Defaults to `""`.
+* **monitor_instancetype**: instance type of monitor server; an empty string will follow the **min_instancetype**. Defaults to `""`.
 * **hana_data_disk_type**: disk type to use for HANA (gp2 by default).
 * **ninstances**: number of cluster nodes to deploy. Defaults to 2.
 * **aws_region**: AWS region where to deploy the configuration.
