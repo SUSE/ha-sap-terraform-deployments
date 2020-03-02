@@ -27,7 +27,6 @@ iscsi:
             attributes:
               block_size: 512
               emulate_write_cache: 0
-              queue_depth: 64
               unmap_granularity: 0
             dev: {{ grains['iscsidev'] }}{{ loop.index }}
             name: sd{{ devicenum[loop.index0] }}
