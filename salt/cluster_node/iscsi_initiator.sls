@@ -14,6 +14,12 @@ open-iscsi:
     - pattern: "^node.startup = manual"
     - repl: "node.startup = automatic"
 
+iscsi-queue-depth:
+  file.replace:
+    - name: "/etc/iscsi/iscsid.conf"
+    - pattern: "^node.session.queue_depth = [0-9]*"
+    - repl: "node.session.queue_depth = 64"
+
 iscsi:
   service.running:
     - enable: True
@@ -32,5 +38,6 @@ iscsi_discovery:
 
 iscsid:
   service.running:
+    - enable: True
     - watch:
       - cmd: iscsi_discovery
