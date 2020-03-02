@@ -14,6 +14,11 @@ resource "null_resource" "netweaver_provisioner" {
     netweaver_id = join(",", aws_instance.netweaver.*.id)
   }
 
+  # 3 hours should be enough to create netweaver cluster.
+  timeouts {
+    create = "3h"
+  }
+
   connection {
     host        = element(aws_instance.netweaver.*.public_ip, count.index)
     type        = "ssh"

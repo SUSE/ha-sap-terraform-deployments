@@ -13,6 +13,11 @@ resource "null_resource" "netweaver_provisioner" {
     netweaver_id = join(",", azurerm_virtual_machine.netweaver.*.id)
   }
 
+  # 3 hours should be enough to create netweaver cluster.
+  timeouts {
+    create = "3h"
+  }
+
   connection {
     host        = data.azurerm_public_ip.netweaver[count.index].ip_address
     type        = "ssh"

@@ -13,6 +13,11 @@ resource "null_resource" "netweaver_provisioner" {
     netweaver_id = join(",", google_compute_instance.netweaver.*.id)
   }
 
+  # 3 hours should be enough to create netweaver cluster.
+  timeouts {
+    create = "3h"
+  }
+
   connection {
     host = element(
       google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip,

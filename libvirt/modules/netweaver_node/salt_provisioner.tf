@@ -17,6 +17,11 @@ resource "null_resource" "netweaver_node_provisioner" {
     netweaver_ids = libvirt_domain.netweaver_domain[count.index].id
   }
 
+  #3 hours should be enough to create netweaver cluster.
+  timeouts {
+    create = "3h"
+  }
+
   connection {
     host     = libvirt_domain.netweaver_domain[count.index].network_interface.0.addresses.0
     user     = "root"
