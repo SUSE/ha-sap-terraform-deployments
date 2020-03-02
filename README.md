@@ -29,6 +29,7 @@ For fine tuning refer to variable specification.
 
 - [templates](doc/deployment-templates.md)
 
+
 ## Rationale
 
 This project is organized in folders containing the Terraform configuration files per Public or Private Cloud providers, each also containing documentation relevant to the use of the configuration files and to the cloud provider itself.
@@ -44,3 +45,8 @@ These are links to find certified systems for each provider:
 - [SAP Certified IaaS Platforms for GCP](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Google%20Cloud%20Platform)
 
 - [SAP Certified IaaS Platforms for Azure](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Microsoft%20Azure) (Be carreful with Azure, **clustering** means scale-out scenario)
+
+
+# Debugging:
+
+In case if you have issue, take look at the [debugging guide](doc/debugging/md)
