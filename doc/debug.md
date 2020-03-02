@@ -14,7 +14,7 @@ Feel free to open issue with this logs, and/or analyze them accordingly.
 
 # Netweaver debugging:
 
-- `/tmp/swpm_unnattended/sapints.log` is the best first entrypoint to look at when debugging netweaver failures.
+- `/tmp/swpm_unnattended/sapinst.log` is the best first entrypoint to look at when debugging netweaver failures.
 
 
 # Misc:
