@@ -1,3 +1,8 @@
+variable "enabled" {
+  type        = bool
+  description = "Enable the sap cluster policies creation"
+}
+
 variable "name" {
   type        = string
   description = "Name used to create the role and policies. It will be attached after the workspace"
