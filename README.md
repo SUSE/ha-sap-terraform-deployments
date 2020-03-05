@@ -47,6 +47,6 @@ These are links to find certified systems for each provider:
 - [SAP Certified IaaS Platforms for Azure](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html#categories=Microsoft%20Azure) (Be carreful with Azure, **clustering** means scale-out scenario)
 
 
-## Debug:
+## Debugging
 
-In case if you have issue, take look at the [debugging guide](doc/debug.md)
+In the case you have some issue, take a look at the [debugging guide]
