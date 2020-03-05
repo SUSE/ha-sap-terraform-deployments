@@ -9,12 +9,13 @@ install_nfs_client:
        attempts: 3
        interval: 15
 
-mount_sapmnt:
+mount_sapmnt_temporary:
   mount.mounted:
     - name: /tmp/sapmnt
-    - device: {{ grains['netweaver_nfs_share'] }}
+    - device: "{{ grains['netweaver_nfs_share'] }}"
     - fstype: nfs
     - mkmnt: True
+    - persist: False
     - opts:
       - defaults
     - retry:
@@ -31,7 +32,7 @@ mount_sapmnt:
     - makedirs: True
     - clean: True
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
 
 /tmp/sapmnt/usrsapsys:
   file.directory:
@@ -40,7 +41,7 @@ mount_sapmnt:
     - makedirs: True
     - clean: True
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
 
 # This next folders are created to use as shared folder in Azure
 /tmp/sapmnt/ASCS:
@@ -50,7 +51,7 @@ mount_sapmnt:
     - makedirs: True
     - clean: True
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
 
 /tmp/sapmnt/ERS:
   file.directory:
@@ -59,16 +60,25 @@ mount_sapmnt:
     - makedirs: True
     - clean: True
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
+
+/tmp/sapmnt/sapcd:
+  file.directory:
+    - user: root
+    - mode: '0755'
+    - makedirs: True
+    - clean: True
+    - require:
+      - mount_sapmnt_temporary
 
 {% endif %}
 
 unmount_sapmnt:
   mount.unmounted:
     - name: /tmp/sapmnt
-    - device: {{ grains['netweaver_nfs_share'] }}
+    - device: "{{ grains['netweaver_nfs_share'] }}"
     - require:
-      - mount_sapmnt
+      - mount_sapmnt_temporary
 
 remove_tmp_folder:
   file.absent:

@@ -71,3 +71,21 @@ output "monitoring_name" {
 output "monitoring_public_name" {
   value = join("", data.aws_instance.monitoring.*.public_dns)
 }
+
+# Netweaver
+
+output "netweaver_ip" {
+  value = module.netweaver_node.netweaver_ip
+}
+
+output "netweaver_public_ip" {
+  value = module.netweaver_node.netweaver_public_ip
+}
+
+output "netweaver_name" {
+  value = module.netweaver_node.netweaver_name
+}
+
+output "netweaver_public_name" {
+  value = module.netweaver_node.netweaver_public_name
+}

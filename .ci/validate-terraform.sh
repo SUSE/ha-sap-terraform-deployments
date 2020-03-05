@@ -1,10 +1,17 @@
 #! /bin/bash
 set -e
 find . -name \*.sh -exec bash -n {} \;
-find . -name \*.tpl | while read f ; do head -1 "$f" | grep -qnE '^#! ?/bin/(ba)?sh' && bash -n "$f" ; done
+find . -name \*.tpl | while read f ;
+do
+  if [[ $(head -1 "$f") == *"/bin/bash"* ]]; then
+    echo "Testing tpl file: $f"
+    bash -n "$f"
+  fi
+done
+
 
 echo "executing terraform check , init and validate for each provider"
-for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples'); do
+for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|doc'); do
   echo "============================"
   echo "doing tests for $provider"
   echo "============================"

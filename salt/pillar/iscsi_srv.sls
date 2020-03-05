@@ -1,44 +1,43 @@
+{% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
+{% set partitions = grains['partitions'] %}
+{% set num = grains['iscsi_disks'] %}
+
+{% if num > 0 and num < partitions|length %}
+{% set partitions = (partitions|list)[:num] %}
+{% endif %}
+
 iscsi:
-  server:
-    enabled: False
-  isns:
-    enabled: False
   target:
-    lio:
-      myconf:
+    pkgs:
+      wanted:
+        - targetcli-fb-common
+        - python3-targetcli-fb
+        - yast2-iscsi-lio-server
+  config:
+    data:
+      lio:
         fabric_modules:
-          - authenticate_target: 'false'
+          iscsi_server:
+            authenticate_target: 'false'
             enforce_discovery_auth: 'false'
             name: "iscsi"
         storage_objects:
-          - attributes:
+{%- for partition in partitions %}
+          sd{{ devicenum[loop.index0] }}:
+            attributes:
               block_size: 512
               emulate_write_cache: 0
               queue_depth: 64
               unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}1
-            name: "sda"
+            dev: {{ grains['iscsidev'] }}{{ loop.index }}
+            name: sd{{ devicenum[loop.index0] }}
             plugin: "block"
-          - attributes:
-              block_size: 512
-              emulate_write_cache: 0
-              queue_depth: 64
-              unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}2
-            name: "sdb"
-            plugin: "block"
-          - attributes:
-              block_size: 512
-              emulate_write_cache: 0
-              queue_depth: 64
-              unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}3
-            name: "sdc"
-            plugin: "block"
+{%- endfor %}
         targets:
-          - fabric: iscsi
+          iscsi_server:
+            fabric: iscsi
             tpgs:
-              - attributes:
+              attributes:
                   authentication: 0
                   cache_dynamic_acls: 0
                   default_cmdsn_depth: 16
@@ -47,15 +46,15 @@ iscsi:
                   login_timeout: 15
                   netif_timeout: 2
                   prod_mode_write_protect: 0
-                luns:
-                  - index: 0
-                    storage_object: /backstores/block/sda
-                  - index: 1
-                    storage_object: /backstores/block/sdb
-                  - index: 2
-                    storage_object: /backstores/block/sdc
-                portals:
-                  - ip_address: {{ grains['iscsi_srv_ip'] }}
-                    port: 3260
-                tag: 1
+              luns:
+{%- for partition in partitions %}
+                sd{{ devicenum[loop.index0] }}:
+                  index: {{ loop.index0 }}
+                  storage_object: /backstores/block/sd{{ devicenum[loop.index0] }}
+{%- endfor %}
+              portals:
+                iscsi_server:
+                  ip_address: {{ grains['iscsi_srv_ip'] }}
+                  port: 3260
+              tag: 1
             wwn: "iqn.1996-04.de.suse:01:a66aed20e2f3"

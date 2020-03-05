@@ -11,6 +11,8 @@ ninstances = "2"
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"
+# AWS account id (12 digit id available to the right of the user in the AWS portal)
+aws_account_id = "123412341234"
 
 # SSH Public key location to configure access to the remote instances
 public_key_location = "/path/to/your/public/ssh/key"
@@ -23,6 +25,10 @@ private_key_location = "/path/to/your/private/ssh/key"
 #    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
 #}
 
+# aws-cli credentials data
+# access keys parameters have preference over the credentials file (they are self exclusive)
+aws_access_key_id = my-access-key-id
+aws_secret_access_key = my-secret-access-key
 # aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
 aws_credentials = "~/.aws/credentials"
 
@@ -38,6 +44,9 @@ hana_inst_folder = "/root/hana_inst_media/"
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/xvdd"
 
+# IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
+hana_cluster_vip = "192.168.1.10"
+
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
@@ -52,9 +61,9 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 # Used for cluster communication for example
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
-# Each host IP address (sequential order).
-# example : host_ips = ["10.0.1.0", "10.0.1.1"]
-host_ips = ["10.0.1.0", "10.0.1.1"]
+# Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
+# example : host_ips = ["10.0.0.5", "10.0.1.6"]
+host_ips = ["10.0.0.5", "10.0.1.6"]
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -87,8 +96,8 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
-# IP address of the machine where Prometheus and Grafana are running
-monitoring_srv_ip = "10.0.1.2"
+# IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
+monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
@@ -102,3 +111,12 @@ monitoring_srv_ip = "10.0.1.2"
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# Netweaver variables
+
+#netweaver_enabled = true
+#netweaver_instancetype = "r3.8xlarge"
+#netweaver_efs_performance_mode = "generalPurpose"
+#netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
+#netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
+#netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]

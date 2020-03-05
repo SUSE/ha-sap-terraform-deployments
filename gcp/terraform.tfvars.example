@@ -16,6 +16,18 @@ machine_type_iscsi_server = "custom-1-2048"
 # Disk type for HANA
 hana_data_disk_type = "pd-ssd"
 
+# Disk size for HANA in GB
+hana_data_disk_size = "834"
+
+# Disk type for HANA backup
+hana_backup_disk_type = "pd-standard"
+
+# Disk size for HANA backup in GB
+hana_backup_disk_size = "416"
+
+# HANA cluster vip
+hana_cluster_vip = "10.0.1.200"
+
 # SSH private key file
 private_key_location = "/path/to/your/private/ssh/key"
 
@@ -55,8 +67,11 @@ hana_inst_folder = "/root/hana_inst_media"
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/sdb"
 
+# Device used by node where HANA backup will be stored
+hana_disk_device = "/dev/sdc"
+
 # Device used by node where HANA will be downloaded
-hana_inst_disk_device = "/dev/sdc"
+hana_inst_disk_device = "/dev/sdd"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -104,3 +119,36 @@ monitoring_srv_ip = "10.0.0.4"
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# drbd related variables
+
+# Enable drbd cluster
+#drbd_enabled = true
+
+#drbd_machine_type = n1-standard-4
+
+#drbd_image = suse-byos-cloud/sles-15-sap-byos
+
+#drbd_data_disk_size = 15
+
+#drbd_data_disk_type = pd-standard
+
+# Each drbd cluster host IP address (sequential order).
+# example : drbd_host_ips = ["10.0.0.10", "10.0.0.11"]
+#drbd_ips = ["10.0.0.10", "10.0.0.11"]
+#drbd_cluster_vip = "10.0.1.201"
+
+# netweaver related variables
+
+# Enable netweaver cluster
+#netweaver_enabled = true
+
+#netweaver_machine_type = n1-standard-4
+
+#netweaver_image = suse-byos-cloud/sles-15-sap-byos
+
+#netweaver_software_bucket = "MyNetweaverBucket"
+
+#netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
+
+#netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]

@@ -96,6 +96,8 @@ provided [automatic pillars](../pillar_examples/automatic/drbd).
 - **shared_storage_type**: Shared storage type between iscsi and KVM raw file shared disk. Available options: `iscsi` and `shared-disk`.
 - **iscsi_srv_ip**: IP address of the machine that will host the iscsi target (only used if `iscsi` is used as a shared storage for fencing)
 - **iscsi_image**: Source image of the machine hosting the iscsi target (sles15 or above) (only used if `iscsi` is used as a shared storage for fencing)
+- **iscsidev**: device used by the iSCSI server to provide LUNs.
+- **iscsi_disks**: attached partitions number for iscsi server.
 - **monitoring_image**: Source image of the machine hosting the monitoring stack (if not set, the same image as the hana nodes will be used)
 - **monitoring_srv_ip**: IP address of the machine that will host the monitoring stack
 - **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)

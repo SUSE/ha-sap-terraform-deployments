@@ -1,8 +1,8 @@
 open-iscsi:
   pkg.installed:
   - retry:
-    attempts: 3
-    interval: 15
+      attempts: 3
+      interval: 15
 
 /etc/iscsi/initiatorname.iscsi:
   file.replace:

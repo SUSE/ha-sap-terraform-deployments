@@ -38,16 +38,19 @@ cluster:
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
-        {% if grains['provider'] != 'azure' %}
-        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
-        {% else %}
+        {% if grains['provider'] == 'azure' %}
         virtual_ip: {{ grains['azure_lb_ip'] }}
-        {% endif %}
-        {% if grains['provider'] == 'aws' %}
-        virtual_ip_mask: 16
+        {% elif grains['provider'] == 'gcp' %}
+        virtual_ip: {{ grains['hana_cluster_vip'] }}
+        {% elif grains['provider'] == 'aws' %}
+        virtual_ip: {{ grains['hana_cluster_vip'] }}
+        route_table: {{ grains['route_table'] }}
+        cluster_profile: {{ grains['aws_cluster_profile'] }}
+        instance_tag: {{ grains['aws_instance_tag'] }}
         {% else %}
-        virtual_ip_mask: 24
+        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
         {% endif %}
+        virtual_ip_mask: 24
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}

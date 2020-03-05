@@ -38,23 +38,35 @@ $ export AWS_DEFAULT_REGION="eu-central-1"
 $ terraform plan
 ```
 
-- Credentials file
+- AWS credentials
 
-Configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
+There are 2 ways of using the AWS credentials. Using the access key id and the secret access key or using an already existing credentials file, being both options self exclusive (the first option has preference).
+
+To use the first option basically set the values `aws_access_key_id` and `aws_secret_access_key` in the `terraform.tfvars`.
+
+To use the credentials file, configure the values for the access key and the secret key in a credentials file located in `$HOME/.aws/credentials`. The syntax of the file is:
 
 ```
 [default]
 aws_access_key_id = <HERE_GOES_THE_ACCESS_KEY>
 aws_secret_access_key = <HERE_GOES_THE_SECRET_KEY>
-region = eu-central-1
 ```
 
 This file is also used by the `aws` command line tool, so it can be created with the command: `aws configure`.
 
 **Note**: All tests so far with this configuration have been done with only the keys stored in the credentials files, and the region being passed as a variable.
 
+- AWS user authorizations
 
-5) **Deploy**: 
+In order to execute the deployment properly using terraform, the used user must have some policies enabled. Mostly, it needs access to manage EC2 instances, S3 buckets, IAM (to create roles and policies) and EFS storage.
+
+Here how it should look like:
+
+
+![AWS policies](./images/policies.png?raw=true)
+
+
+5) **Deploy**:
 
 ```
 terraform init
@@ -106,7 +118,7 @@ These are the relevant files and what each provides:
 
 - [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
 
-- [salt_provisioner_script.tpl](../../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
+- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
 
 - [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
 
@@ -124,6 +136,9 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **aws_region**: AWS region where to deploy the configuration.
 * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
 * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
+* **aws_account_id**: AWS account id (12 digit id available to the right of the user in the AWS portal).
+* **aws_access_key_id**: AWS access key id.
+* **aws_secret_access_key**: AWS secret access key.
 * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
 * **name**: hostname for the hana node without the domain part.
 * **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
@@ -132,11 +147,12 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **hana_disk_device**: device used by node where HANA will be installed.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
 * **iscsidev**: device used by the iscsi server.
+* **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
 * **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
 * **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
 * **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../../salt). Let it empty to disable the provisioning part.
+* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
 * **background**: run the provisioning process in background finishing terraform execution.
 * **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 * **reg_email**: email to be associated with the system registration. This parameter is optional.
@@ -182,6 +198,7 @@ If the use of a private/custom image is required (for example, to perform the Bu
 **Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions.
 
 To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
+
 ```
  # Custom AMI for nodes
 sles4sap = {
