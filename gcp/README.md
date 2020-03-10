@@ -64,6 +64,7 @@ The infrastructure deployed includes:
 - Public IP access for the virtual machines via ssh.
 - The definition of the image to use in the virtual machines.
 - Virtual machines to deploy.
+- The created HA environment uses the route table option to forward the coming requests and manage the floating IP address of the cluster (gcp-vpc-move-route resource agent).
 
 By default, this configuration will create 3 instances in GCP: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Google) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 
