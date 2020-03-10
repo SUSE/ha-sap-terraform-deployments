@@ -34,4 +34,8 @@ cluster:
       parameters:
         {% if grains['provider']== "azure" %}
         probe: 61000
+        {% elif grains['provider'] == 'gcp' %}
+        virtual_ip: {{ grains['drbd_cluster_vip'] }}
+        vpc_network_name: {{ grains['vpc_network_name'] }}
+        route_table: {{ grains['route_table'] }}
         {% endif %}
