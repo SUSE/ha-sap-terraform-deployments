@@ -44,8 +44,26 @@ variable "iscsi_srv" {
 # Use with: terraform apply -var instancetype=t2.micro -var ninstances=2
 
 variable "instancetype" {
-  type    = string
-  default = "r3.8xlarge"
+  description = "The instance type of hana node."
+  type        = string
+  default     = "r3.8xlarge"
+}
+variable "min_instancetype" {
+  description = "The minimum cost/capacity instance type, different per region."
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "iscsi_instancetype" {
+  description = "The instance type of iscsi server node."
+  type        = string
+  default     = ""
+}
+
+variable "monitor_instancetype" {
+  description = "The instance type of monitoring node."
+  type        = string
+  default     = ""
 }
 
 variable "hana_data_disk_type" {

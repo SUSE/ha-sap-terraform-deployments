@@ -8,7 +8,7 @@ data "aws_availability_zones" "available" {
 
 resource "aws_instance" "iscsisrv" {
   ami                         = var.iscsi_srv[var.aws_region]
-  instance_type               = "t2.micro"
+  instance_type               = var.iscsi_instancetype == "" ? var.min_instancetype : var.iscsi_instancetype
   key_name                    = aws_key_pair.hana-key-pair.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.hana-subnet.*.id, 0)
@@ -86,7 +86,7 @@ resource "aws_instance" "clusternodes" {
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
   ami                         = var.sles4sap[var.aws_region]
-  instance_type               = "t2.micro"
+  instance_type               = var.monitor_instancetype == "" ? var.min_instancetype : var.monitor_instancetype
   key_name                    = aws_key_pair.hana-key-pair.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.hana-subnet.*.id, 0)

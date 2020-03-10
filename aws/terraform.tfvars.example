@@ -1,7 +1,10 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
-# Instance type to use for the cluster nodes
+# Instance type to use for the hana cluster nodes
 instancetype = "r3.8xlarge"
+
+# The minimum instance type of a region, not suitable to hana nodes
+min_instancetype = "t2.micro"
 
 # Disk type for HANA
 hana_data_disk_type = "gp2"
