@@ -77,6 +77,8 @@ hana_inst_disk_device = "/dev/sdd"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# The next line will automatically detect the SLE version from that repository
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:/ha-clustering:/Factory"
 ha_sap_deployment_repo = ""
 
 # Optional SUSE Customer Center Registration parameters
