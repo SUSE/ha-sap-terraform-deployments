@@ -13,6 +13,8 @@ iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# The next line will automatically detect the SLE version from that repository
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:/ha-clustering:/Factory"
 ha_sap_deployment_repo = ""
 
 # Whether or not to install HA/SAP packages from ha_sap_deployment_repo
