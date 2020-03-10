@@ -70,6 +70,8 @@ aas_instance_number: ${var.aas_instance_number}
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 nw_inst_disk_device : /dev/sdb
 hana_cluster_vip: ${var.hana_cluster_vip}
+vpc_network_name: ${var.network_name}
+route_table: ${google_compute_route.nw-route[0].name}
 
 EOF
   destination = "/tmp/grains"

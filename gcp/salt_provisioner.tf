@@ -132,6 +132,8 @@ hana_inst_disk_device: ${var.hana_inst_disk_device}
 hana_fstype: ${var.hana_fstype}
 hana_cluster_vip: ${var.hana_cluster_vip}
 gcp_credentials_file: ${var.gcp_credentials_file}
+vpc_network_name: ${google_compute_network.ha_network.name}
+route_table: ${google_compute_route.hana-route.name}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_ip}
 init_type: ${var.init_type}
