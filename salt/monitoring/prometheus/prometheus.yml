@@ -23,36 +23,41 @@ scrape_configs:
     scrape_timeout: 30s
     static_configs:
       - targets:
-        {% for ip in grains['monitored_hosts'] %}
+        {%- for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9668" # hanadb_exporter
-        {% endfor %}
-        {% for ip in grains['monitored_hosts'] %}
+        {%- endfor %}
+        {%- for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9100" # node_exporter
-        {% endfor %}
-        {% for ip in grains['monitored_hosts'] %}
+        {%- endfor %}
+        {%- for ip in grains['monitored_hosts'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
-        {% endfor %}
+        {%- endfor %}
 
   {% if grains.get('drbd_monitored_hosts', [])|length > 0 %}
   - job_name: drbd-cluster
     static_configs:
       - targets:
-        {% for ip in grains['drbd_monitored_hosts'] %}
+        {%- for ip in grains['drbd_monitored_hosts'] %}
         - "{{ ip }}:9100" # node_exporter
-        {% endfor %}
-        {% for ip in grains['drbd_monitored_hosts'] %}
+        {%- endfor %}
+        {%- for ip in grains['drbd_monitored_hosts'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
-        {% endfor %}
+        {%- endfor %}
   {% endif %}
 
   {% if grains.get('nw_monitored_hosts', [])|length > 0 %}
   - job_name: netweaver-cluster
     static_configs:
       - targets:
-        {% for ip in grains['nw_monitored_hosts'] %}
+        {%- for ip in grains['nw_monitored_hosts'] %}
         - "{{ ip }}:9100" # node_exporter
-        {% endfor %}
-        {% for ip in grains['nw_monitored_hosts'][0:2] %}
+        {%- endfor %}
+
+        {%- for ip in grains['nw_monitored_hosts'] %}
+        - "{{ ip }}:9680" # sap_host_exporter
+        {%- endfor %}
+
+        {%- for ip in grains['nw_monitored_hosts'][0:2] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
-        {% endfor %}
+        {%- endfor %}
   {% endif %}
