@@ -25,6 +25,15 @@ cluster:
   {% endif %}
   resource_agents:
     - SAPHanaSR
+  {% if grains['provider'] == 'azure' %}
+  corosync:
+    totem:
+      token: 30000
+      token_retransmits_before_loss_const: 10
+      join: 60
+      consensus: 36000
+      max_messages: 20
+  {% endif %}
   {% if grains.get('monitoring_enabled', False) %}
   ha_exporter: true
   {% else %}

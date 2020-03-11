@@ -24,6 +24,15 @@ cluster:
     overwrite: true
     password: linux
   {%- endif %}
+  {% if grains['provider'] == 'azure' %}
+  corosync:
+    totem:
+      token: 30000
+      token_retransmits_before_loss_const: 10
+      join: 60
+      consensus: 36000
+      max_messages: 20
+  {% endif %}
   {%- for node in netweaver.netweaver.nodes if node.host == grains['host'] %}
   {%- if grains.get('monitoring_enabled', False) and node.sap_instance in ['ascs', 'ers'] %}
   ha_exporter: true
