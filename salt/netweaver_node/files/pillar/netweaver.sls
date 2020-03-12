@@ -35,7 +35,7 @@ netweaver:
 
   # enable exporter if monitoring enabled
   sap_host_exporter:
-    enabled: {{ grains.get('monitoring_enabled', False) }}
+    enabled: {{ grains.get['monitoring_enabled', False] }}
 
   hana:
 # We have to unify the usage of this parameter, the aws option looks better
