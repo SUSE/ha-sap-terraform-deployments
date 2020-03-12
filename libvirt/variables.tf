@@ -191,6 +191,8 @@ variable "drbd_count" {
   default     = 2
 }
 
+# Specific QA variables
+
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
   default     = false
@@ -198,6 +200,14 @@ variable "qa_mode" {
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
   type        = bool
   default     = false
 }
