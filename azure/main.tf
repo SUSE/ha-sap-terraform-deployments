@@ -1,3 +1,8 @@
+module "local_execution" {
+  source  = "../generic_modules/local_exec"
+  enabled = var.pre_deployment
+}
+
 module "drbd_node" {
   source                 = "./modules/drbd_node"
   az_region              = var.az_region

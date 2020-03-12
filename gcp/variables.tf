@@ -305,3 +305,11 @@ variable "netweaver_virtual_ips" {
   description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
   type        = list(string)
 }
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
+  type        = bool
+  default     = false
+}

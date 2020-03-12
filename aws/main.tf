@@ -1,3 +1,8 @@
+module "local_execution" {
+  source  = "../generic_modules/local_exec"
+  enabled = var.pre_deployment
+}
+
 module "netweaver_node" {
   source                 = "./modules/netweaver_node"
   netweaver_count        = var.netweaver_enabled == true ? 4 : 0

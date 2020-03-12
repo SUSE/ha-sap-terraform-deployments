@@ -274,3 +274,11 @@ variable "hwcct" {
   type        = bool
   default     = false
 }
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
+  type        = bool
+  default     = false
+}
