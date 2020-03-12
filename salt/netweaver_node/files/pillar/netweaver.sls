@@ -33,6 +33,10 @@ netweaver:
   # apply by default the netweaver solution
   saptune_solution: 'NETWEAVER'
 
+  # enable exporter if monitoring enabled
+  sap_host_exporter:
+    enabled: {{ grains.get['monitoring_enabled', False] }}
+
   hana:
 # We have to unify the usage of this parameter, the aws option looks better
 {%- if grains['provider'] == 'gcp' %}
