@@ -117,8 +117,9 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: pas
-      extra_parameters:
-        NW_liveCache.useLiveCache: "false"
+      # Add for S4/HANA
+      #extra_parameters:
+      #  NW_liveCache.useLiveCache: "false"
 
     - host: {{ grains['name_prefix'] }}04
       virtual_host: sapha1aas
@@ -129,4 +130,5 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: aas
-      attempts: 500
+      # Add for S4/HANA
+      #attempts: 500
