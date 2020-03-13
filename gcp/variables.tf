@@ -293,6 +293,7 @@ variable "netweaver_image" {
 variable "netweaver_software_bucket" {
   description = "gcp bucket where netweaver software is available"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_ips" {
