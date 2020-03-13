@@ -70,7 +70,23 @@ In order to setup the IAM proper rights, 2 options are available:
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "iam:CreateServiceLinkedRole",
+            "Action": [
+                "iam:CreateServiceLinkedRole",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:TagRole",
+                "iam:GetRole",
+                "iam:DeleteRole",
+                "iam:GetRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:ListInstanceProfilesForRole",
+                "iam:CreateInstanceProfile",
+                "iam:GetInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:AddRoleToInstanceProfile"
+            ],
             "Resource": "*"
         }
     ]
