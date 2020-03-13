@@ -59,7 +59,7 @@ netweaver:
     name: SAPABAP1
     password: SuSE1234
 
-  product_id: {{ grains['netweaver_product_id']}}
+  product_id: {{ grains['netweaver_product_id'] }}
 
 {%- if grains['provider'] == 'aws' %}
   nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
