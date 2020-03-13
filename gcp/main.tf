@@ -43,7 +43,11 @@ module "netweaver_node" {
   private_key_location      = var.private_key_location
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
+  netweaver_product_id      = var.netweaver_product_id
   netweaver_software_bucket = var.netweaver_software_bucket
+  netweaver_swpm_folder     = var.netweaver_swpm_folder
+  netweaver_sapexe_folder   = var.netweaver_sapexe_folder
+  netweaver_additional_dvds = var.netweaver_additional_dvds
   netweaver_nfs_share       = "${var.drbd_cluster_vip}:/HA1"
   hana_cluster_vip          = var.hana_cluster_vip
   virtual_host_ips          = var.netweaver_virtual_ips
