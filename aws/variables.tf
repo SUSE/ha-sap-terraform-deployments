@@ -259,6 +259,30 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
+}
+
 # Specific QA variables
 
 variable "qa_mode" {
