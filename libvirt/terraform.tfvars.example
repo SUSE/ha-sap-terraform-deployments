@@ -55,6 +55,14 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 # NFS share with netweaver installation folders
 #netweaver_inst_media = "url-to-your-nfs-share"
 
+# Netweaver installation required folders
+# SAP SWPM installation folder, relative to the netweaver_inst_media mounting point
+#netweaver_swpm_folder     =  "your_swpm"
+# Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_inst_media mounting point
+#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+# Additional folders (added in start_dir.cd), relative to the netweaver_inst_media mounting point
+#netweaver_additional_dvds = ["dvd1", "dvd2"]
+
 # NFS share to store the Netweaver shared files
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 

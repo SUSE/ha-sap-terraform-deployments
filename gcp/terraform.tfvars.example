@@ -149,6 +149,14 @@ monitoring_srv_ip = "10.0.0.4"
 
 #netweaver_software_bucket = "MyNetweaverBucket"
 
+# Netweaver installation required folders
+# SAP SWPM installation folder, relative to netweaver_software_bucket folder
+#netweaver_swpm_folder     =  "your_swpm"
+# Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to netweaver_software_bucket folder
+#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+# Additional folders (added in start_dir.cd), relative to netweaver_software_bucket folder
+#netweaver_additional_dvds = ["dvd1", "dvd2"]
+
 #netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
 
 #netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]
