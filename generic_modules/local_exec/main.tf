@@ -10,6 +10,7 @@ resource "null_resource" "pre_execution" {
   provisioner "local-exec" {
     working_dir = "${path.module}/../.."
     command = <<EOT
+      if [ -e salt/hana_node/files/sshkeys/cluster.id_rsa ]; then exit 0; fi
       mkdir -p salt/hana_node/files/sshkeys/;
       rm -rf salt/hana_node/files/sshkeys/*;
       ssh-keygen -f salt/hana_node/files/sshkeys/cluster.id_rsa -q -P "";
