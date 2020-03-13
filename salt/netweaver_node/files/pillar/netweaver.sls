@@ -24,11 +24,14 @@ netweaver:
   sap_adm_password: SuSE1234
   master_password: SuSE1234
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
-  swpm_folder: /netweaver_inst_media/SWPM_10_SP26_6
-  sapexe_folder: /netweaver_inst_media/kernel_nw75_sar
-  additional_dvds:
-    - /netweaver_inst_media/51050829_3 # NW Export folder
-    - /netweaver_inst_media/51053381 # HANA HDB Client folder
+  swpm_folder: /netweaver_inst_media/{{ grains['netweaver_swpm_folder'] }}
+  sapexe_folder: /netweaver_inst_media/{{ grains['netweaver_sapexe_folder'] }}
+  additional_dvds: {%- if not grains['netweaver_additional_dvds'] %} []
+  {%- else %}
+    {%- for dvd in grains['netweaver_additional_dvds'] %}
+    - /netweaver_inst_media/{{ dvd }}
+    {%- endfor %}
+  {%- endif %}
 
   # apply by default the netweaver solution
   saptune_solution: 'NETWEAVER'
@@ -56,7 +59,7 @@ netweaver:
     name: SAPABAP1
     password: SuSE1234
 
-  product_id: NW750.HDB.ABAPHA
+  product_id: {{ grains['netweaver_product_id']}}
 
 {%- if grains['provider'] == 'aws' %}
   nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
@@ -114,6 +117,8 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: pas
+      extra_parameters:
+        NW_liveCache.useLiveCache: "false"
 
     - host: {{ grains['name_prefix'] }}04
       virtual_host: sapha1aas
@@ -124,3 +129,4 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: aas
+      attempts: 500

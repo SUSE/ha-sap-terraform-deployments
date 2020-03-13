@@ -169,16 +169,40 @@ variable "nw_virtual_ips" {
   default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
 }
 
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
 variable "netweaver_inst_media" {
   description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
   type        = string
   default     = ""
 }
 
-variable "netweaver_nfs_share" {
-  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
 }
 
 # DRBD related variables
