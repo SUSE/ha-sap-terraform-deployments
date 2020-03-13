@@ -1,48 +1,36 @@
-variable "timezone" {
-  description = "Timezone setting for all VMs"
-  default     = "Europe/Berlin"
+# Azure related variables
+
+variable "az_region" {
+  type    = string
+  default = "westeurope"
 }
 
-# Launch SLES-HAE of SLES4SAP cluster nodes
-
-# Variables for type of instances to use and number of cluster nodes
-# Use with: terraform apply -var hana_vm_size=Standard_M32ls -var hana_count=2
-
-variable "hana_vm_size" {
-  description = "VM size for the hana machine"
+variable "admin_user" {
+  description = "administration user to deploy in Azure VMs"
   type        = string
-  default     = "Standard_M32ls"
 }
 
-# For reference:
-# Standard_M32ls has 32 VCPU, 256GiB RAM, 1000 GiB SSD
-# You could find other supported instances in Azure documentation
-
-variable "hana_count" {
-  type    = string
-  default = "2"
+variable "storage_account_name" {
+  description = "Azure storage account name"
+  type        = string
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "Standard_LRS"
+variable "storage_account_key" {
+  description = "Azure storage account secret key"
+  type        = string
 }
 
-variable "hana_data_disk_size" {
-  type    = string
-  default = "60"
+variable "public_key_location" {
+  description = "SSH Public key location to configure access to the remote instances"
+  type        = string
 }
 
-variable "hana_data_disk_caching" {
-  type    = string
-  default = "ReadWrite"
+variable "private_key_location" {
+  description = "SSH Private key location"
+  type        = string
 }
 
-variable "hana_enable_accelerated_networking" {
-  description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
-  type        = bool
-  default     = true
-}
+# Deployment variables
 
 variable "name" {
   description = "hostname, without the domain part"
@@ -50,64 +38,14 @@ variable "name" {
   default     = "hana"
 }
 
-variable "hana_instance_number" {
-  description = "HANA instance number"
-  type        = string
-  default     = "00"
-}
-
-# Variable for default region where to deploy resources
-
-variable "az_region" {
-  type    = string
-  default = "westeurope"
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
 }
 
 variable "init_type" {
   type    = string
   default = "all"
-}
-
-variable "hana_inst_master" {
-  type = string
-}
-
-variable "hana_inst_folder" {
-  type    = string
-  default = "/root/hana_inst_media"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
-  default     = "10.74.1.10"
-}
-
-variable "iscsi_vm_size" {
-  description = "VM size for the iscsi server machine"
-  type        = string
-  default     = "Standard_D2s_v3"
-}
-
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
-}
-
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
 }
 
 variable "cluster_ssh_pub" {
@@ -151,23 +89,6 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
-  type        = list(string)
-}
-
-variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
-  type        = list(string)
-  default     = []
-}
-
-variable "drbd_vm_size" {
-  description = "VM size for the DRBD machine"
-  type        = string
-  default     = "Standard_D2s_v3"
-}
-
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -197,16 +118,266 @@ variable "background" {
   default     = false
 }
 
+# Hana related variables
+
+variable "hana_count" {
+  type    = string
+  default = "2"
+}
+
+variable "hana_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "hana_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "hana_public_sku" {
+  type    = string
+  default = "12-sp4"
+}
+
+variable "hana_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "sles4sap_uri" {
+  type    = string
+  default = ""
+}
+
+# For reference:
+# Standard_M32ls has 32 VCPU, 256GiB RAM, 1000 GiB SSD
+# You could find other supported instances in Azure documentation
+variable "hana_vm_size" {
+  description = "VM size for the hana machine"
+  type        = string
+  default     = "Standard_M32ls"
+}
+
+variable "hana_data_disk_type" {
+  type    = string
+  default = "Standard_LRS"
+}
+
+variable "hana_data_disk_size" {
+  type    = string
+  default = "60"
+}
+
+variable "hana_data_disk_caching" {
+  type    = string
+  default = "ReadWrite"
+}
+
+variable "hana_enable_accelerated_networking" {
+  description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+  type        = bool
+  default     = true
+}
+
+variable "host_ips" {
+  description = "ip addresses to set to the nodes"
+  type        = list(string)
+}
+
+variable "hana_inst_master" {
+  type = string
+}
+
+variable "hana_inst_folder" {
+  type    = string
+  default = "/root/hana_inst_media"
+}
+
+variable "hana_disk_device" {
+  description = "device where to install HANA"
+  type        = string
+}
+
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = string
+  default     = "xfs"
+}
+
+variable "hana_instance_number" {
+  description = "HANA instance number"
+  type        = string
+  default     = "00"
+}
+
+# Iscsi server related variables
+
+variable "iscsi_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "iscsi_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "iscsi_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "iscsi_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "iscsi_srv_uri" {
+  type    = string
+  default = ""
+}
+
+variable "iscsi_vm_size" {
+  description = "VM size for the iscsi server machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
+  type        = string
+  default     = "10.74.1.10"
+}
+
+variable "iscsidev" {
+  description = "device iscsi for iscsi server"
+  type        = string
+}
+
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
+# Monitoring related variables
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = false
+}
+
+variable "monitoring_vm_size" {
+  description = "VM size for the monitoring machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
+variable "monitoring_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "monitoring_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "monitoring_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "monitoring_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "monitoring_uri" {
+  type    = string
+  default = ""
+}
+
+variable "monitoring_srv_ip" {
+  description = "monitoring server address"
+  type        = string
+  default     = ""
+}
+
+# DRBD related variables
+
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
   default     = false
 }
 
-# Netweaver variables
+variable "drbd_vm_size" {
+  description = "VM size for the DRBD machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "drbd_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "drbd_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "drbd_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "drbd_image_uri" {
+  type    = string
+  default = ""
+}
+
+# Netweaver related variables
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver cluster deployment"
   default     = false
+}
+
+variable "netweaver_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "netweaver_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "netweaver_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "netweaver_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "netweaver_image_uri" {
+  type    = string
+  default = ""
 }
 
 variable "netweaver_vm_size" {
@@ -265,181 +436,6 @@ variable "netweaver_enable_accelerated_networking" {
   description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
   type        = bool
   default     = true
-}
-
-# Monitoring variables
-
-variable "monitoring_srv_ip" {
-  description = "monitoring server address"
-  type        = string
-  default     = ""
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  default     = false
-}
-
-variable "monitoring_vm_size" {
-  description = "VM size for the monitoring machine"
-  type        = string
-  default     = "Standard_D2s_v3"
-}
-
-# Azure variables for admin user and the storage account
-
-variable "admin_user" {
-  description = "administration user to deploy in Azure VMs"
-  type        = string
-}
-
-variable "storage_account_name" {
-  description = "Azure storage account name"
-  type        = string
-}
-
-variable "storage_account_key" {
-  description = "Azure storage account secret key"
-  type        = string
-}
-
-variable "public_key_location" {
-  description = "SSH Public key location to configure access to the remote instances"
-  type        = string
-}
-
-variable "private_key_location" {
-  description = "SSH Private key location"
-  type        = string
-}
-
-# Variable for the image URI. Run as terraform apply -var sles4sap_uri https://blob.azure.microsoft.com/this/is/my/image.vhd
-# If custom uris are enabled public information will be omitted
-# One of the two options must be used
-
-variable "sles4sap_uri" {
-  type    = string
-  default = ""
-}
-
-variable "hana_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "hana_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "hana_public_sku" {
-  type    = string
-  default = "12-sp4"
-}
-
-variable "hana_public_version" {
-  type    = string
-  default = "latest"
-}
-
-variable "iscsi_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "iscsi_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "iscsi_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "iscsi_public_version" {
-  type    = string
-  default = "latest"
-}
-
-variable "iscsi_srv_uri" {
-  type    = string
-  default = ""
-}
-
-variable "monitoring_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "monitoring_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "monitoring_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "monitoring_public_version" {
-  type    = string
-  default = "latest"
-}
-
-variable "monitoring_uri" {
-  type    = string
-  default = ""
-}
-
-variable "drbd_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "drbd_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "drbd_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "drbd_public_version" {
-  type    = string
-  default = "latest"
-}
-
-variable "drbd_image_uri" {
-  type    = string
-  default = ""
-}
-
-variable "netweaver_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "netweaver_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "netweaver_public_version" {
-  type    = string
-  default = "latest"
-}
-
-variable "netweaver_image_uri" {
-  type    = string
-  default = ""
 }
 
 # Specific QA variables
