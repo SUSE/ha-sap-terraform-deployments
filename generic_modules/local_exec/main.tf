@@ -5,6 +5,7 @@ resource "null_resource" "pre_execution" {
     command = <<EOT
       cp pillar_examples/automatic/hana/* salt/hana_node/files/pillar;
       cp pillar_examples/automatic/drbd/* salt/drbd_node/files/pillar;
+      cp pillar_examples/automatic/netweaver/* salt/netweaver_node/files/pillar;
     EOT
   }
   provisioner "local-exec" {
