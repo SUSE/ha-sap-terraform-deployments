@@ -1,3 +1,8 @@
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 # Variables for type of instances to use and number of cluster nodes
@@ -163,12 +168,6 @@ variable "drbd_vm_size" {
   default     = "Standard_D2s_v3"
 }
 
-variable "monitoring_vm_size" {
-  description = "VM size for the monitoring machine"
-  type        = string
-  default     = "Standard_D2s_v3"
-}
-
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -176,6 +175,11 @@ variable "monitoring_vm_size" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
   type        = string
+}
+
+variable "devel_mode" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  default     = false
 }
 
 variable "scenario_type" {
@@ -261,6 +265,181 @@ variable "netweaver_enable_accelerated_networking" {
   description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
   type        = bool
   default     = true
+}
+
+# Monitoring variables
+
+variable "monitoring_srv_ip" {
+  description = "monitoring server address"
+  type        = string
+  default     = ""
+}
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  default     = false
+}
+
+variable "monitoring_vm_size" {
+  description = "VM size for the monitoring machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
+# Azure variables for admin user and the storage account
+
+variable "admin_user" {
+  description = "administration user to deploy in Azure VMs"
+  type        = string
+}
+
+variable "storage_account_name" {
+  description = "Azure storage account name"
+  type        = string
+}
+
+variable "storage_account_key" {
+  description = "Azure storage account secret key"
+  type        = string
+}
+
+variable "public_key_location" {
+  description = "SSH Public key location to configure access to the remote instances"
+  type        = string
+}
+
+variable "private_key_location" {
+  description = "SSH Private key location"
+  type        = string
+}
+
+# Variable for the image URI. Run as terraform apply -var sles4sap_uri https://blob.azure.microsoft.com/this/is/my/image.vhd
+# If custom uris are enabled public information will be omitted
+# One of the two options must be used
+
+variable "sles4sap_uri" {
+  type    = string
+  default = ""
+}
+
+variable "hana_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "hana_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "hana_public_sku" {
+  type    = string
+  default = "12-sp4"
+}
+
+variable "hana_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "iscsi_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "iscsi_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "iscsi_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "iscsi_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "iscsi_srv_uri" {
+  type    = string
+  default = ""
+}
+
+variable "monitoring_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "monitoring_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "monitoring_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "monitoring_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "monitoring_uri" {
+  type    = string
+  default = ""
+}
+
+variable "drbd_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "drbd_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "drbd_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "drbd_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "drbd_image_uri" {
+  type    = string
+  default = ""
+}
+
+variable "netweaver_public_publisher" {
+  type    = string
+  default = "SUSE"
+}
+
+variable "netweaver_public_offer" {
+  type    = string
+  default = "SLES-SAP-BYOS"
+}
+
+variable "netweaver_public_sku" {
+  type    = string
+  default = "15"
+}
+
+variable "netweaver_public_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "netweaver_image_uri" {
+  type    = string
+  default = ""
 }
 
 # Specific QA variables

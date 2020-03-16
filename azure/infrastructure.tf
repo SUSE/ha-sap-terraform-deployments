@@ -1,6 +1,33 @@
-# Launch SLES-HAE of SLES4SAP cluster nodes
+# Configure the Azure Provider
+provider "azurerm" {
+  version = "<= 1.33"
+}
 
-# Private IP addresses for the cluster nodes
+provider "template" {
+  version = "~> 2.1"
+}
+
+terraform {
+  required_version = ">= 0.12"
+}
+
+# Azure resource group and storage account resources
+resource "azurerm_resource_group" "myrg" {
+  name     = "rg-ha-sap-${terraform.workspace}"
+  location = var.az_region
+}
+
+resource "azurerm_storage_account" "mytfstorageacc" {
+  name                     = "stdiag${lower(terraform.workspace)}"
+  resource_group_name      = azurerm_resource_group.myrg.name
+  location                 = var.az_region
+  account_replication_type = "LRS"
+  account_tier             = "Standard"
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
 
 # Network resources: Virtual Network, Subnet
 resource "azurerm_virtual_network" "mynet" {
@@ -150,7 +177,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     destination_address_prefix = "*"
   }
   security_rule {
-    name                       = "ha-exporter"
+    name                       = "haExporter"
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
