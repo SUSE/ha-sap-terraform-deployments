@@ -181,7 +181,7 @@ variable "additional_packages" {
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
+  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
   type        = string
 }
 
@@ -269,6 +269,7 @@ variable "drbd_ips" {
 variable "drbd_cluster_vip" {
   description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+  default     = ""
 }
 
 # netweaver realted variables
@@ -293,6 +294,7 @@ variable "netweaver_image" {
 variable "netweaver_software_bucket" {
   description = "gcp bucket where netweaver software is available"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_ips" {
@@ -304,6 +306,7 @@ variable "netweaver_ips" {
 variable "netweaver_virtual_ips" {
   description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
   type        = list(string)
+  default     = []
 }
 
 # Pre deployment
