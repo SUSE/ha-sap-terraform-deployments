@@ -68,7 +68,7 @@ hana_inst_folder = "/root/hana_inst_media"
 hana_disk_device = "/dev/sdb"
 
 # Device used by node where HANA backup will be stored
-hana_disk_device = "/dev/sdc"
+hana_backup_device = "/dev/sdc"
 
 # Device used by node where HANA will be downloaded
 hana_inst_disk_device = "/dev/sdd"

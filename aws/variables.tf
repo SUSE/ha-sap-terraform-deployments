@@ -241,6 +241,7 @@ variable "netweaver_instancetype" {
 variable "netweaver_s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_efs_performance_mode" {
