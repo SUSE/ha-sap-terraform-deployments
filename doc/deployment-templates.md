@@ -22,6 +22,7 @@ The values of ipranges and ips needs are as example there. You will need to adap
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
+pre_deployment = true
 base_image = "URL_TO_IMAGE"
 iprange = "192.168.210.0/24"
 hana_inst_media = "PATH TO INST_MEDIA"
@@ -45,6 +46,7 @@ To monitoring the HANA cluster need only 2 vars more than the simple HANA deploy
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
+pre_deployment = true
 base_image = "URL_TO_IMAGE"
 iprange = "192.168.210.0/24"
 hana_inst_media = "PATH TO INST_MEDIA"
@@ -65,6 +67,7 @@ storage_pool           = "terraform"
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
+pre_deployment = true
 base_image = "URL_TO_IMAGE"
 iprange = "192.168.210.0/24"
 hana_inst_media = "PATH TO INST_MEDIA"
@@ -87,6 +90,7 @@ NOTE: ISCSI server works with a sle15 or higher image
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"
+pre_deployment = true
 base_image = "URL_TO_IMAGE"
 iprange = "192.168.210.0/24"
 hana_inst_media = "PATH TO INST_MEDIA"

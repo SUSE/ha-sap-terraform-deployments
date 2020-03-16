@@ -27,6 +27,13 @@ resource "libvirt_network" "isolated_network" {
   }
   autostart = true
 }
+
+// Pre deployment local excution
+module "local_execution" {
+  source  = "../generic_modules/local_exec"
+  enabled = var.pre_deployment
+}
+
 // ---------------------------------------
 
 module "iscsi_server" {

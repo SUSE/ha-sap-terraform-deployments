@@ -127,3 +127,8 @@ monitoring_srv_ip = "10.0.0.253"
 #netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

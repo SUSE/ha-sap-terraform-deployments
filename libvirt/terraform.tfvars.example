@@ -93,3 +93,8 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

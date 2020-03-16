@@ -308,3 +308,11 @@ variable "netweaver_virtual_ips" {
   type        = list(string)
   default     = []
 }
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
+  type        = bool
+  default     = false
+}
