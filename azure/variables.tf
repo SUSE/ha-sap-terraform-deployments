@@ -94,7 +94,7 @@ variable "additional_packages" {
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
+  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
   type        = string
 }
 
@@ -471,6 +471,14 @@ variable "qa_mode" {
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
   type        = bool
   default     = false
 }

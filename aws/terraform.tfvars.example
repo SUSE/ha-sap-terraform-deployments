@@ -72,6 +72,10 @@ host_ips = ["10.0.0.5", "10.0.1.6"]
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
 ha_sap_deployment_repo = ""
 
 # Optional SUSE Customer Center Registration parameters
@@ -120,13 +124,18 @@ monitoring_srv_ip = "10.0.0.253"
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
 #netweaver_efs_performance_mode = "generalPurpose"
-#netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
 # Netweaver installation required folders
+#netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 # SAP SWPM installation folder, relative to the netweaver_s3_bucket folder
 #netweaver_swpm_folder     =  "your_swpm"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_s3_bucket folder
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
 # Additional folders (added in start_dir.cd), relative to the netweaver_s3_bucket folder
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

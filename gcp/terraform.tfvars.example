@@ -68,7 +68,7 @@ hana_inst_folder = "/root/hana_inst_media"
 hana_disk_device = "/dev/sdb"
 
 # Device used by node where HANA backup will be stored
-hana_disk_device = "/dev/sdc"
+hana_backup_device = "/dev/sdc"
 
 # Device used by node where HANA will be downloaded
 hana_inst_disk_device = "/dev/sdd"
@@ -77,6 +77,10 @@ hana_inst_disk_device = "/dev/sdd"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
 ha_sap_deployment_repo = ""
 
 # Optional SUSE Customer Center Registration parameters
@@ -160,3 +164,8 @@ monitoring_srv_ip = "10.0.0.4"
 #netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
 
 #netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

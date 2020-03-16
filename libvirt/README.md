@@ -105,6 +105,7 @@ provided [automatic pillars](../pillar_examples/automatic/drbd).
 - **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
 - **provisioner**: Select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
 - **background**: Run the provisioning process in background finishing terraform execution.
+- **pre_deployment**: Enable pre deployment local execution steps. E.g. Move pillar files from pillar_examples/automatic, create cluster ssh keys, etc (disabled by default).
 - **reg_code**: Registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
 - **reg_email**: Email to be associated with the system registration. This parameter is optional.
 - **reg_additional_modules**: Additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is the _module name_ and the value is the _registration code_. If the _registration code_ is not needed, set an empty string as value. The module format must follow SUSEConnect convention:

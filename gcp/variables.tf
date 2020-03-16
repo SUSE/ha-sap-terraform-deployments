@@ -255,6 +255,7 @@ variable "drbd_ips" {
 variable "drbd_cluster_vip" {
   description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+  default     = ""
 }
 
 # Netweaver related variables
@@ -279,6 +280,7 @@ variable "netweaver_image" {
 variable "netweaver_software_bucket" {
   description = "gcp bucket where netweaver software is available"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_ips" {
@@ -290,6 +292,7 @@ variable "netweaver_ips" {
 variable "netweaver_virtual_ips" {
   description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
   type        = list(string)
+  default     = []
 }
 
 variable "netweaver_product_id" {
@@ -325,6 +328,14 @@ variable "qa_mode" {
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}
+  
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
   type        = bool
   default     = false
 }
