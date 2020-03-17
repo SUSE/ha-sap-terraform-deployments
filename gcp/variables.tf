@@ -331,7 +331,7 @@ variable "hwcct" {
   type        = bool
   default     = false
 }
-  
+
 # Pre deployment
 
 variable "pre_deployment" {
