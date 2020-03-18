@@ -125,6 +125,7 @@ variable "reg_email" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -146,6 +147,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -157,6 +159,7 @@ variable "hwcct" {
 
 variable "qa_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -167,6 +170,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 

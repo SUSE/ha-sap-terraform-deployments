@@ -42,6 +42,11 @@ variable "init_type" {
   default = "all"
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   type        = string
@@ -102,8 +107,15 @@ variable "provisioner" {
   default     = "salt"
 }
 
+variable "devel_mode" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  type        = bool
+  default     = false
+}
+
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -219,6 +231,7 @@ variable "iscsi_disks" {
 
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
+  type        = bool
   default     = false
 }
 
@@ -262,6 +275,7 @@ variable "drbd_cluster_vip" {
 
 variable "netweaver_enabled" {
   description = "enable netweaver cluster creation"
+  type        = bool
   default     = false
 }
 
@@ -323,6 +337,7 @@ variable "netweaver_additional_dvds" {
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
+  type        = bool
   default     = false
 }
 

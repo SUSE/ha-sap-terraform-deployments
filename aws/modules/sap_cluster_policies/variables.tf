@@ -1,6 +1,6 @@
 variable "enabled" {
-  type        = bool
   description = "Enable the sap cluster policies creation"
+  type        = bool
 }
 
 variable "name" {
