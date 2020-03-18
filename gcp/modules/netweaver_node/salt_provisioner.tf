@@ -67,6 +67,10 @@ ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
+netweaver_product_id: ${var.netweaver_product_id}
+netweaver_swpm_folder: ${var.netweaver_swpm_folder}
+netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
+netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 nw_inst_disk_device : /dev/sdb
 hana_cluster_vip: ${var.hana_cluster_vip}

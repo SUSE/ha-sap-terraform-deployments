@@ -38,3 +38,5 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 - Add the `netweaver_nfs_share` variable to the `terraform.tfvars` with the address to the NFS share containing the `sapmnt` and `usrsapsys` folders. Following the current example this would be `nfs_address:/sapdata/HA1`.
 
 - Modify the content of [cluster.sls](../salt/netweaver_node/files/pillar/cluster.sls) and [netweaver.sls](../salt/netweaver_node/files/pillar/netweaver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `sap_inst_media`, the current values are just an example.
+
+- If the [netweaver.sls](pillar_examples/automatic/netweaver/netweaver.sls) pillar file from `pillar_examples/automatic/netweaver` is used, the parameters `netweaver_swpm_folder`, `netweaver_sapexe_folder` and `netweaver_additional_dvds` must be set in the `tfvars` file with the same data explained in the previous points.

@@ -155,6 +155,13 @@ monitoring_srv_ip = "10.74.1.13"
 #netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 #netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
 #netweaver_storage_account = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/nw/installation/master"
+# Netweaver installation required folders
+# SAP SWPM installation folder, relative to the netweaver_storage_account mounting point
+#netweaver_swpm_folder     =  "your_swpm"
+# Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_storage_account mounting point
+#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+# Additional folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
+#netweaver_additional_dvds = ["dvd1", "dvd2"]
 
 # QA variables
 

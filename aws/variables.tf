@@ -1,86 +1,4 @@
-# Launch SLES-HAE of SLES4SAP cluster nodes
-
-# Map used for suse-sles-sap-15-byos-v20180816-hvm-ssd-x86_64
-# SLES4SAP 15 in eu-central-1: ami-024f50fdc1f2f5603
-# Used for cluster nodes
-
-variable "sles4sap" {
-  type = map(string)
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
-}
-
-# Map used for suse-sles-sap-15-byos-v20180816-hvm-ssd-x86_64
-# SLES4SAP 15 in eu-central-1: ami-024f50fdc1f2f5603
-# Used for iscsi server
-
-variable "iscsi_srv" {
-  type = map(string)
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
-}
-
-# Variables for type of instances to use and number of cluster nodes
-# Use with: terraform apply -var instancetype=t2.micro -var ninstances=2
-
-variable "instancetype" {
-  description = "The instance type of hana node."
-  type        = string
-  default     = "r3.8xlarge"
-}
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "iscsi_instancetype" {
-  description = "The instance type of iscsi server node."
-  type        = string
-  default     = ""
-}
-
-variable "monitor_instancetype" {
-  description = "The instance type of monitoring node."
-  type        = string
-  default     = ""
-}
-
-variable "hana_data_disk_type" {
-  type    = string
-  default = "gp2"
-}
-
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = "192.168.1.10"
-}
-
-variable "ninstances" {
-  type    = string
-  default = "2"
-}
+# AWS related variables
 
 variable "aws_region" {
   type = string
@@ -89,19 +7,6 @@ variable "aws_region" {
 variable "aws_account_id" {
   type        = string
   description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
-}
-
-variable "name" {
-  description = "hostname, without the domain part"
-  type        = string
-}
-
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
 }
 
 variable "aws_credentials" {
@@ -120,39 +25,24 @@ variable "aws_secret_access_key" {
   default = ""
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
-variable "hana_inst_master" {
+variable "public_key_location" {
   type = string
 }
 
-variable "hana_inst_folder" {
+variable "private_key_location" {
+  type = string
+}
+
+# Deployment variables
+
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "init_type" {
   type    = string
-  default = "/root/hana_inst_media"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
-}
-
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+  default = "all"
 }
 
 variable "cluster_ssh_pub" {
@@ -196,11 +86,6 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
-  type        = list(string)
-}
-
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
@@ -225,7 +110,120 @@ variable "background" {
   default     = false
 }
 
-# Netweaver variables
+# Hana related variables
+
+variable "ninstances" {
+  type    = string
+  default = "2"
+}
+
+variable "sles4sap" {
+  type = map(string)
+
+  default = {
+    "us-east-1"    = "ami-027447d2b7312df2d"
+    "us-east-2"    = "ami-099a51d3b131f3ce2"
+    "us-west-1"    = "ami-0f213357578720889"
+    "us-west-2"    = "ami-0fc86417df3e0f6d4"
+    "ca-central-1" = "ami-0811b93a30ab570f7"
+    "eu-central-1" = "ami-024f50fdc1f2f5603"
+    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
+    "eu-west-2"    = "ami-00189dbab3fd43af2"
+    "eu-west-3"    = "ami-00e70e3421f053648"
+  }
+}
+
+variable "instancetype" {
+  description = "The instance type of hana node."
+  type        = string
+  default     = "r3.8xlarge"
+}
+
+variable "min_instancetype" {
+  description = "The minimum cost/capacity instance type, different per region."
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "host_ips" {
+  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
+  type        = list(string)
+}
+
+variable "hana_data_disk_type" {
+  type    = string
+  default = "gp2"
+}
+
+variable "hana_inst_master" {
+  type = string
+}
+
+variable "hana_inst_folder" {
+  type    = string
+  default = "/root/hana_inst_media"
+}
+
+variable "hana_disk_device" {
+  description = "device where to install HANA"
+  type        = string
+}
+
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = string
+  default     = "xfs"
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = "192.168.1.10"
+}
+
+# Iscsi server related variables
+
+variable "iscsi_srv" {
+  type = map(string)
+
+  default = {
+    "us-east-1"    = "ami-027447d2b7312df2d"
+    "us-east-2"    = "ami-099a51d3b131f3ce2"
+    "us-west-1"    = "ami-0f213357578720889"
+    "us-west-2"    = "ami-0fc86417df3e0f6d4"
+    "ca-central-1" = "ami-0811b93a30ab570f7"
+    "eu-central-1" = "ami-024f50fdc1f2f5603"
+    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
+    "eu-west-2"    = "ami-00189dbab3fd43af2"
+    "eu-west-3"    = "ami-00e70e3421f053648"
+  }
+}
+
+variable "iscsi_instancetype" {
+  description = "The instance type of iscsi server node."
+  type        = string
+  default     = ""
+}
+
+variable "iscsidev" {
+  description = "device iscsi for iscsi server"
+  type        = string
+}
+
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
+# Monitoring related variables
+
+variable "monitor_instancetype" {
+  description = "The instance type of monitoring node."
+  type        = string
+  default     = ""
+}
+
+# Netweaver related variables
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver cluster deployment"
@@ -259,6 +257,30 @@ variable "netweaver_ips" {
 variable "netweaver_virtual_ips" {
   description = "virtual ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
+  default     = []
+}
+
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
   default     = []
 }
 

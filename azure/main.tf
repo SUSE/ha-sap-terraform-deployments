@@ -56,6 +56,10 @@ module "netweaver_node" {
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
   admin_user                    = var.admin_user
+  netweaver_product_id          = var.netweaver_product_id
+  netweaver_swpm_folder         = var.netweaver_swpm_folder
+  netweaver_sapexe_folder       = var.netweaver_sapexe_folder
+  netweaver_additional_dvds     = var.netweaver_additional_dvds
   netweaver_nfs_share           = "10.74.1.201:/HA1" # drbd cluster ip address is hardcoded by now
   storage_account_name          = var.netweaver_storage_account_name
   storage_account_key           = var.netweaver_storage_account_key
