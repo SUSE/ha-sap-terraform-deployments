@@ -45,6 +45,11 @@ variable "init_type" {
   default = "all"
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string
@@ -100,6 +105,12 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+variable "devel_mode" {
+  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  type        = bool
+  default     = false
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
@@ -107,6 +118,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -227,6 +239,7 @@ variable "monitor_instancetype" {
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver cluster deployment"
+  type        = bool
   default     = false
 }
 

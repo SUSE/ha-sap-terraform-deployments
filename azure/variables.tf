@@ -100,6 +100,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  type        = bool
   default     = false
 }
 
@@ -115,6 +116,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -264,6 +266,7 @@ variable "iscsi_disks" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -308,6 +311,7 @@ variable "monitoring_srv_ip" {
 
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
+  type        = bool
   default     = false
 }
 
@@ -352,6 +356,7 @@ variable "drbd_image_uri" {
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver cluster deployment"
+  type        = bool
   default     = false
 }
 
@@ -466,6 +471,7 @@ variable "netweaver_additional_dvds" {
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
+  type        = bool
   default     = false
 }
 
