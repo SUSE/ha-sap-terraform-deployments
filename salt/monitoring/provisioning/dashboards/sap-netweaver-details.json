@@ -334,19 +334,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sap_enqueue_server_owner_now",
+          "expr": "sap_enqueue_server_locks_now",
           "legendFormat": "Locks",
+          "refId": "A"
+        },
+        {
+          "expr": "sap_enqueue_server_owner_now",
+          "legendFormat": "Lock owners",
           "refId": "C"
         },
         {
           "expr": "sap_enqueue_server_arguments_now",
-          "legendFormat": "Arguments",
+          "legendFormat": "Lock arguments",
           "refId": "B"
-        },
-        {
-          "expr": "sap_enqueue_server_locks_now",
-          "legendFormat": "Names",
-          "refId": "A"
         }
       ],
       "thresholds": [],
