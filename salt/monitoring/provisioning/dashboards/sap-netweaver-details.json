@@ -62,7 +62,8 @@
       "aliasColors": {
         "GRAY": "rgb(120, 120, 120)",
         "GREEN": "green",
-        "YELLOW": "yellow"
+        "YELLOW": "yellow",
+        "RED": "red"
       },
       "bars": false,
       "dashLength": 10,
@@ -101,10 +102,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count(sap_start_service_processes) by (dispstatus)",
+          "expr": "count(sap_start_service_processes == 1)",
           "interval": "",
-          "legendFormat": "{{dispstatus}}",
+          "legendFormat": "GRAY",
           "refId": "A"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 2)",
+          "legendFormat": "GREEN",
+          "refId": "B"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 3)",
+          "legendFormat": "YELLOW",
+          "refId": "C"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 4)",
+          "legendFormat": "RED",
+          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -171,36 +187,42 @@
       },
       "styles": [
         {
-          "alias": "Process Name",
-          "colorMode": null,
+          "alias": "Code",
+          "colorMode": "cell",
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(50, 172, 45, 0.97)",
+            "#FF9830",
+            "rgba(245, 54, 54, 0.9)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
+          "link": false,
           "mappingType": 1,
-          "pattern": "name",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
-          "alias": "Status",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+          "pattern": "Value",
+          "thresholds": [
+            "3",
+            "4"
           ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "dispstatus",
-          "thresholds": [],
           "type": "string",
-          "unit": "short"
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "GRAY",
+              "value": "1"
+            },
+            {
+              "text": "GREEN",
+              "value": "2"
+            },
+            {
+              "text": "YELLOW",
+              "value": "3"
+            },
+            {
+              "text": "RED",
+              "value": "4"
+            }
+          ]
         },
         {
           "alias": "PID",
@@ -219,7 +241,7 @@
           "unit": "short"
         },
         {
-          "alias": "Info",
+          "alias": "Status",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -229,7 +251,7 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "textstatus",
+          "pattern": "status",
           "thresholds": [],
           "type": "number",
           "unit": "short"
