@@ -148,7 +148,7 @@ variable "sap_hana_deployment_bucket" {
 
 variable "hana_inst_folder" {
   type    = string
-  default = "/root/hana_inst_media"
+  default = "/sapmedia/HANA"
 }
 
 variable "hana_data_disk_type" {

@@ -93,7 +93,7 @@ variable "hana_inst_media" {
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = string
-  default     = "/root/hana_inst_media"
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_fstype" {
