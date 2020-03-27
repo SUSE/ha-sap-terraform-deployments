@@ -24,12 +24,12 @@ netweaver:
   sap_adm_password: SuSE1234
   master_password: SuSE1234
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
-  swpm_folder: /netweaver_inst_media/{{ grains['netweaver_swpm_folder'] }}
-  sapexe_folder: /netweaver_inst_media/{{ grains['netweaver_sapexe_folder'] }}
+  swpm_folder: /sapmedia/NW/{{ grains['netweaver_swpm_folder'] }}
+  sapexe_folder: /sapmedia/NW/{{ grains['netweaver_sapexe_folder'] }}
   additional_dvds: {%- if not grains['netweaver_additional_dvds'] %} []
   {%- else %}
     {%- for dvd in grains['netweaver_additional_dvds'] %}
-    - /netweaver_inst_media/{{ dvd }}
+    - /sapmedia/NW/{{ dvd }}
     {%- endfor %}
   {%- endif %}
 
