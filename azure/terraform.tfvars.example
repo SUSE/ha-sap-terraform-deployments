@@ -79,7 +79,7 @@ storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/hana/installation/master"
 
 # Local folder where HANA installation master will be mounted
-hana_inst_folder = "/root/hana_inst_media/"
+hana_inst_folder = "/sapmedia/HANA"
 
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/sdc"

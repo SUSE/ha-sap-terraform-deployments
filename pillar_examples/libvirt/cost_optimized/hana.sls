@@ -6,7 +6,7 @@ hana:
       instance: "00"
       password: 'SET YOUR PASSWORD'
       install:
-        software_path: '/root/hana_inst_media'
+        software_path: '/sapmedia/HANA'
         root_user: 'root'
         root_password: 'linux'
         system_user_password: 'SET YOUR PASSWORD'
@@ -33,7 +33,7 @@ hana:
         global_allocation_limit: '32100'
         preload_column_tables: False
       install:
-        software_path: '/root/hana_inst_media'
+        software_path: '/sapmedia/HANA'
         root_user: 'root'
         root_password: 'linux'
         system_user_password: 'SET YOUR PASSWORD'
@@ -54,7 +54,7 @@ hana:
         global_allocation_limit: '28600'
         preload_column_tables: False
       install:
-        software_path: '/root/hana_inst_media'
+        software_path: '/sapmedia/HANA'
         root_user: 'root'
         root_password: 'linux'
         system_user_password: 'SET YOUR PASSWORD'

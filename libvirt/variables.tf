@@ -93,7 +93,7 @@ variable "hana_inst_media" {
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = string
-  default     = "/root/hana_inst_media"
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_fstype" {
@@ -186,7 +186,7 @@ variable "netweaver_product_id" {
 }
 
 variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
   type        = string
   default     = ""
 }
