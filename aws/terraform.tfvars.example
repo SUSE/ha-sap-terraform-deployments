@@ -11,8 +11,6 @@ ninstances = "2"
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"
-# AWS account id (12 digit id available to the right of the user in the AWS portal)
-aws_account_id = "123412341234"
 
 # SSH Public key location to configure access to the remote instances
 public_key_location = "/path/to/your/public/ssh/key"
