@@ -69,4 +69,4 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {%- endif %}
-        monitoring_enabled: {{ grains.get('monitoring_enabled', False) }}
+        monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
