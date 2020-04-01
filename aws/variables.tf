@@ -68,11 +68,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
-}
-
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
