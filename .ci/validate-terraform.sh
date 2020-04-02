@@ -11,7 +11,7 @@ done
 
 
 echo "executing terraform check , init and validate for each provider"
-for provider in $(find * -maxdepth 0 -type d | grep -Ev 'scripts|salt|pillar_examples|doc'); do
+for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|doc'); do
   echo "============================"
   echo "doing tests for $provider"
   echo "============================"
