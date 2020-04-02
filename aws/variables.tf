@@ -4,19 +4,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "name" {
-  description = "hostname, without the domain part"
-  type        = string
-}
-
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
-}
-
 variable "aws_credentials" {
   description = "AWS credentials file path in local machine"
   type        = string
