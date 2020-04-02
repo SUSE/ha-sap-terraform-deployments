@@ -90,3 +90,16 @@ s3_bucket: ${var.s3_bucket}
     ] # Workaround to let the process start in background properly
   }
 }
+
+module "netweaver_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = aws_instance.netweaver.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.netweaver.*.public_ip
+  dependencies         = concat(
+    [aws_route_table_association.netweaver-subnet-route-association],
+    var.on_destroy_dependencies
+  )
+}

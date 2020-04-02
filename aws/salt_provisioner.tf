@@ -74,6 +74,21 @@ EOF
   }
 }
 
+module "iscsi_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.provisioner == "salt" ? 1 : 0
+  instance_ids         = aws_instance.iscsisrv.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.iscsisrv.*.public_ip
+  dependencies         = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
+}
+
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.ninstances : 0
 
@@ -152,6 +167,21 @@ EOF
   }
 }
 
+module "hana_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.provisioner == "salt" ? var.ninstances : 0
+  instance_ids         = aws_instance.clusternodes.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.clusternodes.*.public_ip
+  dependencies         = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
+}
+
 resource "null_resource" "monitoring_provisioner" {
   count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
@@ -205,4 +235,19 @@ EOF
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
+}
+
+module "monitoring_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
+  instance_ids         = aws_instance.monitoring.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.monitoring.*.public_ip
+  dependencies         = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
 }
