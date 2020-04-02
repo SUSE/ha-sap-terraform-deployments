@@ -64,13 +64,23 @@ shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
 monitoring_enabled: ${var.monitoring_enabled}
 EOF
-      destination = "/tmp/grains"
-      }
+  destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
+
+module "netweaver_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids = libvirt_domain.netweaver_domain.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.netweaver_domain.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.netweaver_domain]
+}

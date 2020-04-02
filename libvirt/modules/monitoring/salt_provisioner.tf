@@ -49,13 +49,23 @@ monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_monitored_hosts))}]
 nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.nw_monitored_hosts))}]
 EOF
-      destination = "/tmp/grains"
-      }
+  destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
+
+module "monitoring_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
+  instance_ids = libvirt_domain.monitoring_domain.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.monitoring_domain]
+}

@@ -65,16 +65,6 @@ resource "libvirt_domain" "netweaver_domain" {
   cpu = {
     mode = "host-passthrough"
   }
-
-  provisioner "remote-exec" {
-    connection {
-      host     = self.network_interface.0.addresses.0
-      user     = "root"
-      password = "linux"
-    }
-    when   = destroy
-    script = "../scripts/on_destroy.sh"
-  }
 }
 
 output "output_data" {
