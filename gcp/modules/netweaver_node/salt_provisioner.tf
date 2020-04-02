@@ -86,3 +86,13 @@ EOF
     ] # Workaround to let the process start in background properly
   }
 }
+
+module "netweaver_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = google_compute_instance.netweaver.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
+  dependencies         = []
+}
