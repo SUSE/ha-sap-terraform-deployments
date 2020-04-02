@@ -3,6 +3,30 @@ module "local_execution" {
   enabled = var.pre_deployment
 }
 
+module "iscsi_server" {
+  source                    = "./modules/iscsi_server"
+  aws_region                = var.aws_region
+  availability_zones        = data.aws_availability_zones.available.names
+  subnet_ids                = aws_subnet.hana-subnet.*.id
+  iscsi_srv_images          = var.iscsi_srv
+  iscsi_instancetype        = var.iscsi_instancetype
+  min_instancetype          = var.min_instancetype
+  key_name                  = aws_key_pair.hana-key-pair.key_name
+  security_group_id         = aws_security_group.secgroup.id
+  private_key_location      = var.private_key_location
+  iscsi_srv_ip              = var.iscsi_srv_ip
+  iscsidev                  = var.iscsidev
+  iscsi_disks               = var.iscsi_disks
+  reg_code                  = var.reg_code
+  reg_email                 = var.reg_email
+  reg_additional_modules    = var.reg_additional_modules
+  additional_packages       = var.additional_packages
+  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
+  provisioner               = var.provisioner
+  background                = var.background
+  qa_mode                   = var.qa_mode
+}
+
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   netweaver_count           = var.netweaver_enabled == true ? 4 : 0
@@ -31,7 +55,7 @@ module "netweaver_node" {
   virtual_host_ips          = var.netweaver_virtual_ips
   public_key_location       = var.public_key_location
   private_key_location      = var.private_key_location
-  iscsi_srv_ip              = aws_instance.iscsisrv.private_ip
+  iscsi_srv_ip              = var.iscsi_srv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   reg_code                  = var.reg_code

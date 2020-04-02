@@ -4,28 +4,6 @@
 # - Private node name
 # - Public node name
 
-# iSCSI server
-
-data "aws_instance" "iscsisrv" {
-  instance_id = aws_instance.iscsisrv.id
-}
-
-output "iscsisrv_ip" {
-  value = [data.aws_instance.iscsisrv.private_ip]
-}
-
-output "iscsisrv_public_ip" {
-  value = [data.aws_instance.iscsisrv.public_ip]
-}
-
-output "iscsisrv_name" {
-  value = [data.aws_instance.iscsisrv.id]
-}
-
-output "iscsisrv_public_name" {
-  value = [data.aws_instance.iscsisrv.public_dns]
-}
-
 # Cluster nodes
 
 data "aws_instance" "clusternodes" {
@@ -88,4 +66,22 @@ output "netweaver_name" {
 
 output "netweaver_public_name" {
   value = module.netweaver_node.netweaver_public_name
+}
+
+# iSCSI server
+
+output "iscsisrv_ip" {
+  value = module.iscsi_server.iscsisrv_ip
+}
+
+output "iscsisrv_public_ip" {
+  value = module.iscsi_server.iscsisrv_public_ip
+}
+
+output "iscsisrv_name" {
+  value = module.iscsi_server.iscsisrv_name
+}
+
+output "iscsisrv_public_name" {
+  value = module.iscsi_server.iscsisrv_public_name
 }
