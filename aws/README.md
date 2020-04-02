@@ -176,7 +176,6 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **aws_region**: AWS region where to deploy the configuration.
 * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
 * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
-* **aws_account_id**: AWS account id (12 digit id available to the right of the user in the AWS portal).
 * **aws_access_key_id**: AWS access key id.
 * **aws_secret_access_key**: AWS secret access key.
 * **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.

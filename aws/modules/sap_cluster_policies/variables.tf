@@ -12,11 +12,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
-}
-
 variable "cluster_instances" {
   type        = list(string)
   description = "Instances that will be attached to the role"

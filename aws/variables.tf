@@ -4,11 +4,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
-}
-
 variable "aws_credentials" {
   description = "AWS credentials file path in local machine"
   type        = string
