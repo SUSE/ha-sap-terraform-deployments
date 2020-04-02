@@ -81,16 +81,6 @@ provisioner "remote-exec" {
 }
 }
 
-module "iscsi_on_destroy" {
-  source               = "../generic_modules/on_destroy"
-  node_count           = var.provisioner == "salt" ? 1 : 0
-  instance_ids         = google_compute_instance.iscsisrv.*.id
-  user                 = "root"
-  private_key_location = var.private_key_location
-  public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
-}
-
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.ninstances : 0
 
@@ -176,16 +166,6 @@ provisioner "remote-exec" {
 }
 }
 
-module "hana_on_destroy" {
-  source               = "../generic_modules/on_destroy"
-  node_count           = var.provisioner == "salt" ? var.ninstances : 0
-  instance_ids         = google_compute_instance.clusternodes.*.id
-  user                 = "root"
-  private_key_location = var.private_key_location
-  public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
-}
-
 resource "null_resource" "monitoring_provisioner" {
   count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
 
@@ -243,14 +223,4 @@ EOF
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
-}
-
-module "monitoring_on_destroy" {
-  source               = "../generic_modules/on_destroy"
-  node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
-  instance_ids         = google_compute_instance.monitoring.*.id
-  user                 = "root"
-  private_key_location = var.private_key_location
-  public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
 }

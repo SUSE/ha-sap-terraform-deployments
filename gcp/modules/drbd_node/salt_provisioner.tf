@@ -78,13 +78,3 @@ partitions:
     ] # Workaround to let the process start in background properly
   }
 }
-
-module "drbd_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.provisioner == "salt" ? var.drbd_count : 0
-  instance_ids         = google_compute_instance.drbd.*.id
-  user                 = "root"
-  private_key_location = var.private_key_location
-  public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
-}

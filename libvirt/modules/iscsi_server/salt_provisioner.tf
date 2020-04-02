@@ -68,13 +68,3 @@ EOF
     ] # Workaround to let the process start in background properly
   }
 }
-
-module "iscsi_on_destroy" {
-  source       = "../../../generic_modules/on_destroy"
-  node_count   = var.provisioner == "salt" ? var.iscsi_count : 0
-  instance_ids = libvirt_domain.iscsisrv.*.id
-  user         = "root"
-  password     = "linux"
-  public_ips   = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
-  dependencies = [libvirt_domain.iscsisrv]
-}

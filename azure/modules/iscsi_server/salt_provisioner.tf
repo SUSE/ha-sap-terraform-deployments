@@ -69,13 +69,3 @@ EOF
     ] # Workaround to let the process start in background properly
   }
 }
-
-module "iscsi_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.provisioner == "salt" ? 1 : 0
-  instance_ids         = azurerm_virtual_machine.iscsisrv.*.id
-  user                 = var.admin_user
-  private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.iscsisrv.*.ip_address
-  dependencies         = [data.azurerm_public_ip.iscsisrv]
-}

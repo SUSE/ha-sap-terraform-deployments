@@ -107,3 +107,13 @@ resource "azurerm_virtual_machine" "iscsisrv" {
     workspace = terraform.workspace
   }
 }
+
+module "iscsi_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = 1
+  instance_ids         = azurerm_virtual_machine.iscsisrv.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.iscsisrv.*.ip_address
+  dependencies         = [data.azurerm_public_ip.iscsisrv]
+}
