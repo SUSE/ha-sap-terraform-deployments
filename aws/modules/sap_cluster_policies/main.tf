@@ -1,4 +1,7 @@
 # Create roles and policies fos SAP clusters
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "cluster-role" {
   count              = var.enabled ? 1 : 0
   name               = "${terraform.workspace}-${var.name}-cluster"
@@ -27,7 +30,7 @@ data "template_file" "stonith-policy-template" {
   template = file("${path.module}/templates/aws_stonith_policy.tpl")
   vars = {
     region         = var.aws_region
-    aws_account_id = var.aws_account_id
+    aws_account_id = data.aws_caller_identity.current.account_id
     ec2_instance1  = var.cluster_instances.0
     ec2_instance2  = var.cluster_instances.1
   }
@@ -45,7 +48,7 @@ data "template_file" "ip-agent-policy-template" {
   template = file("${path.module}/templates/aws_ip_agent_policy.tpl")
   vars = {
     region         = var.aws_region
-    aws_account_id = var.aws_account_id
+    aws_account_id = data.aws_caller_identity.current.account_id
     route_table    = var.route_table_id
   }
 }

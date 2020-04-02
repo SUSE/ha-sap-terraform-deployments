@@ -11,7 +11,6 @@ module "sap_cluster_policies" {
   source            = "./modules/sap_cluster_policies"
   name              = var.name
   aws_region        = var.aws_region
-  aws_account_id    = var.aws_account_id
   cluster_instances = aws_instance.clusternodes.*.id
   route_table_id    = aws_route_table.route-table.id
 }

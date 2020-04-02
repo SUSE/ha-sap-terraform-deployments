@@ -4,9 +4,17 @@ variable "aws_region" {
   type = string
 }
 
-variable "aws_account_id" {
+variable "name" {
+  description = "hostname, without the domain part"
   type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
+}
+
+variable "public_key_location" {
+  type = string
+}
+
+variable "private_key_location" {
+  type = string
 }
 
 variable "aws_credentials" {
