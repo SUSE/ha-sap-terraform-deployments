@@ -79,7 +79,6 @@ storage_account_path: ${var.storage_account_path}
   }
 }
 
-
 module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.provisioner == "salt" ? var.netweaver_count : 0

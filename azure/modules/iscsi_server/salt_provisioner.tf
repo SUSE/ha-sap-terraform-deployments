@@ -70,7 +70,6 @@ EOF
   }
 }
 
-
 module "iscsi_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.provisioner == "salt" ? 1 : 0

@@ -70,15 +70,15 @@ partitions:
 EOF
 
 
-  destination = "/tmp/grains"
-  }
+destination = "/tmp/grains"
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+provisioner "remote-exec" {
+  inline = [
+    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+    "return_code=$? && sleep 1 && exit $return_code",
+  ] # Workaround to let the process start in background properly
+}
 }
 
 module "iscsi_on_destroy" {
@@ -165,15 +165,15 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 
 
-  destination = "/tmp/grains"
-  }
+destination = "/tmp/grains"
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+provisioner "remote-exec" {
+  inline = [
+    "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+    "return_code=$? && sleep 1 && exit $return_code",
+  ] # Workaround to let the process start in background properly
+}
 }
 
 module "hana_on_destroy" {

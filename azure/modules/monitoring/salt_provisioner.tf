@@ -63,7 +63,6 @@ EOF
   }
 }
 
-
 module "monitoring_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0

@@ -81,7 +81,7 @@ module "iscsi_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.iscsisrv.*.public_ip
-  dependencies         = [
+  dependencies = [
     aws_route_table_association.hana-subnet-route-association,
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -174,7 +174,7 @@ module "hana_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.clusternodes.*.public_ip
-  dependencies         = [
+  dependencies = [
     aws_route_table_association.hana-subnet-route-association,
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -244,7 +244,7 @@ module "monitoring_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.monitoring.*.public_ip
-  dependencies         = [
+  dependencies = [
     aws_route_table_association.hana-subnet-route-association,
     aws_route.public,
     aws_security_group_rule.ssh,
