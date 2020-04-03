@@ -128,6 +128,11 @@ monitoring_srv_ip = "10.0.0.253"
 #netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 # SAP SWPM installation folder, relative to the netweaver_s3_bucket folder
 #netweaver_swpm_folder     =  "your_swpm"
+# Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_s3_bucket folder
+# The sar archive will be extracted to path specified at netweaver_swpm_extract_dir (optional, by default /sapmedia/NW/SWPM)
+#netweaver_sapcar_exe = "your_sapcar_exe_file_path"
+#netweaver_swpm_sar = "your_swpm_sar_file_path"
+#netweaver_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_s3_bucket folder
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
 # Additional folders (added in start_dir.cd), relative to the netweaver_s3_bucket folder
