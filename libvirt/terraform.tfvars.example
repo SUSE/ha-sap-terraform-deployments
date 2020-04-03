@@ -64,9 +64,9 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 #netweaver_swpm_folder     =  "your_swpm"
 # Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_inst_media mounting point
 # The sar archive will be extracted to path specified at swpm_extract_dir (optional, by default /sapmedia/NW/SWPM)
-#nw_sapcar_exe = "your_sapcar_exe_file_path"
-#nw_swpm_sar = "your_swpm_sar_file_path"
-#nw_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
+#netweaver_sapcar_exe = "your_sapcar_exe_file_path"
+#netweaver_swpm_sar = "your_swpm_sar_file_path"
+#netweaver_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_inst_media mounting point
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
 # Additional folders (added in start_dir.cd), relative to the netweaver_inst_media mounting point

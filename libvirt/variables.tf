@@ -197,22 +197,22 @@ variable "netweaver_swpm_folder" {
   default     = ""
 }
 
-variable "nw_sapcar_exe" {
+variable "netweaver_sapcar_exe" {
   description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
 }
 
-variable "nw_swpm_sar" {
+variable "netweaver_swpm_sar" {
   description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
 }
 
-variable "nw_swpm_extract_dir" {
+variable "netweaver_swpm_extract_dir" {
   description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
   type        = string
-  default     = ""
+  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {

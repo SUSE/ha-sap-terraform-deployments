@@ -27,12 +27,12 @@ netweaver:
   {%- if grains.get('netweaver_swpm_folder', False) %}
   swpm_folder: /sapmedia/NW/{{ grains['netweaver_swpm_folder'] }}
   {%- endif %}
-  {%- if grains.get('nw_sapcar_exe', False) and grains.get('nw_swpm_sar', False) %}
-  sapcar_exe_file: /sapmedia/NW/{{ grains['nw_sapcar_exe'] }}
-  swpm_sar_file: /sapmedia/NW/{{ grains['nw_swpm_sar'] }}
+  {%- if grains.get('netweaver_sapcar_exe', False) and grains.get('netweaver_swpm_sar', False) %}
+  sapcar_exe_file: /sapmedia/NW/{{ grains['netweaver_sapcar_exe'] }}
+  swpm_sar_file: /sapmedia/NW/{{ grains['netweaver_swpm_sar'] }}
   {%- endif %}
-  {%- if grains.get('nw_swpm_extract_dir', False) %}
-  swpm_extract_dir: {{ grains['nw_swpm_extract_dir'] }}
+  {%- if grains.get('netweaver_swpm_extract_dir', False) %}
+  swpm_extract_dir: {{ grains['netweaver_swpm_extract_dir'] }}
   {%- endif %}
   sapexe_folder: /sapmedia/NW/{{ grains['netweaver_sapexe_folder'] }}
   additional_dvds: {%- if not grains['netweaver_additional_dvds'] %} []
