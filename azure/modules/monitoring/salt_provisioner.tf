@@ -61,5 +61,4 @@ EOF
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
-
 }

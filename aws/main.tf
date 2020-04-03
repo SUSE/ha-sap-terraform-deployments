@@ -41,4 +41,9 @@ module "netweaver_node" {
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
+  on_destroy_dependencies = [
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
 }
