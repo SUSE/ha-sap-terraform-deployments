@@ -192,3 +192,4 @@ else
     [[ -n $excute_deploy ]] && deploy
     [[ -n $excute_run_tests ]] && run_tests
 fi
+exit 0
