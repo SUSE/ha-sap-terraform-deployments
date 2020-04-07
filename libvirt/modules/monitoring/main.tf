@@ -66,3 +66,13 @@ output "output_data" {
     address         = join("", libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0)
   }
 }
+
+module "monitoring_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.monitoring_enabled ? 1 : 0
+  instance_ids = libvirt_domain.monitoring_domain.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.monitoring_domain]
+}

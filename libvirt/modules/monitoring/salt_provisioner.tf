@@ -49,13 +49,13 @@ monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_monitored_hosts))}]
 nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.nw_monitored_hosts))}]
 EOF
-      destination = "/tmp/grains"
-      }
+  destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
