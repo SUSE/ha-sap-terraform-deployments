@@ -25,6 +25,12 @@ module "iscsi_server" {
   provisioner            = var.provisioner
   background             = var.background
   qa_mode                = var.qa_mode
+  on_destroy_dependencies = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
 }
 
 module "netweaver_node" {

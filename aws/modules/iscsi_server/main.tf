@@ -38,10 +38,5 @@ module "iscsi_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.iscsisrv.*.public_ip
-  dependencies = [
-    aws_route_table_association.hana-subnet-route-association,
-    aws_route.public,
-    aws_security_group_rule.ssh,
-    aws_security_group_rule.outall
-  ]
+  dependencies         = var.on_destroy_dependencies
 }
