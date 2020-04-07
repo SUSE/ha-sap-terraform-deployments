@@ -126,6 +126,10 @@ network_domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sde
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_backup_device: ${var.hana_backup_device}
 hana_inst_disk_device: ${var.hana_inst_disk_device}
