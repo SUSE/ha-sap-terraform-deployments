@@ -2,15 +2,6 @@
 # It will be executed if 'provisioner' is set to salt (default option) and the
 # iscsi and hana node resources are created (check triggers option).
 
-# Template file for user_data used in resource instances
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "iscsi_provisioner" {
   count = var.provisioner == "salt" ? 1 : 0
 
@@ -28,11 +19,6 @@ resource "null_resource" "iscsi_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp/salt"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -68,7 +54,7 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
@@ -96,11 +82,6 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp/salt"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -146,7 +127,7 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
@@ -169,11 +150,6 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -201,7 +177,7 @@ EOF
 
   provisioner "remote-exec" {
     inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
