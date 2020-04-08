@@ -60,7 +60,7 @@ module "netweaver_node" {
   virtual_host_ips          = var.netweaver_virtual_ips
   public_key_location       = var.public_key_location
   private_key_location      = var.private_key_location
-  iscsi_srv_ip              = var.iscsi_srv_ip
+  iscsi_srv_ip              = module.iscsi_server.aws_instance.iscsisrv.private_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   reg_code                  = var.reg_code

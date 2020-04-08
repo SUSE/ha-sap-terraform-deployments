@@ -218,7 +218,7 @@ variable "iscsidev" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+  description = "iscsi server address. It should be in same iprange as host_ips"
   type        = string
   default     = "10.0.0.254"
 }
