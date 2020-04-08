@@ -1,4 +1,7 @@
 #!/bin/bash -xe
+# Script to provision the machines using salt. It provides different stages to install and
+# configure salt and run different salt executions. Find more information in print_help method
+# or running `sh provision.sh -h`
 
 get_grain () {
     re="$1:\s*(.*)"
