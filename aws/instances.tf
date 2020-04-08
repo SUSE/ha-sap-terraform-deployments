@@ -37,6 +37,21 @@ resource "aws_instance" "iscsisrv" {
   }
 }
 
+module "iscsi_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = 1
+  instance_ids         = aws_instance.iscsisrv.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.iscsisrv.*.public_ip
+  dependencies = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
+}
+
 module "sap_cluster_policies" {
   enabled           = var.ninstances > 0 ? true : false
   source            = "./modules/sap_cluster_policies"
@@ -81,6 +96,20 @@ resource "aws_instance" "clusternodes" {
   }
 }
 
+module "hana_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.ninstances
+  instance_ids         = aws_instance.clusternodes.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.clusternodes.*.public_ip
+  dependencies = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
+}
 
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
@@ -112,4 +141,19 @@ resource "aws_instance" "monitoring" {
     Name      = "${terraform.workspace} - Monitoring"
     Workspace = terraform.workspace
   }
+}
+
+module "monitoring_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.monitoring_enabled ? 1 : 0
+  instance_ids         = aws_instance.monitoring.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.monitoring.*.public_ip
+  dependencies = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
 }

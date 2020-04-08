@@ -1,12 +1,3 @@
-# Template file for user_data used in resource instances
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "netweaver_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
 
@@ -29,11 +20,6 @@ resource "null_resource" "netweaver_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -88,7 +74,7 @@ s3_bucket: ${var.s3_bucket}
 
   provisioner "remote-exec" {
     inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }

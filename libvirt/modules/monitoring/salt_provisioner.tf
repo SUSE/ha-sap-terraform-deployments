@@ -1,12 +1,3 @@
-# Template file to launch the salt provisioning script
-data "template_file" "monitoring_salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "monitoring_provisioner" {
   count = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
   triggers = {
@@ -22,11 +13,6 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.monitoring_salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -49,13 +35,13 @@ monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
 drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_monitored_hosts))}]
 nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.nw_monitored_hosts))}]
 EOF
-      destination = "/tmp/grains"
-      }
+  destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}

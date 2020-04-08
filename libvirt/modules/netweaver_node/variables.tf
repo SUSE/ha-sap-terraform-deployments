@@ -201,3 +201,9 @@ variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
 }
+
+variable "devel_mode" {
+  description = "Whether or not to give preference to packages from `ha_sap_deployment_repo`"
+  type        = bool
+  default     = false
+}

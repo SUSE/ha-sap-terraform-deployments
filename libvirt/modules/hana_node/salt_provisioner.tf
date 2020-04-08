@@ -2,15 +2,6 @@
 # It will be executed if 'provisioner' is set to 'salt' (default option) and the
 # libvirt_domain.domain (hana_node) resources are created (check triggers option).
 
-# Template file to launch the salt provisioning script
-data "template_file" "hana_salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.hana_count : 0
   triggers = {
@@ -26,11 +17,6 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.hana_salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -62,13 +48,13 @@ hana_inst_media: ${var.hana_inst_media}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
 EOF
-      destination = "/tmp/grains"
-      }
+  destination = "/tmp/grains"
+  }
 
-      provisioner "remote-exec" {
-        inline = [
-          "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-          "return_code=$? && sleep 1 && exit $return_code",
-        ] # Workaround to let the process start in background properly
-      }
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "${var.background ? "nohup" : ""} sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "return_code=$? && sleep 1 && exit $return_code",
+    ] # Workaround to let the process start in background properly
+  }
+}
