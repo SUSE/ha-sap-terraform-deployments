@@ -133,3 +133,9 @@ variable "background" {
   type        = bool
   default     = false
 }
+
+variable "on_destroy_dependencies" {
+  description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
+  type        = any
+  default     = []
+}
