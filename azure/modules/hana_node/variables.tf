@@ -25,8 +25,8 @@ variable "hana_count" {
 }
 
 variable "name" {
-  type        = string
-  default     = "hana"
+  type    = string
+  default = "hana"
 }
 
 variable "hana_instance_number" {
@@ -51,7 +51,7 @@ variable "storage_account_key" {
 }
 
 variable "enable_accelerated_networking" {
- type        = bool
+  type = bool
 }
 
 variable "host_ips" {
@@ -65,19 +65,19 @@ variable "sles4sap_uri" {
 }
 
 variable "hana_public_publisher" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_offer" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_sku" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_version" {
-  type    = string
+  type = string
 }
 
 variable "vm_size" {
@@ -210,5 +210,5 @@ variable "hana_data_disk_size" {
 }
 
 variable "hana_data_disk_caching" {
-  type    = string
+  type = string
 }

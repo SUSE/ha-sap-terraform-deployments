@@ -76,16 +76,16 @@ variable "aws_credentials" {
 }
 
 variable "aws_access_key_id" {
-  type    = string
+  type = string
 }
 
 variable "aws_secret_access_key" {
-  type    = string
+  type = string
 }
 
 variable "s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
-  type    = string
+  type        = string
 }
 
 variable "netweaver_product_id" {
