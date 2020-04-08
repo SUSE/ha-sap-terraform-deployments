@@ -557,8 +557,8 @@ Examples of the JSON files used in this document have been added to this repo.
 
 ## Logs
 
-This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
+This configuration is leaving logs in `/var/log` folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
 
-* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
-* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
-* **/tmp/salt-formula.log**: Same as above but for salt-formula.
+* **/var/log/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-predeployment and salt-deployment
+* **/var/log/salt-predeployment.log**: Check here the debug log for the salt pre-deployment execution if you need to troubleshoot something.
+* **/var/log/salt-deployment.log**: Same as above but for the final SAP/HA/DRBD deployments salt execution logs.
