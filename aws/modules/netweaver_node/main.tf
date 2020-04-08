@@ -85,3 +85,16 @@ resource "aws_instance" "netweaver" {
     Cluster      = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
   }
 }
+
+module "netweaver_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.netweaver_count
+  instance_ids         = aws_instance.netweaver.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.netweaver.*.public_ip
+  dependencies         = concat(
+    [aws_route_table_association.netweaver-subnet-route-association],
+    var.on_destroy_dependencies
+  )
+}

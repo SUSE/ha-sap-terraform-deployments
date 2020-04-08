@@ -287,3 +287,13 @@ resource "azurerm_virtual_machine" "hana" {
     workspace = terraform.workspace
   }
 }
+
+module "hana_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.hana_count
+  instance_ids         = azurerm_virtual_machine.hana.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.hana.*.ip_address
+  dependencies         = [data.azurerm_public_ip.hana]
+}
