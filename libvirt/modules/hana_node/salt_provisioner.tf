@@ -15,11 +15,6 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
     content = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
@@ -48,13 +43,16 @@ hana_inst_media: ${var.hana_inst_media}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
 EOF
-  destination = "/tmp/grains"
+    destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "hana_provision" {
+  source       = "../../../generic_modules/salt_provisioner"
+  node_count   = var.provisioner == "salt" ? var.hana_count : 0
+  instance_ids = null_resource.hana_node_provisioner.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
+  background   = var.background
 }
