@@ -2,15 +2,6 @@
 # It will be executed if 'provisioner' is set to 'salt' (default option) and the
 # libvirt_domain.domain (netweaver_node) resources are created (check triggers option).
 
-# Template file to launch the salt provisioning script
-data "template_file" "netweaver_salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "netweaver_node_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
   triggers = {
@@ -26,11 +17,6 @@ resource "null_resource" "netweaver_node_provisioner" {
   provisioner "file" {
     source      = "../salt"
     destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.netweaver_salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -63,13 +49,14 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
 monitoring_enabled: ${var.monitoring_enabled}
+devel_mode: ${var.devel_mode}
 EOF
   destination = "/tmp/grains"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "${var.background ? "nohup" : ""} sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
+      "${var.background ? "nohup" : ""} sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }

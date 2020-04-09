@@ -191,4 +191,5 @@ module "netweaver_node" {
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
+  devel_mode                = var.devel_mode
 }
