@@ -49,19 +49,18 @@ module "netweaver_node" {
 }
 
 module "monitoring" {
-  source               = "./modules/monitoring"
-  monitor_instancetype = var.monitor_instancetype
-  min_instancetype     = var.min_instancetype
-  key_name             = aws_key_pair.hana-key-pair.key_name
-  security_group_id    = aws_security_group.secgroup.id
-  monitoring_srv_ip    = var.monitoring_srv_ip
-  private_key_location = var.private_key_location
-  aws_region           = var.aws_region
-  availability_zones   = data.aws_availability_zones.available.names
-  sles4sap_images      = var.sles4sap
-  subnet_ids           = aws_subnet.hana-subnet.*.id
-  host_ips             = var.host_ips
-
+  source                 = "./modules/monitoring"
+  monitor_instancetype   = var.monitor_instancetype
+  min_instancetype       = var.min_instancetype
+  key_name               = aws_key_pair.hana-key-pair.key_name
+  security_group_id      = aws_security_group.secgroup.id
+  monitoring_srv_ip      = var.monitoring_srv_ip
+  private_key_location   = var.private_key_location
+  aws_region             = var.aws_region
+  availability_zones     = data.aws_availability_zones.available.names
+  sles4sap_images        = var.sles4sap
+  subnet_ids             = aws_subnet.hana-subnet.*.id
+  host_ips               = var.host_ips
   timezone               = var.timezone
   reg_code               = var.reg_code
   reg_email              = var.reg_email
