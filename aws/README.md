@@ -183,6 +183,10 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
 * **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
 * **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
+* **hana_platform_folder**: path relative to hana_inst_master, where already extracted HANA platform installation media exists. This media will have preference over hdbserver sar archive installation media.
+* **hana_sapcar_exe**: path to the sapcar executable, relative to hana_inst_master.
+* **hdbserver_sar**: path to the HANA database server installation sar archive, relative to hana_inst_master.
+* **hana_extract_dir**: The sar archive will be extracted to path specified at hdbserver_extract_dir. This parameter is optional (by default /sapmedia/HANA).
 * **hana_disk_device**: device used by node where HANA will be installed.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
 * **iscsidev**: device used by the iscsi server.

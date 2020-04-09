@@ -40,6 +40,16 @@ region = "europe-west1"
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
 sap_hana_deployment_bucket = "MyHanaBucket"
 
+# Specify the path to already extracted HANA platform installation media, relative to sap_hana_deployment_bucket. 
+#This will have preference over hdbserver sar archive installation media
+hana_platform_folder = "51053381"
+# Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the sap_hana_deployment_bucket
+# The sar archive will be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
+# Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
+hana_sapcar_exe = "SAPCAR"
+hdbserver_sar = "IMDB_SERVER.SAR"
+hana_extract_dir = "/sapmedia/HDBSERVER"
+
 # Custom sles4sap image
 sles4sap_boot_image = "MySles4SapImage"
 

@@ -78,6 +78,10 @@ module "hana_node" {
   host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
   hana_inst_media        = var.hana_inst_media
+  hana_platform_folder   = var.hana_platform_folder
+  hana_sapcar_exe        = var.hana_sapcar_exe
+  hdbserver_sar          = var.hdbserver_sar
+  hana_extract_dir       = var.hana_extract_dir
   hana_disk_size         = "68719476736"
   hana_fstype            = var.hana_fstype
   shared_storage_type    = var.shared_storage_type
