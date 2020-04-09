@@ -25,7 +25,6 @@ prometheus_shap_configuration:
     - name: /etc/prometheus/
     - makedirs: True
     - source: salt://monitoring/prometheus
-    - template: jinja
     - include_empty: True
 
 prometheus_service:
