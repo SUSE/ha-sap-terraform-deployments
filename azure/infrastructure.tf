@@ -1,6 +1,6 @@
 # Configure the Azure Provider
 provider "azurerm" {
-  version = "<= 1.33"
+  version = "~> 1.44"
 }
 
 provider "template" {
