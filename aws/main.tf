@@ -47,3 +47,36 @@ module "netweaver_node" {
     aws_security_group_rule.outall
   ]
 }
+
+module "monitoring" {
+  source               = "./modules/monitoring"
+  monitor_instancetype = var.monitor_instancetype
+  min_instancetype     = var.min_instancetype
+  key_name             = aws_key_pair.hana-key-pair.key_name
+  security_group_id    = aws_security_group.secgroup.id
+  monitoring_srv_ip    = var.monitoring_srv_ip
+  private_key_location = var.private_key_location
+  aws_region           = var.aws_region
+  availability_zones   = data.aws_availability_zones.available.names
+  sles4sap_images      = var.sles4sap
+  subnet_ids           = aws_subnet.hana-subnet.*.id
+  host_ips             = var.host_ips
+
+  timezone               = var.timezone
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  additional_packages    = var.additional_packages
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  provisioner            = var.provisioner
+  background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  netweaver_enabled      = var.netweaver_enabled
+  netweaver_ips          = var.netweaver_ips
+  on_destroy_dependencies = [
+    aws_route_table_association.hana-subnet-route-association,
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
+}
