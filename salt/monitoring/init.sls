@@ -31,6 +31,7 @@ prometheus_shap_configuration:
   file.managed:
     - name:  /etc/prometheus/prometheus.yml
     - source: salt://monitoring/prometheus/prometheus.yml.j2
+    - template: jinja
     - require:
       - pkg: prometheus
 
