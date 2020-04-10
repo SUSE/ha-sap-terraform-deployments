@@ -44,6 +44,10 @@ qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 hana_fstype: ${var.hana_fstype}
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_inst_media: ${var.hana_inst_media}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
