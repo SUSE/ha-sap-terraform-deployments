@@ -1,6 +1,7 @@
 {% if grains['os_family'] == 'Suse' %}
 {% if not grains.get('qa_mode') or '_node' not in grains.get('role') %}
 {% if grains['reg_code'] %}
+{% set mod_reg_code = grains['reg_code'] %}
 register_system:
   cmd.run:
     - name: /usr/bin/SUSEConnect -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
@@ -12,12 +13,12 @@ register_system:
 {% endif %}
 
 
-{% if not 'iscsi_srv' not in grains.get('role') %}
+{% if not 'iscsi_srv' in grains.get('role') %}
 {% if '12' in grains['osrelease'] %}
 {% if grains['osrelease'] == '12' %}
 default_sle_module_adv_systems_management_registration:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management {{ "-r $mod_reg_code" if mod_reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management/{{ grains['osrelease'] }}/{{grains['osarch']}} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
         - mod_reg_code: {{ mod_reg_code }}
     - retry:
@@ -26,7 +27,7 @@ default_sle_module_adv_systems_management_registration:
 
 default_sle_module_public_cloud_registration:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p sle-module-public-cloud {{ "-r $mod_reg_code" if mod_reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/{{ grains['osrelease'] }}/{{grains['osarch']}} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
         - mod_reg_code: {{ mod_reg_code }}
     - retry:
@@ -36,7 +37,7 @@ default_sle_module_public_cloud_registration:
 # temporary PackageHub (temporarily for GCP until ECO-1148 is released)
 default_PackageHub_registration_sle12:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p PackageHub {{ "-r $mod_reg_code" if mod_reg_code else "" }}
+     /usr/bin/SUSEConnect -p  PackageHub/{{ grains['osrelease'] }}/{{grains['osarch']}} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
         - mod_reg_code: {{ mod_reg_code }}
     - retry:
@@ -52,15 +53,15 @@ default_PackageHub_registration_sle12:
 {% if grains['osrelease'] == '15' %}
 default_PackageHub_registration_sle15:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p PackageHub {{ "-r $mod_reg_code" if mod_reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p  PackageHub/{{ grains['osrelease'] }}/{{grains['osarch']}} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
         - mod_reg_code: {{ mod_reg_code }}
     - retry:
         attempts: 3
         interval: 15
 {% endif %}
-
-
+{% endif %}
+{% endif %}
 
 {% if grains['reg_additional_modules'] %}
 {% for module, mod_reg_code in grains['reg_additional_modules'].items() %}
