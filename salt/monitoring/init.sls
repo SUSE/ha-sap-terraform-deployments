@@ -20,12 +20,19 @@ prometheus:
         attempts: 3
         interval: 15
 
+prometheus_shap_alerts:
+  file.managed:
+    - name:  /etc/prometheus/rules.yml
+    - source: salt://monitoring/prometheus/rules.yml
+    - require:
+      - pkg: prometheus
+
 prometheus_shap_configuration:
-  file.recurse:
-    - name: /etc/prometheus/
-    - makedirs: True
-    - source: salt://monitoring/prometheus
-    - include_empty: True
+  file.managed:
+    - name:  /etc/prometheus/prometheus.yml
+    - source: salt://monitoring/prometheus/prometheus.yml.j2
+    - require:
+      - pkg: prometheus
 
 prometheus_service:
   service.running:
@@ -33,8 +40,10 @@ prometheus_service:
     - enable: True
     - require:
       - file: prometheus_shap_configuration
+      - file: prometheus_shap_alerts
     - watch:
       - file: prometheus_shap_configuration
+      - file: prometheus_shap_alerts
 
 grafana:
   pkg.installed:
@@ -108,8 +117,10 @@ prometheus-alertmanager:
     - require:
       - service: prometheus_service
       - file: prometheus_shap_configuration
+      - file: prometheus_shap_alerts
     - watch:
       - file: prometheus_shap_configuration
+      - file: prometheus_shap_alerts
     - retry:
         attempts: 3
         interval: 15
