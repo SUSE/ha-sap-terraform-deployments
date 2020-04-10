@@ -172,7 +172,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **iscsi_instancetype**: instance type of iscsi server; an empty string will follow the **min_instancetype**. Defaults to `""`.
 * **monitor_instancetype**: instance type of monitor server; an empty string will follow the **min_instancetype**. Defaults to `""`.
 * **hana_data_disk_type**: disk type to use for HANA (gp2 by default).
-* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
+* **hana_count**: number of cluster nodes to deploy. Defaults to 2.
 * **aws_region**: AWS region where to deploy the configuration.
 * **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
 * **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
@@ -272,15 +272,15 @@ terraform apply -var aws_region=eu-central-1 -var instancetype=m4.large
 
 Will deploy 2 `m4.large` instances in Frankfurt, instead of the `m4.2xlarge` default ones. The iSCSI server is always deployed with the `t2.micro` type instance.
 
-Finally, the number of cluster nodes can be modified with the option `-var ninstances`. For example:
+Finally, the number of cluster nodes can be modified with the option `-var hana_count`. For example:
 
 ```
-terraform apply -var aws_region=eu-central-1 -var ninstances=4
+terraform apply -var aws_region=eu-central-1 -var hana_count=4
 ```
 
 Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xlarge` instances as cluster nodes.
 
-All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
+All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var hana_count=2`.
 
 
 

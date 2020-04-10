@@ -1,7 +1,7 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
 # Instance type to use for the hana cluster nodes
-instancetype = "r3.8xlarge"
+instancetype = "m4.2xlarge"
 
 # The minimum instance type of a region, not suitable to hana nodes
 min_instancetype = "t2.micro"
@@ -10,7 +10,7 @@ min_instancetype = "t2.micro"
 hana_data_disk_type = "gp2"
 
 # Number of nodes in the cluster
-ninstances = "2"
+hana_count = "2"
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"

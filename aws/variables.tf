@@ -119,7 +119,7 @@ variable "background" {
 
 # Hana related variables
 
-variable "ninstances" {
+variable "hana_count" {
   type    = string
   default = "2"
 }
@@ -143,7 +143,7 @@ variable "sles4sap" {
 variable "instancetype" {
   description = "The instance type of hana node."
   type        = string
-  default     = "r3.8xlarge"
+  default     = "m4.2xlarge"
 }
 
 variable "min_instancetype" {
