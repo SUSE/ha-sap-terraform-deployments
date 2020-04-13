@@ -48,7 +48,7 @@ hdbserver_sar: ${var.hdbserver_sar}
 hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
-iscsi_srv_ip: ${var.iscsi_srv_ip}
+iscsi_srv_ip: ${module.iscsi_server.iscsisrv_ip}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
