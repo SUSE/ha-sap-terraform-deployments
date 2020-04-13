@@ -85,92 +85,17 @@ By default, this configuration will create 3 virtual machines in Azure: one for 
 
 Once the infrastructure is created by Terraform, the servers are provisioned with Salt.
 
-## Provisioning by Salt
-By default, the cluster and HANA installation is done using Salt Formulas in foreground.
-To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](../pillar_examples) folder (more information in the dedicated [README](../pillar_examples/README.md))
+# Specifications
 
-## Specification
+In order to deploy the environment, different configurations are available through the terraform variables. This variables can be configured using a `terraform.tfvars` file. An example is available in [terraform.tfvars.example](./terraform.tvars.example). To find all the available variables check the [variables.tf](./variables.tf) file.
 
-These are the relevant files and what each provides:
+## QA deployment
 
-- [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the number and type of instances, Azure region, etc.
+The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. Find more information [here](../doc/qa.md).
 
-- [infrastructure.tf](infrastructure.tf): definition of the Azure provider, network resources, resource group and storage account to use.
+## Pillar files configuration
 
-- [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
-
-- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
-
-- [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
-
-- [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
-
-### Variables
-
-**Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the      iSCSI salt formula is not compatible with lower versions.
-**Custom Images:** The custom images for the virtual machines are defined in each terraform module. The image resources will be only created if the specific uri such as sles4sap_uri, iscsi_srv_uri are set in the terraform.tfvars file. Otherwise, a public image will be used.
-
-In the file [terraform.tfvars.example](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
-
-* **sles4sap_uri**: path to a custom sles4sap image to install in the cluster nodes.
-* **iscsi_srv_uri**: path to a custom image to install the iscsi server.
-* **sles4sap_public**: map with the required information to install a public sles4sap image in the cluster nodes. This data is only used if `sles4sap_uri` is not set.
-* **iscsi_srv_public**: map with the required information to install a public sles4sap image in the support server. This data is only used if `iscsi_srv_uri` is not set.
-* **admin_user**: name of the administration user to deploy in all virtual machines.
-* **private_key_location**: path to the local file containing the private SSH key to configure in the virtual machines to allow access.
-* **public_key_location**: path to the local file containing the public SSH key to configure in the virtual machines to allow access. This public key is configured in the file `$HOME/.ssh/authorized_keys` of the administration user in the remote virtual machines.
-* **storage_account_name**: Azure storage account name.
-* **storage_account_key**: Azure storage account secret key (key1 or key2).
-* **hana_inst_master**: path to the storage account where SAP HANA installation files are stored.
-* **hana_platform_folder**: path relative to hana_inst_master, where already extracted HANA platform installation media exists. This media will have preference over hdbserver sar archive installation media.
-* **hana_sapcar_exe**: path to the sapcar executable, relative to hana_inst_master.
-* **hdbserver_sar**: path to the HANA database server installation sar archive, relative to hana_inst_master.
-* **hana_extract_dir**: The sar archive will be extracted to path specified at hdbserver_extract_dir. This parameter is optional (by default /sapmedia/HANA).
-* **hana_fstype**: filesystem type used for HANA installation (xfs by default).
-* **hana_vm_size**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
-* **hana_data_disk_type**: disk type to use for HANA (Standard_LRS by default).
-* **hana_data_disk_caching**: caching mode for HANA disk, could be None, ReadOnly or ReadWrite (ReadWrite by default).
-* **hana_count**: number of cluster nodes to deploy. 2 by default.
-* **hana_instance_number**: Instance number for SAP HANA. 00 by default.
-* **az_region**: Azure region where to deploy the configuration.
-* **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs Hana and configures cluster), `skip-hana` (does not install Hana, but configures cluster) and `skip-cluster` (installs hana, but does not configure cluster). Defaults to `all`.
-* **iscsidev**: device used by the iSCSI server to provide LUNs.
-* **iscsi_disks**: attached partitions number for iscsi server.
-* **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
-* **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
-* **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
-* **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
-* **background**: run the provisioning process in background finishing terraform execution.
-* **pre_deployment**: Enable pre deployment local execution steps. E.g. Move pillar files from pillar_examples/automatic, create cluster ssh keys, etc (disabled by default).
-* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
-* **reg_email**: email to be associated with the system registration. This parameter is optional.
-* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
-    - `<module_name>/<product_version>/<architecture>`
-    - *Example:* Suggested modules for SLES for SAP 15
-
-          sle-module-basesystem/15/x86_64
-          sle-module-desktop-applications/15/x86_64
-          sle-module-server-applications/15/x86_64
-          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
-          sle-module-sap-applications/15/x86_64
-
- For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
-
- * **additional_packages**: Additional packages to add to the guest machines.
- * **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
-
-[Specific QA variables](../doc/qa.md#specific-qa-variables)
-
-### The pillar files hana.sls and cluster.sls
-
-Find more information about the hana and cluster formulas in (check the pillar.example files):
-
--   [https://github.com/SUSE/saphanabootstrap-formula](https://github.com/SUSE/saphanabootstrap-formula)
--   [https://github.com/SUSE/habootstrap-formula](https://github.com/SUSE/habootstrap-formula)
-
-As a good example, you could find some pillar examples into the folder [pillar_examples](../pillar_examples)
-These files **aren't ready for deployment**, be careful to customize them or create your own files.
+Besides the `terraform.tfvars` file usage to configure the deployment, a more advanced configuration is available through pillar files customization. Find more information [here](../pillar_examples/README.md).
 
 # Advanced usage
 

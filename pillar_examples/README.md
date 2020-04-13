@@ -1,49 +1,42 @@
 # Pillar examples
+
 This folder stores pillar examples to use in the Salt provisioning.
+To run an initial deployment without specific customization the usage of the pillar files stored in the `automatic` folder is recommended, as this files are customized with parameters coming from terraform execution. The pillar files stored there are able to deploy a basic functional set of clusters in all of the available cloud providers.
+
+The usage of the pillar files is really simple. Basically, copy the content of the examples directories in the next locations.
+- `salt/hana_node/files/pillar/` for HANA configuration.
+- `salt/drbd_node/files/pillar/` for DRBD configuration.
+- `salt/netweaver_node/files/pillar/` for NETWEAVER configuration.
+
+The next commands can be used for that:
+
+```
+cp pillar_examples/automatic/hana/*.sls salt/hana_node/files/pillar/
+cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/
+cp pillar_examples/automatic/netweaver/*.sls salt/netweaver_node/files/pillar/
+```
+
+Besides this option, the `terraform.tfvars` `pre_deployment` variable will execute this operations if it's enabled before the deployment.
+
+**`pre_deployment` usage only works in clients using Linux**
+
+For more advanced options, continue reading.
 
 ---
 - [SAP HANA and HA cluster](#sap-hana-and-ha-cluster)
 - [DRBD cluster](#drbd-cluster-for-nfs)
+- [SAP NETWEAVER and HA cluster](#sap-netweaver-and-ha-cluster)
 
 ---
-## SAP HANA and HA cluster
-Depending on the provider used to deploy SAP HANA and the HA cluster,
-the required parameters are slightly different, even though most of them
-match.
+# Advanced pillar configuration
 
-For user wants to deploy DRBD(NFS) cluster with HANA,
-[DRBD cluster](#drbd-cluster-for-nfs) is also necessary to configure.
+The salt execution formulas are implemented in different projects. You can find all of the pillar options in each of them.
 
-Two possibilities here:
+- https://github.com/SUSE/saphanabootstrap-formula (HANA configuration)
+- https://github.com/SUSE/habootstrap-formula (HA cluster configuration)
+- https://github.com/SUSE/drbd-formula (DRBD configuration)
+- https://github.com/SUSE/sapnwbootstrap-formula (NETWEAVER or S4/HANA configuration)
 
-  - For a preconfigured environment, you can use pillar files which are in [HANA automatic directory](./automatic/hana).
-
-      **Could be used for testing purpose and not for production as they have default settings.**
-
-      From git top-level folder, copy files:
-
-      `cp pillar_examples/automatic/hana/*.sls salt/hana_node/files/pillar/`
-
-  - For a customize and production environment, you must use pillar files which are in your choosen [provider directory](../pillar_examples) (AWS, Azure, GCP, Libvirt).
-
-      From git top-level folder, copy files:
-
-      `cp pillar_examples/$PROVIDER/*.sls salt/hana_node/files/pillar`
-
-      Please, **pay attention:** different from the previous case (preconfigured environment or automatic), the pillars must be customized, otherwise deployment will fail.
-
-All the information about how to tune the deployment is available in:
-- https://github.com/SUSE/saphanabootstrap-formula (to manipulate the hana.sls file)
-- https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
-
-### Libvirt specifics
-
-One thing is different with Libvirt provider, in pillar's directory, you will find two directories about HANA profiles (cost_optimized and performance_optimized).
-Choose one according to your needs.
-
-Finally, if instead of deploying SAP HANA and the cluster together, to only
-deploy one of them update the salt/hana_node/files/salt/top.sls file only using
-the desired component and removing/commenting the other.
 
 # Pillar encryption
 
@@ -59,20 +52,3 @@ SaltStack GPG renderer provides a secure encryption/decryption of pillar data. T
 - Only passwordless gpg keys are supported, and the already existing keys cannot be used.
 
 - If a masterless approach is used (as in the current automated deployment) the gpg private key must be imported in all the nodes. This might require the copy/paste of the keys.
-
-## DRBD cluster (for NFS)
-Depending on the provider used to deploy DRBD cluster for NFS,
-the required parameters are slightly different, even though most
-of them match.
-
-  - For a preconfigured environment, you can use pillar files which are in [DRBD automatic directory](./automatic/drbd)
-
-      **Could be used for testing purpose and not for production as they have default settings.**
-
-      From git top-level folder, copy files:
-
-      `cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/`
-
-All the information about how to tune the deployment is available in:
-- https://github.com/SUSE/drbd-formula (to manipulate the drbd.sls file)
-- https://github.com/SUSE/habootstrap-formula (to manipulate the cluster.sls file)
