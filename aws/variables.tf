@@ -143,7 +143,7 @@ variable "sles4sap" {
 variable "instancetype" {
   description = "The instance type of hana node."
   type        = string
-  default     = "m4.2xlarge"
+  default     = "r3.8xlarge"
 }
 
 variable "min_instancetype" {

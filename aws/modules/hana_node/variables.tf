@@ -5,7 +5,7 @@ variable "hana_count" {
 
 variable "instancetype" {
   type    = string
-  default = "m4.2xlarge"
+  default = "r3.8xlarge"
 }
 
 variable "name" {
