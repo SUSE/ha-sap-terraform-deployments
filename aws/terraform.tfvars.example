@@ -37,14 +37,13 @@ aws_credentials = "~/.aws/credentials"
 name = "hana"
 
 # S3 bucket where HANA installation master is located
-hana_inst_master = "s3://path/to/your/hana/installation/master"
+hana_inst_master = "s3://path/to/your/hana/installation/master/51053381"
+# Or you can combine the `hana_inst_master` with `hana_platform_folder` variable.
+#hana_inst_master = "s3://path/to/your/hana/installation/master"
+# Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point.
+# This will have preference over hdbserver sar archive installation media
+#hana_platform_folder = "51053381"
 
-# Local folder where HANA installation master will be downloaded from S3
-hana_inst_folder = "/sapmedia/HANA"
-
-# Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point. 
-#This will have preference over hdbserver sar archive installation media
-hana_platform_folder = "51053381"
 # Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point
 # The sar archive will be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
 # Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
