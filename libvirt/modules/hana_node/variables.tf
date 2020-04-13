@@ -101,6 +101,30 @@ variable "hana_inst_folder" {
   type        = string
 }
 
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"

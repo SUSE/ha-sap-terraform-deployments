@@ -44,6 +44,7 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
 monitoring_enabled: ${var.monitoring_enabled}
+devel_mode: ${var.devel_mode}
 EOF
     destination = "/tmp/grains"
   }

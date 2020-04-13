@@ -29,6 +29,10 @@ shared_storage_type: iscsi
 sbd_disk_device: /dev/sdf
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
