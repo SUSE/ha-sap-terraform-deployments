@@ -1,3 +1,24 @@
+# Configure the AWS Provider
+provider "aws" {
+  version = "~> 2.7"
+  region  = var.aws_region
+}
+
+provider "template" {
+  version = "~> 2.1"
+}
+
+# AWS key pair
+resource "aws_key_pair" "hana-key-pair" {
+  key_name   = "${terraform.workspace} - terraform"
+  public_key = file(var.public_key_location)
+}
+
+# AWS availability zones
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Network resources: VPC, Internet Gateways, Security Groups for the EC2 instances and for the EFS file system
 resource "aws_vpc" "vpc" {
   cidr_block           = "10.0.0.0/16"
