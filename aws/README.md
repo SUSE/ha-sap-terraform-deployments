@@ -189,6 +189,7 @@ In [terraform.tfvars](terraform.tfvars.example) there are a number of variables 
 * **hana_extract_dir**: The sar archive will be extracted to path specified at hdbserver_extract_dir. This parameter is optional (by default /sapmedia/HANA).
 * **hana_disk_device**: device used by node where HANA will be installed.
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
+* **iscsi_srv_ip**: IP address of the machine that will host the iscsi target.
 * **iscsidev**: device used by the iscsi server.
 * **iscsi_disks**: attached partitions number for iscsi server.
 * **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)

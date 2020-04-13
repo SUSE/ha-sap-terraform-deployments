@@ -61,6 +61,9 @@ hana_cluster_vip = "192.168.1.10"
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
+# iSCSI server address. It should be in same iprange as host_ips
+iscsi_srv_ip = "10.0.0.254"
+
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/xvdd"
 
