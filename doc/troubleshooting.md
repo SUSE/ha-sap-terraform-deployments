@@ -8,8 +8,9 @@ Feel free to open an issue with these logs, and/or analyze them accordingly.
 
 # Salt usefull logs
 
-- `/tmp/salt-deployment.log`:  before executing formula states, execute the saltstack file contained in the repo of ha-sap-terraform-deployments.
-- `/tmp/salt-formula.log`: this is the log file where the formulas salt execution is logged. (salt-formulas are not part of the github deployments project).
+- `/var/log/salt-os-setup.log`:  initial OS setup registering the machines to SCC, updating the system, etc.
+- `/var/log/salt-predeployment.log`:  before executing formula states, execute the saltstack file contained in the repo of ha-sap-terraform-deployments.
+- `/var/log/salt-deployment.log`: this is the log file where the formulas salt execution is logged. (salt-formulas are not part of the github deployments project).
 
 
 # Netweaver debugging

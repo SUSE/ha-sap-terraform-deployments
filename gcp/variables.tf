@@ -151,6 +151,30 @@ variable "hana_inst_folder" {
   default = "/sapmedia/HANA"
 }
 
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the hana_inst_folder"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the hana_inst_folder"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the hana_inst_folder"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
 variable "hana_data_disk_type" {
   type    = string
   default = "pd-ssd"

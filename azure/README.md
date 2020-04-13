@@ -122,6 +122,10 @@ In the file [terraform.tfvars.example](terraform.tfvars.example) there are a num
 * **storage_account_name**: Azure storage account name.
 * **storage_account_key**: Azure storage account secret key (key1 or key2).
 * **hana_inst_master**: path to the storage account where SAP HANA installation files are stored.
+* **hana_platform_folder**: path relative to hana_inst_master, where already extracted HANA platform installation media exists. This media will have preference over hdbserver sar archive installation media.
+* **hana_sapcar_exe**: path to the sapcar executable, relative to hana_inst_master.
+* **hdbserver_sar**: path to the HANA database server installation sar archive, relative to hana_inst_master.
+* **hana_extract_dir**: The sar archive will be extracted to path specified at hdbserver_extract_dir. This parameter is optional (by default /sapmedia/HANA).
 * **hana_fstype**: filesystem type used for HANA installation (xfs by default).
 * **hana_vm_size**: SKU to use for the cluster nodes; basically the "size" (number of vCPUS and memory) of the VM.
 * **hana_data_disk_type**: disk type to use for HANA (Standard_LRS by default).

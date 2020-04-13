@@ -25,8 +25,8 @@ variable "hana_count" {
 }
 
 variable "name" {
-  type        = string
-  default     = "hana"
+  type    = string
+  default = "hana"
 }
 
 variable "hana_instance_number" {
@@ -51,7 +51,7 @@ variable "storage_account_key" {
 }
 
 variable "enable_accelerated_networking" {
- type        = bool
+  type = bool
 }
 
 variable "host_ips" {
@@ -65,19 +65,19 @@ variable "sles4sap_uri" {
 }
 
 variable "hana_public_publisher" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_offer" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_sku" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_version" {
-  type    = string
+  type = string
 }
 
 variable "vm_size" {
@@ -188,6 +188,30 @@ variable "hana_inst_folder" {
   default = "/sapmedia/HANA"
 }
 
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
 variable "hana_disk_device" {
   description = "device where to install HANA"
   type        = string
@@ -210,5 +234,5 @@ variable "hana_data_disk_size" {
 }
 
 variable "hana_data_disk_caching" {
-  type    = string
+  type = string
 }

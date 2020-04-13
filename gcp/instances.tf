@@ -49,7 +49,7 @@ module "iscsi_on_destroy" {
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
 }
 
 resource "google_compute_instance" "clusternodes" {
@@ -117,7 +117,7 @@ module "hana_on_destroy" {
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
 }
 
 resource "google_compute_instance" "monitoring" {
@@ -172,5 +172,5 @@ module "monitoring_on_destroy" {
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
 }
