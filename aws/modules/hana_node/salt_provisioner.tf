@@ -18,12 +18,7 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp/salt"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: hana_node
@@ -43,6 +38,10 @@ shared_storage_type: iscsi
 sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
@@ -59,14 +58,16 @@ devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 EOF
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "hana_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.hana_count : 0
+  instance_ids         = null_resource.hana_node_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.clusternodes.*.public_ip
+  background           = var.background
 }

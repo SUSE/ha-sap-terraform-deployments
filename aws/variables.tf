@@ -241,6 +241,12 @@ variable "iscsidev" {
   type        = string
 }
 
+variable "iscsi_srv_ip" {
+  description = "iscsi server address. It should be in same iprange as host_ips"
+  type        = string
+  default     = "10.0.0.254"
+}
+
 variable "iscsi_disks" {
   description = "number of partitions attach to iscsi server. 0 means `all`."
   default     = 0

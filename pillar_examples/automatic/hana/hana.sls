@@ -3,11 +3,12 @@ hana:
   install_packages: false
   {% endif %}
   {%- if grains.get('hana_platform_folder', False) %}
-  software_path:  /sapmedia/HANA/{{ grains['hana_platform_folder'] }}
-  {% endif %}
-  {%- if grains.get('hana_sapcar_exe', False) and grains.get('hdbserver_sar', False) %}
+  software_path: /sapmedia/HANA/{{ grains['hana_platform_folder'] }}
+  {%- elif grains.get('hana_sapcar_exe', False) and grains.get('hdbserver_sar', False) %}
   sapcar_exe_file: /sapmedia/HANA/{{ grains['hana_sapcar_exe'] }}
   hdbserver_sar_file: /sapmedia/HANA/{{ grains['hdbserver_sar'] }}
+  {%- else %}
+  software_path: /sapmedia/HANA/
   {%- endif %}
   {%- if grains.get('hana_extract_dir', False) %}
   hdbserver_extract_dir: {{ grains['hana_extract_dir'] }}

@@ -13,11 +13,6 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
     content     = <<EOF
 provider: azure
 role: netweaver_node
@@ -53,15 +48,17 @@ netweaver_nfs_share: ${var.netweaver_nfs_share}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 storage_account_path: ${var.storage_account_path}
-
   EOF
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "netweaver_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = null_resource.netweaver_provisioner.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.netweaver.*.ip_address
+  background           = var.background
 }

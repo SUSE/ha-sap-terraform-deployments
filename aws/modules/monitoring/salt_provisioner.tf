@@ -13,12 +13,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: monitoring
@@ -39,11 +34,14 @@ EOF
 
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "monitoring_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
+  instance_ids         = null_resource.monitoring_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.monitoring.*.public_ip
+  background           = var.background
 }
