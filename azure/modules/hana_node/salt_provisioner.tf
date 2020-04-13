@@ -16,11 +16,6 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
     content = <<EOF
 provider: azure
 role: hana_node
@@ -56,14 +51,16 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "hana_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.hana_count : 0
+  instance_ids         = null_resource.hana_node_provisioner.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.hana.*.ip_address
+  background           = var.background
 }

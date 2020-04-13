@@ -18,11 +18,6 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
     content     = <<EOF
 provider: aws
 region: ${var.aws_region}
@@ -64,15 +59,17 @@ netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additi
 netweaver_nfs_share: "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
 hana_ip: ${var.hana_ip}
 s3_bucket: ${var.s3_bucket}
-
   EOF
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "netweaver_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = null_resource.netweaver_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.netweaver.*.public_ip
+  background           = var.background
 }

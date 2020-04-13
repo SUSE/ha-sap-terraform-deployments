@@ -88,7 +88,7 @@ os_setup () {
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local --file-root=/root/salt \
         --log-level=info \
-        --log-file=/tmp/salt-os-setup.log \
+        --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
@@ -101,7 +101,7 @@ predeploy () {
     salt-call --local \
         --pillar-root=/root/salt/pillar/ \
         --log-level=info \
-        --log-file=/tmp/salt-predeployment.log \
+        --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
@@ -113,7 +113,7 @@ deploy () {
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
             --log-level=info \
-            --log-file=/tmp/salt-deployment.log \
+            --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
@@ -130,7 +130,7 @@ run_tests () {
         # Execute qa state file
         salt-call --local --file-root=/root/salt/ \
             --log-level=info \
-            --log-file=/tmp/salt-qa.log \
+            --log-file=/var/log/salt-qa.log \
             --log-file-level=info \
             --retcode-passthrough \
             $(salt_output_colored) \

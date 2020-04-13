@@ -17,11 +17,6 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
     content = <<EOF
 provider: gcp
 role: iscsi_srv
@@ -54,17 +49,18 @@ partitions:
     end: 100%
 
 EOF
-
-
 destination = "/tmp/grains"
 }
-
-provisioner "remote-exec" {
-  inline = [
-    "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-    "return_code=$? && sleep 1 && exit $return_code",
-  ] # Workaround to let the process start in background properly
 }
+
+module "iscsi_provision" {
+  source               = "../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? 1 : 0
+  instance_ids         = null_resource.iscsi_provisioner.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
+  background           = var.background
 }
 
 resource "null_resource" "hana_node_provisioner" {
@@ -87,11 +83,6 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     source      = var.gcp_credentials_file
     destination = "/root/google_credentials.json"
-  }
-
-  provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
   }
 
   provisioner "file" {
@@ -138,17 +129,18 @@ reg_additional_modules: {${join(
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
-
-
 destination = "/tmp/grains"
 }
-
-provisioner "remote-exec" {
-  inline = [
-    "${var.background ? "nohup" : ""} sudo sh /tmp//tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-    "return_code=$? && sleep 1 && exit $return_code",
-  ] # Workaround to let the process start in background properly
 }
+
+module "hana_provision" {
+  source               = "../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.ninstances : 0
+  instance_ids         = null_resource.hana_node_provisioner.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  background           = var.background
 }
 
 resource "null_resource" "monitoring_provisioner" {
@@ -166,17 +158,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   provisioner "file" {
-    source      = var.gcp_credentials_file
-    destination = "/root/google_credentials.json"
-  }
-
-  provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: gcp
 role: monitoring
 name_prefix: ${terraform.workspace}-monitoring
@@ -192,15 +174,16 @@ monitoring_enabled: ${var.monitoring_enabled}
 monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
-
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "monitoring_provision" {
+  source               = "../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
+  instance_ids         = null_resource.monitoring_provisioner.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
+  background           = var.background
 }
