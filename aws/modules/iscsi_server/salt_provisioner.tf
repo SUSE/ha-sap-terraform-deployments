@@ -40,6 +40,7 @@ partitions:
 EOF
     destination = "/tmp/grains"
   }
+}
 
 module "iscsi_provision" {
   source               = "../../../generic_modules/salt_provisioner"
@@ -49,5 +50,4 @@ module "iscsi_provision" {
   private_key_location = var.private_key_location
   public_ips           = aws_instance.iscsisrv.*.public_ip
   background           = var.background
-}
 }
