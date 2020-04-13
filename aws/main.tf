@@ -109,7 +109,7 @@ module "hana_node" {
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = var.hana_cluster_vip
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = aws_instance.iscsisrv.private_ip
+  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   reg_code               = var.reg_code

@@ -58,4 +58,3 @@ module "hana_on_destroy" {
   public_ips           = aws_instance.clusternodes.*.public_ip
   dependencies         = var.on_destroy_dependencies
 }
-
