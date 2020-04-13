@@ -41,8 +41,8 @@ Note: You must run this command to use the Gcloud SDK and to apply this Terrafor
 
 ```
 terraform init
-terraform workspace new my-execution # optional
-terraform workspace select my-execution # optional
+terraform workspace new myexecution # optional
+terraform workspace select myexecution # optional
 terraform plan
 terraform apply
 ```
