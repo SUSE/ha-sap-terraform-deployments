@@ -19,7 +19,7 @@ resource "null_resource" "provision_background" {
 
   provisioner "remote-exec" {
     inline = [
-      "nohup sudo sh /tmp/salt/provision.sh > /var/log/provisioning.log &",
+      "nohup sudo sh /tmp/salt/provision.sh -l /var/log/provisioning.log > /dev/null 2>&1 &",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }

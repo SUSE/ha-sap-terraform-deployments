@@ -144,7 +144,7 @@ Provision the machines. The provisioning has different steps, so they can be exe
 the selected flags. The actions are always executed in the same order (if multiple are selected),
 from top to bottom in this help text.
 
-Supported Options (if no options are provided all the steps will be executed):
+Supported Options (if no options are provided (excluding -l) all the steps will be executed):
   -s               Bootstrap salt installation and configuration. It will register to SCC channels if needed
   -o               Execute OS setup operations. Register to SCC, updated the packages, etc
   -p               Execute predeployment operations (update hosts and hostnames, install support packages, etc)
@@ -186,14 +186,20 @@ while getopts ":hsopdql:" opt; do
             ;;
     esac
 done
-if [ $OPTIND -eq 1 ]; then
+
+argument_number=$OPTIND
+if [[ -n $log_to_file ]]; then
+    argument_number=$((argument_number - 2))
+    exec 1>> $log_to_file
+fi
+
+if [ $argument_number -eq 1 ]; then
     bootstrap_salt
     os_setup
     predeploy
     deploy
     run_tests
 else
-    [[ -n $log_to_file ]] && exec 1>> $log_to_file
     [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
     [[ -n $excute_os_setup ]] && os_setup
     [[ -n $excute_predeploy ]] && predeploy
