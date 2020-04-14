@@ -30,6 +30,9 @@ module "drbd_node" {
   devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
 }
 
 module "netweaver_node" {
@@ -64,4 +67,7 @@ module "netweaver_node" {
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
 }
