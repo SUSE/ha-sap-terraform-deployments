@@ -14,10 +14,11 @@ register_system:
 {% endif %}
 
 
-{% if '12' == grains['osmajorrelease'] %}
+{% if 12 == grains['osmajorrelease'] %}
+# hardcode the 12 version number for the 2 follo
 default_sle_module_adv_systems_management_registration:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management/{{ grains['osrelease'] }}/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management/12/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
     - env:
         - reg_code: {{ reg_code }}
     - retry:
@@ -26,7 +27,7 @@ default_sle_module_adv_systems_management_registration:
 
 default_sle_module_public_cloud_registration:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/{{ grains['osrelease'] }}/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/12/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
     - env:
         - reg_code: {{ reg_code }}
     - retry:
@@ -46,12 +47,12 @@ default_PackageHub_registration:
         interval: 15
 
 {% if grains['reg_additional_modules'] %}
-{% for module, reg_code in grains['reg_additional_modules'].items() %}
+{% for module, mod_reg_code in grains['reg_additional_modules'].items() %}
 {{ module }}_registration:
   cmd.run:
-    - name: /usr/bin/SUSEConnect -p {{ module }} {{ "-r $reg_code" if reg_code else "" }}
+    - name: /usr/bin/SUSEConnect -p {{ module }} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
-        - reg_code: {{ reg_code }}
+        - mod_reg_code: {{ mod_reg_code }}
     - retry:
         attempts: 3
         interval: 15
