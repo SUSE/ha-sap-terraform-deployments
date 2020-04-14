@@ -19,7 +19,7 @@ resource "null_resource" "provision_background" {
 
   provisioner "remote-exec" {
     inline = [
-      "nohup sudo sh /tmp/salt/provision.sh > /var/log/provisioning.log &",
+      "nohup sudo sh /tmp/salt/provision.sh -l /var/log/provisioning.log > /dev/null 2>&1 &",
       "return_code=$? && sleep 1 && exit $return_code",
     ] # Workaround to let the process start in background properly
   }
@@ -46,7 +46,7 @@ resource "null_resource" "provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo sh /tmp/salt/provision.sh -so > /var/log/provisioning.log",
+      "sudo sh /tmp/salt/provision.sh -sol /var/log/provisioning.log",
     ]
   }
 
@@ -59,7 +59,7 @@ resource "null_resource" "provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo sh /root/salt/provision.sh -pdq >> /var/log/provisioning.log",
+      "sudo sh /root/salt/provision.sh -pdql /var/log/provisioning.log",
     ]
   }
 }
