@@ -62,8 +62,8 @@
       "aliasColors": {
         "GRAY": "rgb(120, 120, 120)",
         "GREEN": "green",
-        "YELLOW": "yellow",
-        "RED": "red"
+        "RED": "red",
+        "YELLOW": "yellow"
       },
       "bars": false,
       "dashLength": 10,
@@ -188,7 +188,7 @@
       "styles": [
         {
           "alias": "Code",
-          "colorMode": "cell",
+          "colorMode": null,
           "colors": [
             "rgba(50, 172, 45, 0.97)",
             "#FF9830",
@@ -269,7 +269,23 @@
           "mappingType": 1,
           "pattern": "instance",
           "thresholds": [],
-          "type": "number",
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "name",
+          "thresholds": [],
+          "type": "string",
           "unit": "short"
         },
         {
@@ -1020,5 +1036,5 @@
   "timezone": "",
   "title": "SAP NetWeaver Details",
   "uid": "lLLUAU_Wk",
-  "version": 7
+  "version": 8
 }
