@@ -12,6 +12,7 @@ cluster:
   interface: eth0
   unicast: True
   {% endif %}
+  join_timeout: 180
   watchdog:
     module: softdog
     device: /dev/watchdog
