@@ -150,11 +150,12 @@ Supported Options (if no options are provided all the steps will be executed):
   -p               Execute predeployment operations (update hosts and hostnames, install support packages, etc)
   -d               Execute deployment operations (install sap, ha, drbd, etc)
   -q               Execute qa tests
+  -l [LOG_FILE]    Append the log output to the provided file
   -h               Show this help.
 EOF
 }
 
-while getopts ":hsopdq" opt; do
+while getopts ":hsopdql:" opt; do
     case $opt in
         h)
             print_help
@@ -175,6 +176,9 @@ while getopts ":hsopdq" opt; do
         q)
             excute_run_tests=1
             ;;
+        l)
+            log_to_file=$OPTARG
+            ;;
         *)
             echo "Invalid option -$OPTARG" >&2
             print_help
@@ -189,6 +193,7 @@ if [ $OPTIND -eq 1 ]; then
     deploy
     run_tests
 else
+    [[ -n $log_to_file ]] && exec 1>> $log_to_file
     [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
     [[ -n $excute_os_setup ]] && os_setup
     [[ -n $excute_predeploy ]] && predeploy
