@@ -158,7 +158,7 @@ module "monitoring" {
   drbd_enabled                = var.drbd_enabled
   drbd_ips                    = var.drbd_ips
   netweaver_enabled           = var.netweaver_enabled
-  netweaver_ips               = var.netweaver_ips
+  netweaver_ips               = var.netweaver_virtual_ips
 }
 
 module "iscsi_server" {
