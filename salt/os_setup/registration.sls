@@ -15,7 +15,7 @@ register_system:
 
 
 {% if grains['osmajorrelease'] == 12 %}
-# hardcode the 12 version number for the 2 follo
+# hardcode the 12 version number for the 2 following modules, since they don't offer a sp version only 1. 
 default_sle_module_adv_systems_management_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management/12/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
