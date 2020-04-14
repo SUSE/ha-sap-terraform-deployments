@@ -76,16 +76,16 @@ variable "aws_credentials" {
 }
 
 variable "aws_access_key_id" {
-  type    = string
+  type = string
 }
 
 variable "aws_secret_access_key" {
-  type    = string
+  type = string
 }
 
 variable "s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
-  type    = string
+  type        = string
 }
 
 variable "netweaver_product_id" {
@@ -251,7 +251,7 @@ variable "monitoring_enabled" {
 }
 
 variable "on_destroy_dependencies" {
-  description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
+  description = "Resource objects needed in on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
 }

@@ -36,8 +36,8 @@ variable "data_disk_type" {
 
 variable "data_disk_size" {
   description = "Size of the Netweaver data disks, informed in GB"
-  type    = string
-  default = "60"
+  type        = string
+  default     = "60"
 }
 
 variable "data_disk_caching" {

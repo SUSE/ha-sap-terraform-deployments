@@ -2,64 +2,6 @@
 # It will be executed if 'provisioner' is set to salt (default option) and the
 # iscsi and hana node resources are created (check triggers option).
 
-resource "null_resource" "iscsi_provisioner" {
-  count = var.provisioner == "salt" ? 1 : 0
-
-  triggers = {
-    iscsi_id = join(",", aws_instance.iscsisrv.*.id)
-  }
-
-  connection {
-    host        = element(aws_instance.iscsisrv.*.public_ip, count.index)
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file(var.private_key_location)
-  }
-
-  provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp/salt"
-  }
-
-  provisioner "file" {
-    content = <<EOF
-provider: aws
-role: iscsi_srv
-iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
-iscsidev: ${var.iscsidev}
-iscsi_disks: ${var.iscsi_disks}
-qa_mode: ${var.qa_mode}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-
-partitions:
-  1:
-    start: 1
-    end: 33%
-  2:
-    start: 33%
-    end: 67%
-  3:
-    start: 67%
-    end: 100%
-
-EOF
-
-
-    destination = "/tmp/grains"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
-}
-
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.ninstances : 0
 
@@ -80,12 +22,7 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp/salt"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: hana_node
@@ -105,9 +42,13 @@ shared_storage_type: iscsi
 sbd_disk_device: /dev/sda
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
-iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
+iscsi_srv_ip: ${module.iscsi_server.iscsisrv_ip}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
@@ -121,16 +62,18 @@ devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 EOF
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "hana_provision" {
+  source               = "../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.ninstances : 0
+  instance_ids         = null_resource.hana_node_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.clusternodes.*.public_ip
+  background           = var.background
 }
 
 resource "null_resource" "monitoring_provisioner" {
@@ -148,12 +91,7 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: monitoring
@@ -171,14 +109,16 @@ monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
 nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.netweaver_enabled ? var.netweaver_ips : []))}]
 network_domain: "tf.local"
 EOF
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt/provision.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "monitoring_provision" {
+  source               = "../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" && var.monitoring_enabled ? 1 : 0
+  instance_ids         = null_resource.monitoring_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.monitoring.*.public_ip
+  background           = var.background
 }

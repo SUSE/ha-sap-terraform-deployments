@@ -112,6 +112,10 @@ In the file [terraform.tfvars](terraform.tfvars.example) there are a number of v
 * **public_key_location**: the path to your SSH public key.  This is used to access the instances.
 * **region**: the name of the desired region.
 * **sap_hana_deployment_bucket**: the name of the Google Storage bucket with the HANA installation files.
+* **hana_platform_folder**: path relative to sap_hana_deployment_bucket, where already extracted HANA platform installation media exists. This media will have preference over hdbserver sar archive installation media.
+* **hana_sapcar_exe**: the path to the sapcar executable, relative to sap_hana_deployment_bucket.
+* **hdbserver_sar**: the path to the HANA database server installation sar archive, relative to sap_hana_deployment_bucket.
+* **hana_extract_dir**: The sar archive will be extracted to path specified at hdbserver_extract_dir. This parameter is optional (by default /sapmedia/HANA).
 * **sles4sap_boot_image**: the name of the SLES4SAP image.
 
 **Important:** The image used for the iSCSI server **must be at least SLES 15 version** since the iSCSI salt formula is not compatible with lower versions. Use the variable `iscsi_server_boot_image` below.

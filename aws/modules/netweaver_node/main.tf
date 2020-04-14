@@ -1,9 +1,9 @@
 # Network resources: subnets, routes, etc
 resource "aws_subnet" "netweaver-subnet" {
-  count              = min(var.netweaver_count, 2) # Create 2 subnets max
-  vpc_id             = var.vpc_id
-  cidr_block         = cidrsubnet(var.vpc_cidr_block, 8, count.index+2) # +2 is done to don't conflict with hana subnets addresses
-  availability_zone  = element(var.availability_zones, count.index)
+  count             = min(var.netweaver_count, 2) # Create 2 subnets max
+  vpc_id            = var.vpc_id
+  cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index + 2) # +2 is done to don't conflict with hana subnets addresses
+  availability_zone = element(var.availability_zones, count.index)
   tags = {
     Name      = "${terraform.workspace}-netweaver-subnet-${count.index + 1}"
     Workspace = terraform.workspace
@@ -49,12 +49,12 @@ resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
 }
 
 module "sap_cluster_policies" {
-  enabled            = var.netweaver_count > 0 ? true : false
-  source             = "../../modules/sap_cluster_policies"
-  name               = var.name
-  aws_region         = var.aws_region
-  cluster_instances  = aws_instance.netweaver.*.id
-  route_table_id     = var.route_table_id
+  enabled           = var.netweaver_count > 0 ? true : false
+  source            = "../../modules/sap_cluster_policies"
+  name              = var.name
+  aws_region        = var.aws_region
+  cluster_instances = aws_instance.netweaver.*.id
+  route_table_id    = var.route_table_id
 }
 
 resource "aws_instance" "netweaver" {
@@ -63,10 +63,10 @@ resource "aws_instance" "netweaver" {
   instance_type               = var.instancetype
   key_name                    = var.key_name
   associate_public_ip_address = true
-  subnet_id                   = element(aws_subnet.netweaver-subnet.*.id, count.index%2) # %2 is used because there are not more than 2 subnets
+  subnet_id                   = element(aws_subnet.netweaver-subnet.*.id, count.index % 2) # %2 is used because there are not more than 2 subnets
   private_ip                  = element(var.host_ips, count.index)
   security_groups             = [var.security_group_id]
-  availability_zone           = element(var.availability_zones, count.index%2)
+  availability_zone           = element(var.availability_zones, count.index % 2)
   source_dest_check           = false
   iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name[0] # We apply to all nodes to have the SAP data provider, even though some policies are only for the clustered nodes
 
@@ -80,9 +80,9 @@ resource "aws_instance" "netweaver" {
   }
 
   tags = {
-    Name         = "${terraform.workspace} - ${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
-    Workspace    = terraform.workspace
-    Cluster      = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+    Name      = "${terraform.workspace} - ${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+    Workspace = terraform.workspace
+    Cluster   = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
   }
 }
 
@@ -93,7 +93,7 @@ module "netweaver_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.netweaver.*.public_ip
-  dependencies         = concat(
+  dependencies = concat(
     [aws_route_table_association.netweaver-subnet-route-association],
     var.on_destroy_dependencies
   )

@@ -73,5 +73,5 @@ module "drbd_on_destroy" {
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = []
+  dependencies         = var.on_destroy_dependencies
 }
