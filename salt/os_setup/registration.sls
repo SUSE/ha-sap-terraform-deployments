@@ -14,7 +14,7 @@ register_system:
 {% endif %}
 
 
-{% if 12 == grains['osmajorrelease'] %}
+{% if grains['osmajorrelease'] == 12 %}
 # hardcode the 12 version number for the 2 follo
 default_sle_module_adv_systems_management_registration:
   cmd.run:
@@ -25,6 +25,7 @@ default_sle_module_adv_systems_management_registration:
         attempts: 3
         interval: 15
 
+{%- if grains['provider'] in ['gcp', 'aws', 'azure'] %}
 default_sle_module_public_cloud_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/12/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
@@ -34,6 +35,21 @@ default_sle_module_public_cloud_registration:
         attempts: 3
         interval: 15
 
+{% endif %}
+{% endif %}
+
+{% if grains['osmajorrelease'] == 15 %}
+{%- if grains['provider'] in ['gcp', 'aws', 'azure'] %}
+default_sle_module_public_cloud_registration:
+  cmd.run:
+    - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/{{ grains['osrelease'] }}/{{ arch }} {{ "-r $reg_code" if reg_code else "" }}
+    - env:
+        - reg_code: {{ reg_code }}
+    - retry:
+        attempts: 3
+        interval: 15
+
+{% endif %}
 {% endif %}
 
 # sle15 PackageHub (temporarily for GCP until ECO-1148 is released) and sle12 PackageHub (temporarily for GCP until ECO-1148 is released)
