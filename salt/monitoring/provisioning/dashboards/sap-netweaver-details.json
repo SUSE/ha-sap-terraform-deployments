@@ -59,118 +59,156 @@
       "type": "row"
     },
     {
-      "aliasColors": {
-        "GRAY": "rgb(120, 120, 120)",
-        "GREEN": "green",
-        "RED": "red",
-        "YELLOW": "yellow"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "fillGradient": 0,
+      "columns": [],
+      "fontSize": "100%",
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 1
       },
-      "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
+      "id": 28,
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
       },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "styles": [
+        {
+          "alias": "Hostname",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "hostname",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Features",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "features",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Instance nr.",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "instance_number",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Start priority",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
+          "mappingType": 1,
+          "pattern": "start_priority",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Status",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Value",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "GRAY",
+              "value": "1"
+            },
+            {
+              "text": "GREEN",
+              "value": "2"
+            },
+            {
+              "text": "YELLOW",
+              "value": "3"
+            },
+            {
+              "text": "RED",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
-          "expr": "count(sap_start_service_processes == 1)",
-          "interval": "",
-          "legendFormat": "GRAY",
+          "expr": "sum(sap_start_service_instances) by (hostname, features, start_priority, instance_number) / count(sap_start_service_instances) by (hostname, features, start_priority, instance_number)",
+          "format": "table",
+          "instant": true,
           "refId": "A"
-        },
-        {
-          "expr": "count(sap_start_service_processes == 2)",
-          "legendFormat": "GREEN",
-          "refId": "B"
-        },
-        {
-          "expr": "count(sap_start_service_processes == 3)",
-          "legendFormat": "YELLOW",
-          "refId": "C"
-        },
-        {
-          "expr": "count(sap_start_service_processes == 4)",
-          "legendFormat": "RED",
-          "refId": "D"
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Process Status",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "decimals": 0,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Instances",
+      "transform": "table",
+      "type": "table"
     },
     {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 12,
         "x": 12,
         "y": 1
@@ -316,9 +354,218 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Process List",
+      "title": "Processes",
       "transform": "table",
       "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 30,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "count(sap_start_service_instances == 1) / count(count(sap_start_service_instances) by (instance))",
+          "legendFormat": "GRAY",
+          "refId": "A"
+        },
+        {
+          "expr": "count(sap_start_service_instances == 2) / count(count(sap_start_service_instances) by (instance))",
+          "legendFormat": "GREEN",
+          "refId": "B"
+        },
+        {
+          "expr": "count(sap_start_service_instances == 3) / count(count(sap_start_service_instances) by (instance))",
+          "legendFormat": "YELLOW",
+          "refId": "C"
+        },
+        {
+          "expr": "count(sap_start_service_instances == 4) / count(count(sap_start_service_instances) by (instance))",
+          "legendFormat": "RED",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Instance Status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "GRAY": "rgb(120, 120, 120)",
+        "GREEN": "green",
+        "RED": "red",
+        "YELLOW": "yellow"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "count(sap_start_service_processes == 1)",
+          "interval": "",
+          "legendFormat": "GRAY",
+          "refId": "A"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 2)",
+          "legendFormat": "GREEN",
+          "refId": "B"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 3)",
+          "legendFormat": "YELLOW",
+          "refId": "C"
+        },
+        {
+          "expr": "count(sap_start_service_processes == 4)",
+          "legendFormat": "RED",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Process Status",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "collapsed": false,
@@ -326,7 +573,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 15
       },
       "id": 22,
       "panels": [],
@@ -344,7 +591,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 10
+        "y": 16
       },
       "id": 20,
       "legend": {
@@ -441,7 +688,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 10
+        "y": 16
       },
       "id": 24,
       "interval": "",
@@ -552,7 +799,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 10
+        "y": 16
       },
       "id": 26,
       "legend": {
@@ -639,7 +886,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 24
       },
       "id": 12,
       "panels": [],
@@ -657,7 +904,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 19
+        "y": 25
       },
       "id": 14,
       "legend": {
@@ -738,7 +985,7 @@
         "h": 15,
         "w": 8,
         "x": 8,
-        "y": 19
+        "y": 25
       },
       "id": 18,
       "options": {
@@ -791,7 +1038,7 @@
         "h": 15,
         "w": 8,
         "x": 16,
-        "y": 19
+        "y": 25
       },
       "id": 16,
       "links": [],
@@ -848,7 +1095,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 24
+        "y": 30
       },
       "id": 6,
       "legend": {
@@ -933,7 +1180,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 29
+        "y": 35
       },
       "id": 8,
       "legend": {
