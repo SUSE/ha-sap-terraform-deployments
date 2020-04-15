@@ -359,7 +359,12 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "GRAY": "rgb(128, 128, 128)",
+        "GREEN": "green",
+        "YELLOW": "yellow",
+        "RED": "red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -461,7 +466,7 @@
     },
     {
       "aliasColors": {
-        "GRAY": "rgb(120, 120, 120)",
+        "GRAY": "rgb(128, 128, 128)",
         "GREEN": "green",
         "RED": "red",
         "YELLOW": "yellow"
