@@ -10,7 +10,7 @@ min_instancetype = "t2.micro"
 hana_data_disk_type = "gp2"
 
 # Number of nodes in the cluster
-ninstances = "2"
+hana_count = "2"
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"

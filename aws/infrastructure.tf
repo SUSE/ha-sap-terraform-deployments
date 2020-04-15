@@ -1,4 +1,23 @@
-# Launch SLES-HAE of SLES4SAP cluster nodes
+# Configure the AWS Provider
+provider "aws" {
+  version = "~> 2.7"
+  region  = var.aws_region
+}
+
+provider "template" {
+  version = "~> 2.1"
+}
+
+# AWS key pair
+resource "aws_key_pair" "hana-key-pair" {
+  key_name   = "${terraform.workspace} - terraform"
+  public_key = file(var.public_key_location)
+}
+
+# AWS availability zones
+data "aws_availability_zones" "available" {
+  state = "available"
+}
 
 # Network resources: VPC, Internet Gateways, Security Groups for the EC2 instances and for the EFS file system
 resource "aws_vpc" "vpc" {
@@ -22,7 +41,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "hana-subnet" {
-  count             = var.ninstances
+  count             = var.hana_count
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
@@ -43,7 +62,7 @@ resource "aws_route_table" "route-table" {
 }
 
 resource "aws_route_table_association" "hana-subnet-route-association" {
-  count          = var.ninstances
+  count          = var.hana_count
   subnet_id      = element(aws_subnet.hana-subnet.*.id, count.index)
   route_table_id = aws_route_table.route-table.id
 }
@@ -53,13 +72,6 @@ resource "aws_route" "public" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
-
-resource "aws_route" "hana-cluster-vip" {
-  route_table_id         = aws_route_table.route-table.id
-  destination_cidr_block = "${var.hana_cluster_vip}/32"
-  instance_id            = aws_instance.clusternodes.0.id
-}
-
 
 resource "aws_security_group" "secgroup" {
   name   = "${terraform.workspace}-sg"
