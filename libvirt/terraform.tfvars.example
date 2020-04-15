@@ -1,8 +1,12 @@
 qemu_uri = "qemu:///system"
-hana_inst_media = "url-to-your-nfs-share"
-# Specify the path to already extracted HANA platform installation media, relative to hana_inst_media mounting point. 
-#This will have preference over hdbserver sar archive installation media
-hana_platform_folder = "51053381"
+
+hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
+# Or you can combine the `hana_inst_media` with `hana_platform_folder` variable.
+#hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media"
+# Specify the path to already extracted HANA platform installation media, relative to hana_inst_media mounting point.
+# This will have preference over hdbserver sar archive installation media
+#hana_platform_folder = "51053381"
+
 # Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point
 # The sar archive will be extracted to path specified at hdbserver_extract_dir (optional, by default /sapmedia/HANA)
 # Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
