@@ -44,7 +44,7 @@ terraform destroy
 
 # Specifications
 
-In order to deploy the environment, different configurations are available through the terraform variables. This variables can be configured using a `terraform.tfvars` file. An example is available in [terraform.tfvars.example](./terraform.tvars.example). To find all the available variables check the [variables.tf](./variables.tf) file.
+In order to deploy the environment, different configurations are available through the terraform variables. These variables can be configured using a `terraform.tfvars` file. An example is available in [terraform.tfvars.example](./terraform.tvars.example). To find all the available variables check the [variables.tf](./variables.tf) file.
 
 ## QA deployment
 

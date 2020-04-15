@@ -16,7 +16,7 @@ cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/
 cp pillar_examples/automatic/netweaver/*.sls salt/netweaver_node/files/pillar/
 ```
 
-Besides this option, the `terraform.tfvars` `pre_deployment` variable will execute this operations if it's enabled before the deployment.
+Besides this option, the `terraform.tfvars` `pre_deployment` variable will execute these operations if it's enabled before the deployment.
 
 **`pre_deployment` usage only works in clients using Linux**
 
