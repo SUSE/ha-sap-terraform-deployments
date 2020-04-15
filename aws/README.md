@@ -203,15 +203,15 @@ terraform apply -var aws_region=eu-central-1 -var instancetype=m4.large
 
 Will deploy 2 `m4.large` instances in Frankfurt, instead of the `m4.2xlarge` default ones. The iSCSI server is always deployed with the `t2.micro` type instance.
 
-Finally, the number of cluster nodes can be modified with the option `-var ninstances`. For example:
+Finally, the number of cluster nodes can be modified with the option `-var hana_count`. For example:
 
 ```
-terraform apply -var aws_region=eu-central-1 -var ninstances=4
+terraform apply -var aws_region=eu-central-1 -var hana_count=4
 ```
 
 Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xlarge` instances as cluster nodes.
 
-All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
+All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var hana_count=2`.
 
 
 
