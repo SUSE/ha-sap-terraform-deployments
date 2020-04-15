@@ -29,8 +29,26 @@ For fine tuning refer to variable specification.
 
 - [templates](doc/deployment-templates.md)
 
+## Design
 
-## Rationale
+This project is based in [terraform](https://www.terraform.io/) and [salt](https://www.saltstack.com/) usage.
+
+Components:
+
+- **terraform**: Terraform is used to create the required infrastructure in the specified provider. The code is divided in different terraform modules to make the code modular and more maintanable.
+- **salt**: Salt configures all the created machines by terraform based in the provided pillar files that give the option to customize the deployment.
+
+## Components
+
+The project can deploy and configure the next components (they can be enabled/disabled through configuration options):
+
+- SAP HANA environment: The HANA deployment is configurable. It might be deployed as a single HANA database, a dual configuration with system replication, and a HA cluster can be set in top of that.
+- ISCSI server: The ISCSI server provides a network based storage mostly used by sbd fencing mechanism.
+- Monitoring services server: The monitoring solution is based in [prometheus](https://prometheus.io) and [grafana](https://grafana.com/) and it provides informative and customizable dashboards to the users and administrators.
+- DRBD cluster: The DRBD cluster is used to mount a HA NFS server in top of it to mount NETWEAVER shared files.
+- SAP NETWEAVER environment: A SAP NETWEAVER environment with ASCS, ERS, PAS and AAS instances can be deployed using HANA database as storage.
+
+## Project structure
 
 This project is organized in folders containing the Terraform configuration files per Public or Private Cloud providers, each also containing documentation relevant to the use of the configuration files and to the cloud provider itself.
 
