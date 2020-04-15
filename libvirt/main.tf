@@ -166,30 +166,33 @@ module "nw_shared_disk" {
 }
 
 module "netweaver_node" {
-  source                    = "./modules/netweaver_node"
-  name                      = "netweaver"
-  base_image_id             = libvirt_volume.base_image.id
-  netweaver_count           = var.netweaver_enabled == true ? 4 : 0
-  vcpu                      = 4
-  memory                    = 8192
-  bridge                    = "br0"
-  pool                      = var.storage_pool
-  network_id                = libvirt_network.isolated_network.id
-  host_ips                  = var.nw_ips
-  virtual_host_ips          = var.nw_virtual_ips
-  shared_disk_id            = module.nw_shared_disk.id
-  netweaver_product_id      = var.netweaver_product_id
-  netweaver_inst_media      = var.netweaver_inst_media
-  netweaver_swpm_folder     = var.netweaver_swpm_folder
-  netweaver_sapexe_folder   = var.netweaver_sapexe_folder
-  netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.netweaver_nfs_share
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  provisioner               = var.provisioner
-  background                = var.background
-  monitoring_enabled        = var.monitoring_enabled
-  devel_mode                = var.devel_mode
+  source                     = "./modules/netweaver_node"
+  name                       = "netweaver"
+  base_image_id              = libvirt_volume.base_image.id
+  netweaver_count            = var.netweaver_enabled == true ? 4 : 0
+  vcpu                       = 4
+  memory                     = 8192
+  bridge                     = "br0"
+  pool                       = var.storage_pool
+  network_id                 = libvirt_network.isolated_network.id
+  host_ips                   = var.nw_ips
+  virtual_host_ips           = var.nw_virtual_ips
+  shared_disk_id             = module.nw_shared_disk.id
+  netweaver_product_id       = var.netweaver_product_id
+  netweaver_inst_media       = var.netweaver_inst_media
+  netweaver_swpm_folder      = var.netweaver_swpm_folder
+  netweaver_sapcar_exe       = var.netweaver_sapcar_exe
+  netweaver_swpm_sar         = var.netweaver_swpm_sar
+  netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
+  netweaver_sapexe_folder    = var.netweaver_sapexe_folder
+  netweaver_additional_dvds  = var.netweaver_additional_dvds
+  netweaver_nfs_share        = var.netweaver_nfs_share
+  reg_code                   = var.reg_code
+  reg_email                  = var.reg_email
+  reg_additional_modules     = var.reg_additional_modules
+  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
+  provisioner                = var.provisioner
+  background                 = var.background
+  monitoring_enabled         = var.monitoring_enabled
+  devel_mode                 = var.devel_mode
 }
