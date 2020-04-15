@@ -224,6 +224,20 @@ variable "hana_cluster_vip" {
   type        = string
 }
 
+# Monitoring related variables
+
+variable "monitoring_srv_ip" {
+  description = "Monitoring server address"
+  type        = string
+  default     = ""
+}
+
+variable "monitoring_enabled" {
+  description = "Enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
+  default     = false
+}
+
 # Iscsi server related variables
 
 variable "iscsi_server_boot_image" {
