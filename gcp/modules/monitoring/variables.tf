@@ -26,12 +26,12 @@ variable "host_ips" {
 
 variable "public_key_location" {
   description = "Path to a SSH public key used to connect to the created machines"
-  type = string
+  type        = string
 }
 
 variable "private_key_location" {
   description = "Path to a SSH private key used to connect to the created machines"
-  type = string
+  type        = string
 }
 
 variable "reg_code" {

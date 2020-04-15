@@ -81,11 +81,9 @@ module "monitoring" {
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = google_compute_subnetwork.ha_subnet.name
   sles4sap_boot_image    = var.sles4sap_boot_image
-  network_domain         = "tf.local"
   host_ips               = var.host_ips
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
-  cluster_ssh_pub        = var.cluster_ssh_pub
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
