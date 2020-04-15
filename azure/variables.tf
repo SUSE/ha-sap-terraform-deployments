@@ -1,12 +1,13 @@
 # Azure related variables
 
 variable "az_region" {
-  type    = string
-  default = "westeurope"
+  description = "Azure region where the deployment machines will be created"
+  type        = string
+  default     = "westeurope"
 }
 
 variable "admin_user" {
-  description = "administration user to deploy in Azure VMs"
+  description = "Administration user used to create the machines"
   type        = string
 }
 
@@ -21,12 +22,12 @@ variable "storage_account_key" {
 }
 
 variable "public_key_location" {
-  description = "SSH Public key location to configure access to the remote instances"
+  description = "Path to a SSH public key used to connect to the created machines"
   type        = string
 }
 
 variable "private_key_location" {
-  description = "SSH Private key location"
+  description = "Path to a SSH private key used to connect to the created machines"
   type        = string
 }
 
@@ -43,18 +44,13 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "cluster_ssh_pub" {
-  description = "path for the public key needed by the cluster"
+  description = "Path to a SSH public key used during the cluster creation. The key must be passwordless"
   type        = string
 }
 
 variable "cluster_ssh_key" {
-  description = "path for the private key needed by the cluster"
+  description = "Path to a SSH private key used during the cluster creation. The key must be passwordless"
   type        = string
 }
 
@@ -85,7 +81,7 @@ variable "reg_additional_modules" {
 }
 
 variable "additional_packages" {
-  description = "extra packages which should be installed"
+  description = "Extra packages to be installed"
   default     = []
 }
 
@@ -99,14 +95,9 @@ variable "ha_sap_deployment_repo" {
 }
 
 variable "devel_mode" {
-  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
   type        = bool
   default     = false
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {
@@ -123,33 +114,39 @@ variable "background" {
 # Hana related variables
 
 variable "hana_count" {
-  type    = string
-  default = "2"
+  description = "Number of hana nodes"
+  type        = string
+  default     = "2"
 }
 
 variable "hana_public_publisher" {
-  type    = string
-  default = "SUSE"
+  description = "Public image publisher name used to create the hana machines"
+  type        = string
+  default     = "SUSE"
 }
 
 variable "hana_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
+  description = "Public image offer name used to create the hana machines"
+  type        = string
+  default     = "SLES-SAP-BYOS"
 }
 
 variable "hana_public_sku" {
-  type    = string
-  default = "12-sp4"
+  description = "Public image sku used to create the hana machines"
+  type        = string
+  default     = "12-sp4"
 }
 
 variable "hana_public_version" {
-  type    = string
-  default = "latest"
+  description = "Public image version used to create the hana machines"
+  type        = string
+  default     = "latest"
 }
 
 variable "sles4sap_uri" {
-  type    = string
-  default = ""
+  description = "Path to a custom azure image in a storage account used to create the hana machines"
+  type        = string
+  default     = ""
 }
 
 # For reference:
@@ -161,19 +158,28 @@ variable "hana_vm_size" {
   default     = "Standard_M32ls"
 }
 
+variable "init_type" {
+  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
+  type        = string
+  default     = "all"
+}
+
 variable "hana_data_disk_type" {
-  type    = string
-  default = "Standard_LRS"
+  description = "Disk type of the disks used to store hana database content"
+  type        = string
+  default     = "Standard_LRS"
 }
 
 variable "hana_data_disk_size" {
-  type    = string
-  default = "60"
+  description = "Disk size of the disks used to store hana database content"
+  type        = string
+  default     = "60"
 }
 
 variable "hana_data_disk_caching" {
-  type    = string
-  default = "ReadWrite"
+  description = "Disk caching of the disks used to store hana database content"
+  type        = string
+  default     = "ReadWrite"
 }
 
 variable "hana_enable_accelerated_networking" {
@@ -188,12 +194,14 @@ variable "host_ips" {
 }
 
 variable "hana_inst_master" {
-  type = string
+  description = "Azure storage account path where hana installation software is available"
+  type        = string
 }
 
 variable "hana_inst_folder" {
-  type    = string
-  default = "/sapmedia/HANA"
+  description = "Folder where the hana installation software will be downloaded"
+  type        = string
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_platform_folder" {
@@ -221,47 +229,57 @@ variable "hana_extract_dir" {
 }
 
 variable "hana_disk_device" {
-  description = "device where to install HANA"
+  description = "Device where hana is installed"
   type        = string
 }
 
 variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
+  description = "Filesystem type used by the disk where hana is installed"
   type        = string
   default     = "xfs"
 }
 
 variable "hana_instance_number" {
-  description = "HANA instance number"
+  description = "Hana instance number"
   type        = string
   default     = "00"
+}
+
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
 }
 
 # Iscsi server related variables
 
 variable "iscsi_public_publisher" {
-  type    = string
-  default = "SUSE"
+  description = "Public image publisher name used to create the iscsi machines"
+  type        = string
+  default     = "SUSE"
 }
 
 variable "iscsi_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
+  description = "Public image offer name used to create the iscsi machines"
+  type        = string
+  default     = "SLES-SAP-BYOS"
 }
 
 variable "iscsi_public_sku" {
-  type    = string
-  default = "15"
+  description = "Public image sku used to create the iscsi machines"
+  type        = string
+  default     = "15"
 }
 
 variable "iscsi_public_version" {
-  type    = string
-  default = "latest"
+  description = "Public image version used to create the iscsi machines"
+  type        = string
+  default     = "latest"
 }
 
 variable "iscsi_srv_uri" {
-  type    = string
-  default = ""
+  description = "Path to a custom azure image in a storage account used to create the iscsi machines"
+  type        = string
+  default     = ""
 }
 
 variable "iscsi_vm_size" {
@@ -277,7 +295,7 @@ variable "iscsi_srv_ip" {
 }
 
 variable "iscsidev" {
-  description = "device iscsi for iscsi server"
+  description = "Disk device where iscsi partitions are created"
   type        = string
 }
 
@@ -289,7 +307,7 @@ variable "iscsi_disks" {
 # Monitoring related variables
 
 variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
 }
@@ -301,28 +319,33 @@ variable "monitoring_vm_size" {
 }
 
 variable "monitoring_public_publisher" {
-  type    = string
-  default = "SUSE"
+  description = "Public image publisher name used to create the monitoring machines"
+  type        = string
+  default     = "SUSE"
 }
 
 variable "monitoring_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
+  description = "Public image offer name used to create the monitoring machines"
+  type        = string
+  default     = "SLES-SAP-BYOS"
 }
 
 variable "monitoring_public_sku" {
-  type    = string
-  default = "15"
+  description = "Public image sku used to create the monitoring machines"
+  type        = string
+  default     = "15"
 }
 
 variable "monitoring_public_version" {
-  type    = string
-  default = "latest"
+  description = "Public image version used to create the monitoring machines"
+  type        = string
+  default     = "latest"
 }
 
 variable "monitoring_uri" {
-  type    = string
-  default = ""
+  description = "Path to a custom azure image in a storage account used to create the monitoring machines"
+  type        = string
+  default     = ""
 }
 
 variable "monitoring_srv_ip" {
@@ -334,7 +357,7 @@ variable "monitoring_srv_ip" {
 # DRBD related variables
 
 variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
+  description = "Enable the DRBD cluster for nfs"
   type        = bool
   default     = false
 }
@@ -352,61 +375,71 @@ variable "drbd_ips" {
 }
 
 variable "drbd_public_publisher" {
-  type    = string
-  default = "SUSE"
+  description = "Public image publisher name used to create the drbd machines"
+  type        = string
+  default     = "SUSE"
 }
 
 variable "drbd_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
+  description = "Public image offer name used to create the drbd machines"
+  type        = string
+  default     = "SLES-SAP-BYOS"
 }
 
 variable "drbd_public_sku" {
-  type    = string
-  default = "15"
+  description = "Public image sku used to create the drbd machines"
+  type        = string
+  default     = "15"
 }
 
 variable "drbd_public_version" {
-  type    = string
-  default = "latest"
+  description = "Public image sku used to create the drbd machines"
+  type        = string
+  default     = "latest"
 }
 
 variable "drbd_image_uri" {
-  type    = string
-  default = ""
+  description = "Path to a custom azure image in a storage account used to create the drbd machines"
+  type        = string
+  default     = ""
 }
 
 # Netweaver related variables
 
 variable "netweaver_enabled" {
-  description = "enable SAP Netweaver cluster deployment"
+  description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
 }
 
 variable "netweaver_public_publisher" {
-  type    = string
-  default = "SUSE"
+  description = "Public image publisher name used to create the netweaver machines"
+  type        = string
+  default     = "SUSE"
 }
 
 variable "netweaver_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
+  description = "Public image offer name used to create the netweaver machines"
+  type        = string
+  default     = "SLES-SAP-BYOS"
 }
 
 variable "netweaver_public_sku" {
-  type    = string
-  default = "15"
+  description = "Public image sku used to create the netweaver machines"
+  type        = string
+  default     = "15"
 }
 
 variable "netweaver_public_version" {
-  type    = string
-  default = "latest"
+  description = "Public image sku used to create the netweaver machines"
+  type        = string
+  default     = "latest"
 }
 
 variable "netweaver_image_uri" {
-  type    = string
-  default = ""
+  description = "Path to a custom azure image in a storage account used to create the netweaver machines"
+  type        = string
+  default     = ""
 }
 
 variable "netweaver_vm_size" {
@@ -416,8 +449,9 @@ variable "netweaver_vm_size" {
 }
 
 variable "netweaver_data_disk_type" {
-  type    = string
-  default = "Standard_LRS"
+  description = "Disk type of the disks used to store netweaver content"
+  type        = string
+  default     = "Standard_LRS"
 }
 
 variable "netweaver_data_disk_size" {
@@ -427,8 +461,9 @@ variable "netweaver_data_disk_size" {
 }
 
 variable "netweaver_data_disk_caching" {
-  type    = string
-  default = "ReadWrite"
+  description = "Diss caching of the disks used to store hana database content"
+  type        = string
+  default     = "ReadWrite"
 }
 
 variable "netweaver_ips" {
@@ -438,7 +473,7 @@ variable "netweaver_ips" {
 }
 
 variable "netweaver_virtual_ips" {
-  description = "virtual ip addresses to set to the netweaver cluster nodes"
+  description = "Virtual ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
   default     = []
 }
@@ -494,7 +529,7 @@ variable "netweaver_additional_dvds" {
 # Specific QA variables
 
 variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }
@@ -508,7 +543,7 @@ variable "hwcct" {
 # Pre deployment
 
 variable "pre_deployment" {
-  description = "Enable pre deployment local execution"
+  description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
   default     = false
 }

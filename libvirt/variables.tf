@@ -52,19 +52,14 @@ variable "reg_additional_modules" {
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
+  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
   type        = string
 }
 
 variable "devel_mode" {
-  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
   type        = bool
   default     = false
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {
@@ -81,7 +76,7 @@ variable "background" {
 # Hana related variables
 
 variable "base_image" {
-  description = "Image of the sap hana nodes"
+  description = "qcow2 image used to create the hana machines"
   type        = string
 }
 
@@ -91,7 +86,7 @@ variable "hana_inst_media" {
 }
 
 variable "hana_inst_folder" {
-  description = "Folder where SAP HANA installation files are stored"
+  description = "Folder where SAP HANA installation files are mounted"
   type        = string
   default     = "/sapmedia/HANA"
 }
@@ -132,16 +127,21 @@ variable "host_ips" {
   default     = ["192.168.106.15", "192.168.106.16"]
 }
 
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
+}
+
 # Iscsi server related variables
 
 variable "shared_storage_type" {
-  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+  description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string
   default     = "iscsi"
 }
 
 variable "iscsi_image" {
-  description = "iscsi server base image (only used if shared_storage_type is iscsi)"
+  description = "qcow2 image used to create the iscsi machines (only used if shared_storage_type is iscsi)"
   type        = string
   default     = ""
 }
@@ -153,26 +153,26 @@ variable "iscsi_srv_ip" {
 }
 
 variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
+  description = "Number of partitions attach to iscsi server. 0 means `all`."
   default     = 0
 }
 
 # Monitoring related variables
 
 variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
 }
 
 variable "monitoring_image" {
-  description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
+  description = "qcow2 image used to create the monitoring machines (if not set, the same image as the hana nodes will be used)"
   type        = string
   default     = ""
 }
 
 variable "monitoring_srv_ip" {
-  description = "monitoring server address"
+  description = "Monitoring server address"
   type        = string
   default     = "192.168.106.22"
 }
@@ -180,7 +180,7 @@ variable "monitoring_srv_ip" {
 # Netweaver related variables
 
 variable "netweaver_enabled" {
-  description = "enable SAP Netweaver deployment"
+  description = "Enable SAP Netweaver deployment"
   type        = bool
   default     = false
 }
@@ -236,13 +236,13 @@ variable "netweaver_additional_dvds" {
 # DRBD related variables
 
 variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
+  description = "Enable the drbd cluster for nfs"
   type        = bool
   default     = false
 }
 
 variable "drbd_count" {
-  description = "number of DRBD hosts for cluster"
+  description = "Number of drbd machines to create the cluster"
   default     = 2
 }
 
@@ -253,7 +253,7 @@ variable "drbd_ips" {
 }
 
 variable "drbd_shared_storage_type" {
-  description = "used shared storage type for fencing (sbd) for DRBD cluster. Available options: iscsi, shared-disk."
+  description = "Ssed shared storage type for fencing (sbd) for drbd cluster. Available options: iscsi, shared-disk."
   type        = string
   default     = "iscsi"
 }
@@ -261,7 +261,7 @@ variable "drbd_shared_storage_type" {
 # Specific QA variables
 
 variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }
@@ -275,7 +275,7 @@ variable "hwcct" {
 # Pre deployment
 
 variable "pre_deployment" {
-  description = "Enable pre deployment local execution"
+  description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
   default     = false
 }
