@@ -1,3 +1,14 @@
+# monitoring deployment in GCP to host Prometheus/Grafana server
+# to monitor the various components of the HA SAP cluster
+
+resource "google_compute_disk" "monitoring_data" {
+  count = var.monitoring_enabled == true ? 1 : 0
+  name  = "${terraform.workspace}-${var.name}-monitoring-data"
+  type  = "pd-standard"
+  size  = "20"
+  zone  = element(var.compute_zones, 0)
+}
+
 resource "google_compute_instance" "monitoring" {
   count        = var.monitoring_enabled == true ? 1 : 0
   name         = "${terraform.workspace}-monitoring"

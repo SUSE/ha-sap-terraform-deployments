@@ -30,11 +30,3 @@ resource "google_compute_disk" "hana-software" {
   size  = "20"
   zone  = element(data.google_compute_zones.available.names, count.index)
 }
-
-resource "google_compute_disk" "monitoring_data" {
-  count = var.monitoring_enabled == true ? 1 : 0
-  name  = "${terraform.workspace}-${var.name}-monitoring-data"
-  type  = "pd-standard"
-  size  = "20"
-  zone  = element(data.google_compute_zones.available.names, 0)
-}

@@ -77,6 +77,7 @@ module "netweaver_node" {
 
 module "monitoring" {
   source                 = "./modules/monitoring"
+  name                   = var.name
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = google_compute_subnetwork.ha_subnet.name
   sles4sap_boot_image    = var.sles4sap_boot_image
