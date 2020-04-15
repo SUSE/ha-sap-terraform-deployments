@@ -155,7 +155,9 @@ Supported Options (if no options are provided (excluding -l) all the steps will 
 EOF
 }
 
+argument_number=0
 while getopts ":hsopdql:" opt; do
+    argument_number=$((argument_number + 1))
     case $opt in
         h)
             print_help
@@ -187,13 +189,12 @@ while getopts ":hsopdql:" opt; do
     esac
 done
 
-argument_number=$OPTIND
 if [[ -n $log_to_file ]]; then
-    argument_number=$((argument_number - 2))
+    argument_number=$((argument_number - 1))
     exec 1>> $log_to_file
 fi
 
-if [ $argument_number -eq 1 ]; then
+if [ $argument_number -eq 0 ]; then
     bootstrap_salt
     os_setup
     predeploy
