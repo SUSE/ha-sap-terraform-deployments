@@ -23,7 +23,7 @@ data "azurerm_virtual_network" "mynet" {
 data "azurerm_subnet" "mysubnet" {
   count                = var.subnet_name != "" && var.subnet_address_range == "" ? 1 : 0
   name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
+  virtual_network_name = local.vnet_name
   resource_group_name  = local.resource_group_name
 }
 
@@ -31,7 +31,7 @@ locals {
   resource_group_name  = var.resource_group_name == "" ? azurerm_resource_group.myrg.0.name : var.resource_group_name
   vnet_name            = var.vnet_name == "" ? azurerm_virtual_network.mynet.0.name : var.vnet_name
   subnet_id            = var.subnet_name == "" ? azurerm_subnet.mysubnet.0.id : format(
-    "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.id, var.resource_group_name, var.vnet_name, var.subnet_name)
+    "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, var.vnet_name, var.subnet_name)
   # If vnet_name is not defined, a new vnet is created
   # If vnet_name is defined, and the vnet_address_range is empty, it will try to get the ip range from the real vnet using the data source. If vnet_address_range is defined it will use it
   vnet_address_range   = var.vnet_name == "" ? var.vnet_address_range : (var.vnet_address_range == "" ? data.azurerm_virtual_network.mynet.0.address_space.0 : var.vnet_address_range)
@@ -61,7 +61,7 @@ resource "azurerm_storage_account" "mytfstorageacc" {
 resource "azurerm_virtual_network" "mynet" {
   count               = var.vnet_name == "" ? 1 : 0
   name                = "vnet-${lower(terraform.workspace)}"
-  address_space       = [var.vnet_address_range]
+  address_space       = [local.vnet_address_range]
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
