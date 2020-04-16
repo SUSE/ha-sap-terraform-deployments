@@ -7,15 +7,15 @@
 # iSCSI server
 
 output "iscsisrv_ip" {
-  value = google_compute_instance.iscsisrv.network_interface.*.network_ip
+  value = module.iscsi_server.iscsisrv_ip
 }
 
 output "iscsisrv_public_ip" {
-  value = google_compute_instance.iscsisrv.network_interface.*.access_config.0.nat_ip
+  value = module.iscsi_server.iscsisrv_public_ip
 }
 
 output "iscsisrv_name" {
-  value = google_compute_instance.iscsisrv.*.name
+  value = module.iscsi_server.iscsisrv_name
 }
 
 output "iscsisrv_public_name" {

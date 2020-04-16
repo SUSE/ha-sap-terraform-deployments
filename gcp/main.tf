@@ -17,7 +17,7 @@ module "drbd_node" {
   gcp_credentials_file   = var.gcp_credentials_file
   network_domain         = "tf.local"
   host_ips               = var.drbd_ips
-  iscsi_srv_ip           = google_compute_instance.iscsisrv.network_interface.0.network_ip
+  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
@@ -46,7 +46,7 @@ module "netweaver_node" {
   gcp_credentials_file       = var.gcp_credentials_file
   network_domain             = "tf.local"
   host_ips                   = var.netweaver_ips
-  iscsi_srv_ip               = google_compute_instance.iscsisrv.network_interface.0.network_ip
+  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
   cluster_ssh_pub            = var.cluster_ssh_pub
@@ -93,6 +93,31 @@ module "monitoring" {
   monitoring_enabled     = var.monitoring_enabled
   provisioner            = var.provisioner
   background             = var.background
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
+}
+
+module "iscsi_server" {
+  source                    = "./modules/iscsi_server"
+  name                      = var.name
+  machine_type_iscsi_server = var.machine_type_iscsi_server
+  compute_zones             = data.google_compute_zones.available.names
+  network_subnet_name       = google_compute_subnetwork.ha_subnet.name
+  iscsi_server_boot_image   = var.iscsi_server_boot_image
+  iscsi_ip                  = var.iscsi_ip
+  iscsidev                  = var.iscsidev
+  iscsi_disks               = var.iscsi_disks
+  public_key_location       = var.public_key_location
+  private_key_location      = var.private_key_location
+  reg_code                  = var.reg_code
+  reg_email                 = var.reg_email
+  reg_additional_modules    = var.reg_additional_modules
+  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
+  additional_packages       = var.additional_packages
+  qa_mode                   = var.qa_mode
+  provisioner               = var.provisioner
+  background                = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
