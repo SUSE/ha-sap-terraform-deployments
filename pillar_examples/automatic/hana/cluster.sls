@@ -52,6 +52,7 @@ cluster:
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
+        {% endif %}
         {% if grains['provider'] in ['azure', 'aws', 'gcp'] %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
         {% else %}
