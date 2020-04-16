@@ -1,3 +1,22 @@
+# Use an already existing resource group
+#resource_group_name = "my-resource-group"
+
+# Use an already existing virtual network
+#vnet_name = "my-vnet"
+
+# Use an already existing subnet in this virtual network
+#subnet_name = "my-subnet"
+
+# vnet address range in CIDR notation
+# Only used if the vnet is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vnet address range set the value to an empty string
+# To define custom ranges
+#vnet_address_range = "10.74.0.0/16"
+#subnet_address_range = "10.74.1.0/24"
+# Or to use already existing address ranges
+#vnet_address_range = ""
+#subnet_address_range = ""
+
 # VM size to use for the cluster nodes
 hana_vm_size = "Standard_M32ls"
 
@@ -96,8 +115,8 @@ hana_disk_device = "/dev/sdc"
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/sdc"
 
-# IP address of the iSCSI server
-iscsi_srv_ip = "10.74.1.14"
+# IP address of the iSCSI server. If it's not set the address will be auto generated from the provided vnet address range
+#iscsi_srv_ip = "10.74.1.14"
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
@@ -107,13 +126,15 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 # Used for cluster communication for example
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
-# Each host IP address (sequential order).
+# Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 # example : host_ips = ["10.0.1.0", "10.0.1.1"]
-host_ips = ["10.74.1.11", "10.74.1.12"]
+#host_ips = ["10.74.1.11", "10.74.1.12"]
+#hana_cluster_vip = "10.74.1.13"
 
-# Each drbd cluster host IP address (sequential order).
+# Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 # example : drbd_host_ips = ["10.0.1.10", "10.0.1.11"]
-drbd_ips = ["10.74.1.21", "10.74.1.22"]
+#drbd_ips = ["10.74.1.21", "10.74.1.22"]
+#drbd_cluster_vip = "10.74.1.23"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -150,8 +171,8 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
-# IP address of the machine where Prometheus and Grafana are running
-monitoring_srv_ip = "10.74.1.13"
+# IP address of the machine where Prometheus and Grafana are running. If it's not set the address will be auto generated from the provided vnet address range
+#monitoring_srv_ip = "10.74.1.13"
 
 # Enable drbd cluster
 #drbd_enabled = true
@@ -159,8 +180,10 @@ monitoring_srv_ip = "10.74.1.13"
 # Netweaver variables
 
 #netweaver_enabled = true
+# If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+
 #netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 #netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
 #netweaver_storage_account = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/nw/installation/master"
