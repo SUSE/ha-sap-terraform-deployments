@@ -16,7 +16,7 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: azure
 role: hana_node
 devel_mode: ${var.devel_mode}
