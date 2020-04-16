@@ -27,7 +27,7 @@ resource "azurerm_lb" "drbd-load-balancer" {
     name                          = "lbfe-drbd"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.201"
+    private_ip_address            = var.drbd_cluster_vip
   }
 
   tags = {

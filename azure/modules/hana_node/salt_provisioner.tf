@@ -38,7 +38,7 @@ hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-azure_lb_ip: ${azurerm_lb.hana-load-balancer.private_ip_address}
+hana_cluster_vip: ${azurerm_lb.hana-load-balancer.private_ip_address}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}

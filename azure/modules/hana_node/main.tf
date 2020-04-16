@@ -23,7 +23,7 @@ resource "azurerm_lb" "hana-load-balancer" {
     name                          = "lbfe-hana"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.200"
+    private_ip_address            = var.hana_cluster_vip
   }
 
   tags = {
