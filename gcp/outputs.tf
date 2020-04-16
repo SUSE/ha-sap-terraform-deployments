@@ -25,15 +25,15 @@ output "iscsisrv_public_name" {
 # Cluster nodes
 
 output "cluster_nodes_ip" {
-  value = google_compute_instance.clusternodes.*.network_interface.0.network_ip
+  value = module.hana_node.cluster_nodes_ip
 }
 
 output "cluster_nodes_public_ip" {
-  value = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  value = module.hana_node.cluster_nodes_public_ip
 }
 
 output "cluster_nodes_name" {
-  value = google_compute_instance.clusternodes.*.name
+  value = module.hana_node.cluster_nodes_name
 }
 
 output "cluster_nodes_public_name" {

@@ -121,7 +121,7 @@ variable "background" {
 
 # Hana related variables
 
-variable "ninstances" {
+variable "hana_count" {
   type    = string
   default = "2"
 }

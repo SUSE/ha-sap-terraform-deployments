@@ -1,16 +1,23 @@
+# Configure the GCP Provider
+provider "google" {
+  credentials = file(var.gcp_credentials_file)
+  project     = var.project
+  region      = var.region
+}
+
+data "google_compute_zones" "available" {
+  region = var.region
+  status = "UP"
+}
+
+terraform {
+  required_version = ">= 0.12"
+}
+
+# Network resources: Network, Subnet
 resource "google_compute_network" "ha_network" {
   name                    = "${terraform.workspace}-${var.name}-network"
   auto_create_subnetworks = "false"
-}
-
-# temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
-resource "google_compute_route" "hana-route" {
-  name                   = "hana-route"
-  dest_range             = "${var.hana_cluster_vip}/32"
-  network                = google_compute_network.ha_network.name
-  next_hop_instance      = google_compute_instance.clusternodes.0.name
-  next_hop_instance_zone = element(data.google_compute_zones.available.names, 0)
-  priority               = 1000
 }
 
 resource "google_compute_subnetwork" "ha_subnet" {
@@ -20,6 +27,7 @@ resource "google_compute_subnetwork" "ha_subnet" {
   ip_cidr_range = var.ip_cidr_range
 }
 
+# Network firewall rules
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
   name          = "${terraform.workspace}-${var.name}-fw-internal"
   network       = google_compute_network.ha_network.name

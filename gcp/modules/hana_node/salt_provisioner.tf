@@ -1,9 +1,5 @@
-# This file contains the salt provisioning logic.
-# It will be executed if 'provisioner' is set to salt (default option) and the
-# hana node resources are created (check triggers option).
-
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? var.ninstances : 0
+  count = var.provisioner == "salt" ? var.hana_count : 0
 
   triggers = {
     cluster_instance_ids = join(",", google_compute_instance.clusternodes.*.id)
@@ -32,7 +28,7 @@ devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sde
@@ -48,7 +44,7 @@ hana_fstype: ${var.hana_fstype}
 hana_cluster_vip: ${var.hana_cluster_vip}
 gcp_credentials_file: ${var.gcp_credentials_file}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
-iscsi_srv_ip: ${var.iscsi_ip}
+iscsi_srv_ip: ${var.iscsi_srv_ip}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
@@ -73,8 +69,8 @@ destination = "/tmp/grains"
 }
 
 module "hana_provision" {
-  source               = "../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.ninstances : 0
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.hana_count : 0
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = "root"
   private_key_location = var.private_key_location
