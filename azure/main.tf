@@ -13,8 +13,8 @@ module "drbd_node" {
   drbd_public_offer      = var.drbd_public_offer
   drbd_public_sku        = var.drbd_public_sku
   drbd_public_version    = var.drbd_public_version
-  resource_group_name    = azurerm_resource_group.myrg.name
-  network_subnet_id      = azurerm_subnet.mysubnet.id
+  resource_group_name    = local.resource_group_name
+  network_subnet_id      = local.subnet_id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   public_key_location    = var.public_key_location
@@ -47,8 +47,8 @@ module "netweaver_node" {
   netweaver_public_offer        = var.netweaver_public_offer
   netweaver_public_sku          = var.netweaver_public_sku
   netweaver_public_version      = var.netweaver_public_version
-  resource_group_name           = azurerm_resource_group.myrg.name
-  network_subnet_id             = azurerm_subnet.mysubnet.id
+  resource_group_name           = local.resource_group_name
+  network_subnet_id             = local.subnet_id
   sec_group_id                  = azurerm_network_security_group.mysecgroup.id
   storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   public_key_location           = var.public_key_location
@@ -70,7 +70,7 @@ module "netweaver_node" {
   enable_accelerated_networking = var.netweaver_enable_accelerated_networking
   host_ips                      = var.netweaver_ips
   virtual_host_ips              = var.netweaver_virtual_ips
-  iscsi_srv_ip                  = var.iscsi_srv_ip
+  iscsi_srv_ip                  = module.var.iscsi_srv_ip
   reg_code                      = var.reg_code
   reg_email                     = var.reg_email
   reg_additional_modules        = var.reg_additional_modules
@@ -89,8 +89,8 @@ module "hana_node" {
   vm_size                       = var.hana_vm_size
   host_ips                      = var.host_ips
   scenario_type                 = var.scenario_type
-  resource_group_name           = azurerm_resource_group.myrg.name
-  network_subnet_id             = azurerm_subnet.mysubnet.id
+  resource_group_name           = local.resource_group_name
+  network_subnet_id             = local.subnet_id
   sec_group_id                  = azurerm_network_security_group.mysecgroup.id
   storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
@@ -136,8 +136,8 @@ module "monitoring" {
   source                      = "./modules/monitoring"
   az_region                   = var.az_region
   vm_size                     = var.monitoring_vm_size
-  resource_group_name         = azurerm_resource_group.myrg.name
-  network_subnet_id           = azurerm_subnet.mysubnet.id
+  resource_group_name         = local.resource_group_name
+  network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   monitoring_uri              = var.monitoring_uri
@@ -168,8 +168,8 @@ module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   az_region              = var.az_region
   vm_size                = var.iscsi_vm_size
-  resource_group_name    = azurerm_resource_group.myrg.name
-  network_subnet_id      = azurerm_subnet.mysubnet.id
+  resource_group_name    = local.resource_group_name
+  network_subnet_id      = local.subnet_id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   iscsi_srv_uri          = var.iscsi_srv_uri

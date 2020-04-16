@@ -5,6 +5,36 @@ variable "az_region" {
   default = "westeurope"
 }
 
+variable "resource_group_name" {
+  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "vnet_name" {
+  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "vnet_address_range" {
+  description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = "10.74.0.0/16"
+}
+
+variable "subnet_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+}
+
 variable "admin_user" {
   description = "administration user to deploy in Azure VMs"
   type        = string
@@ -102,11 +132,6 @@ variable "devel_mode" {
   description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
   type        = bool
   default     = false
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {
@@ -235,6 +260,11 @@ variable "hana_instance_number" {
   description = "HANA instance number"
   type        = string
   default     = "00"
+}
+
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
 }
 
 # Iscsi server related variables
