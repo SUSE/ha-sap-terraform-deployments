@@ -8,52 +8,69 @@
 #
 
 rsc_defaults \
-    resource-stickiness="1000" \
-    migration-threshold="5000"
+  resource-stickiness="1000" \
+  migration-threshold="5000"
 
 op_defaults \
-    timeout="600"
+  timeout="600"
 
 primitive nfsserver systemd:nfs-server \
-        op monitor interval=30s
+  op monitor interval=30s
 
 clone cl-nfsserver nfsserver \
-        meta interleave=true
+  meta interleave=true
 
 # Need to edit drbd pillar file.
-{% for res in drbd.resource %}
+{%- for res in drbd.resource %}
 primitive drbd-{{ res.name }} ocf:linbit:drbd \
-          params drbd_resource={{ res.name }} \
-          op monitor interval=15 role=Master \
-          op monitor interval=30 role=Slave
+  params drbd_resource={{ res.name }} \
+  op monitor interval=15 role=Master \
+  op monitor interval=30 role=Slave
 
 ms ms_{{ res.name }} drbd-{{ res.name }} \
-   meta master-max=1 master-node-max=1 \
-   meta clone-max={{ res.nodes | length }} clone-node-max=1 \
-   meta notify=true target-role=Started
+  meta master-max=1 master-node-max=1 \
+  meta clone-max={{ res.nodes | length }} clone-node-max=1 \
+  meta notify=true target-role=Started
 
 primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
-   params device={{ res.device }} directory={{ res.mount_point }} fstype={{ res.file_system }} \
-   options=noatime,nodiratime \
-   op monitor interval="20" timeout="40s"
+  params device={{ res.device }} directory={{ res.mount_point }} fstype={{ res.file_system }} \
+  options=noatime,nodiratime \
+  op monitor interval="20" timeout="40s"
 
-{% set nic = "nic="~pillar.cluster.interface|default('eth0')|json if cloud_provider == "google-cloud-platform" else "nic="~pillar.cluster.interface|json if pillar.cluster.interface is defined else "" %}
-{%- set cidr_netmask = "cidr_netmask=32" if cloud_provider == "google-cloud-platform" else "" %}
+{%- if cloud_provider not in ["amazon-web-services", "google-cloud-platform"] %}
+{%- set cidr_netmask = "cidr_netmask="~data.virtual_ip_mask|default("32") %}
+{%- set nic = "nic="~pillar.cluster.interface|json if pillar.cluster.interface is defined else "" %}
 
 primitive vip_{{ res.name }}_nfs IPaddr2 \
-        params ip={{ res.virtual_ip }} {{ cidr_netmask }} {{ nic }} \
-        op monitor interval=10 timeout=20
+  params ip={{ res.virtual_ip }} {{ cidr_netmask }} {{ nic }} \
+  op monitor interval=10 timeout=20
+
+{%- if cloud_provider == "microsoft-azure" %}
 
 {% if cloud_provider == "microsoft-azure" %}
 primitive rsc_socat_{{ res.name }}_nfs azure-lb \
   params port={{ data.probe }} \
   op monitor timeout=20s interval=10 depth=0
+
+{%- endif %}
+
+{%- elif cloud_provider == "google-cloud-platform" %}
+primitive rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} stonith:fence_gce \
+  params plug={{ grains['gcp_instance_name'] }} pcmk_host_map="{{ grains['host'] }}:{{ grains['gcp_instance_name'] }}" \
+  meta target-role=Started
+
+primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
+  params ip={{ data.virtual_ip }} vpc_network={{ data.vpc_network_name }} route_name={{ data.route_table }} \
+  op start interval=0 timeout=180 \
+  op stop interval=0 timeout=180 \
+  op monitor interval=60 timeout=60
+
 {% endif %}
 
 primitive exportfs_work_{{ res.name }} exportfs \
-        params directory={{ res.mount_point }} fsid={{ nfsid + loop.index0 }} \
-        options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
-        op monitor interval=30s
+  params directory={{ res.mount_point }} fsid={{ nfsid + loop.index0 }} \
+  options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
+  op monitor interval=30s
 
 group g-nfs_{{ res.name }} fs_{{ res.name }} vip_{{ res.name }}_nfs exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} rsc_socat_{{ res.name }}_nfs {% endif %}
 
@@ -63,4 +80,4 @@ order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
 colocation c_fs_{{ res.name }}-with_drbd_{{ res.name }} \
   inf: g-nfs_{{ res.name }} ms_{{ res.name }}:Master\
 
-{% endfor %}
+{%- endfor %}
