@@ -59,6 +59,8 @@ netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additi
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 nw_inst_disk_device : /dev/sdb
 hana_cluster_vip: ${var.hana_cluster_vip}
+vpc_network_name: ${var.network_name}
+route_table: ${google_compute_route.nw-route[0].name}
 
 EOF
     destination = "/tmp/grains"
