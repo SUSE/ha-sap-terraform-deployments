@@ -51,6 +51,7 @@ netweaver_nfs_share: ${var.netweaver_nfs_share}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 storage_account_path: ${var.storage_account_path}
+hana_ip: ${var.hana_ip}
   EOF
     destination = "/tmp/grains"
   }

@@ -148,3 +148,8 @@ variable "monitoring_enabled" {
   type        = bool
   default     = false
 }
+
+variable "drbd_cluster_vip" {
+  description = "Virtual ip for the drbd cluster"
+  type        = string
+}
