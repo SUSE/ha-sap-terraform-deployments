@@ -27,6 +27,13 @@ resource "libvirt_network" "isolated_network" {
   }
   autostart = true
 }
+
+// Pre deployment local excution
+module "local_execution" {
+  source  = "../generic_modules/local_exec"
+  enabled = var.pre_deployment
+}
+
 // ---------------------------------------
 
 module "iscsi_server" {
@@ -71,6 +78,10 @@ module "hana_node" {
   host_ips               = var.host_ips
   hana_inst_folder       = var.hana_inst_folder
   hana_inst_media        = var.hana_inst_media
+  hana_platform_folder   = var.hana_platform_folder
+  hana_sapcar_exe        = var.hana_sapcar_exe
+  hdbserver_sar          = var.hdbserver_sar
+  hana_extract_dir       = var.hana_extract_dir
   hana_disk_size         = "68719476736"
   hana_fstype            = var.hana_fstype
   shared_storage_type    = var.shared_storage_type
@@ -143,7 +154,7 @@ module "monitoring" {
   background             = var.background
   monitored_hosts        = var.host_ips
   drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
-  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_ips : []
+  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_virtual_ips : []
 }
 
 module "nw_shared_disk" {
@@ -155,25 +166,33 @@ module "nw_shared_disk" {
 }
 
 module "netweaver_node" {
-  source                 = "./modules/netweaver_node"
-  name                   = "netweaver"
-  base_image_id          = libvirt_volume.base_image.id
-  netweaver_count        = var.netweaver_enabled == true ? 4 : 0
-  vcpu                   = 4
-  memory                 = 8192
-  bridge                 = "br0"
-  pool                   = var.storage_pool
-  network_id             = libvirt_network.isolated_network.id
-  host_ips               = var.nw_ips
-  virtual_host_ips       = var.nw_virtual_ips
-  shared_disk_id         = module.nw_shared_disk.id
-  netweaver_inst_media   = var.netweaver_inst_media
-  netweaver_nfs_share    = var.netweaver_nfs_share
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
+  source                     = "./modules/netweaver_node"
+  name                       = "netweaver"
+  base_image_id              = libvirt_volume.base_image.id
+  netweaver_count            = var.netweaver_enabled == true ? 4 : 0
+  vcpu                       = 4
+  memory                     = 8192
+  bridge                     = "br0"
+  pool                       = var.storage_pool
+  network_id                 = libvirt_network.isolated_network.id
+  host_ips                   = var.nw_ips
+  virtual_host_ips           = var.nw_virtual_ips
+  shared_disk_id             = module.nw_shared_disk.id
+  netweaver_product_id       = var.netweaver_product_id
+  netweaver_inst_media       = var.netweaver_inst_media
+  netweaver_swpm_folder      = var.netweaver_swpm_folder
+  netweaver_sapcar_exe       = var.netweaver_sapcar_exe
+  netweaver_swpm_sar         = var.netweaver_swpm_sar
+  netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
+  netweaver_sapexe_folder    = var.netweaver_sapexe_folder
+  netweaver_additional_dvds  = var.netweaver_additional_dvds
+  netweaver_nfs_share        = var.netweaver_nfs_share
+  reg_code                   = var.reg_code
+  reg_email                  = var.reg_email
+  reg_additional_modules     = var.reg_additional_modules
+  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
+  provisioner                = var.provisioner
+  background                 = var.background
+  monitoring_enabled         = var.monitoring_enabled
+  devel_mode                 = var.devel_mode
 }

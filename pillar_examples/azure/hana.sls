@@ -6,7 +6,7 @@ hana:
       instance: "00"
       password: 'SET YOUR PASSWORD'
       install:
-        software_path: '/root/hana_inst_media'
+        software_path: '/sapmedia/HANA'
         root_user: 'root'
         root_password: ''
         system_user_password: 'SET YOUR PASSWORD'
@@ -29,7 +29,7 @@ hana:
       instance: "00"
       password: 'SET YOUR PASSWORD'
       install:
-        software_path: '/root/hana_inst_media'
+        software_path: '/sapmedia/HANA'
         root_user: 'root'
         root_password: ''
         system_user_password: 'SET YOUR PASSWORD'

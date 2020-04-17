@@ -38,6 +38,5 @@ iscsi_discovery:
 
 iscsid:
   service.running:
-    - enable: True
     - watch:
       - cmd: iscsi_discovery

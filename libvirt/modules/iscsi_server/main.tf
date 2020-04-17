@@ -80,3 +80,13 @@ output "output_data" {
     addresses         = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
   }
 }
+
+module "iscsi_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.iscsi_count
+  instance_ids = libvirt_domain.iscsisrv.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.iscsisrv]
+}

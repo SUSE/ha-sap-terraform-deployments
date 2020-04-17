@@ -60,18 +60,54 @@ This file is also used by the `aws` command line tool, so it can be created with
 
 In order to execute the deployment properly using terraform, the used user must have some policies enabled. Mostly, it needs access to manage EC2 instances, S3 buckets, IAM (to create roles and policies) and EFS storage.
 
-Here how it should look like:
+In order to setup the IAM proper rights, 2 options are available:
+- Set the `IAMFullAccess` policy to the user running the project (or to the group which the user belongs to). This is not recommended as this IAM policy give full IAM access to the user.
+- A better and more secure option, is to create a new policy to give access to create roles with rights to only manage EC2 instances. This will make the project executable, but won't set any other IAM permission to the users. This option is the recommended one. To use this approach, create the next policy giving a meaningful name (`TerraformIAMPolicies` for example) and attach it to the users that will run the project (or the group the users belong to):
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateServiceLinkedRole",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:TagRole",
+                "iam:GetRole",
+                "iam:DeleteRole",
+                "iam:GetRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:ListInstanceProfilesForRole",
+                "iam:CreateInstanceProfile",
+                "iam:GetInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:AddRoleToInstanceProfile"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+The policy must be attached only to the `IAM` service if it's created manually and not with the json inline option.
+
+Here how it should look like your user or group:
 
 
 ![AWS policies](./images/policies.png?raw=true)
+
+**Warning: If you use the 2nd option, the AWS web panel won't show that the created instances have any role attached, but they have. The limits in the IAM access makes this not visible, that's all**
 
 
 5) **Deploy**:
 
 ```
 terraform init
-terraform workspace new my-execution # optional
-terraform workspace select my-execution # optional
+terraform workspace new myexecution # optional
+terraform workspace select myexecution # optional
 terraform plan
 terraform apply
 ```
@@ -98,84 +134,17 @@ The infrastructure deployed includes:
 
 By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 
-## Provisioning by Salt
-By default, the cluster and HANA installation is done using Salt Formulas in foreground.
-To customize this provisioning, you have to create the pillar files (cluster.sls and hana.sls) according to the examples in the [pillar_examples](../pillar_examples) folder (more information in the dedicated [README](../pillar_examples/README.md))
+# Specifications
 
-# Specification:
+In order to deploy the environment, different configurations are available through the terraform variables. These variables can be configured using a `terraform.tfvars` file. An example is available in [terraform.tfvars.example](./terraform.tvars.example). To find all the available variables check the [variables.tf](./variables.tf) file.
 
-These are the relevant files and what each provides:
+## QA deployment
 
-- [provider.tf](provider.tf): definition of the providers being used in the terraform configuration. Mainly `aws` and `template`.
+The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. Find more information [here](../doc/qa.md).
 
-- [variables.tf](variables.tf): definition of variables used in the configuration. These include definition of the AMIs in use, number and type of instances, AWS region, etc.
+## Pillar files configuration
 
-- [keys.tf](keys.tf): definition of key to include in the instances to allow connection via SSH.
-
-- [network.tf](network.tf): definition of network resources (VPC, route table, Internet Gateway and security group) used by the infrastructure.
-
-- [instances.tf](instances.tf): definition of the EC2 instances to create on deployment.
-
-- [salt_provisioner.tf](salt_provisioner.tf): salt provisioning resources.
-
-- [salt_provisioner_script.tpl](../salt/salt_provisioner_script.tpl): template code for the initialization script for the servers. This will add the salt-minion if needed and execute the SALT deployment.
-
-- [outputs.tf](outputs.tf): definition of outputs of the terraform configuration.
-
-- [remote-state.sample](remote-state.sample): sample file for the definition of the backend to [store the Terraform state file remotely](create_remote_state).
-
-- [terraform.tfvars.example](terraform.tfvars.example): file containing initialization values for variables used throughout the configuration. **Rename/Duplicate this file to terraform.tfvars and edit the content with your values before use**.
-
-#### Variables
-
-In [terraform.tfvars](terraform.tfvars.example) there are a number of variables that control what is deployed. Some of these variables are:
-
-* **instancetype**: instance type to use for the hana cluster nodes; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `r3.8xlarge`.
-* **netweaver_instancetype**: instance type of netweaver node; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `r3.8xlarge`.
-* **min_instancetype**: instance type of minimun capacity; basically the "size" (number of vCPUS and memory) of the instance. Defaults to `t2.micro`.
-* **iscsi_instancetype**: instance type of iscsi server; an empty string will follow the **min_instancetype**. Defaults to `""`.
-* **monitor_instancetype**: instance type of monitor server; an empty string will follow the **min_instancetype**. Defaults to `""`.
-* **hana_data_disk_type**: disk type to use for HANA (gp2 by default).
-* **ninstances**: number of cluster nodes to deploy. Defaults to 2.
-* **aws_region**: AWS region where to deploy the configuration.
-* **public_key_location**: local path to the public SSH key associated with the private key file. This public key is configured in the file $HOME/.ssh/authorized_keys of the administration user in the remote virtual machines.
-* **private_key_location**: local path to the private SSH key associated to the public key from the previous line.
-* **aws_account_id**: AWS account id (12 digit id available to the right of the user in the AWS portal).
-* **aws_access_key_id**: AWS access key id.
-* **aws_secret_access_key**: AWS secret access key.
-* **aws_credentials**: path to the `aws-cli` credentials file. This is required to configure `aws-cli` in the instances so that they can access the S3 bucket containing the HANA installation master.
-* **name**: hostname for the hana node without the domain part.
-* **init_type**: initialization script parameter that controls what is deployed in the cluster nodes. Valid values are `all` (installs HANA and configures cluster), `skip-hana` (does not install HANA, but configures cluster) and `skip-cluster` (installs HANA, but does not configure cluster). Defaults to `all`.
-* **hana_inst_master**: path to the `S3 Bucket` containing the HANA installation master.
-* **hana_inst_folder**: path where HANA installation master will be downloaded from `S3 Bucket`.
-* **hana_disk_device**: device used by node where HANA will be installed.
-* **hana_fstype**: filesystem type used for HANA installation (xfs by default).
-* **iscsidev**: device used by the iscsi server.
-* **iscsi_disks**: attached partitions number for iscsi server.
-* **cluster_ssh_pub**: SSH public key name (must match with the key copied in sshkeys folder)
-* **cluster_ssh_key**: SSH private key name (must match with the key copied in sshkeys folder)
-* **ha_sap_deployment_repo**: Repository with HA and Salt formula packages. The latest RPM packages can be found at [https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}](https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/)
-* **scenario_type**: SAP HANA scenario type. Available options: `performance-optimized` and `cost-optimized`.
-* **provisioner**: select the desired provisioner to configure the nodes. Salt is used by default: [salt](../salt). Let it empty to disable the provisioning part.
-* **background**: run the provisioning process in background finishing terraform execution.
-* **reg_code**: registration code for the installed base product (Ex.: SLES for SAP). This parameter is optional. If informed, the system will be registered against the SUSE Customer Center.
-* **reg_email**: email to be associated with the system registration. This parameter is optional.
-* **reg_additional_modules**: additional optional modules and extensions to be registered (Ex.: Containers Module, HA module, Live Patching, etc). The variable is a key-value map, where the key is   the _module name_ and the value is the _registration code_. If the _registration code_ is not needed,  set an empty string as value. The module format must follow SUSEConnect convention:
-    - `<module_name>/<product_version>/<architecture>`
-    - *Example:* Suggested modules for SLES for SAP 15
-
-          sle-module-basesystem/15/x86_64
-          sle-module-desktop-applications/15/x86_64
-          sle-module-server-applications/15/x86_64
-          sle-ha/15/x86_64 (use the same regcode as SLES for SAP)
-          sle-module-sap-applications/15/x86_64
-
- For more information about registration, check the ["Registering SUSE Linux Enterprise and Managing Modules/Extensions"](https://www.suse.com/documentation/sles-15/book_sle_deployment/data/cha_register_sle.html) guide.
-
-* **additional_packages**: Additional packages to add to the guest machines.
-* **hosts_ips**: Each cluster nodes IP address (sequential order). Mandatory to have a generic `/etc/hosts` file.
-
-[Specific QA variables](../doc/qa.md#specific-qa-variables)
+Besides the `terraform.tfvars` file usage to configure the deployment, a more advanced configuration is available through pillar files customization. Find more information [here](../pillar_examples/README.md).
 
 ### Relevant Details
 
@@ -189,8 +158,6 @@ There are some fixed values used throughout the terraform configuration:
 - The cluster nodes have a second disk volume that is being used for Hana installation.
 
 # Advanced Usage
-
-
 # notes:
 
 **Important**: If you want to use remote terraform states, first follow the [procedure to create a remote terraform state](create_remote_state).
@@ -236,15 +203,15 @@ terraform apply -var aws_region=eu-central-1 -var instancetype=m4.large
 
 Will deploy 2 `m4.large` instances in Frankfurt, instead of the `m4.2xlarge` default ones. The iSCSI server is always deployed with the `t2.micro` type instance.
 
-Finally, the number of cluster nodes can be modified with the option `-var ninstances`. For example:
+Finally, the number of cluster nodes can be modified with the option `-var hana_count`. For example:
 
 ```
-terraform apply -var aws_region=eu-central-1 -var ninstances=4
+terraform apply -var aws_region=eu-central-1 -var hana_count=4
 ```
 
 Will deploy in Frankfurt 1 `t2.micro` instance as an iSCSI server, and 4 `m4.2xlarge` instances as cluster nodes.
 
-All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var ninstances=2`.
+All this means that basically the default command `terraform apply` and be also written as `terraform apply -var instancetype=m4.2xlarge -var hana_count=2`.
 
 
 
@@ -521,8 +488,8 @@ Examples of the JSON files used in this document have been added to this repo.
 
 ## Logs
 
-This configuration is leaving logs in /tmp folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
+This configuration is leaving logs in `/var/log` folder in each of the instances. Connect as `ssh ec2-user@<remote_ip>`, then do a `sudo su -` and check the following files:
 
-* **/tmp/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-deployment and salt-formula.
-* **/tmp/salt-deployment.log**: Check here the debug log for the salt-deployment if you need to troubleshoot something.
-* **/tmp/salt-formula.log**: Same as above but for salt-formula.
+* **/var/log/provisioning.log**: This is the global log file, inside it you will find the logs for user_data, salt-predeployment and salt-deployment
+* **/var/log/salt-predeployment.log**: Check here the debug log for the salt pre-deployment execution if you need to troubleshoot something.
+* **/var/log/salt-deployment.log**: Same as above but for the final SAP/HA/DRBD deployments salt execution logs.

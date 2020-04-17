@@ -33,6 +33,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -100,6 +101,30 @@ variable "hana_inst_folder" {
   type        = string
 }
 
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -112,6 +137,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -161,6 +187,7 @@ variable "pool" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -168,6 +195,7 @@ variable "monitoring_enabled" {
 
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
+  type        = bool
   default     = false
 }
 

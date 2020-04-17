@@ -60,9 +60,51 @@ variable "shared_disk_id" {
   type        = string
 }
 
-variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_inst_media" {
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  type        = string
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
 }
 
 variable "netweaver_nfs_share" {
@@ -101,6 +143,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -108,6 +151,7 @@ variable "background" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -156,4 +200,10 @@ variable "bridge" {
 variable "pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
+}
+
+variable "devel_mode" {
+  description = "Whether or not to give preference to packages from `ha_sap_deployment_repo`"
+  type        = bool
+  default     = false
 }

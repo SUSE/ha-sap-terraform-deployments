@@ -42,6 +42,16 @@ resource "google_compute_instance" "iscsisrv" {
   }
 }
 
+module "iscsi_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = 1
+  instance_ids         = google_compute_instance.iscsisrv.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
+}
+
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
   name         = "${terraform.workspace}-${var.name}${var.ninstances > 1 ? "0${count.index + 1}" : ""}"
@@ -100,6 +110,16 @@ resource "google_compute_instance" "clusternodes" {
   }
 }
 
+module "hana_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.ninstances
+  instance_ids         = google_compute_instance.clusternodes.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
+}
+
 resource "google_compute_instance" "monitoring" {
   count        = var.monitoring_enabled == true ? 1 : 0
   name         = "${terraform.workspace}-monitoring"
@@ -143,4 +163,14 @@ resource "google_compute_instance" "monitoring" {
   metadata = {
     sshKeys = "root:${file(var.public_key_location)}"
   }
+}
+
+module "monitoring_on_destroy" {
+  source               = "../generic_modules/on_destroy"
+  node_count           = var.monitoring_enabled ? 1 : 0
+  instance_ids         = google_compute_instance.monitoring.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
+  dependencies         = [google_compute_firewall.ha_firewall_allow_tcp]
 }

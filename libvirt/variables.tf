@@ -1,11 +1,8 @@
+# Libvirt related variables
+
 variable "qemu_uri" {
   description = "URI to connect with the qemu-service."
   default     = "qemu:///system"
-}
-
-variable "base_image" {
-  description = "Image of the sap hana nodes"
-  type        = string
 }
 
 variable "storage_pool" {
@@ -24,99 +21,7 @@ variable "isolated_network_bridge" {
   default     = ""
 }
 
-variable "hana_inst_media" {
-  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
-  type        = string
-}
-
-variable "hana_inst_folder" {
-  description = "Folder where SAP HANA installation files are stored"
-  type        = string
-  default     = "/root/hana_inst_media"
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
-variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
-  type        = string
-  default     = ""
-}
-
-variable "netweaver_nfs_share" {
-  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
-  type        = string
-  default     = ""
-}
-
-variable "host_ips" {
-  description = "IP addresses of the hana nodes"
-  type        = list(string)
-  default     = ["192.168.106.15", "192.168.106.16"]
-}
-
-variable "nw_ips" {
-  description = "IP addresses of the netweaver nodes"
-  type        = list(string)
-  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
-}
-
-variable "nw_virtual_ips" {
-  description = "IP addresses of the netweaver nodes"
-  type        = list(string)
-  default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
-}
-
-variable "shared_storage_type" {
-  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
-}
-
-variable "drbd_shared_storage_type" {
-  description = "used shared storage type for fencing (sbd) for DRBD cluster. Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
-}
-
-variable "iscsi_image" {
-  description = "iscsi server base image (only used if shared_storage_type is iscsi)"
-  type        = string
-  default     = ""
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address (only used if shared_storage_type is iscsi)"
-  type        = string
-  default     = "192.168.106.21"
-}
-
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
-}
-
-variable "monitoring_srv_ip" {
-  description = "monitoring server address"
-  type        = string
-  default     = "192.168.106.22"
-}
-
-variable "monitoring_image" {
-  description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
-  type        = string
-  default     = ""
-}
-
-variable "drbd_ips" {
-  description = "IP addresses of the drbd nodes"
-  type        = list(string)
-  default     = ["192.168.106.23", "192.168.106.24"]
-}
+# Deployment variables
 
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
@@ -153,6 +58,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  type        = bool
   default     = false
 }
 
@@ -168,21 +74,188 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
+
+# Hana related variables
+
+variable "base_image" {
+  description = "Image of the sap hana nodes"
+  type        = string
+}
+
+variable "hana_inst_media" {
+  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
+  type        = string
+}
+
+variable "hana_inst_folder" {
+  description = "Folder where SAP HANA installation files are stored"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = string
+  default     = "xfs"
+}
+
+variable "host_ips" {
+  description = "IP addresses of the hana nodes"
+  type        = list(string)
+  default     = ["192.168.106.15", "192.168.106.16"]
+}
+
+# Iscsi server related variables
+
+variable "shared_storage_type" {
+  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+  type        = string
+  default     = "iscsi"
+}
+
+variable "iscsi_image" {
+  description = "iscsi server base image (only used if shared_storage_type is iscsi)"
+  type        = string
+  default     = ""
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address (only used if shared_storage_type is iscsi)"
+  type        = string
+  default     = "192.168.106.21"
+}
+
+variable "iscsi_disks" {
+  description = "number of partitions attach to iscsi server. 0 means `all`."
+  default     = 0
+}
+
+# Monitoring related variables
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
+
+variable "monitoring_image" {
+  description = "monitoring server base image (if not set, the same image as the hana nodes will be used)"
+  type        = string
+  default     = ""
+}
+
+variable "monitoring_srv_ip" {
+  description = "monitoring server address"
+  type        = string
+  default     = "192.168.106.22"
+}
+
+# Netweaver related variables
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver deployment"
+  type        = bool
   default     = false
 }
 
+variable "nw_ips" {
+  description = "IP addresses of the netweaver nodes"
+  type        = list(string)
+  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
+}
+
+variable "nw_virtual_ips" {
+  description = "IP addresses of the netweaver nodes"
+  type        = list(string)
+  default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
+}
+
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_inst_media" {
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
+}
+
+# DRBD related variables
+
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
+  type        = bool
   default     = false
 }
 
@@ -191,13 +264,36 @@ variable "drbd_count" {
   default     = 2
 }
 
+variable "drbd_ips" {
+  description = "IP addresses of the drbd nodes"
+  type        = list(string)
+  default     = ["192.168.106.23", "192.168.106.24"]
+}
+
+variable "drbd_shared_storage_type" {
+  description = "used shared storage type for fencing (sbd) for DRBD cluster. Available options: iscsi, shared-disk."
+  type        = string
+  default     = "iscsi"
+}
+
+# Specific QA variables
+
 variable "qa_mode" {
   description = "define qa mode (Disable extra packages outside images)"
+  type        = bool
   default     = false
 }
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}
+
+# Pre deployment
+
+variable "pre_deployment" {
+  description = "Enable pre deployment local execution"
   type        = bool
   default     = false
 }

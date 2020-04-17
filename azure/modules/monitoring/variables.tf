@@ -111,11 +111,13 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
 variable "drbd_enabled" {
   description = "enable the DRBD cluster for nfs"
+  type        = bool
   default     = false
 }
 
@@ -127,6 +129,7 @@ variable "drbd_ips" {
 
 variable "netweaver_enabled" {
   description = "enable SAP Netweaver cluster deployment"
+  type        = bool
   default     = false
 }
 
@@ -138,5 +141,6 @@ variable "netweaver_ips" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }

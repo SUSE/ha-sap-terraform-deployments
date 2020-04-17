@@ -1,11 +1,3 @@
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "drbd_provisioner" {
   count = var.provisioner == "salt" ? var.drbd_count : 0
 
@@ -21,21 +13,6 @@ resource "null_resource" "drbd_provisioner" {
     type        = "ssh"
     user        = "root"
     private_key = file(var.private_key_location)
-  }
-
-  provisioner "file" {
-    source      = var.gcp_credentials_file
-    destination = "/root/google_credentials.json"
-  }
-
-  provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
   }
 
   provisioner "file" {
@@ -72,11 +49,14 @@ partitions:
   EOF
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "drbd_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.drbd_count : 0
+  instance_ids         = null_resource.drbd_provisioner.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
+  background           = var.background
 }

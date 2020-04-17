@@ -47,15 +47,16 @@ primitive vip_{{ res.name }}_nfs IPaddr2 \
 
 {%- if cloud_provider == "microsoft-azure" %}
 
-primitive nc_{{ res.name }}_nfs anything \
-  params binfile="/usr/bin/socat" cmdline_options="-U TCP-LISTEN:{{ data.probe }},backlog=10,fork,reuseaddr /dev/null" \
+{% if cloud_provider == "microsoft-azure" %}
+primitive rsc_socat_{{ res.name }}_nfs azure-lb \
+  params port={{ data.probe }} \
   op monitor timeout=20s interval=10 depth=0
 
 {%- endif %}
 
 {%- elif cloud_provider == "google-cloud-platform" %}
 primitive rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} stonith:fence_gce \
-  params action=reboot plug={{ grains['host'] }} pcmk_host_map="{{ grains['host'] }}:{{ grains['host'] }}" \
+  params plug={{ grains['gcp_instance_name'] }} pcmk_host_map="{{ grains['host'] }}:{{ grains['gcp_instance_name'] }}" \
   meta target-role=Started
 
 primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
@@ -71,7 +72,7 @@ primitive exportfs_work_{{ res.name }} exportfs \
   options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \
   op monitor interval=30s
 
-group g-nfs_{{ res.name }} fs_{{ res.name }} vip_{{ res.name }}_nfs exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} nc_{{ res.name }}_nfs {% endif %}
+group g-nfs_{{ res.name }} fs_{{ res.name }} vip_{{ res.name }}_nfs exportfs_work_{{ res.name }} {% if cloud_provider == "microsoft-azure" %} rsc_socat_{{ res.name }}_nfs {% endif %}
 
 order o_drbd_{{ res.name }}-before-fs_{{ res.name }} \
   ms_{{ res.name }}:promote g-nfs_{{ res.name }}:start

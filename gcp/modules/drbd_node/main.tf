@@ -65,3 +65,13 @@ resource "google_compute_instance" "drbd" {
     scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
 }
+
+module "drbd_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.drbd_count
+  instance_ids         = google_compute_instance.drbd.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
+  dependencies         = var.on_destroy_dependencies
+}

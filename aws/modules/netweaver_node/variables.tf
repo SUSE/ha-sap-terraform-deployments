@@ -17,11 +17,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "aws_account_id" {
-  type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
-}
-
 variable "availability_zones" {
   type        = list(string)
   description = "Used availability zones"
@@ -81,16 +76,58 @@ variable "aws_credentials" {
 }
 
 variable "aws_access_key_id" {
-  type    = string
+  type = string
 }
 
 variable "aws_secret_access_key" {
-  type    = string
+  type = string
 }
 
 variable "s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
-  type    = string
+  type        = string
+}
+
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
 }
 
 variable "hana_ip" {
@@ -186,11 +223,13 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
 variable "qa_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -201,10 +240,18 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
+}
+
+variable "on_destroy_dependencies" {
+  description = "Resource objects needed in on_destroy script (everything that allows ssh connection)"
+  type        = any
+  default     = []
 }

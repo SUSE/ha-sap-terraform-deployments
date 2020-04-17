@@ -219,3 +219,13 @@ resource "azurerm_virtual_machine" "drbd" {
     workspace = terraform.workspace
   }
 }
+
+module "drbd_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.drbd_count
+  instance_ids         = azurerm_virtual_machine.drbd.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.drbd.*.ip_address
+  dependencies         = [data.azurerm_public_ip.drbd]
+}

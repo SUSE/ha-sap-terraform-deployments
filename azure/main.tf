@@ -1,3 +1,8 @@
+module "local_execution" {
+  source  = "../generic_modules/local_exec"
+  enabled = var.pre_deployment
+}
+
 module "drbd_node" {
   source                 = "./modules/drbd_node"
   az_region              = var.az_region
@@ -51,6 +56,13 @@ module "netweaver_node" {
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
   admin_user                    = var.admin_user
+  netweaver_product_id          = var.netweaver_product_id
+  netweaver_swpm_folder         = var.netweaver_swpm_folder
+  netweaver_sapcar_exe          = var.netweaver_sapcar_exe
+  netweaver_swpm_sar            = var.netweaver_swpm_sar
+  netweaver_swpm_extract_dir    = var.netweaver_swpm_extract_dir
+  netweaver_sapexe_folder       = var.netweaver_sapexe_folder
+  netweaver_additional_dvds     = var.netweaver_additional_dvds
   netweaver_nfs_share           = "10.74.1.201:/HA1" # drbd cluster ip address is hardcoded by now
   storage_account_name          = var.netweaver_storage_account_name
   storage_account_key           = var.netweaver_storage_account_key
@@ -88,6 +100,10 @@ module "hana_node" {
   init_type                     = var.init_type
   hana_inst_master              = var.hana_inst_master
   hana_inst_folder              = var.hana_inst_folder
+  hana_platform_folder          = var.hana_platform_folder
+  hana_sapcar_exe               = var.hana_sapcar_exe
+  hdbserver_sar                 = var.hdbserver_sar
+  hana_extract_dir              = var.hana_extract_dir
   hana_disk_device              = var.hana_disk_device
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
@@ -145,7 +161,7 @@ module "monitoring" {
   drbd_enabled                = var.drbd_enabled
   drbd_ips                    = var.drbd_ips
   netweaver_enabled           = var.netweaver_enabled
-  netweaver_ips               = var.netweaver_ips
+  netweaver_ips               = var.netweaver_virtual_ips
 }
 
 module "iscsi_server" {

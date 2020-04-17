@@ -18,7 +18,7 @@ resource "libvirt_domain" "hana_domain" {
   vcpu       = var.vcpu
   count      = var.hana_count
   qemu_agent = true
-   dynamic "disk" {
+  dynamic "disk" {
     for_each = [
         {
           "vol_id" = element(libvirt_volume.hana_main_disk.*.id, count.index)
@@ -26,7 +26,7 @@ resource "libvirt_domain" "hana_domain" {
         {
           "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)
         },
-      ]
+    ]
     content {
       volume_id = disk.value.vol_id
     }
@@ -34,17 +34,18 @@ resource "libvirt_domain" "hana_domain" {
 
   // handle additional disks
   dynamic "disk" {
-   for_each = slice(
-    [
-      {
-       // we set null but it will never reached because the slice with 0 cut it off
-        "volume_id" =  var.shared_storage_type == "shared-disk" ?  var.sbd_disk_id : "null"
-      },
-    ], 0,  var.shared_storage_type == "shared-disk" ? 1 : 0,  )
-   content {
-     volume_id = disk.value.volume_id
-   }
-}
+    for_each = slice(
+      [
+        {
+         // we set null but it will never reached because the slice with 0 cut it off
+          "volume_id" =  var.shared_storage_type == "shared-disk" ?  var.sbd_disk_id : "null"
+        },
+      ], 0,  var.shared_storage_type == "shared-disk" ? 1 : 0
+    )
+    content {
+      volume_id = disk.value.volume_id
+    }
+  }
 
 
   network_interface {
@@ -95,4 +96,14 @@ output "output_data" {
     private_addresses = var.host_ips
     addresses         = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
   }
+}
+
+module "hana_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.hana_count
+  instance_ids = libvirt_domain.hana_domain.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.hana_domain]
 }

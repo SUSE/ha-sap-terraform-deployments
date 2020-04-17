@@ -1,6 +1,6 @@
 variable "enabled" {
-  type        = bool
   description = "Enable the sap cluster policies creation"
+  type        = bool
 }
 
 variable "name" {
@@ -10,11 +10,6 @@ variable "name" {
 
 variable "aws_region" {
   type = string
-}
-
-variable "aws_account_id" {
-  type        = string
-  description = "AWS account id (12 digit id available to the right of the user in the AWS portal)"
 }
 
 variable "cluster_instances" {
