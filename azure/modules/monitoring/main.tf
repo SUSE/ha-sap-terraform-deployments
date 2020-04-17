@@ -56,12 +56,14 @@ resource "azurerm_image" "monitoring" {
 # monitoring VM
 
 resource "azurerm_virtual_machine" "monitoring" {
-  name                  = "vmmonitoring"
-  count                 = var.monitoring_enabled == true ? 1 : 0
-  location              = var.az_region
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.monitoring.0.id]
-  vm_size               = var.vm_size
+  name                             = "vmmonitoring"
+  count                            = var.monitoring_enabled == true ? 1 : 0
+  location                         = var.az_region
+  resource_group_name              = var.resource_group_name
+  network_interface_ids            = [azurerm_network_interface.monitoring.0.id]
+  vm_size                          = var.vm_size
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   storage_os_disk {
     name              = "disk-monitoring-Os"

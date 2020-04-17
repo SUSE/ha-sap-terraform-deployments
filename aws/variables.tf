@@ -1,31 +1,36 @@
 # AWS related variables
 
 variable "aws_region" {
-  type = string
+  description = "AWS region where the deployment machines will be created"
+  type        = string
+}
+
+variable "aws_access_key_id" {
+  description = "AWS access key id"
+  type        = string
+  default     = ""
+}
+
+variable "aws_secret_access_key" {
+  description = "AWS secret access key"
+  type        = string
+  default     = ""
 }
 
 variable "aws_credentials" {
-  description = "AWS credentials file path in local machine"
+  description = "AWS credentials file path in local machine. This file will be used it `aws_access_key_id` and `aws_secret_access_key` are not provided"
   type        = string
   default     = "~/.aws/credentials"
 }
 
-variable "aws_access_key_id" {
-  type    = string
-  default = ""
-}
-
-variable "aws_secret_access_key" {
-  type    = string
-  default = ""
-}
-
 variable "public_key_location" {
-  type = string
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
 }
 
 variable "private_key_location" {
-  type = string
+  description = "Path to a SSH private key used to connect to the created machines"
+  type        = string
 }
 
 # Deployment variables
@@ -35,23 +40,18 @@ variable "name" {
   type        = string
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
 }
 
 variable "cluster_ssh_pub" {
-  description = "path for the public key needed by the cluster"
+  description = "Path to a SSH public key used during the cluster creation. The key must be passwordless"
   type        = string
 }
 
 variable "cluster_ssh_key" {
-  description = "path for the private key needed by the cluster"
+  description = "Path to a SSH private key used during the cluster creation. The key must be passwordless"
   type        = string
 }
 
@@ -82,7 +82,7 @@ variable "reg_additional_modules" {
 }
 
 variable "additional_packages" {
-  description = "extra packages which should be installed"
+  description = "Extra packages to be installed"
   default     = []
 }
 
@@ -95,13 +95,8 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
-}
-
 variable "devel_mode" {
-  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
   type        = bool
   default     = false
 }
@@ -120,13 +115,14 @@ variable "background" {
 # Hana related variables
 
 variable "hana_count" {
-  type    = string
-  default = "2"
+  description = "Number of hana nodes"
+  type        = number
+  default     = 2
 }
 
 variable "sles4sap" {
-  type = map(string)
-
+  description = "Map of region->ami entries defining the desired SLE4SAP images for the hana machines"
+  type        = map(string)
   default = {
     "us-east-1"    = "ami-027447d2b7312df2d"
     "us-east-2"    = "ami-099a51d3b131f3ce2"
@@ -141,15 +137,21 @@ variable "sles4sap" {
 }
 
 variable "instancetype" {
-  description = "The instance type of hana node."
+  description = "The instance type of the hana nodes"
   type        = string
   default     = "r3.8xlarge"
 }
 
 variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
+  description = "The minimum cost/capacity instance type, different per region"
   type        = string
   default     = "t2.micro"
+}
+
+variable "init_type" {
+  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
+  type        = string
+  default     = "all"
 }
 
 variable "host_ips" {
@@ -157,18 +159,15 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "gp2"
-}
-
 variable "hana_inst_master" {
-  type = string
+  description = "S3 bucket folder path where hana installation software is available"
+  type        = string
 }
 
 variable "hana_inst_folder" {
-  type    = string
-  default = "/sapmedia/HANA"
+  description = "Folder where the hana installation software will be downloaded"
+  type        = string
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_platform_folder" {
@@ -195,13 +194,19 @@ variable "hana_extract_dir" {
   default     = "/sapmedia/HANA"
 }
 
+variable "hana_data_disk_type" {
+  description = "Disk type of the disks used to store hana database content"
+  type        = string
+  default     = "gp2"
+}
+
 variable "hana_disk_device" {
-  description = "device where to install HANA"
+  description = "Device where hana is installed"
   type        = string
 }
 
 variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
+  description = "Filesystem type used by the disk where hana is installed"
   type        = string
   default     = "xfs"
 }
@@ -212,11 +217,16 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
+}
+
 # Iscsi server related variables
 
 variable "iscsi_srv" {
-  type = map(string)
-
+  description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
+  type        = map(string)
   default = {
     "us-east-1"    = "ami-027447d2b7312df2d"
     "us-east-2"    = "ami-099a51d3b131f3ce2"
@@ -231,13 +241,13 @@ variable "iscsi_srv" {
 }
 
 variable "iscsi_instancetype" {
-  description = "The instance type of iscsi server node."
+  description = "The instance type of the iscsi server node."
   type        = string
   default     = ""
 }
 
 variable "iscsidev" {
-  description = "device iscsi for iscsi server"
+  description = "Disk device where iscsi partitions are created"
   type        = string
 }
 
@@ -248,14 +258,14 @@ variable "iscsi_srv_ip" {
 }
 
 variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
+  description = "Number of partitions attach to iscsi server. 0 means `all`."
   default     = 0
 }
 
 # Monitoring related variables
 
 variable "monitor_instancetype" {
-  description = "The instance type of monitoring node."
+  description = "The instance type of the monitoring node."
   type        = string
   default     = ""
 }
@@ -275,13 +285,13 @@ variable "monitoring_enabled" {
 # Netweaver related variables
 
 variable "netweaver_enabled" {
-  description = "enable SAP Netweaver cluster deployment"
+  description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
 }
 
 variable "netweaver_instancetype" {
-  description = "VM size for the Netweaver machines. Default to r3.8xlarge"
+  description = "Instance type for the Netweaver machines. Default to r3.8xlarge"
   type        = string
   default     = "r3.8xlarge"
 }
@@ -305,7 +315,7 @@ variable "netweaver_ips" {
 }
 
 variable "netweaver_virtual_ips" {
-  description = "virtual ip addresses to set to the netweaver cluster nodes"
+  description = "Virtual ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
   default     = []
 }
@@ -355,7 +365,7 @@ variable "netweaver_additional_dvds" {
 # Specific QA variables
 
 variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }
@@ -369,7 +379,7 @@ variable "hwcct" {
 # Pre deployment
 
 variable "pre_deployment" {
-  description = "Enable pre deployment local execution"
+  description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
   default     = false
 }

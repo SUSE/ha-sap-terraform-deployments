@@ -174,6 +174,11 @@ variable "netweaver_public_version" {
   default = "latest"
 }
 
+variable "hana_ip" {
+  type        = string
+  description = "Ip address of the hana database"
+}
+
 variable "admin_user" {
   type    = string
   default = "azadmin"

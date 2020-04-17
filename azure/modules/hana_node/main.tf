@@ -23,7 +23,7 @@ resource "azurerm_lb" "hana-load-balancer" {
     name                          = "lbfe-hana"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = "10.74.1.200"
+    private_ip_address            = var.hana_cluster_vip
   }
 
   tags = {
@@ -214,13 +214,15 @@ resource "azurerm_image" "sles4sap" {
 # hana instances
 
 resource "azurerm_virtual_machine" "hana" {
-  count                 = var.hana_count
-  name                  = "vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
-  location              = var.az_region
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [element(azurerm_network_interface.hana.*.id, count.index)]
-  availability_set_id   = azurerm_availability_set.hana-availability-set.id
-  vm_size               = var.vm_size
+  count                            = var.hana_count
+  name                             = "vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
+  location                         = var.az_region
+  resource_group_name              = var.resource_group_name
+  network_interface_ids            = [element(azurerm_network_interface.hana.*.id, count.index)]
+  availability_set_id              = azurerm_availability_set.hana-availability-set.id
+  vm_size                          = var.vm_size
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   storage_os_disk {
     name              = "disk-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}-Os"

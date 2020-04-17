@@ -40,7 +40,6 @@ cluster:
   ha_exporter: false
   {%- endif %}
   {%- endfor %}
-
   configure:
     method: update
     template:
@@ -68,5 +67,8 @@ cluster:
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
+        {%- elif grains['provider'] == 'gcp' %}
+        route_table: {{ grains['route_table'] }}
+        vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
         monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}

@@ -236,3 +236,8 @@ variable "hana_data_disk_size" {
 variable "hana_data_disk_caching" {
   type = string
 }
+
+variable "hana_cluster_vip" {
+  description = "Virtual ip for the hana cluster"
+  type        = string
+}
