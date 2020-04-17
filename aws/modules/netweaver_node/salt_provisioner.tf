@@ -54,6 +54,9 @@ pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_swpm_folder: ${var.netweaver_swpm_folder}
+netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
+netweaver_swpm_sar: ${var.netweaver_swpm_sar}
+netweaver_swpm_extract_dir: ${var.netweaver_swpm_extract_dir}
 netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: "${aws_efs_file_system.netweaver-efs.0.dns_name}:"

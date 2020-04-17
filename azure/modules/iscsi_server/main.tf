@@ -54,11 +54,13 @@ resource "azurerm_image" "iscsi_srv" {
 # iSCSI server VM
 
 resource "azurerm_virtual_machine" "iscsisrv" {
-  name                  = "vmiscsisrv"
-  location              = var.az_region
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.iscsisrv.id]
-  vm_size               = var.vm_size
+  name                             = "vmiscsisrv"
+  location                         = var.az_region
+  resource_group_name              = var.resource_group_name
+  network_interface_ids            = [azurerm_network_interface.iscsisrv.id]
+  vm_size                          = var.vm_size
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   storage_os_disk {
     name              = "disk-iscsisrv-Os"

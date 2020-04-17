@@ -11,15 +11,43 @@ terraform {
   required_version = ">= 0.12"
 }
 
+data "azurerm_subscription" "current" {
+}
+
+data "azurerm_virtual_network" "mynet" {
+  count               = var.vnet_name != "" && var.vnet_address_range == "" ? 1 : 0
+  name                = var.vnet_name
+  resource_group_name = local.resource_group_name
+}
+
+data "azurerm_subnet" "mysubnet" {
+  count                = var.subnet_name != "" && var.subnet_address_range == "" ? 1 : 0
+  name                 = var.subnet_name
+  virtual_network_name = local.vnet_name
+  resource_group_name  = local.resource_group_name
+}
+
+locals {
+  resource_group_name = var.resource_group_name == "" ? azurerm_resource_group.myrg.0.name : var.resource_group_name
+  vnet_name           = var.vnet_name == "" ? azurerm_virtual_network.mynet.0.name : var.vnet_name
+  subnet_id = var.subnet_name == "" ? azurerm_subnet.mysubnet.0.id : format(
+  "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, var.vnet_name, var.subnet_name)
+  # If vnet_name is not defined, a new vnet is created
+  # If vnet_name is defined, and the vnet_address_range is empty, it will try to get the ip range from the real vnet using the data source. If vnet_address_range is defined it will use it
+  vnet_address_range   = var.vnet_name == "" ? var.vnet_address_range : (var.vnet_address_range == "" ? data.azurerm_virtual_network.mynet.0.address_space.0 : var.vnet_address_range)
+  subnet_address_range = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
+}
+
 # Azure resource group and storage account resources
 resource "azurerm_resource_group" "myrg" {
+  count    = var.resource_group_name == "" ? 1 : 0
   name     = "rg-ha-sap-${terraform.workspace}"
   location = var.az_region
 }
 
 resource "azurerm_storage_account" "mytfstorageacc" {
   name                     = "stdiag${lower(terraform.workspace)}"
-  resource_group_name      = azurerm_resource_group.myrg.name
+  resource_group_name      = local.resource_group_name
   location                 = var.az_region
   account_replication_type = "LRS"
   account_tier             = "Standard"
@@ -31,10 +59,11 @@ resource "azurerm_storage_account" "mytfstorageacc" {
 
 # Network resources: Virtual Network, Subnet
 resource "azurerm_virtual_network" "mynet" {
+  count               = var.vnet_name == "" ? 1 : 0
   name                = "vnet-${lower(terraform.workspace)}"
-  address_space       = ["10.74.0.0/16"]
+  address_space       = [local.vnet_address_range]
   location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
+  resource_group_name = local.resource_group_name
 
   tags = {
     workspace = terraform.workspace
@@ -42,19 +71,20 @@ resource "azurerm_virtual_network" "mynet" {
 }
 
 resource "azurerm_subnet" "mysubnet" {
-  name                 = "snet-default"
-  resource_group_name  = azurerm_resource_group.myrg.name
-  virtual_network_name = azurerm_virtual_network.mynet.name
-  address_prefix       = "10.74.1.0/24"
+  count                = var.subnet_name == "" ? 1 : 0
+  name                 = "snet-${lower(terraform.workspace)}"
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefix       = local.subnet_address_range
 }
 
 resource "azurerm_subnet_network_security_group_association" "mysubnet" {
-  subnet_id                 = azurerm_subnet.mysubnet.id
+  subnet_id                 = local.subnet_id
   network_security_group_id = azurerm_network_security_group.mysecgroup.id
 }
 
 resource "azurerm_subnet_route_table_association" "mysubnet" {
-  subnet_id      = azurerm_subnet.mysubnet.id
+  subnet_id      = local.subnet_id
   route_table_id = azurerm_route_table.myroutes.id
 }
 
@@ -63,11 +93,11 @@ resource "azurerm_subnet_route_table_association" "mysubnet" {
 resource "azurerm_route_table" "myroutes" {
   name                = "route-${lower(terraform.workspace)}"
   location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
+  resource_group_name = local.resource_group_name
 
   route {
     name           = "default"
-    address_prefix = "10.74.0.0/16"
+    address_prefix = local.vnet_address_range
     next_hop_type  = "vnetlocal"
   }
 
@@ -81,7 +111,7 @@ resource "azurerm_route_table" "myroutes" {
 resource "azurerm_network_security_group" "mysecgroup" {
   name                = "nsg-${lower(terraform.workspace)}"
   location            = var.az_region
-  resource_group_name = azurerm_resource_group.myrg.name
+  resource_group_name = local.resource_group_name
   security_rule {
     name                       = "OUTALL"
     priority                   = 100
@@ -102,7 +132,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "10.74.0.0/16"
+    source_address_prefix      = local.vnet_address_range
     destination_address_prefix = "*"
   }
 
@@ -199,7 +229,6 @@ resource "azurerm_network_security_group" "mysecgroup" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
 
   tags = {
     workspace = terraform.workspace

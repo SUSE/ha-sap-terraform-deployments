@@ -1,6 +1,6 @@
-variable "netweaver_count" {
+variable "hana_count" {
   type    = string
-  default = "4"
+  default = "2"
 }
 
 variable "instancetype" {
@@ -11,6 +11,17 @@ variable "instancetype" {
 variable "name" {
   description = "prefix of the machines names"
   type        = string
+  default     = "hana"
+}
+
+variable "init_type" {
+  type    = string
+  default = "all"
+}
+
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
 }
 
 variable "aws_region" {
@@ -38,6 +49,11 @@ variable "sles4sap_images" {
   }
 }
 
+variable "subnet_ids" {
+  type        = list(string)
+  description = "List of subnet IDs"
+}
+
 variable "vpc_id" {
   type        = string
   description = "Id of the vpc used for this deployment"
@@ -63,12 +79,6 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
-variable "efs_performance_mode" {
-  type        = string
-  description = "Performance mode of the EFS storage"
-  default     = "generalPurpose"
-}
-
 variable "aws_credentials" {
   description = "AWS credentials file path in local machine"
   type        = string
@@ -83,102 +93,64 @@ variable "aws_secret_access_key" {
   type = string
 }
 
-variable "s3_bucket" {
-  description = "S3 bucket where Netwaever installation files are stored"
-  type        = string
+variable "host_ips" {
+  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
+  type        = list(string)
 }
 
-variable "netweaver_product_id" {
-  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
-  type        = string
-  default     = "NW750.HDB.ABAPHA"
+variable "hana_data_disk_type" {
+  type    = string
+  default = "gp2"
 }
 
-variable "netweaver_swpm_folder" {
-  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
+variable "hana_inst_master" {
+  type = string
 }
 
-variable "netweaver_sapcar_exe" {
-  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
+variable "hana_inst_folder" {
+  type    = string
+  default = "/sapmedia/HANA"
 }
 
-variable "netweaver_swpm_sar" {
-  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
-}
-
-variable "netweaver_sapexe_folder" {
-  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
-variable "netweaver_additional_dvds" {
-  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
-  default     = []
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
 }
 
-variable "hana_ip" {
-  description = "IP address of the HANA database. If the database is clustered, use the cluster virtual ip address"
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
+}
+
+variable "hana_disk_device" {
+  description = "device where to install HANA"
+  type        = string
+}
+
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = string
+  default     = "xfs"
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
   default     = "192.168.1.10"
-}
-
-variable "host_ips" {
-  description = "ip addresses of the machines. Remember that each of the machines is in a different subnet"
-  type        = list(string)
-  default     = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
-}
-
-variable "virtual_host_ips" {
-  description = "virtual ip addresses to set to the nodes. They must have a different IP range than the used range in the vpc"
-  type        = list(string)
-  default     = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
-}
-
-variable "ascs_instance_number" {
-  description = "ASCS instance number"
-  type        = string
-  default     = "00"
-}
-
-variable "ers_instance_number" {
-  description = "ERS instance number"
-  type        = string
-  default     = "10"
-}
-
-variable "pas_instance_number" {
-  description = "PAS instance number"
-  type        = string
-  default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
-}
-
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
-}
-
-variable "public_key_location" {
-  type = string
 }
 
 variable "private_key_location" {
@@ -216,6 +188,11 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
+variable "additional_packages" {
+  description = "extra packages which should be installed"
+  default     = []
+}
+
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = string
@@ -223,6 +200,12 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
+  default     = false
+}
+
+variable "hwcct" {
+  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
   default     = false
 }
@@ -251,7 +234,7 @@ variable "monitoring_enabled" {
 }
 
 variable "on_destroy_dependencies" {
-  description = "Resource objects needed in on_destroy script (everything that allows ssh connection)"
+  description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
 }

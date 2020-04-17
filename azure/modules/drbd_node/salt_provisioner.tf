@@ -29,6 +29,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 drbd_disk_device: /dev/sdc
+drbd_cluster_vip: ${var.drbd_cluster_vip}
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sde
 iscsi_srv_ip: ${var.iscsi_srv_ip}

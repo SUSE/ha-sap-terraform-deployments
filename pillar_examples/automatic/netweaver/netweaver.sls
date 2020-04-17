@@ -24,7 +24,16 @@ netweaver:
   sap_adm_password: SuSE1234
   master_password: SuSE1234
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
+  {%- if grains.get('netweaver_swpm_folder', False) %}
   swpm_folder: /sapmedia/NW/{{ grains['netweaver_swpm_folder'] }}
+  {%- endif %}
+  {%- if grains.get('netweaver_sapcar_exe', False) and grains.get('netweaver_swpm_sar', False) %}
+  sapcar_exe_file: /sapmedia/NW/{{ grains['netweaver_sapcar_exe'] }}
+  swpm_sar_file: /sapmedia/NW/{{ grains['netweaver_swpm_sar'] }}
+  {%- endif %}
+  {%- if grains.get('netweaver_swpm_extract_dir', False) %}
+  swpm_extract_dir: {{ grains['netweaver_swpm_extract_dir'] }}
+  {%- endif %}
   sapexe_folder: /sapmedia/NW/{{ grains['netweaver_sapexe_folder'] }}
   additional_dvds: {%- if not grains['netweaver_additional_dvds'] %} []
   {%- else %}
@@ -46,7 +55,7 @@ netweaver:
 # We have to unify the usage of this parameter, the aws option looks better
 {%- if grains['provider'] == 'gcp' %}
     host: {{ grains['hana_cluster_vip'] }}
-{%- elif grains['provider'] == 'aws' %}
+{%- elif grains['provider'] in ['aws', 'azure'] %}
     host: {{ grains['hana_ip'] }}
 {%- else %}
     host: {{ iprange }}.200

@@ -114,10 +114,10 @@ variable "background" {
 
 # Hana related variables
 
-variable "ninstances" {
+variable "hana_count" {
   description = "Number of hana nodes"
-  type        = string
-  default     = "2"
+  type        = number
+  default     = 2
 }
 
 variable "sles4sap" {
@@ -270,6 +270,18 @@ variable "monitor_instancetype" {
   default     = ""
 }
 
+variable "monitoring_srv_ip" {
+  description = "monitoring server address. Must be in 10.0.0.0/24 subnet"
+  type        = string
+  default     = ""
+}
+
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
+  default     = false
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
@@ -318,6 +330,24 @@ variable "netweaver_swpm_folder" {
   description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {

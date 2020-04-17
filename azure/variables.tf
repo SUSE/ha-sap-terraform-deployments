@@ -6,6 +6,36 @@ variable "az_region" {
   default     = "westeurope"
 }
 
+variable "resource_group_name" {
+  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "vnet_name" {
+  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "vnet_address_range" {
+  description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = "10.74.0.0/16"
+}
+
+variable "subnet_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+}
+
 variable "admin_user" {
   description = "Administration user used to create the machines"
   type        = string
@@ -189,8 +219,9 @@ variable "hana_enable_accelerated_networking" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "ip addresses to set to the hana nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
+  default     = []
 }
 
 variable "hana_inst_master" {
@@ -245,6 +276,12 @@ variable "hana_instance_number" {
   default     = "00"
 }
 
+variable "hana_cluster_vip" {
+  description = "Virtual ip for the hana cluster. If it's not set the address will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -289,9 +326,9 @@ variable "iscsi_vm_size" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+  description = "iscsi server address. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
-  default     = "10.74.1.10"
+  default     = ""
 }
 
 variable "iscsidev" {
@@ -349,7 +386,7 @@ variable "monitoring_uri" {
 }
 
 variable "monitoring_srv_ip" {
-  description = "monitoring server address"
+  description = "monitoring server address. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
 }
@@ -369,7 +406,7 @@ variable "drbd_vm_size" {
 }
 
 variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
+  description = "ip addresses to set to the drbd cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
 }
@@ -400,6 +437,12 @@ variable "drbd_public_version" {
 
 variable "drbd_image_uri" {
   description = "Path to a custom azure image in a storage account used to create the drbd machines"
+  type        = string
+  default     = ""
+}
+
+variable "drbd_cluster_vip" {
+  description = "Virtual ip for the drbd cluster. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
 }
@@ -467,13 +510,13 @@ variable "netweaver_data_disk_caching" {
 }
 
 variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
+  description = "ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
 }
 
 variable "netweaver_virtual_ips" {
-  description = "Virtual ip addresses to set to the netweaver cluster nodes"
+  description = "Virtual ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
 }
@@ -512,6 +555,24 @@ variable "netweaver_swpm_folder" {
   description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {
