@@ -16,12 +16,12 @@ terraform {
 
 # Network resources: Network, Subnet
 resource "google_compute_network" "ha_network" {
-  name                    = "${terraform.workspace}-${var.name}-network"
+  name                    = "${terraform.workspace}-network"
   auto_create_subnetworks = "false"
 }
 
 resource "google_compute_subnetwork" "ha_subnet" {
-  name          = "${terraform.workspace}-${var.name}-subnet"
+  name          = "${terraform.workspace}-subnet"
   network       = google_compute_network.ha_network.self_link
   region        = var.region
   ip_cidr_range = var.ip_cidr_range
@@ -29,7 +29,7 @@ resource "google_compute_subnetwork" "ha_subnet" {
 
 # Network firewall rules
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
-  name          = "${terraform.workspace}-${var.name}-fw-internal"
+  name          = "${terraform.workspace}-fw-internal"
   network       = google_compute_network.ha_network.name
   source_ranges = [var.ip_cidr_range]
 
@@ -49,7 +49,7 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
-  name    = "${terraform.workspace}-${var.name}-fw-icmp"
+  name    = "${terraform.workspace}-fw-icmp"
   network = google_compute_network.ha_network.name
 
   allow {
@@ -58,7 +58,7 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
-  name    = "${terraform.workspace}-${var.name}-fw-tcp"
+  name    = "${terraform.workspace}-fw-tcp"
   network = google_compute_network.ha_network.name
 
   allow {

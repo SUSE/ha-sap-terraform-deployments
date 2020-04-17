@@ -26,9 +26,9 @@ provider: gcp
 role: hana_node
 devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
-name_prefix: ${terraform.workspace}-${var.name}
+name_prefix: ${terraform.workspace}-hana
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-hana${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sde
@@ -43,6 +43,8 @@ hana_inst_disk_device: ${var.hana_inst_disk_device}
 hana_fstype: ${var.hana_fstype}
 hana_cluster_vip: ${var.hana_cluster_vip}
 gcp_credentials_file: ${var.gcp_credentials_file}
+vpc_network_name: ${var.network_name}
+route_table: ${google_compute_route.hana-route[0].name}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 init_type: ${var.init_type}

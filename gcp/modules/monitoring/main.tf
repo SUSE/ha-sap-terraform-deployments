@@ -3,7 +3,7 @@
 
 resource "google_compute_disk" "monitoring_data" {
   count = var.monitoring_enabled == true ? 1 : 0
-  name  = "${terraform.workspace}-${var.name}-monitoring-data"
+  name  = "${terraform.workspace}-monitoring-data"
   type  = "pd-standard"
   size  = "20"
   zone  = element(var.compute_zones, 0)

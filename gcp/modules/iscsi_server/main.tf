@@ -1,5 +1,5 @@
 resource "google_compute_disk" "iscsi_data" {
-  name = "${terraform.workspace}-${var.name}-iscsi-data"
+  name = "${terraform.workspace}-iscsi-data"
   type = "pd-standard"
   size = "10"
   zone = element(var.compute_zones, 0)
