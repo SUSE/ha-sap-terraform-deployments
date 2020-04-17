@@ -137,7 +137,7 @@ variable "sles4sap_boot_image" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "ip addresses to set to the nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
 }
 
@@ -249,7 +249,7 @@ variable "machine_type_iscsi_server" {
 }
 
 variable "iscsi_ip" {
-  description = "IP for iSCSI server"
+  description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
 }
 
 variable "iscsidev" {
@@ -296,7 +296,7 @@ variable "drbd_data_disk_type" {
 }
 
 variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
+  description = "ip addresses to set to the drbd cluster nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
   default     = []
 }
@@ -334,7 +334,7 @@ variable "netweaver_software_bucket" {
 }
 
 variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
+  description = "ip addresses to set to the netweaver cluster nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
   default     = []
 }

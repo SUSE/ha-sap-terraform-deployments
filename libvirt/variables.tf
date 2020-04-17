@@ -253,7 +253,7 @@ variable "drbd_ips" {
 }
 
 variable "drbd_shared_storage_type" {
-  description = "Ssed shared storage type for fencing (sbd) for drbd cluster. Available options: iscsi, shared-disk."
+  description = "Used shared storage type for fencing (sbd) for drbd cluster. Available options: iscsi, shared-disk."
   type        = string
   default     = "iscsi"
 }

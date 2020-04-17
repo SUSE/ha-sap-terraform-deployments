@@ -461,7 +461,7 @@ variable "netweaver_data_disk_size" {
 }
 
 variable "netweaver_data_disk_caching" {
-  description = "Diss caching of the disks used to store hana database content"
+  description = "Disk caching of the disks used to store hana database content"
   type        = string
   default     = "ReadWrite"
 }
