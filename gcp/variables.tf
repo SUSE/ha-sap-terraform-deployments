@@ -1,32 +1,33 @@
 # GCP related variables
 
 variable "project" {
-  type = string
+  description = "GCP project name where the infrastructure will be created"
+  type        = string
 }
 
 variable "region" {
-  type = string
+  description = "GCP region where the deployment machines will be created"
+  type        = string
 }
 
 variable "gcp_credentials_file" {
-  type = string
+  description = "GCP credentials file path in local machine"
+  type        = string
 }
 
 variable "public_key_location" {
-  type = string
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
 }
 
 variable "private_key_location" {
-  type = string
-}
-
-variable "storage_url" {
-  type    = string
-  default = "https://storage.googleapis.com"
+  description = "Path to a SSH private key used to connect to the created machines"
+  type        = string
 }
 
 variable "ip_cidr_range" {
-  description = "internal IPv4 range"
+  description = "Internal IPv4 range of the created network"
+  default     = "10.0.0.0/24"
 }
 
 # Deployment variables
@@ -35,11 +36,6 @@ variable "name" {
   description = "hostname, without the domain part"
   type        = string
   default     = "hana"
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
 }
 
 variable "timezone" {
@@ -74,7 +70,7 @@ variable "reg_additional_modules" {
 }
 
 variable "additional_packages" {
-  description = "extra packages which should be installed"
+  description = "Extra packages to be installed"
   default     = []
 }
 
@@ -83,23 +79,18 @@ variable "additional_packages" {
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
+  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
   type        = string
 }
 
 variable "cluster_ssh_pub" {
-  description = "path for the public key needed by the cluster"
+  description = "Path to a SSH public key used during the cluster creation. The key must be passwordless"
   type        = string
 }
 
 variable "cluster_ssh_key" {
-  description = "path for the private key needed by the cluster"
+  description = "Path to a SSH private key used during the cluster creation. The key must be passwordless"
   type        = string
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "provisioner" {
@@ -108,7 +99,7 @@ variable "provisioner" {
 }
 
 variable "devel_mode" {
-  description = "whether or not to install HA/SAP packages from ha_sap_deployment_repo"
+  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
   type        = bool
   default     = false
 }
@@ -122,22 +113,31 @@ variable "background" {
 # Hana related variables
 
 variable "ninstances" {
-  type    = string
-  default = "2"
+  description = "Number of hana nodes"
+  type        = string
+  default     = "2"
 }
 
 variable "machine_type" {
-  type    = string
-  default = "n1-highmem-32"
+  description = "The instance type of the hana nodes"
+  type        = string
+  default     = "n1-highmem-32"
+}
+
+variable "init_type" {
+  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
+  type        = string
+  default     = "all"
 }
 
 variable "sles4sap_boot_image" {
-  type    = string
-  default = "suse-byos-cloud/sles-15-sap-byos"
+  description = "The image used to create the hana machines"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "ip addresses to set to the nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
 }
 
@@ -147,8 +147,9 @@ variable "sap_hana_deployment_bucket" {
 }
 
 variable "hana_inst_folder" {
-  type    = string
-  default = "/sapmedia/HANA"
+  description = "Folder where the hana installation software will be downloaded"
+  type        = string
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_platform_folder" {
@@ -176,45 +177,49 @@ variable "hana_extract_dir" {
 }
 
 variable "hana_data_disk_type" {
-  type    = string
-  default = "pd-ssd"
+  description = "Disk type of the disks used to store hana database content"
+  type        = string
+  default     = "pd-ssd"
 }
 
 variable "hana_data_disk_size" {
-  type    = string
-  default = "834"
+  description = "Disk size of the disks used to store hana database content"
+  type        = string
+  default     = "834"
 }
 
 variable "hana_backup_disk_type" {
-  type    = string
-  default = "pd-standard"
+  description = "Disk type of the disks used to store hana database backup content"
+  type        = string
+  default     = "pd-standard"
 }
 
 variable "hana_backup_disk_size" {
-  type    = string
-  default = "416"
+  description = "Disk size of the disks used to store hana database backup content"
+  type        = string
+  default     = "416"
 }
 
 variable "hana_disk_device" {
-  description = "device where to install HANA"
+  description = "Device where hana is installed"
   type        = string
   default     = "/dev/sdb"
 }
 
 variable "hana_backup_device" {
-  description = "device where HANA backup is stored"
+  description = "Device where hana backup is stored"
   type        = string
   default     = "/dev/sdc"
 }
 
 variable "hana_inst_disk_device" {
-  description = "device where to download HANA"
+  description = "Device where hana installation software CIFS share is mounted"
   type        = string
   default     = "/dev/sdd"
 }
 
 variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
+  description = "Filesystem type used by the disk where hana is installed"
   type        = string
   default     = "xfs"
 }
@@ -224,67 +229,74 @@ variable "hana_cluster_vip" {
   type        = string
 }
 
+variable "scenario_type" {
+  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
+  default     = "performance-optimized"
+}
+
 # Iscsi server related variables
 
 variable "iscsi_server_boot_image" {
-  type    = string
-  default = "suse-byos-cloud/sles-15-sap-byos"
+  description = "The image used to create the iscsi machines"
+  type        = string
+  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "machine_type_iscsi_server" {
-  type    = string
-  default = "custom-1-2048"
+  description = "The instance type of the iscsi nodes"
+  type        = string
+  default     = "custom-1-2048"
 }
 
 variable "iscsi_ip" {
-  description = "IP for iSCSI server"
+  description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
 }
 
 variable "iscsidev" {
-  description = "device iscsi for iscsi server"
+  description = "Disk device where iscsi partitions are created"
   type        = string
   default     = "/dev/sdb"
 }
 
 variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
+  description = "Number of partitions attach to iscsi server. 0 means `all`."
   default     = 0
 }
 
 # DRBD related variables
 
 variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
+  description = "Enable the DRBD cluster for nfs"
   type        = bool
   default     = false
 }
 
 variable "drbd_machine_type" {
-  description = "machine type for drbd nodes"
+  description = "The instance type of the drbd nodes"
   type        = string
   default     = "n1-standard-4"
 }
 
 variable "drbd_image" {
-  description = "image of the drbd nodes"
+  description = "The image used to create the drbd machines"
   type        = string
   default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "drbd_data_disk_size" {
-  description = "drbd data disk size"
+  description = "Disk size of the disks used to store drbd content"
   type        = string
   default     = "10"
 }
 
 variable "drbd_data_disk_type" {
-  description = "drbd data disk type"
+  description = "Disk type of the disks used to store drbd content"
   type        = string
   default     = "pd-standard"
 }
 
 variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
+  description = "ip addresses to set to the drbd cluster nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
   default     = []
 }
@@ -298,31 +310,31 @@ variable "drbd_cluster_vip" {
 # Netweaver related variables
 
 variable "netweaver_enabled" {
-  description = "enable netweaver cluster creation"
+  description = "Enable netweaver cluster creation"
   type        = bool
   default     = false
 }
 
 variable "netweaver_machine_type" {
-  description = "machine type for netweaver nodes"
+  description = "The instance type of the netweaver nodes"
   type        = string
   default     = "n1-highmem-8"
 }
 
 variable "netweaver_image" {
-  description = "image of the netweaver nodes"
+  description = "The image used to create the netweaver machines"
   type        = string
   default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "netweaver_software_bucket" {
-  description = "gcp bucket where netweaver software is available"
+  description = "GCP storage bucket that contains the netweaver installation files"
   type        = string
   default     = ""
 }
 
 variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
+  description = "ip addresses to set to the netweaver cluster nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
   default     = []
 }
@@ -378,7 +390,7 @@ variable "netweaver_additional_dvds" {
 # Specific QA variables
 
 variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }
@@ -392,7 +404,7 @@ variable "hwcct" {
 # Pre deployment
 
 variable "pre_deployment" {
-  description = "Enable pre deployment local execution"
+  description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
   default     = false
 }
