@@ -9,11 +9,12 @@ provider "template" {
 }
 
 locals {
-  hana_subnet_address_range      = length(hana_subnet_address_range) != 0 ? hana_subnet_address_range : [
-    for index in range(var.hana_count): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index)]
+  infra_subnet_address_range     = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(aws_vpc.vpc.cidr_block, 8, 0)
+  hana_subnet_address_range      = length(var.hana_subnet_address_range) != 0 ? var.hana_subnet_address_range : [
+    for index in range(var.hana_count): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index + 1)]
   # The 2 is hardcoded because we create 2 subnets for NW always
-  netweaver_subnet_address_range = length(netweaver_subnet_address_range) != 0 ? netweaver_subnet_address_range : [
-    for index in range(2): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index + var.hana_count)]
+  netweaver_subnet_address_range = length(var.netweaver_subnet_address_range) != 0 ? var.netweaver_subnet_address_range : [
+    for index in range(2): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index + var.hana_count + 1)]
 }
 
 # AWS key pair
@@ -48,14 +49,13 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-resource "aws_subnet" "hana-subnet" {
-  count             = var.hana_count
+resource "aws_subnet" "infra-subnet" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = element(local.hana_subnet_address_range, count.index)
-  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  cidr_block        = local.infra_subnet_address_range
+  availability_zone = element(data.aws_availability_zones.available.names, 0)
 
   tags = {
-    Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"
+    Name      = "${terraform.workspace}-infra-subnet"
     Workspace = terraform.workspace
   }
 }
@@ -69,9 +69,8 @@ resource "aws_route_table" "route-table" {
   }
 }
 
-resource "aws_route_table_association" "hana-subnet-route-association" {
-  count          = var.hana_count
-  subnet_id      = element(aws_subnet.hana-subnet.*.id, count.index)
+resource "aws_route_table_association" "infra-subnet-route-association" {
+  subnet_id      = aws_subnet.infra-subnet.id
   route_table_id = aws_route_table.route-table.id
 }
 

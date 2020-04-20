@@ -35,6 +35,12 @@ variable "virtual_address_range" {
   default     = "192.168.1.0/24"
 }
 
+variable "infra_subnet_address_range" {
+  description = "List of address ranges to create the subnets for the infrastructure (iscsi, monitoring, etc) machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = string
+  default     = ""
+}
+
 variable "public_key_location" {
   description = "Path to a SSH public key used to connect to the created machines"
   type        = string

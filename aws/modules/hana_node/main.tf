@@ -1,3 +1,30 @@
+# Network resources: subnets, routes, etc
+
+resource "aws_subnet" "hana-subnet" {
+  count             = var.hana_count
+  vpc_id            = var.vpc_id
+  cidr_block        = element(var.subnet_address_range, count.index)
+  availability_zone = element(var.availability_zones, count.index)
+
+  tags = {
+    Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"
+    Workspace = terraform.workspace
+  }
+}
+
+resource "aws_route_table_association" "hana-subnet-route-association" {
+  count          = var.hana_count
+  subnet_id      = element(aws_subnet.hana-subnet.*.id, count.index)
+  route_table_id = var.route_table_id
+}
+
+resource "aws_route" "hana-cluster-vip" {
+  count                  = var.hana_count > 0 ? 1 : 0
+  route_table_id         = var.route_table_id
+  destination_cidr_block = "${var.hana_cluster_vip}/32"
+  instance_id            = aws_instance.clusternodes.0.id
+}
+
 module "sap_cluster_policies" {
   enabled           = var.hana_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"
@@ -7,12 +34,6 @@ module "sap_cluster_policies" {
   route_table_id    = var.route_table_id
 }
 
-resource "aws_route" "hana-cluster-vip" {
-  route_table_id         = var.route_table_id
-  destination_cidr_block = "${var.hana_cluster_vip}/32"
-  instance_id            = aws_instance.clusternodes.0.id
-}
-
 ## EC2 HANA Instance
 resource "aws_instance" "clusternodes" {
   count                       = var.hana_count
@@ -20,7 +41,7 @@ resource "aws_instance" "clusternodes" {
   instance_type               = var.instancetype
   key_name                    = var.key_name
   associate_public_ip_address = true
-  subnet_id                   = element(var.subnet_ids, count.index)
+  subnet_id                   = element(aws_subnet.hana-subnet.*.id, count.index)
   private_ip                  = element(var.host_ips, count.index)
   security_groups             = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index)
@@ -56,5 +77,8 @@ module "hana_on_destroy" {
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.clusternodes.*.public_ip
-  dependencies         = var.on_destroy_dependencies
+  dependencies = concat(
+    [aws_route_table_association.hana-subnet-route-association],
+    var.on_destroy_dependencies
+  )
 }
