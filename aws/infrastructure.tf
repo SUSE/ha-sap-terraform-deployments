@@ -8,6 +8,14 @@ provider "template" {
   version = "~> 2.1"
 }
 
+locals {
+  hana_subnet_address_range      = length(hana_subnet_address_range) != 0 ? hana_subnet_address_range : [
+    for index in range(var.hana_count): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index)]
+  # The 2 is hardcoded because we create 2 subnets for NW always
+  netweaver_subnet_address_range = length(netweaver_subnet_address_range) != 0 ? netweaver_subnet_address_range : [
+    for index in range(2): cidrsubnet(aws_vpc.vpc.cidr_block, 8, index + var.hana_count)]
+}
+
 # AWS key pair
 resource "aws_key_pair" "hana-key-pair" {
   key_name   = "${terraform.workspace} - terraform"
@@ -21,7 +29,7 @@ data "aws_availability_zones" "available" {
 
 # Network resources: VPC, Internet Gateways, Security Groups for the EC2 instances and for the EFS file system
 resource "aws_vpc" "vpc" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_address_range
   enable_dns_hostnames = true
   enable_dns_support   = true
 
@@ -43,7 +51,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "hana-subnet" {
   count             = var.hana_count
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, count.index)
+  cidr_block        = element(local.hana_subnet_address_range, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
@@ -98,7 +106,7 @@ resource "aws_security_group_rule" "local" {
   from_port   = 0
   to_port     = 0
   protocol    = "-1"
-  cidr_blocks = ["10.0.0.0/16"]
+  cidr_blocks = [var.vpc_address_range]
 
   security_group_id = aws_security_group.secgroup.id
 }

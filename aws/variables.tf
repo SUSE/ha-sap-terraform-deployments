@@ -23,6 +23,18 @@ variable "aws_credentials" {
   default     = "~/.aws/credentials"
 }
 
+variable "vpc_address_range" {
+  description = "vpc address range in CIDR notation"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "virtual_address_range" {
+  description = "address range for virtual addresses for the clusters. It must be in a different range than `vpc_address_range`"
+  type        = string
+  default     = "192.168.1.0/24"
+}
+
 variable "public_key_location" {
   description = "Path to a SSH public key used to connect to the created machines"
   type        = string
@@ -154,9 +166,16 @@ variable "init_type" {
   default     = "all"
 }
 
+variable "hana_subnet_address_range" {
+  description = "List of address ranges to create the subnets for the hana machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = list(string)
+  default     = []
+}
+
 variable "host_ips" {
   description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)
+  default     = []
 }
 
 variable "hana_inst_master" {
@@ -214,7 +233,7 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
-  default     = "192.168.1.10"
+  default     = ""
 }
 
 variable "scenario_type" {
@@ -254,7 +273,7 @@ variable "iscsidev" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address. It should be in same iprange as host_ips"
   type        = string
-  default     = "10.0.0.254"
+  default     = ""
 }
 
 variable "iscsi_disks" {
@@ -306,6 +325,12 @@ variable "netweaver_efs_performance_mode" {
   type        = string
   description = "Performance mode of the EFS storage used by Netweaver"
   default     = "generalPurpose"
+}
+
+variable "netweaver_subnet_address_range" {
+  description = "List of address ranges to create the subnets for the netweaver machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = list(string)
+  default     = []
 }
 
 variable "netweaver_ips" {

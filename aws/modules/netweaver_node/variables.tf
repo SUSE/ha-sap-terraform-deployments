@@ -43,9 +43,9 @@ variable "vpc_id" {
   description = "Id of the vpc used for this deployment"
 }
 
-variable "vpc_cidr_block" {
-  type        = string
-  description = "cidr block of the used vpc"
+variable "subnet_address_range" {
+  type        = list(string)
+  description = "List with subnet address ranges in cidr notation to create the netweaver subnets"
 }
 
 variable "key_name" {
@@ -137,7 +137,7 @@ variable "hana_ip" {
 }
 
 variable "host_ips" {
-  description = "ip addresses of the machines. Remember that each of the machines is in a different subnet"
+  description = "ip addresses of the machines.  The addresses must belong to the the subnet provided in subnet_address_range"
   type        = list(string)
   default     = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 }
