@@ -22,7 +22,7 @@ resource "aws_instance" "clusternodes" {
   associate_public_ip_address = true
   subnet_id                   = element(var.subnet_ids, count.index)
   private_ip                  = element(var.host_ips, count.index)
-  security_groups             = [var.security_group_id]
+  vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index)
   source_dest_check           = false
   iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name[0]

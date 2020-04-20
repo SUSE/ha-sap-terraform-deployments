@@ -65,7 +65,7 @@ resource "aws_instance" "netweaver" {
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.netweaver-subnet.*.id, count.index % 2) # %2 is used because there are not more than 2 subnets
   private_ip                  = element(var.host_ips, count.index)
-  security_groups             = [var.security_group_id]
+  vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index % 2)
   source_dest_check           = false
   iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name[0] # We apply to all nodes to have the SAP data provider, even though some policies are only for the clustered nodes

@@ -7,7 +7,7 @@ resource "aws_instance" "iscsisrv" {
   associate_public_ip_address = true
   subnet_id                   = element(var.subnet_ids, 0)
   private_ip                  = var.iscsi_srv_ip
-  security_groups             = [var.security_group_id]
+  vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, 0)
 
   root_block_device {
