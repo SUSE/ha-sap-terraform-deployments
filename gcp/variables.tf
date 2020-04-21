@@ -32,12 +32,6 @@ variable "ip_cidr_range" {
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
-  type        = string
-  default     = "hana"
-}
-
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -112,7 +106,7 @@ variable "background" {
 
 # Hana related variables
 
-variable "ninstances" {
+variable "hana_count" {
   description = "Number of hana nodes"
   type        = string
   default     = "2"
@@ -232,6 +226,18 @@ variable "hana_cluster_vip" {
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
+}
+
+# Monitoring related variables	
+variable "monitoring_srv_ip" {
+  description = "Monitoring server address"
+  type        = string
+  default     = ""
+}
+variable "monitoring_enabled" {
+  description = "Enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
+  default     = false
 }
 
 # Iscsi server related variables
