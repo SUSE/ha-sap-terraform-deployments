@@ -41,6 +41,7 @@ vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.drbd-route[0].name}
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
+qa_mode: ${var.qa_mode}
 partitions:
   1:
     start: 0%

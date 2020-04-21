@@ -123,6 +123,12 @@ variable "devel_mode" {
   default     = false
 }
 
+variable "qa_mode" {
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+  type        = bool
+  default     = false
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

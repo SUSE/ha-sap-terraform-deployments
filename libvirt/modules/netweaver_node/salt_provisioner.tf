@@ -48,6 +48,7 @@ shared_storage_type: shared-disk
 sbd_disk_device: /dev/vdb1
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
+qa_mode: ${var.qa_mode}
 EOF
     destination = "/tmp/grains"
   }

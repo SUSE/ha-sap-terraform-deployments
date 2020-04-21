@@ -240,7 +240,7 @@ variable "devel_mode" {
 }
 
 variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }

@@ -71,6 +71,7 @@ module "netweaver_node" {
   reg_additional_modules     = var.reg_additional_modules
   ha_sap_deployment_repo     = var.ha_sap_deployment_repo
   devel_mode                 = var.devel_mode
+  qa_mode                    = var.qa_mode
   provisioner                = var.provisioner
   background                 = var.background
   monitoring_enabled         = var.monitoring_enabled

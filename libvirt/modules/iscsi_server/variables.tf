@@ -105,7 +105,7 @@ variable "bridge" {
 
 # Specific QA variables
 variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
   default     = false
 }

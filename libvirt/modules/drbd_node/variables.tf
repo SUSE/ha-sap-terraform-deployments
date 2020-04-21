@@ -37,6 +37,12 @@ variable "devel_mode" {
   default     = false
 }
 
+variable "qa_mode" {
+  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+  type        = bool
+  default     = false
+}
+
 variable "additional_packages" {
   description = "extra packages which should be installed"
   default     = []
