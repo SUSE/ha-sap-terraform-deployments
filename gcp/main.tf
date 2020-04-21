@@ -77,7 +77,6 @@ module "netweaver_node" {
 
 module "hana_node" {
   source                     = "./modules/hana_node"
-  name                       = var.name
   hana_count                 = var.hana_count
   machine_type               = var.machine_type
   compute_zones              = data.google_compute_zones.available.names
@@ -118,6 +117,7 @@ module "hana_node" {
   qa_mode                    = var.qa_mode
   provisioner                = var.provisioner
   background                 = var.background
+  monitoring_enabled         = var.monitoring_enabled
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -125,7 +125,6 @@ module "hana_node" {
 
 module "monitoring" {
   source                 = "./modules/monitoring"
-  name                   = var.name
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = google_compute_subnetwork.ha_subnet.name
   sles4sap_boot_image    = var.sles4sap_boot_image
@@ -148,7 +147,6 @@ module "monitoring" {
 
 module "iscsi_server" {
   source                    = "./modules/iscsi_server"
-  name                      = var.name
   machine_type_iscsi_server = var.machine_type_iscsi_server
   compute_zones             = data.google_compute_zones.available.names
   network_subnet_name       = google_compute_subnetwork.ha_subnet.name

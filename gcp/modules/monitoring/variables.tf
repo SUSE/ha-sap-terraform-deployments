@@ -1,9 +1,3 @@
-variable "name" {
-  description = "hostname for hana machine, without the domain part"
-  type        = string
-  default     = "hana"
-}
-
 variable "compute_zones" {
   description = "gcp compute zones data"
   type        = list(string)

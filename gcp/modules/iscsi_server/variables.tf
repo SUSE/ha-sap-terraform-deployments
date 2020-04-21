@@ -1,9 +1,3 @@
-variable "name" {
-  description = "hostname for hana machine, without the domain part"
-  type        = string
-  default     = "hana"
-}
-
 variable "machine_type_iscsi_server" {
   type    = string
   default = "custom-1-2048"

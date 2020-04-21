@@ -1,9 +1,3 @@
-variable "name" {
-  description = "Hostname for hana machine, without the domain part"
-  type        = string
-  default     = "hana"
-}
-
 variable "hana_count" {
   type    = string
   default = "2"

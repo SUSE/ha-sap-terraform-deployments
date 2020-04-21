@@ -32,12 +32,6 @@ variable "ip_cidr_range" {
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
-  type        = string
-  default     = "hana"
-}
-
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
