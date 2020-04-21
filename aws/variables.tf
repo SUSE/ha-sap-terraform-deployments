@@ -1,7 +1,7 @@
 # AWS related variables
 
 variable "aws_region" {
-  description = "AWS region where the deployment machines will be created"
+  description = "AWS region where the deployment machines will be created. If not provided the current configured region will be used"
   type        = string
 }
 
@@ -23,6 +23,18 @@ variable "aws_credentials" {
   default     = "~/.aws/credentials"
 }
 
+variable "vpc_id" {
+  description = "Id of a currently existing vpc to use in the deployment. If not provided a new one will be created"
+  type        = string
+  default     = ""
+}
+
+variable "security_group_id" {
+  description = "Id of a currently existing security group to use in the deployment. If not provided a new one will be created"
+  type        = string
+  default     = ""
+}
+
 variable "vpc_address_range" {
   description = "vpc address range in CIDR notation"
   type        = string
@@ -36,7 +48,7 @@ variable "virtual_address_range" {
 }
 
 variable "infra_subnet_address_range" {
-  description = "List of address ranges to create the subnets for the infrastructure (iscsi, monitoring, etc) machines. If not given the addresses will be generated based on vpc_address_range"
+  description = "Address range to create the subnet for the infrastructure (iscsi, monitoring, etc) machines. If not given the addresses will be generated based on vpc_address_range"
   type        = string
   default     = ""
 }
