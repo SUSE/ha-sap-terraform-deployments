@@ -17,7 +17,7 @@ module "drbd_node" {
   gcp_credentials_file   = var.gcp_credentials_file
   network_domain         = "tf.local"
   host_ips               = var.drbd_ips
-  iscsi_srv_ip           = google_compute_instance.iscsisrv.network_interface.0.network_ip
+  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
@@ -46,7 +46,7 @@ module "netweaver_node" {
   gcp_credentials_file       = var.gcp_credentials_file
   network_domain             = "tf.local"
   host_ips                   = var.netweaver_ips
-  iscsi_srv_ip               = google_compute_instance.iscsisrv.network_interface.0.network_ip
+  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
   cluster_ssh_pub            = var.cluster_ssh_pub
@@ -70,6 +70,100 @@ module "netweaver_node" {
   provisioner                = var.provisioner
   background                 = var.background
   monitoring_enabled         = var.monitoring_enabled
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
+}
+
+module "hana_node" {
+  source                     = "./modules/hana_node"
+  hana_count                 = var.hana_count
+  machine_type               = var.machine_type
+  compute_zones              = data.google_compute_zones.available.names
+  network_name               = google_compute_network.ha_network.name
+  network_subnet_name        = google_compute_subnetwork.ha_subnet.name
+  init_type                  = var.init_type
+  sles4sap_boot_image        = var.sles4sap_boot_image
+  gcp_credentials_file       = var.gcp_credentials_file
+  host_ips                   = var.host_ips
+  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
+  sap_hana_deployment_bucket = var.sap_hana_deployment_bucket
+  hana_inst_folder           = var.hana_inst_folder
+  hana_platform_folder       = var.hana_platform_folder
+  hana_sapcar_exe            = var.hana_sapcar_exe
+  hdbserver_sar              = var.hdbserver_sar
+  hana_extract_dir           = var.hana_extract_dir
+  hana_data_disk_type        = var.hana_data_disk_type
+  hana_data_disk_size        = var.hana_data_disk_size
+  hana_backup_disk_type      = var.hana_backup_disk_type
+  hana_backup_disk_size      = var.hana_backup_disk_size
+  hana_disk_device           = var.hana_disk_device
+  hana_backup_device         = var.hana_backup_device
+  hana_inst_disk_device      = var.hana_inst_disk_device
+  hana_fstype                = var.hana_fstype
+  hana_cluster_vip           = var.hana_cluster_vip
+  scenario_type              = var.scenario_type
+  public_key_location        = var.public_key_location
+  private_key_location       = var.private_key_location
+  cluster_ssh_pub            = var.cluster_ssh_pub
+  cluster_ssh_key            = var.cluster_ssh_key
+  reg_code                   = var.reg_code
+  reg_email                  = var.reg_email
+  reg_additional_modules     = var.reg_additional_modules
+  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
+  additional_packages        = var.additional_packages
+  devel_mode                 = var.devel_mode
+  hwcct                      = var.hwcct
+  qa_mode                    = var.qa_mode
+  provisioner                = var.provisioner
+  background                 = var.background
+  monitoring_enabled         = var.monitoring_enabled
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
+}
+
+module "monitoring" {
+  source                 = "./modules/monitoring"
+  compute_zones          = data.google_compute_zones.available.names
+  network_subnet_name    = google_compute_subnetwork.ha_subnet.name
+  sles4sap_boot_image    = var.sles4sap_boot_image
+  host_ips               = var.host_ips
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  additional_packages    = var.additional_packages
+  monitoring_srv_ip      = var.monitoring_srv_ip
+  monitoring_enabled     = var.monitoring_enabled
+  provisioner            = var.provisioner
+  background             = var.background
+  on_destroy_dependencies = [
+    google_compute_firewall.ha_firewall_allow_tcp
+  ]
+}
+
+module "iscsi_server" {
+  source                    = "./modules/iscsi_server"
+  machine_type_iscsi_server = var.machine_type_iscsi_server
+  compute_zones             = data.google_compute_zones.available.names
+  network_subnet_name       = google_compute_subnetwork.ha_subnet.name
+  iscsi_server_boot_image   = var.iscsi_server_boot_image
+  iscsi_ip                  = var.iscsi_ip
+  iscsidev                  = var.iscsidev
+  iscsi_disks               = var.iscsi_disks
+  public_key_location       = var.public_key_location
+  private_key_location      = var.private_key_location
+  reg_code                  = var.reg_code
+  reg_email                 = var.reg_email
+  reg_additional_modules    = var.reg_additional_modules
+  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
+  additional_packages       = var.additional_packages
+  qa_mode                   = var.qa_mode
+  provisioner               = var.provisioner
+  background                = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
