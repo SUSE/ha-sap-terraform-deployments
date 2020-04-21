@@ -13,14 +13,14 @@ module "local_execution" {
 # Netweaver virtual ips: 192.168.1.30, 192.168.1.31, 192.168.1.32, 192.168.1.33 (virtual ip addresses must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
-  iscsi_ip              = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.hana_subnet_address_range.0, 4)
-  monitoring_ip         = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.hana_subnet_address_range.0, 5)
-  hana_ips              = length(var.host_ips) != 0 ? var.host_ips : list(
-    cidrhost(local.hana_subnet_address_range.0, 10), cidrhost(local.hana_subnet_address_range.1, 11))
-  hana_cluster_vip      = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, 10)
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : list(
+  iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.hana_subnet_address_range.0, 4)
+  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.hana_subnet_address_range.0, 5)
+  hana_ips = length(var.host_ips) != 0 ? var.host_ips : list(
+  cidrhost(local.hana_subnet_address_range.0, 10), cidrhost(local.hana_subnet_address_range.1, 11))
+  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, 10)
+  netweaver_ips = length(var.netweaver_ips) != 0 ? var.netweaver_ips : list(
     cidrhost(local.netweaver_subnet_address_range.0, 30), cidrhost(local.netweaver_subnet_address_range.1, 31), # ASCS and ERS in different subnets
-    cidrhost(local.netweaver_subnet_address_range.0, 32), cidrhost(local.netweaver_subnet_address_range.1, 33))
+  cidrhost(local.netweaver_subnet_address_range.0, 32), cidrhost(local.netweaver_subnet_address_range.1, 33))
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(30, 34) : cidrhost(var.virtual_address_range, ip_index)]
 }
 
