@@ -78,22 +78,6 @@
       },
       "styles": [
         {
-          "alias": "Hostname",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "hostname",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
           "alias": "Features",
           "colorMode": null,
           "colors": [
@@ -110,7 +94,7 @@
           "unit": "short"
         },
         {
-          "alias": "Instance nr.",
+          "alias": "Number",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -183,6 +167,54 @@
             "rgba(237, 129, 40, 0.89)",
             "rgba(50, 172, 45, 0.97)"
           ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "SID",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Hostname",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance_hostname",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Name",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance_name",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
           "decimals": 2,
           "pattern": "/.*/",
           "thresholds": [],
@@ -192,7 +224,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(sap_start_service_instances) by (hostname, features, start_priority, instance_number) / count(sap_start_service_instances) by (hostname, features, start_priority, instance_number)",
+          "expr": "sap_start_service_instances",
           "format": "table",
           "instant": true,
           "refId": "A"
@@ -295,23 +327,7 @@
           "unit": "short"
         },
         {
-          "alias": "Instance",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "instance",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        },
-        {
-          "alias": "",
+          "alias": "Process name",
           "colorMode": null,
           "colors": [
             "rgba(245, 54, 54, 0.9)",
@@ -322,6 +338,38 @@
           "decimals": 2,
           "mappingType": 1,
           "pattern": "name",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Instance name",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance_name",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Instance nr.",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "instance_number",
           "thresholds": [],
           "type": "string",
           "unit": "short"
@@ -362,8 +410,8 @@
       "aliasColors": {
         "GRAY": "rgb(128, 128, 128)",
         "GREEN": "green",
-        "YELLOW": "yellow",
-        "RED": "red"
+        "RED": "red",
+        "YELLOW": "yellow"
       },
       "bars": false,
       "dashLength": 10,
@@ -402,22 +450,22 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count(sap_start_service_instances == 1) / count(count(sap_start_service_instances) by (instance))",
+          "expr": "count(sap_start_service_instances == 1)",
           "legendFormat": "GRAY",
           "refId": "A"
         },
         {
-          "expr": "count(sap_start_service_instances == 2) / count(count(sap_start_service_instances) by (instance))",
+          "expr": "count(sap_start_service_instances == 2)",
           "legendFormat": "GREEN",
           "refId": "B"
         },
         {
-          "expr": "count(sap_start_service_instances == 3) / count(count(sap_start_service_instances) by (instance))",
+          "expr": "count(sap_start_service_instances == 3)",
           "legendFormat": "YELLOW",
           "refId": "C"
         },
         {
-          "expr": "count(sap_start_service_instances == 4) / count(count(sap_start_service_instances) by (instance))",
+          "expr": "count(sap_start_service_instances == 4)",
           "legendFormat": "RED",
           "refId": "D"
         }
