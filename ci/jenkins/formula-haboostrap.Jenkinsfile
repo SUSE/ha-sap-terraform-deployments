@@ -25,10 +25,7 @@ pipeline {
                                            url: 'https://github.com/SUSE/habootstrap-formula']]])
         }}
         stage('Setting GitHub in-progress status') { steps {
-
-            dir("${WORKSPACE}/habootstrap-formula'') {
-                sh(script: "ls")
-            }
+            sh(script: "ls")
             sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
            } 
         }
