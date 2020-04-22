@@ -11,7 +11,7 @@ resource "google_compute_disk" "netweaver-software" {
 
 # temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
 resource "google_compute_route" "nw-route" {
-  name                   = "nw-route"
+  name                   = "${terraform.workspace}-nw-route"
   count                  = var.netweaver_count > 0 ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name

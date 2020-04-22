@@ -11,7 +11,7 @@ resource "google_compute_disk" "data" {
 
 # temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
 resource "google_compute_route" "drbd-route" {
-  name                   = "drbd-route"
+  name                   = "${terraform.workspace}-drbd-route"
   count                  = var.drbd_count > 0 ? 1 : 0
   dest_range             = "${var.drbd_cluster_vip}/32"
   network                = var.network_name
