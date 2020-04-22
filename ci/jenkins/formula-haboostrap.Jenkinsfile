@@ -24,7 +24,7 @@ pipeline {
                                            credentialsId: 'github-token',
                                            url: 'https://github.com/SUSE/ha-sap-terraform-deployments']]])
 
-            dir("${WORKSPACE}/sap-deploy") {
+            dir("${WORKSPACE}/ha-sap-terraform-deployments') {
                 sh(script: "git checkout ${BRANCH_NAME}", label: "Checkout PR Branch")
             }
         }}
