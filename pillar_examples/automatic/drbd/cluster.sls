@@ -1,5 +1,7 @@
 cluster:
-  install_packages: true
+  {%- if grains.get('qa_mode') %}
+  install_packages: false
+  {%- endif %}
   name: 'drbd_cluster'
   init: {{ grains['name_prefix'] }}01
   {% if grains['provider'] == 'libvirt' %}

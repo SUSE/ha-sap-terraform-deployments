@@ -2,7 +2,9 @@
 {%- set iprange = ".".join(grains['host_ips'][0].split('.')[0:-1]) %}
 
 cluster:
-  install_packages: true
+  {%- if grains.get('qa_mode') %}
+  install_packages: false
+  {%- endif %}
   name: netweaver_cluster
   init: {{ grains['name_prefix'] }}01
   {%- if grains['provider'] == 'libvirt' %}

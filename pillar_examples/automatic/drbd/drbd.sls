@@ -1,4 +1,7 @@
 drbd:
+  {%- if grains.get('qa_mode') %}
+  install_packages: false
+  {%- endif %}
   promotion: {{ grains['name_prefix'] }}01
 
   ## Resource template for /etc/drbd.d/xxx.res

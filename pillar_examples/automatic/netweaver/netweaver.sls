@@ -12,6 +12,9 @@
 {%- endif %}
 
 netweaver:
+  {%- if grains.get('qa_mode') %}
+  install_packages: false
+  {%- endif %}
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sapha1as
     {{ grains['virtual_host_ips'][1] }}: sapha1er
