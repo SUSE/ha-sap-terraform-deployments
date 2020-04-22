@@ -13,16 +13,28 @@ data "aws_vpc" "current-vpc" {
   id    = var.vpc_id
 }
 
+data "aws_internet_gateway" "current-gateway" {
+  count = var.vpc_id != "" ? 1 : 0
+  filter {
+    name   = "attachment.vpc-id"
+    values = [var.vpc_id]
+  }
+}
+
 locals {
-  vpc_id                     = var.vpc_id == "" ? aws_vpc.vpc.0.id : var.vpc_id
-  security_group_id          = var.security_group_id != "" ? var.security_group_id : aws_security_group.secgroup.0.id
-  vpc_address_range          = var.vpc_id == "" ? var.vpc_address_range : (var.vpc_address_range == "" ? data.aws_vpc.current-vpc.0.cidr_block : var.vpc_address_range)
-  infra_subnet_address_range = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(aws_vpc.vpc.0.cidr_block, 8, 0)
+  vpc_id            = var.vpc_id == "" ? aws_vpc.vpc.0.id : var.vpc_id
+  internet_gateway  = var.vpc_id == "" ? aws_internet_gateway.igw.0.id : data.aws_internet_gateway.current-gateway.0.internet_gateway_id
+  security_group_id = var.security_group_id != "" ? var.security_group_id : aws_security_group.secgroup.0.id
+  vpc_address_range = var.vpc_id == "" ? var.vpc_address_range : (var.vpc_address_range == "" ? data.aws_vpc.current-vpc.0.cidr_block : var.vpc_address_range)
+
+  infra_subnet_address_range = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(local.vpc_address_range, 8, 0)
+
   hana_subnet_address_range = length(var.hana_subnet_address_range) != 0 ? var.hana_subnet_address_range : [
-  for index in range(var.hana_count) : cidrsubnet(aws_vpc.vpc.0.cidr_block, 8, index + 1)]
+  for index in range(var.hana_count) : cidrsubnet(local.vpc_address_range, 8, index + 1)]
+
   # The 2 is hardcoded because we create 2 subnets for NW always
   netweaver_subnet_address_range = length(var.netweaver_subnet_address_range) != 0 ? var.netweaver_subnet_address_range : [
-  for index in range(2) : cidrsubnet(aws_vpc.vpc.0.cidr_block, 8, index + var.hana_count + 1)]
+  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 1)]
 }
 
 # AWS key pair
@@ -50,6 +62,7 @@ resource "aws_vpc" "vpc" {
 }
 
 resource "aws_internet_gateway" "igw" {
+  count  = var.vpc_id == "" ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = {
@@ -86,7 +99,7 @@ resource "aws_route_table_association" "infra-subnet-route-association" {
 resource "aws_route" "public" {
   route_table_id         = aws_route_table.route-table.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.igw.id
+  gateway_id             = local.internet_gateway
 }
 
 locals {
@@ -122,7 +135,7 @@ resource "aws_security_group_rule" "local" {
   from_port   = 0
   to_port     = 0
   protocol    = "-1"
-  cidr_blocks = [var.vpc_address_range]
+  cidr_blocks = [local.vpc_address_range]
 
   security_group_id = local.security_group_id
 }

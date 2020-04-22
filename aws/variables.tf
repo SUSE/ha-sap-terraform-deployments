@@ -24,7 +24,7 @@ variable "aws_credentials" {
 }
 
 variable "vpc_id" {
-  description = "Id of a currently existing vpc to use in the deployment. If not provided a new one will be created"
+  description = "Id of a currently existing vpc to use in the deployment. It must have an internet gateway attached. If not provided a new one will be created."
   type        = string
   default     = ""
 }
