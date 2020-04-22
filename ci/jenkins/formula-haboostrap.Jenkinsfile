@@ -6,7 +6,7 @@ pipeline {
     agent { node { label 'sles-sap' } }
 
     environment {
-        PR_MANAGER = 'ci/jenkins/pipelines/prs/helpers/pr-manager'
+        PR_MANAGER = 'ci/pr-manager'
     }
 
     stages {
@@ -31,14 +31,14 @@ pipeline {
 
         stage('Setting GitHub in-progress status') { steps {
             sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
-        } }
+           } 
+        }
 
 
         stage('Initialize terraform') { steps {
-            dir("sap-deploy") {
               sh(script: 'terraform init')
-            }
-        } }
+           } 
+        }
 
 
         stage('Apply terraform') {
