@@ -22,31 +22,27 @@ pipeline {
                       submoduleCfg: [],
                       userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
                                            credentialsId: 'github-token',
-                                           url: 'https://github.com/SUSE/ha-sap-terraform-deployments']]])
+                                           url: 'https://github.com/SUSE/habootstrap-formula']]])
         }}
         stage('Setting GitHub in-progress status') { steps {
 
-            dir("${WORKSPACE}/ha-sap-terraform-deployments') {
-                sh(script: "git checkout ${BRANCH_NAME}", label: "Checkout PR Branch")
+            dir("${WORKSPACE}/habootstrap-formula'') {
+                sh(script: "ls")
             }
             sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
            } 
         }
-
 
         stage('Initialize terraform') { steps {
               sh(script: 'terraform init')
            } 
         }
 
-
         stage('Apply terraform') {
             steps {
                 sh(script: 'terraform apply')
             }
         }
-
-
     }
     post {
         always {
@@ -65,15 +61,6 @@ pipeline {
             dir("${WORKSPACE}") {
                 deleteDir()
             }
-        }
-        unstable {
-            sh(script: "sap-deploy/${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'failure'", label: "Sending failure status")
-        }
-        failure {
-            sh(script: "sap-deploy/${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'failure'", label: "Sending failure status")
-        }
-        success {
-            sh(script: "sap-deploy/${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'success'", label: "Sending success status")
         }
     }
 }
