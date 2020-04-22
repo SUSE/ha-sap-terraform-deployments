@@ -46,8 +46,6 @@ primitive vip_{{ res.name }}_nfs IPaddr2 \
   op monitor interval=10 timeout=20
 
 {%- if cloud_provider == "microsoft-azure" %}
-
-{% if cloud_provider == "microsoft-azure" %}
 primitive rsc_socat_{{ res.name }}_nfs azure-lb \
   params port={{ data.probe }} \
   op monitor timeout=20s interval=10 depth=0
