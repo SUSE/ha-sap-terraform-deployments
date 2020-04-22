@@ -1,21 +1,15 @@
 /**
- * Run hana deployment on github PR.
+ * Run haboostrap formula in ci
  */
 
 pipeline {
     agent { node { label 'sles-sap' } }
 
     environment {
-        GITHUB_TOKEN = credentials('github-token')
-        PR_CONTEXT = 'jenkins/skuba-test'
         PR_MANAGER = 'ci/jenkins/pipelines/prs/helpers/pr-manager'
     }
 
     stages {
-
-        stage('Setting GitHub in-progress status') { steps {
-            sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
-        } }
 
         stage('Git Clone') { steps {
             deleteDir()
@@ -24,7 +18,7 @@ pipeline {
                       doGenerateSubmoduleConfigurations: false,
                       extensions: [[$class: 'LocalBranch'],
                                    [$class: 'WipeWorkspace'],
-                                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'skuba']],
+                                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ha-sap-terraform-deployments']],
                       submoduleCfg: [],
                       userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
                                            credentialsId: 'github-token',
@@ -34,6 +28,11 @@ pipeline {
                 sh(script: "git checkout ${BRANCH_NAME}", label: "Checkout PR Branch")
             }
         }}
+
+        stage('Setting GitHub in-progress status') { steps {
+            sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
+        } }
+
 
         stage('Initialize terraform') { steps {
             dir("sap-deploy") {
@@ -52,7 +51,7 @@ pipeline {
     }
     post {
         always {
-            sh(script: "terraform destroy")
+            sh(script: "echo destroy terraform")
         }
         cleanup {
             dir("${WORKSPACE}@tmp") {
