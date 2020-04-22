@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+echo "Starting $0 script"
+
+SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+VENVDIR=${WORKSPACE:-~}/py3venv
+export VENVDIR=${VENVDIR}
+
+setup_python_env() {
+    type python3 >/dev/null 2>&1 || sudo zypper install --no-confirm python3
+
+    if [ ! -d $VENVDIR ]; then
+        echo "Creating Python 3 virtualenv"
+        python3 -m venv $VENVDIR
+    fi
+    source ${VENVDIR}/bin/activate
+    # Not calling to `pip3` directly because its shebang can exceed 128 characters
+    # and this operation will fail. Check: https://github.com/pypa/pip/issues/1773
+    python -m pip -q --disable-pip-version-check install -U -r "${SDIR}/pr_manager/requirements.txt"
+}
+
+setup_python_env
+cd ${SDIR}
+python -u pr_manager/pr_manager.py "$@"
+deactivate
