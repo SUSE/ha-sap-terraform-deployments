@@ -13,8 +13,8 @@ module "local_execution" {
 # Netweaver virtual ips: 192.168.1.30, 192.168.1.31, 192.168.1.32, 192.168.1.33 (virtual ip addresses must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
-  iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.hana_subnet_address_range.0, 4)
-  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.hana_subnet_address_range.0, 5)
+  iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.infra_subnet_address_range, 4)
+  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.infra_subnet_address_range, 5)
   hana_ips = length(var.host_ips) != 0 ? var.host_ips : list(
   cidrhost(local.hana_subnet_address_range.0, 10), cidrhost(local.hana_subnet_address_range.1, 11))
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, 10)
