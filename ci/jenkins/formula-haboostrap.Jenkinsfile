@@ -23,13 +23,12 @@ pipeline {
                       userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
                                            credentialsId: 'github-token',
                                            url: 'https://github.com/SUSE/ha-sap-terraform-deployments']]])
+        }}
+        stage('Setting GitHub in-progress status') { steps {
 
             dir("${WORKSPACE}/ha-sap-terraform-deployments') {
                 sh(script: "git checkout ${BRANCH_NAME}", label: "Checkout PR Branch")
             }
-        }}
-
-        stage('Setting GitHub in-progress status') { steps {
             sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
            } 
         }
