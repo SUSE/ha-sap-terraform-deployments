@@ -1,5 +1,19 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
+# Use an already existing vpc
+#vpc_id = "vpc-xxxxxxxxxxxxxxxxx"
+
+# Use an already existing security group
+#security_group_id = "sg-xxxxxxxxxxxxxxxxx"
+
+# vpc address range in CIDR notation
+# Only used if the vpc is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vpc address range set the value to an empty string
+# To define custom ranges
+#vpc_address_range = "10.0.0.0/16"
+# Or to use already existing vpc address ranges
+#vpc_address_range = ""
+
 # Instance type to use for the hana cluster nodes
 instancetype = "r3.8xlarge"
 
