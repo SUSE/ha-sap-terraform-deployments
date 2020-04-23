@@ -15,13 +15,16 @@ module "local_execution" {
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.infra_subnet_address_range, 4)
   monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.infra_subnet_address_range, 5)
-  hana_ips = length(var.host_ips) != 0 ? var.host_ips : list(
-  cidrhost(local.hana_subnet_address_range.0, 10), cidrhost(local.hana_subnet_address_range.1, 11))
-  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, 10)
-  netweaver_ips = length(var.netweaver_ips) != 0 ? var.netweaver_ips : list(
-    cidrhost(local.netweaver_subnet_address_range.0, 30), cidrhost(local.netweaver_subnet_address_range.1, 31), # ASCS and ERS in different subnets
-  cidrhost(local.netweaver_subnet_address_range.0, 32), cidrhost(local.netweaver_subnet_address_range.1, 33))
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(30, 34) : cidrhost(var.virtual_address_range, ip_index)]
+
+  # The next locals are used to map the ip index with the subnet range (something like python enumerate method)
+  hana_ip_start    = 10
+  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for index in range(var.hana_count) : cidrhost(element(local.hana_subnet_address_range, index % 2), index + local.hana_ip_start)]
+  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, local.hana_ip_start)
+
+  # range(4) hardcoded as we always deploy 4 nw machines
+  netweaver_ip_start    = 30
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(4) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
 }
 
 module "iscsi_server" {
