@@ -7,7 +7,6 @@ pipeline {
 
     environment {
         PR_MANAGER = 'ci/pr-manager'
-        GITHUB_TOKEN = 'empty'
     }
 
     stages {
@@ -22,7 +21,6 @@ pipeline {
                                    [$class: 'ChangelogToBranch', options: [compareRemote: "origin", compareTarget: "master"]]],
                       submoduleCfg: [],
                       userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
-                                           credentialsId: "${GITHUB_TOKEN}",
                                            url: 'https://github.com/SUSE/skuba']]])
         }}
         stage('Setting GitHub in-progress status') { steps {
