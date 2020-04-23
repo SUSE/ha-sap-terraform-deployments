@@ -10,21 +10,6 @@ pipeline {
     }
 
     stages {
-       stage('Git Clone') { steps {
-            deleteDir()
-            checkout([$class: 'GitSCM',
-                      branches: [[name: "*/${BRANCH_NAME}"]],
-                      doGenerateSubmoduleConfigurations: false,
-                      extensions: [[$class: 'LocalBranch'],
-                                   [$class: 'WipeWorkspace'],
-                                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'skuba']],
-                      submoduleCfg: [],
-                      userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
-                                           credentialsId: 'github-token',
-                                           url: 'https://github.com/SUSE/skuba']]])
-        }}
-
-
 
         stage('Setting GitHub in-progress status') { steps {
             sh(script: "ls")
