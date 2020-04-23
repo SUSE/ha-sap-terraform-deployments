@@ -13,51 +13,39 @@ resource "aws_iam_role" "cluster-role" {
   }
 }
 
-data "template_file" "data-provider-policy-template" {
-  count    = var.enabled ? 1 : 0
-  template = file("${path.module}/templates/aws_data_provider_policy.tpl")
-}
-
 resource "aws_iam_role_policy" "data-provider-policy" {
   count  = var.enabled ? 1 : 0
   name   = "${terraform.workspace}-${var.name}-data-provider-policy"
   role   = aws_iam_role.cluster-role[0].id
-  policy = data.template_file.data-provider-policy-template[0].rendered
-}
-
-data "template_file" "stonith-policy-template" {
-  count    = var.enabled ? 1 : 0
-  template = file("${path.module}/templates/aws_stonith_policy.tpl")
-  vars = {
-    region         = var.aws_region
-    aws_account_id = data.aws_caller_identity.current.account_id
-    ec2_instance1  = var.cluster_instances.0
-    ec2_instance2  = var.cluster_instances.1
-  }
+  policy = templatefile("${path.module}/templates/aws_data_provider_policy.tpl", {})
 }
 
 resource "aws_iam_role_policy" "stonith-policy" {
   count  = var.enabled ? 1 : 0
   name   = "${terraform.workspace}-${var.name}-stonith-policy"
   role   = aws_iam_role.cluster-role[0].id
-  policy = data.template_file.stonith-policy-template[0].rendered
-}
-
-data "template_file" "ip-agent-policy-template" {
-  count    = var.enabled ? 1 : 0
-  template = file("${path.module}/templates/aws_ip_agent_policy.tpl")
-  vars = {
-    region         = var.aws_region
-    aws_account_id = data.aws_caller_identity.current.account_id
-    route_table    = var.route_table_id
-  }
+  policy = templatefile(
+    "${path.module}/templates/aws_stonith_policy.tpl",
+    {
+      region         = var.aws_region
+      aws_account_id = data.aws_caller_identity.current.account_id
+      ec2_instances  = var.cluster_instances
+    }
+  )
 }
 
 resource "aws_iam_role_policy" "ip-agent-policy" {
   count  = var.enabled ? 1 : 0
   name   = "${terraform.workspace}-${var.name}-ip-agent-policy"
   role   = aws_iam_role.cluster-role[0].id
-  policy = data.template_file.ip-agent-policy-template[0].rendered
+  policy = templatefile(
+    "${path.module}/templates/aws_ip_agent_policy.tpl",
+    {
+    region         = var.aws_region
+    aws_account_id = data.aws_caller_identity.current.account_id
+    route_table    = var.route_table_id
+    }
+  )
 }
 
 resource "aws_iam_instance_profile" "cluster-role-profile" {
