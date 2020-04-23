@@ -53,7 +53,7 @@ module "sap_cluster_policies" {
   source            = "../../modules/sap_cluster_policies"
   name              = var.name
   aws_region        = var.aws_region
-  cluster_instances = aws_instance.netweaver.*.id
+  cluster_instances = slice(aws_instance.netweaver.*.id, 0, min(var.netweaver_count, 2))
   route_table_id    = var.route_table_id
 }
 

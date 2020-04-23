@@ -4,10 +4,6 @@ provider "aws" {
   region  = var.aws_region
 }
 
-provider "template" {
-  version = "~> 2.1"
-}
-
 # AWS key pair
 resource "aws_key_pair" "hana-key-pair" {
   key_name   = "${terraform.workspace} - terraform"
