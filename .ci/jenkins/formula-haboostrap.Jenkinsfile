@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         PR_MANAGER = 'ci/pr-manager'
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = credentials('susegithubapi')
     }
 
     stages {
