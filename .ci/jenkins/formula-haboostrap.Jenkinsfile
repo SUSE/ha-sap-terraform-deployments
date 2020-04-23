@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         PR_MANAGER = 'ci/pr-manager'
-        github-token = "empty"
+        github-token = 'empty'
     }
 
     stages {
