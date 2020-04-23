@@ -10,19 +10,22 @@ pipeline {
     }
 
     stages {
-
-        stage('Git Clone') { steps {
+       stage('Git Clone') { steps {
+            deleteDir()
             checkout([$class: 'GitSCM',
-                      branches: [[name: "*/${BRANCH_NAME}"], [name: '*/master']],
+                      branches: [[name: "*/${BRANCH_NAME}"]],
                       doGenerateSubmoduleConfigurations: false,
                       extensions: [[$class: 'LocalBranch'],
                                    [$class: 'WipeWorkspace'],
-                                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ha-sap-terraform-deployments']],
+                                   [$class: 'RelativeTargetDirectory', relativeTargetDir: 'skuba']],
                       submoduleCfg: [],
                       userRemoteConfigs: [[refspec: '+refs/pull/*/head:refs/remotes/origin/PR-*',
                                            credentialsId: 'github-token',
-                                           url: 'https://github.com/SUSE/habootstrap-formula']]])
+                                           url: 'https://github.com/SUSE/skuba']]])
         }}
+
+
+
         stage('Setting GitHub in-progress status') { steps {
             sh(script: "ls")
             sh(script: "${PR_MANAGER} update-pr-status ${GIT_COMMIT} ${PR_CONTEXT} 'pending'", label: "Sending pending status")
@@ -30,13 +33,13 @@ pipeline {
         }
 
         stage('Initialize terraform') { steps {
-              sh(script: 'terraform init')
+              sh(script: 'echo terraform init')
            } 
         }
 
         stage('Apply terraform') {
             steps {
-                sh(script: 'terraform apply')
+                sh(script: 'echo terraform apply')
             }
         }
     }
