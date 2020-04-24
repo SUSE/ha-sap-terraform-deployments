@@ -13,7 +13,7 @@ pipeline {
       stage('Git Clone') { steps {
             deleteDir()
             checkout([$class: 'GitSCM',
-                      branches: [[name: "*/${BRANCH}"]],
+                      branches: [[name: "*/${env.BRANCH}"]],
                       doGenerateSubmoduleConfigurations: false,
                       extensions: [[$class: 'LocalBranch'],
                                    [$class: 'WipeWorkspace'],
