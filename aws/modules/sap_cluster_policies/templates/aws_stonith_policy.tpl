@@ -20,10 +20,9 @@
                 "ec2:StartInstances",
                 "ec2:StopInstances"
             ],
-            "Resource": [
-                "arn:aws:ec2:${region}:${aws_account_id}:instance/${ec2_instance1}",
-                "arn:aws:ec2:${region}:${aws_account_id}:instance/${ec2_instance2}"
-            ]
+            "Resource": ${jsonencode([
+                for ec2_instance in ec2_instances : "arn:aws:ec2:${region}:${aws_account_id}:instance/${ec2_instance}"
+            ])}
         }
     ]
 }
