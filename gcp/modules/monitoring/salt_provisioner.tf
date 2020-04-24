@@ -27,6 +27,8 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 monitoring_enabled: ${var.monitoring_enabled}
 monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
+drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_enabled ? var.drbd_ips : []))}]
+nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.netweaver_enabled ? var.netweaver_ips : []))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
     destination = "/tmp/grains"

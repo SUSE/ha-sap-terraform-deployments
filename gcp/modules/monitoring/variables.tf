@@ -66,6 +66,30 @@ variable "monitoring_enabled" {
   default     = false
 }
 
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  type        = bool
+  default     = false
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_enabled" {
+  description = "enable SAP Netweaver cluster deployment"
+  type        = bool
+  default     = false
+}
+
+variable "netweaver_ips" {
+  description = "ip addresses to set to the netweaver cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

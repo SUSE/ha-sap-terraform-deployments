@@ -138,6 +138,10 @@ module "monitoring" {
   additional_packages    = var.additional_packages
   monitoring_srv_ip      = var.monitoring_srv_ip
   monitoring_enabled     = var.monitoring_enabled
+  drbd_enabled           = var.drbd_enabled
+  drbd_ips               = var.drbd_ips
+  netweaver_enabled      = var.netweaver_enabled
+  netweaver_ips          = var.netweaver_virtual_ips
   provisioner            = var.provisioner
   background             = var.background
   on_destroy_dependencies = [
