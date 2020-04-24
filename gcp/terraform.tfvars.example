@@ -1,10 +1,31 @@
+# GCP project id
 project = "my-project"
 
 # Credentials file for GCP
 gcp_credentials_file = "my-project.json"
 
-# Internal IPv4 range
+# Region where to deploy the configuration
+region = "europe-west1"
+
+# Use an already existing vpc
+#vpc_name = "my-vpc"
+
+# Use an already existing subnet in this virtual network
+#subnet_name = "my-subnet"
+
+# vpc address range in CIDR notation
+# Only used if the vpc is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vpc address range set the value to an empty string
+# To define custom ranges
 #ip_cidr_range = "10.0.0.0/24"
+# Or to use already existing address ranges
+#ip_cidr_range = ""
+
+# SSH private key file
+private_key_location = "/path/to/your/private/ssh/key"
+
+# SSH public key file
+public_key_location = "/path/to/your/public/ssh/key"
 
 # IP for iSCSI server
 #iscsi_srv_ip = "10.0.0.253"
@@ -26,16 +47,7 @@ hana_backup_disk_type = "pd-standard"
 hana_backup_disk_size = "416"
 
 # HANA cluster vip
-hana_cluster_vip = "10.0.1.200"
-
-# SSH private key file
-private_key_location = "/path/to/your/private/ssh/key"
-
-# SSH public key file
-public_key_location = "/path/to/your/public/ssh/key"
-
-# Region where to deploy the configuration
-region = "europe-west1"
+#hana_cluster_vip = "10.0.1.200"
 
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
 sap_hana_deployment_bucket = "MyHanaBucket/51053381"

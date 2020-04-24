@@ -15,22 +15,22 @@ module "local_execution" {
 # Netweaver virtual ips: 10.0.1.34, 10.0.1.35, 10.0.1.36, 10.0.1.37
 # If the addresses are provided by the user they will always have preference
 locals {
-  iscsi_srv_ip          = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(var.ip_cidr_range, 4)
-  monitoring_srv_ip     = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(var.ip_cidr_range, 5)
+  iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
+  monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
 
-  hana_ip_start         = 10
-  hana_ips              = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(var.ip_cidr_range, ip_index)]
-  hana_cluster_vip      = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(var.ip_cidr_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
+  hana_ip_start    = 10
+  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
-  drbd_ip_start         = 20
-  drbd_ips              = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(var.ip_cidr_range, ip_index)]
-  drbd_cluster_vip      = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(var.ip_cidr_range, -8, 0), 256 + local.drbd_ip_start + 2)
+  drbd_ip_start    = 20
+  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
+  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
 
   # 4 is hardcoded for netweaver because we always deploy 4 machines
-  netweaver_ip_start   = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.ip_cidr_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(cidrsubnet(var.ip_cidr_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_ip_start    = 30
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.subnet_address_range, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 }
 
 module "drbd_node" {
@@ -38,8 +38,8 @@ module "drbd_node" {
   drbd_count             = var.drbd_enabled == true ? 2 : 0
   machine_type           = var.drbd_machine_type
   compute_zones          = data.google_compute_zones.available.names
-  network_name           = google_compute_network.ha_network.name
-  network_subnet_name    = google_compute_subnetwork.ha_subnet.name
+  network_name           = local.vpc_name
+  network_subnet_name    = local.subnet_name
   drbd_image             = var.drbd_image
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type
@@ -70,8 +70,8 @@ module "netweaver_node" {
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
   machine_type               = var.netweaver_machine_type
   compute_zones              = data.google_compute_zones.available.names
-  network_name               = google_compute_network.ha_network.name
-  network_subnet_name        = google_compute_subnetwork.ha_subnet.name
+  network_name               = local.vpc_name
+  network_subnet_name        = local.subnet_name
   netweaver_image            = var.netweaver_image
   gcp_credentials_file       = var.gcp_credentials_file
   network_domain             = "tf.local"
@@ -110,8 +110,8 @@ module "hana_node" {
   hana_count                 = var.hana_count
   machine_type               = var.machine_type
   compute_zones              = data.google_compute_zones.available.names
-  network_name               = google_compute_network.ha_network.name
-  network_subnet_name        = google_compute_subnetwork.ha_subnet.name
+  network_name               = local.vpc_name
+  network_subnet_name        = local.subnet_name
   init_type                  = var.init_type
   sles4sap_boot_image        = var.sles4sap_boot_image
   gcp_credentials_file       = var.gcp_credentials_file
@@ -156,7 +156,7 @@ module "hana_node" {
 module "monitoring" {
   source                 = "./modules/monitoring"
   compute_zones          = data.google_compute_zones.available.names
-  network_subnet_name    = google_compute_subnetwork.ha_subnet.name
+  network_subnet_name    = local.subnet_name
   sles4sap_boot_image    = var.sles4sap_boot_image
   host_ips               = local.hana_ips
   public_key_location    = var.public_key_location
@@ -183,7 +183,7 @@ module "iscsi_server" {
   source                    = "./modules/iscsi_server"
   machine_type_iscsi_server = var.machine_type_iscsi_server
   compute_zones             = data.google_compute_zones.available.names
-  network_subnet_name       = google_compute_subnetwork.ha_subnet.name
+  network_subnet_name       = local.subnet_name
   iscsi_server_boot_image   = var.iscsi_server_boot_image
   iscsi_srv_ip              = local.iscsi_srv_ip
   iscsidev                  = var.iscsidev

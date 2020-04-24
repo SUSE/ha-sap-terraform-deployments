@@ -15,6 +15,30 @@ variable "gcp_credentials_file" {
   type        = string
 }
 
+variable "vpc_name" {
+  description = "Already existing vpc name used by the created infrastructure. If it's not set a new one will be created"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created"
+  type        = string
+  default     = ""
+}
+
+variable "create_firewall_rules" {
+  description = "Create predifined firewall rules for the connections outside the network (internal connections are always allowed). Set to false if custom firewall rules are already created for the used network"
+  type        = bool
+  default     = true
+}
+
+variable "ip_cidr_range" {
+  description = "Internal IPv4 range of the created network"
+  type        = string
+  default     = "10.0.0.0/24"
+}
+
 variable "public_key_location" {
   description = "Path to a SSH public key used to connect to the created machines"
   type        = string
@@ -23,12 +47,6 @@ variable "public_key_location" {
 variable "private_key_location" {
   description = "Path to a SSH private key used to connect to the created machines"
   type        = string
-}
-
-variable "ip_cidr_range" {
-  description = "Internal IPv4 range of the created network"
-  type        = string
-  default     = "10.0.0.0/24"
 }
 
 # Deployment variables
