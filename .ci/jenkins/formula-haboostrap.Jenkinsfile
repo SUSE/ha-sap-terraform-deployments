@@ -3,7 +3,7 @@
  */
 
 pipeline {
-    agent { node { label 'sles-sap' } }
+    agent { node { label 'caasp-team-private-integration' } }
 
     environment {
         PR_MANAGER = 'ci/pr-manager'
