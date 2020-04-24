@@ -27,6 +27,7 @@ variable "private_key_location" {
 
 variable "ip_cidr_range" {
   description = "Internal IPv4 range of the created network"
+  type        = string
   default     = "10.0.0.0/24"
 }
 
@@ -133,6 +134,7 @@ variable "sles4sap_boot_image" {
 variable "host_ips" {
   description = "ip addresses to set to the nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
+  default     = []
 }
 
 variable "sap_hana_deployment_bucket" {
@@ -221,6 +223,7 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+  default     = ""
 }
 
 variable "scenario_type" {
@@ -257,6 +260,7 @@ variable "machine_type_iscsi_server" {
 variable "iscsi_srv_ip" {
   description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
   type        = string
+  default     = ""
 }
 
 variable "iscsidev" {
