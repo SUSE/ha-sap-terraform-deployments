@@ -1,40 +1,7 @@
-provider "libvirt" {
-  uri = var.qemu_uri
-}
-
-// ---------------------------------------
-// this 2 resources are shared among the modules
-// baseimage for hana and monitoring modules.
-// you can also change it for each modules
-// baseimage is "cloned" and used centrally by other domains
-resource "libvirt_volume" "base_image" {
-  name   = "${terraform.workspace}-baseimage"
-  source = var.base_image
-  pool   = var.storage_pool
-}
-
-// the network used by all modules
-resource "libvirt_network" "isolated_network" {
-  name      = "${terraform.workspace}-isolated"
-  bridge    = var.isolated_network_bridge
-  mode      = "none"
-  addresses = [var.iprange]
-  dhcp {
-    enabled = "false"
-  }
-  dns {
-    enabled = true
-  }
-  autostart = true
-}
-
-// Pre deployment local excution
 module "local_execution" {
   source  = "../generic_modules/local_exec"
   enabled = var.pre_deployment
 }
-
-// ---------------------------------------
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
@@ -56,15 +23,6 @@ module "iscsi_server" {
   background             = var.background
 }
 
-module "sbd_disk" {
-  source            = "./modules/shared_disk"
-  shared_disk_count = var.shared_storage_type == "shared-disk" ? 1 : 0
-  name              = "sbd"
-  pool              = var.storage_pool
-  shared_disk_size  = 104857600
-}
-
-// hana01 and hana02
 module "hana_node" {
   source                 = "./modules/hana_node"
   name                   = "hana"
@@ -100,15 +58,6 @@ module "hana_node" {
   monitoring_enabled     = var.monitoring_enabled
 }
 
-module "drbd_sbd_disk" {
-  source            = "./modules/shared_disk"
-  shared_disk_count = var.drbd_enabled == true && var.drbd_shared_storage_type == "shared-disk" ? 1 : 0
-  name              = "drbd-sbd"
-  pool              = var.storage_pool
-  shared_disk_size  = 104857600
-}
-
-// drbd01 and drbd02
 module "drbd_node" {
   source                 = "./modules/drbd_node"
   name                   = "drbd"
@@ -155,14 +104,6 @@ module "monitoring" {
   monitored_hosts        = var.host_ips
   drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
   nw_monitored_hosts     = var.netweaver_enabled ? var.nw_virtual_ips : []
-}
-
-module "nw_shared_disk" {
-  source            = "./modules/shared_disk"
-  shared_disk_count = var.netweaver_enabled == true ? 1 : 0
-  name              = "netweaver-shared"
-  pool              = var.storage_pool
-  shared_disk_size  = 68719476736
 }
 
 module "netweaver_node" {
