@@ -60,7 +60,7 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = "${var.drbd_cluster_vip}:/HA1"
-  hana_cluster_vip           = var.hana_cluster_vip
+  hana_ip                    = var.hana_cluster_vip
   virtual_host_ips           = var.netweaver_virtual_ips
   reg_code                   = var.reg_code
   reg_email                  = var.reg_email

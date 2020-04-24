@@ -145,8 +145,8 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
-variable "hana_cluster_vip" {
-  description = "HANA cluster vip"
+variable "hana_ip" {
+  description = "Ip address of the hana database"
   type        = string
 }
 
