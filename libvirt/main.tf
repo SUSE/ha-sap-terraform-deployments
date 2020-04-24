@@ -40,8 +40,8 @@ module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   iscsi_image            = var.iscsi_image
-  vcpu                   = 2
-  memory                 = 4096
+  vcpu                   = var.iscsi_vcpu
+  memory                 = var.iscsi_memory
   bridge                 = "br0"
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
@@ -61,7 +61,7 @@ module "sbd_disk" {
   shared_disk_count = var.shared_storage_type == "shared-disk" ? 1 : 0
   name              = "sbd"
   pool              = var.storage_pool
-  shared_disk_size  = 104857600
+  shared_disk_size  = var.sbd_disk_size
 }
 
 // hana01 and hana02
@@ -70,19 +70,19 @@ module "hana_node" {
   name                   = "hana"
   base_image_id          = libvirt_volume.base_image.id
   hana_count             = 2
-  vcpu                   = 4
-  memory                 = 32678
+  vcpu                   = var.hana_node_vcpu
+  memory                 = var.hana_node_memory
   bridge                 = "br0"
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
-  host_ips               = var.host_ips
+  host_ips               = var.hana_host_ips
   hana_inst_folder       = var.hana_inst_folder
   hana_inst_media        = var.hana_inst_media
   hana_platform_folder   = var.hana_platform_folder
   hana_sapcar_exe        = var.hana_sapcar_exe
   hdbserver_sar          = var.hdbserver_sar
   hana_extract_dir       = var.hana_extract_dir
-  hana_disk_size         = "68719476736"
+  hana_disk_size         = var.hana_node_disk_size
   hana_fstype            = var.hana_fstype
   shared_storage_type    = var.shared_storage_type
   sbd_disk_id            = module.sbd_disk.id
@@ -105,7 +105,7 @@ module "drbd_sbd_disk" {
   shared_disk_count = var.drbd_enabled == true && var.drbd_shared_storage_type == "shared-disk" ? 1 : 0
   name              = "drbd-sbd"
   pool              = var.storage_pool
-  shared_disk_size  = 104857600
+  shared_disk_size  = var.drbd_shared_disk_size
 }
 
 // drbd01 and drbd02
@@ -114,11 +114,11 @@ module "drbd_node" {
   name                   = "drbd"
   base_image_id          = libvirt_volume.base_image.id
   drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
-  vcpu                   = 1
-  memory                 = 1024
+  vcpu                   = var.drbd_node_vcpu
+  memory                 = var.drbd_node_memory
   bridge                 = "br0"
   host_ips               = var.drbd_ips
-  drbd_disk_size         = "10737418240" #10GB
+  drbd_disk_size         = var.drbd_disk_size
   shared_storage_type    = var.drbd_shared_storage_type
   iscsi_srv_ip           = var.iscsi_srv_ip
   reg_code               = var.reg_code
@@ -140,8 +140,8 @@ module "monitoring" {
   monitoring_enabled     = var.monitoring_enabled
   monitoring_image       = var.monitoring_image
   base_image_id          = libvirt_volume.base_image.id
-  vcpu                   = 4
-  memory                 = 4095
+  vcpu                   = var.monitoring_vcpu
+  memory                 = var.monitoring_memory
   bridge                 = "br0"
   pool                   = var.storage_pool
   network_id             = libvirt_network.isolated_network.id
@@ -152,9 +152,9 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  monitored_hosts        = var.host_ips
+  monitored_hosts        = var.hana_host_ips
   drbd_monitored_hosts   = var.drbd_enabled ? var.drbd_ips : []
-  nw_monitored_hosts     = var.netweaver_enabled ? var.nw_virtual_ips : []
+  nw_monitored_hosts     = var.netweaver_enabled ? var.netweaver_ips : []
 }
 
 module "nw_shared_disk" {
@@ -162,7 +162,7 @@ module "nw_shared_disk" {
   shared_disk_count = var.netweaver_enabled == true ? 1 : 0
   name              = "netweaver-shared"
   pool              = var.storage_pool
-  shared_disk_size  = 68719476736
+  shared_disk_size  = var.netweaver_shared_disk_size
 }
 
 module "netweaver_node" {
@@ -170,13 +170,13 @@ module "netweaver_node" {
   name                       = "netweaver"
   base_image_id              = libvirt_volume.base_image.id
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
-  vcpu                       = 4
-  memory                     = 8192
+  vcpu                       = var.netweaver_node_vcpu
+  memory                     = var.netweaver_node_memory
   bridge                     = "br0"
   pool                       = var.storage_pool
   network_id                 = libvirt_network.isolated_network.id
-  host_ips                   = var.nw_ips
-  virtual_host_ips           = var.nw_virtual_ips
+  host_ips                   = var.netweaver_ips
+  virtual_host_ips           = var.netweaver_virtual_ips
   shared_disk_id             = module.nw_shared_disk.id
   netweaver_product_id       = var.netweaver_product_id
   netweaver_inst_media       = var.netweaver_inst_media
