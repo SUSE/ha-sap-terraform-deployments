@@ -74,6 +74,11 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string

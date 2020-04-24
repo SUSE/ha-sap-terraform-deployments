@@ -42,7 +42,7 @@ module "drbd_sbd_disk" {
 
 # Netweaver uses the shared disk for more things than only sbd
 # Some SAP data is stored there to enable HA stack
-module "nw_shared_disk" {
+module "netweaver_shared_disk" {
   source            = "./modules/shared_disk"
   shared_disk_count = var.netweaver_enabled == true ? 1 : 0
   name              = "netweaver-shared"

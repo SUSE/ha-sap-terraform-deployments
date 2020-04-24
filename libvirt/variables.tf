@@ -12,7 +12,7 @@ variable "storage_pool" {
 
 variable "iprange" {
   description = "IP range of the isolated network"
-  default     = "192.168.106.0/24"
+  type        = string
 }
 
 variable "isolated_network_bridge" {
@@ -80,6 +80,12 @@ variable "base_image" {
   type        = string
 }
 
+variable "hana_count" {
+  description = "Number of hana nodes"
+  type        = number
+  default     = 2
+}
+
 variable "hana_inst_media" {
   description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
@@ -124,7 +130,13 @@ variable "hana_fstype" {
 variable "host_ips" {
   description = "IP addresses of the hana nodes"
   type        = list(string)
-  default     = ["192.168.106.15", "192.168.106.16"]
+  default     = []
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
 }
 
 variable "scenario_type" {
@@ -149,7 +161,7 @@ variable "iscsi_image" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address (only used if shared_storage_type is iscsi)"
   type        = string
-  default     = "192.168.106.21"
+  default     = ""
 }
 
 variable "iscsi_disks" {
@@ -174,7 +186,7 @@ variable "monitoring_image" {
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
-  default     = "192.168.106.22"
+  default     = ""
 }
 
 # Netweaver related variables
@@ -185,16 +197,16 @@ variable "netweaver_enabled" {
   default     = false
 }
 
-variable "nw_ips" {
+variable "netweaver_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
-  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
+  default     = []
 }
 
-variable "nw_virtual_ips" {
+variable "netweaver_virtual_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
-  default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
+  default     = []
 }
 
 variable "netweaver_nfs_share" {
@@ -267,7 +279,13 @@ variable "drbd_count" {
 variable "drbd_ips" {
   description = "IP addresses of the drbd nodes"
   type        = list(string)
-  default     = ["192.168.106.23", "192.168.106.24"]
+  default     = []
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
 }
 
 variable "drbd_shared_storage_type" {

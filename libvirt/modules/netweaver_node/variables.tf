@@ -60,6 +60,11 @@ variable "shared_disk_id" {
   type        = string
 }
 
+variable "hana_ip" {
+  type        = string
+  description = "Ip address of the hana database"
+}
+
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string

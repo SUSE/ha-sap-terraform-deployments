@@ -28,6 +28,7 @@ authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
+hana_ip: ${var.hana_ip}
 provider: libvirt
 role: netweaver_node
 netweaver_product_id: ${var.netweaver_product_id}

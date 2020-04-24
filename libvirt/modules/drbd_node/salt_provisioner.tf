@@ -28,6 +28,7 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
+drbd_cluster_vip: ${var.drbd_cluster_vip}
 provider: libvirt
 role: drbd_node
 drbd_disk_device: /dev/vdb

@@ -55,10 +55,8 @@ netweaver:
 # We have to unify the usage of this parameter, the aws option looks better
 {%- if grains['provider'] == 'gcp' %}
     host: {{ grains['hana_cluster_vip'] }}
-{%- elif grains['provider'] in ['aws', 'azure'] %}
+{%- elif grains['provider'] in ['aws', 'azure', 'libvirt'] %}
     host: {{ grains['hana_ip'] }}
-{%- else %}
-    host: {{ iprange }}.200
 {%- endif %}
     sid: PRD
     instance: '00'
