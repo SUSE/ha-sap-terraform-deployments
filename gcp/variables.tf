@@ -228,7 +228,7 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-# Monitoring related variables	
+# Monitoring related variables
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
@@ -254,8 +254,9 @@ variable "machine_type_iscsi_server" {
   default     = "custom-1-2048"
 }
 
-variable "iscsi_ip" {
+variable "iscsi_srv_ip" {
   description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
+  type        = string
 }
 
 variable "iscsidev" {

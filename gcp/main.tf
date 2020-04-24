@@ -151,7 +151,7 @@ module "iscsi_server" {
   compute_zones             = data.google_compute_zones.available.names
   network_subnet_name       = google_compute_subnetwork.ha_subnet.name
   iscsi_server_boot_image   = var.iscsi_server_boot_image
-  iscsi_ip                  = var.iscsi_ip
+  iscsi_srv_ip              = var.iscsi_srv_ip
   iscsidev                  = var.iscsidev
   iscsi_disks               = var.iscsi_disks
   public_key_location       = var.public_key_location
