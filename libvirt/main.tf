@@ -15,33 +15,35 @@ module "local_execution" {
 # Netweaver virtual ips: 19.168.135.34, 19.168.135.35, 19.168.135.36, 19.168.135.37
 # If the addresses are provided by the user they will always have preference
 locals {
-  iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(var.iprange, 4)
-  monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(var.iprange, 5)
+  iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.iprange, 4)
+  monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.iprange, 5)
 
   hana_ip_start    = 10
-  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(var.iprange, ip_index)]
-  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.iprange, local.hana_ip_start + var.hana_count)
+  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
+  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
   drbd_ip_start    = 20
-  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(var.iprange, ip_index)]
-  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(var.iprange, local.drbd_ip_start + 2)
+  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.iprange, ip_index)]
+  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.iprange, local.drbd_ip_start + 2)
 
   # 4 is hardcoded for netweaver because we always deploy 4 machines
   netweaver_ip_start    = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.iprange, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.iprange, ip_index + 4)]
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index + 4)]
 }
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
-  iscsi_image            = var.iscsi_image
+  source_image           = var.iscsi_source_image
+  image_name             = var.iscsi_source_image != "" ? "" : (var.iscsi_image_name != "" ? var.iscsi_image_name : local.base_image_name)
   vcpu                   = 2
   memory                 = 4096
   bridge                 = "br0"
-  pool                   = var.storage_pool
-  network_id             = libvirt_network.isolated_network.id
+  storage_pool           = var.storage_pool
+  isolated_network_id    = local.internal_network_id
+  isolated_network_name  = local.internal_network_name
   iscsi_srv_ip           = local.iscsi_srv_ip
   iscsidev               = "/dev/vdb"
   iscsi_disks            = var.iscsi_disks
@@ -56,13 +58,15 @@ module "iscsi_server" {
 module "hana_node" {
   source                 = "./modules/hana_node"
   name                   = "hana"
-  base_image_id          = libvirt_volume.base_image.id
+  source_image           = var.hana_source_image
+  image_name             = var.hana_source_image != "" ? "" : (var.hana_image_name != "" ? var.hana_image_name : local.base_image_name)
   hana_count             = var.hana_count
   vcpu                   = 4
   memory                 = 32678
   bridge                 = "br0"
-  pool                   = var.storage_pool
-  network_id             = libvirt_network.isolated_network.id
+  isolated_network_id    = local.internal_network_id
+  isolated_network_name  = local.internal_network_name
+  storage_pool           = var.storage_pool
   host_ips               = local.hana_ips
   hana_inst_folder       = var.hana_inst_folder
   hana_inst_media        = var.hana_inst_media
@@ -92,7 +96,8 @@ module "hana_node" {
 module "drbd_node" {
   source                 = "./modules/drbd_node"
   name                   = "drbd"
-  base_image_id          = libvirt_volume.base_image.id
+  source_image           = var.drbd_source_image
+  image_name             = var.drbd_source_image != "" ? "" : (var.drbd_image_name != "" ? var.drbd_image_name : local.base_image_name)
   drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
   vcpu                   = 1
   memory                 = 1024
@@ -110,8 +115,9 @@ module "drbd_node" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  network_id             = libvirt_network.isolated_network.id
-  pool                   = var.storage_pool
+  isolated_network_id    = local.internal_network_id
+  isolated_network_name  = local.internal_network_name
+  storage_pool           = var.storage_pool
   sbd_disk_id            = module.drbd_sbd_disk.id
 }
 
@@ -119,13 +125,14 @@ module "monitoring" {
   source                 = "./modules/monitoring"
   name                   = "monitoring"
   monitoring_enabled     = var.monitoring_enabled
-  monitoring_image       = var.monitoring_image
-  base_image_id          = libvirt_volume.base_image.id
+  source_image           = var.monitoring_source_image
+  image_name             = var.monitoring_source_image != "" ? "" : (var.monitoring_image_name != "" ? var.monitoring_image_name : local.base_image_name)
   vcpu                   = 4
   memory                 = 4095
   bridge                 = "br0"
-  pool                   = var.storage_pool
-  network_id             = libvirt_network.isolated_network.id
+  storage_pool           = var.storage_pool
+  isolated_network_id    = local.internal_network_id
+  isolated_network_name  = local.internal_network_name
   monitoring_srv_ip      = local.monitoring_srv_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -141,13 +148,15 @@ module "monitoring" {
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
   name                       = "netweaver"
-  base_image_id              = libvirt_volume.base_image.id
+  source_image               = var.netweaver_source_image
+  image_name                 = var.netweaver_source_image != "" ? "" : (var.netweaver_image_name != "" ? var.netweaver_image_name : local.base_image_name)
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
   vcpu                       = 4
   memory                     = 8192
   bridge                     = "br0"
-  pool                       = var.storage_pool
-  network_id                 = libvirt_network.isolated_network.id
+  storage_pool               = var.storage_pool
+  isolated_network_id        = local.internal_network_id
+  isolated_network_name      = local.internal_network_name
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
   shared_disk_id             = module.netweaver_shared_disk.id

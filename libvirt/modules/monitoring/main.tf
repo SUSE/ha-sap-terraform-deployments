@@ -2,12 +2,12 @@ terraform {
   required_version = ">= 0.12"
 }
 
-resource "libvirt_volume" "monitoring_main_disk" {
-  name            = format("%s-monitoring-disk", terraform.workspace)
-  source          = var.monitoring_image
-  base_volume_id  = var.monitoring_image == "" ? var.base_image_id: ""
-  pool            = var.pool
-  count           = var.monitoring_enabled == true ? 1 : 0
+resource "libvirt_volume" "monitoring_image_disk" {
+  count            = var.monitoring_enabled == true ? 1 : 0
+  name             = format("%s-monitoring-disk", terraform.workspace)
+  source           = var.source_image
+  base_volume_name = var.image_name
+  pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "monitoring_domain" {
@@ -18,7 +18,7 @@ resource "libvirt_domain" "monitoring_domain" {
   qemu_agent = true
 
   disk {
-      volume_id = libvirt_volume.monitoring_main_disk.0.id
+    volume_id = libvirt_volume.monitoring_image_disk.0.id
   }
 
   network_interface {
@@ -30,7 +30,8 @@ resource "libvirt_domain" "monitoring_domain" {
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.network_id
+    network_name   = var.isolated_network_name
+    network_id     = var.isolated_network_id
     hostname       = "${terraform.workspace}-${var.name}"
     addresses      = [var.monitoring_srv_ip]
   }

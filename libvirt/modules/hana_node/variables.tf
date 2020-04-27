@@ -148,9 +148,16 @@ variable "background" {
 
 // Provider-specific variables
 
-variable "base_image_id" {
-  description = "base image id which the module will use. You can create a baseimage and module will use it. Created in main.tf"
+variable "source_image" {
+  description = "qcow2 image used to create the image"
   type        = string
+  default     = ""
+}
+
+variable "image_name" {
+  description = "Already existing volume name with a sles4sap image that will be used. It's only used if source_image is not provided"
+  type        = string
+  default     = ""
 }
 
 variable "memory" {
@@ -168,9 +175,19 @@ variable "mac" {
   default     = ""
 }
 
-variable "network_id" {
-  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+variable "isolated_network_id" {
+  description = "Network id, internally created by terraform"
   type        = string
+}
+
+variable "isolated_network_name" {
+  description = "Network name to attach the isolated network interface"
+  type        = string
+}
+
+variable "storage_pool" {
+  description = "libvirt storage pool name for VM disks"
+  default     = "default"
 }
 
 variable "network_name" {
@@ -181,11 +198,6 @@ variable "network_name" {
 variable "bridge" {
   description = "a bridge device name available on the libvirt host, leave default for NAT"
   default     = ""
-}
-
-variable "pool" {
-  description = "libvirt storage pool name for VM disks"
-  default     = "default"
 }
 
 // monitoring

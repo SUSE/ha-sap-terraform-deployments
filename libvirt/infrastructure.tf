@@ -2,14 +2,23 @@ provider "libvirt" {
   uri = var.qemu_uri
 }
 
+locals {
+  internal_network_name = var.network_name
+  internal_network_id   = var.network_name != "" ? "" : libvirt_network.isolated_network.0.id
+  base_image_name       = var.base_source_image != "" ? libvirt_volume.base_image.0.name : var.base_image_name != "" ? var.base_image_name : ""
+  iprange               = var.iprange
+}
+
 resource "libvirt_volume" "base_image" {
+  count  = var.base_source_image != "" ? 1 : 0
   name   = "${terraform.workspace}-baseimage"
-  source = var.base_image
+  source = var.base_source_image
   pool   = var.storage_pool
 }
 
 # Internal network
 resource "libvirt_network" "isolated_network" {
+  count     = var.network_name == "" ? 1 : 0
   name      = "${terraform.workspace}-isolated"
   bridge    = var.isolated_network_bridge
   mode      = "none"
