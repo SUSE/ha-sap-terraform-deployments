@@ -770,27 +770,27 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sap_enqueue_server_enqueue_requests",
+          "expr": "rate(sap_enqueue_server_enqueue_requests[5m])",
           "legendFormat": "Lock",
           "refId": "A"
         },
         {
-          "expr": "sap_enqueue_server_enqueue_rejects",
+          "expr": "rate(sap_enqueue_server_enqueue_rejects[5m])",
           "legendFormat": "Rejected",
           "refId": "B"
         },
         {
-          "expr": "sap_enqueue_server_dequeue_requests",
+          "expr": "rate(sap_enqueue_server_dequeue_requests[5m])",
           "legendFormat": "Release",
           "refId": "C"
         },
         {
-          "expr": "sap_enqueue_server_dequeue_all_requests",
+          "expr": "rate(sap_enqueue_server_dequeue_all_requests[5m])",
           "legendFormat": "LUW release",
           "refId": "D"
         },
         {
-          "expr": "sap_enqueue_server_cleanup_requests",
+          "expr": "rate(sap_enqueue_server_cleanup_requests[5m])",
           "legendFormat": "Server release",
           "refId": "E"
         }
@@ -799,7 +799,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Requests",
+      "title": "Requests / sec",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -815,7 +815,7 @@
       },
       "yaxes": [
         {
-          "decimals": 0,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -824,7 +824,7 @@
           "show": true
         },
         {
-          "decimals": 0,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -880,12 +880,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sap_enqueue_server_enqueue_errors",
+          "expr": "rate(sap_enqueue_server_enqueue_errors[5m])",
           "legendFormat": "Lock",
           "refId": "A"
         },
         {
-          "expr": "sap_enqueue_server_dequeue_errors",
+          "expr": "rate(sap_enqueue_server_dequeue_errors[5m])",
           "legendFormat": "Release",
           "refId": "B"
         }
@@ -894,7 +894,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Errors",
+      "title": "Errors / sec",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -910,7 +910,7 @@
       },
       "yaxes": [
         {
-          "decimals": 0,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -919,7 +919,7 @@
           "show": true
         },
         {
-          "decimals": 0,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -986,7 +986,7 @@
       "targets": [
         {
           "expr": "sap_dispatcher_queue_now",
-          "legendFormat": "{{type}} {{instance}}",
+          "legendFormat": "{{type}} {{instance_name}}",
           "refId": "A"
         }
       ],
@@ -1015,7 +1015,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1024,7 +1024,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         }
       ],
@@ -1049,7 +1049,6 @@
           ],
           "defaults": {
             "mappings": [],
-            "max": 40,
             "min": 0,
             "thresholds": [
               {
@@ -1076,7 +1075,7 @@
         {
           "expr": "sap_dispatcher_queue_high",
           "instant": true,
-          "legendFormat": "{{type}} {{instance}}",
+          "legendFormat": "{{type}} {{instance_name}}",
           "refId": "A"
         }
       ],
@@ -1128,7 +1127,7 @@
         {
           "expr": "sap_dispatcher_queue_max",
           "instant": true,
-          "legendFormat": "{{type}} {{instance}}",
+          "legendFormat": "{{type}} {{instance_name}}",
           "refId": "A"
         }
       ],
@@ -1176,8 +1175,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sap_dispatcher_queue_reads",
-          "legendFormat": "{{type}} {{instance}}",
+          "expr": "rate(sap_dispatcher_queue_reads[5m])",
+          "legendFormat": "{{type}} {{instance_name}}",
           "refId": "A"
         }
       ],
@@ -1185,7 +1184,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Dispatcher Queues Reads",
+      "title": "Dispatcher Queues Reads / sec",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1261,8 +1260,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sap_dispatcher_queue_writes",
-          "legendFormat": "{{type}} {{instance}}",
+          "expr": "rate(sap_dispatcher_queue_writes[5m])",
+          "legendFormat": "{{type}} {{instance_name}}",
           "refId": "A"
         }
       ],
@@ -1270,7 +1269,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Dispatcher Queue Writes",
+      "title": "Dispatcher Queue Writes / sec",
       "tooltip": {
         "shared": true,
         "sort": 0,
