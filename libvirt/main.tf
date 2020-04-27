@@ -19,7 +19,7 @@ locals {
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.iprange, 5)
 
   hana_ip_start    = 10
-  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
+  hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
@@ -38,8 +38,8 @@ module "iscsi_server" {
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   source_image           = var.iscsi_source_image
   image_name             = var.iscsi_source_image != "" ? "" : (var.iscsi_image_name != "" ? var.iscsi_image_name : local.base_image_name)
-  vcpu                   = 2
-  memory                 = 4096
+  vcpu                   = var.iscsi_vcpu
+  memory                 = var.iscsi_memory
   bridge                 = "br0"
   storage_pool           = var.storage_pool
   isolated_network_id    = local.internal_network_id
@@ -61,8 +61,8 @@ module "hana_node" {
   source_image           = var.hana_source_image
   image_name             = var.hana_source_image != "" ? "" : (var.hana_image_name != "" ? var.hana_image_name : local.base_image_name)
   hana_count             = var.hana_count
-  vcpu                   = 4
-  memory                 = 32678
+  vcpu                   = var.hana_node_vcpu
+  memory                 = var.hana_node_memory
   bridge                 = "br0"
   isolated_network_id    = local.internal_network_id
   isolated_network_name  = local.internal_network_name
@@ -74,7 +74,7 @@ module "hana_node" {
   hana_sapcar_exe        = var.hana_sapcar_exe
   hdbserver_sar          = var.hdbserver_sar
   hana_extract_dir       = var.hana_extract_dir
-  hana_disk_size         = "68719476736"
+  hana_disk_size         = var.hana_node_disk_size
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
   shared_storage_type    = var.shared_storage_type
@@ -99,12 +99,12 @@ module "drbd_node" {
   source_image           = var.drbd_source_image
   image_name             = var.drbd_source_image != "" ? "" : (var.drbd_image_name != "" ? var.drbd_image_name : local.base_image_name)
   drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
-  vcpu                   = 1
-  memory                 = 1024
+  vcpu                   = var.drbd_node_vcpu
+  memory                 = var.drbd_node_memory
   bridge                 = "br0"
   host_ips               = local.drbd_ips
   drbd_cluster_vip       = local.drbd_cluster_vip
-  drbd_disk_size         = "10737418240" #10GB
+  drbd_disk_size         = var.drbd_disk_size
   shared_storage_type    = var.drbd_shared_storage_type
   iscsi_srv_ip           = module.iscsi_server.output_data.private_addresses.0
   reg_code               = var.reg_code
@@ -127,8 +127,8 @@ module "monitoring" {
   monitoring_enabled     = var.monitoring_enabled
   source_image           = var.monitoring_source_image
   image_name             = var.monitoring_source_image != "" ? "" : (var.monitoring_image_name != "" ? var.monitoring_image_name : local.base_image_name)
-  vcpu                   = 4
-  memory                 = 4095
+  vcpu                   = var.monitoring_vcpu
+  memory                 = var.monitoring_memory
   bridge                 = "br0"
   storage_pool           = var.storage_pool
   isolated_network_id    = local.internal_network_id
@@ -151,8 +151,8 @@ module "netweaver_node" {
   source_image               = var.netweaver_source_image
   image_name                 = var.netweaver_source_image != "" ? "" : (var.netweaver_image_name != "" ? var.netweaver_image_name : local.base_image_name)
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
-  vcpu                       = 4
-  memory                     = 8192
+  vcpu                       = var.netweaver_node_vcpu
+  memory                     = var.netweaver_node_memory
   bridge                     = "br0"
   storage_pool               = var.storage_pool
   isolated_network_id        = local.internal_network_id

@@ -1,5 +1,6 @@
+#
 # Libvirt related variables
-
+#
 variable "qemu_uri" {
   description = "URI to connect with the qemu-service."
   default     = "qemu:///system"
@@ -7,6 +8,7 @@ variable "qemu_uri" {
 
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
+  type        = string
   default     = "default"
 }
 
@@ -40,7 +42,7 @@ variable "base_image_name" {
 }
 
 # Deployment variables
-
+#
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -91,6 +93,7 @@ variable "background" {
   default     = false
 }
 
+#
 # Hana related variables
 
 variable "hana_count" {
@@ -109,6 +112,30 @@ variable "hana_image_name" {
   description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if hana_source_image is not provided"
   type        = string
   default     = ""
+}
+
+variable "hana_node_vcpu" {
+  description = "Number of CPUs for the HANA machines"
+  type        = number
+  default     = 4
+}
+
+variable "hana_node_memory" {
+  description = "Memory (in MBs) for the HANA machines"
+  type        = number
+  default     = 32678
+}
+
+variable "hana_node_disk_size" {
+  description = "Disk size (in bytes) for the HANA machines"
+  type        = number
+  default     = 68719476736
+}
+
+variable "hana_ips" {
+  description = "IP addresses of the HANA nodes"
+  type        = list(string)
+  default     = []
 }
 
 variable "hana_inst_media" {
@@ -152,12 +179,6 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
-variable "host_ips" {
-  description = "IP addresses of the hana nodes"
-  type        = list(string)
-  default     = []
-}
-
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
@@ -169,12 +190,31 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-# Iscsi server related variables
+#
+# iSCSI server related variables
+#
+variable "iscsi_vcpu" {
+  description = "Number of CPUs for the iSCSI server"
+  type        = number
+  default     = 2
+}
+
+variable "iscsi_memory" {
+  description = "Memory size (in MBs) for the iSCSI server"
+  type        = number
+  default     = 4096
+}
 
 variable "shared_storage_type" {
   description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string
   default     = "iscsi"
+}
+
+variable "sbd_disk_size" {
+  description = "Disk size (in bytes) for the SBD disk"
+  type        = number
+  default     = 10737418240
 }
 
 variable "iscsi_source_image" {
@@ -190,18 +230,20 @@ variable "iscsi_image_name" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address (only used if shared_storage_type is iscsi)"
+  description = "iSCSI server address (only used if shared_storage_type is iscsi)"
   type        = string
   default     = ""
 }
 
 variable "iscsi_disks" {
   description = "Number of partitions attach to iscsi server. 0 means `all`."
+  type        = number
   default     = 0
 }
 
+#
 # Monitoring related variables
-
+#
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -220,14 +262,27 @@ variable "monitoring_image_name" {
   default     = ""
 }
 
+variable "monitoring_vcpu" {
+  description = "Number of CPUs for the monitor machine"
+  type        = number
+  default     = 4
+}
+
+variable "monitoring_memory" {
+  description = "Memory (in MBs) for the monitor machine"
+  type        = number
+  default     = 4096
+}
+
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
   default     = ""
 }
 
+#
 # Netweaver related variables
-
+#
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver deployment"
   type        = bool
@@ -244,6 +299,24 @@ variable "netweaver_image_name" {
   description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if netweaver_source_image is not provided"
   type        = string
   default     = ""
+}
+
+variable "netweaver_node_vcpu" {
+  description = "Number of CPUs for the NetWeaver machines"
+  type        = number
+  default     = 4
+}
+
+variable "netweaver_node_memory" {
+  description = "Memory (in MBs) for the NetWeaver machines"
+  type        = number
+  default     = 8192
+}
+
+variable "netweaver_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the NetWeaver machines"
+  type        = number
+  default     = 68719476736
 }
 
 variable "netweaver_ips" {
@@ -312,8 +385,9 @@ variable "netweaver_additional_dvds" {
   default     = []
 }
 
+#
 # DRBD related variables
-
+#
 variable "drbd_enabled" {
   description = "Enable the drbd cluster for nfs"
   type        = bool
@@ -337,6 +411,30 @@ variable "drbd_count" {
   default     = 2
 }
 
+variable "drbd_node_vcpu" {
+  description = "Number of CPUs for the DRBD machines"
+  type        = number
+  default     = 1
+}
+
+variable "drbd_node_memory" {
+  description = "Memory (in MBs) for the DRBD machines"
+  type        = number
+  default     = 1024
+}
+
+variable "drbd_disk_size" {
+  description = "Disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 10737418240
+}
+
+variable "drbd_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 104857600
+}
+
 variable "drbd_ips" {
   description = "IP addresses of the drbd nodes"
   type        = list(string)
@@ -355,8 +453,9 @@ variable "drbd_shared_storage_type" {
   default     = "iscsi"
 }
 
+#
 # Specific QA variables
-
+#
 variable "qa_mode" {
   description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
@@ -369,8 +468,9 @@ variable "hwcct" {
   default     = false
 }
 
+#
 # Pre deployment
-
+#
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool

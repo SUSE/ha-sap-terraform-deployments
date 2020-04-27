@@ -34,7 +34,7 @@ hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 
 base_image = "url-to-your-sles4sap-image"
-#host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+#hana_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
