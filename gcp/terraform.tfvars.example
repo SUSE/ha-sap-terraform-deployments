@@ -1,13 +1,34 @@
+# GCP project id
 project = "my-project"
 
 # Credentials file for GCP
 gcp_credentials_file = "my-project.json"
 
-# Internal IPv4 range
-ip_cidr_range = "10.0.0.0/24"
+# Region where to deploy the configuration
+region = "europe-west1"
+
+# Use an already existing vpc
+#vpc_name = "my-vpc"
+
+# Use an already existing subnet in this virtual network
+#subnet_name = "my-subnet"
+
+# vpc address range in CIDR notation
+# Only used if the vpc is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vpc address range set the value to an empty string
+# To define custom ranges
+#ip_cidr_range = "10.0.0.0/24"
+# Or to use already existing address ranges
+#ip_cidr_range = ""
+
+# SSH private key file
+private_key_location = "/path/to/your/private/ssh/key"
+
+# SSH public key file
+public_key_location = "/path/to/your/public/ssh/key"
 
 # IP for iSCSI server
-iscsi_ip = "10.0.0.253"
+#iscsi_srv_ip = "10.0.0.253"
 
 # Type of VM (vCPUs and RAM)
 machine_type = "n1-highmem-32"
@@ -26,16 +47,7 @@ hana_backup_disk_type = "pd-standard"
 hana_backup_disk_size = "416"
 
 # HANA cluster vip
-hana_cluster_vip = "10.0.1.200"
-
-# SSH private key file
-private_key_location = "/path/to/your/private/ssh/key"
-
-# SSH public key file
-public_key_location = "/path/to/your/public/ssh/key"
-
-# Region where to deploy the configuration
-region = "europe-west1"
+#hana_cluster_vip = "10.0.1.200"
 
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
 sap_hana_deployment_bucket = "MyHanaBucket/51053381"
@@ -58,9 +70,6 @@ sles4sap_boot_image = "MySles4SapImage"
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/sdb"
-
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
 cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
@@ -71,19 +80,10 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order).
 # example : host_ips = ["10.0.0.2", "10.0.0.3"]
-host_ips = ["10.0.0.2", "10.0.0.3"]
+#host_ips = ["10.0.0.2", "10.0.0.3"]
 
 # Local folder where HANA installation master will be mounted
 hana_inst_folder = "/sapmedia/HANA"
-
-# Device used by node where HANA will be installed
-hana_disk_device = "/dev/sdb"
-
-# Device used by node where HANA backup will be stored
-hana_backup_device = "/dev/sdc"
-
-# Device used by node where HANA will be downloaded
-hana_inst_disk_device = "/dev/sdd"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -121,7 +121,7 @@ ha_sap_deployment_repo = ""
 #monitoring_enabled = true
 
 # IP address of the machine where Prometheus and Grafana are running
-monitoring_srv_ip = "10.0.0.4"
+#monitoring_srv_ip = "10.0.0.4"
 
 # QA variables
 

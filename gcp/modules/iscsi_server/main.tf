@@ -17,7 +17,7 @@ resource "google_compute_instance" "iscsisrv" {
 
   network_interface {
     subnetwork = var.network_subnet_name
-    network_ip = var.iscsi_ip
+    network_ip = var.iscsi_srv_ip
 
     access_config {
       nat_ip = ""

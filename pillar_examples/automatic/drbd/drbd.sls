@@ -1,3 +1,5 @@
+{% set drbd_disk_device = salt['cmd.run']('realpath '~grains['drbd_disk_device']) %}
+
 drbd:
   promotion: {{ grains['name_prefix'] }}01
 
@@ -62,15 +64,11 @@ drbd:
   resource:
     - name: "sapdata"
       device: "/dev/drbd1"
-      disk: {{ grains['drbd_disk_device'] }}1
+      disk: {{ drbd_disk_device }}1
 
       file_system: "xfs"
       mount_point: "/mnt/sapdata/HA1"
-      {%- if grains['provider'] in ['gcp', 'azure'] %}
       virtual_ip: {{ grains['drbd_cluster_vip'] }}
-      {%- else %}
-      virtual_ip: {{ ".".join(grains['host_ip'].split('.')[0:-1]) }}.201
-      {%- endif %}
 
       nodes:
         - name: {{ grains['name_prefix'] }}01

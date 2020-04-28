@@ -1,5 +1,6 @@
+#
 # Libvirt related variables
-
+#
 variable "qemu_uri" {
   description = "URI to connect with the qemu-service."
   default     = "qemu:///system"
@@ -7,12 +8,19 @@ variable "qemu_uri" {
 
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
+  type        = string
   default     = "default"
 }
 
+variable "network_name" {
+  description = "Already existing virtual network name. If it's not provided a new one will be created"
+  type        = string
+  default     = ""
+}
+
 variable "iprange" {
-  description = "IP range of the isolated network"
-  default     = "192.168.106.0/24"
+  description = "IP range of the isolated network (it must be provided even when the network_name is given, due to terraform-libvirt-provider limitations we cannot get the current network data)"
+  type        = string
 }
 
 variable "isolated_network_bridge" {
@@ -21,8 +29,20 @@ variable "isolated_network_bridge" {
   default     = ""
 }
 
-# Deployment variables
+variable "source_image" {
+  description = "Source image used to boot the machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now. Specific node images have preference over this value"
+  type        = string
+  default     = ""
+}
 
+variable "volume_name" {
+  description = "Already existing volume name used to boot the machines. It must be in the same storage pool. It's only used if source_image is not provided. Specific node images have preference over this value"
+  type        = string
+  default     = ""
+}
+
+# Deployment variables
+#
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -73,11 +93,49 @@ variable "background" {
   default     = false
 }
 
+#
 # Hana related variables
 
-variable "base_image" {
-  description = "qcow2 image used to create the hana machines"
+variable "hana_count" {
+  description = "Number of hana nodes"
+  type        = number
+  default     = 2
+}
+
+variable "hana_source_image" {
+  description = "Source image used to boot the hana machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
+  default     = ""
+}
+
+variable "hana_volume_name" {
+  description = "Already existing volume name used to boot the hana machines. It must be in the same storage pool. It's only used if source_image is not provided"
+  type        = string
+  default     = ""
+}
+
+variable "hana_node_vcpu" {
+  description = "Number of CPUs for the HANA machines"
+  type        = number
+  default     = 4
+}
+
+variable "hana_node_memory" {
+  description = "Memory (in MBs) for the HANA machines"
+  type        = number
+  default     = 32678
+}
+
+variable "hana_node_disk_size" {
+  description = "Disk size (in bytes) for the HANA machines"
+  type        = number
+  default     = 68719476736
+}
+
+variable "hana_ips" {
+  description = "IP addresses of the HANA nodes"
+  type        = list(string)
+  default     = []
 }
 
 variable "hana_inst_media" {
@@ -121,10 +179,10 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
-variable "host_ips" {
-  description = "IP addresses of the hana nodes"
-  type        = list(string)
-  default     = ["192.168.106.15", "192.168.106.16"]
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
 }
 
 variable "scenario_type" {
@@ -132,7 +190,20 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-# Iscsi server related variables
+#
+# iSCSI server related variables
+#
+variable "iscsi_vcpu" {
+  description = "Number of CPUs for the iSCSI server"
+  type        = number
+  default     = 2
+}
+
+variable "iscsi_memory" {
+  description = "Memory size (in MBs) for the iSCSI server"
+  type        = number
+  default     = 4096
+}
 
 variable "shared_storage_type" {
   description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
@@ -140,61 +211,124 @@ variable "shared_storage_type" {
   default     = "iscsi"
 }
 
-variable "iscsi_image" {
-  description = "qcow2 image used to create the iscsi machines (only used if shared_storage_type is iscsi)"
+variable "sbd_disk_size" {
+  description = "Disk size (in bytes) for the SBD disk"
+  type        = number
+  default     = 10737418240
+}
+
+variable "iscsi_source_image" {
+  description = "Source image used to boot the iscsi machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
+  type        = string
+  default     = ""
+}
+
+variable "iscsi_volume_name" {
+  description = "Already existing volume name used to boot the iscsi machines. It must be in the same storage pool. It's only used if iscsi_source_image is not provided"
   type        = string
   default     = ""
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address (only used if shared_storage_type is iscsi)"
+  description = "iSCSI server address (only used if shared_storage_type is iscsi)"
   type        = string
-  default     = "192.168.106.21"
+  default     = ""
 }
 
 variable "iscsi_disks" {
   description = "Number of partitions attach to iscsi server. 0 means `all`."
+  type        = number
   default     = 0
 }
 
+#
 # Monitoring related variables
-
+#
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
 }
 
-variable "monitoring_image" {
-  description = "qcow2 image used to create the monitoring machines (if not set, the same image as the hana nodes will be used)"
+variable "monitoring_source_image" {
+  description = "Source image used to boot the monitoring machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
+}
+
+variable "monitoring_volume_name" {
+  description = "Already existing volume name used to boot the monitoring machines. It must be in the same storage pool. It's only used if monitoring_source_image is not provided"
+  type        = string
+  default     = ""
+}
+
+variable "monitoring_vcpu" {
+  description = "Number of CPUs for the monitor machine"
+  type        = number
+  default     = 4
+}
+
+variable "monitoring_memory" {
+  description = "Memory (in MBs) for the monitor machine"
+  type        = number
+  default     = 4096
 }
 
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
-  default     = "192.168.106.22"
+  default     = ""
 }
 
+#
 # Netweaver related variables
-
+#
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver deployment"
   type        = bool
   default     = false
 }
 
-variable "nw_ips" {
-  description = "IP addresses of the netweaver nodes"
-  type        = list(string)
-  default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
+variable "netweaver_source_image" {
+  description = "Source image used to boot the netweaver machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
+  type        = string
+  default     = ""
 }
 
-variable "nw_virtual_ips" {
+variable "netweaver_volume_name" {
+  description = "Already existing volume name used to boot the netweaver machines. It must be in the same storage pool. It's only used if netweaver_source_image is not provided"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_node_vcpu" {
+  description = "Number of CPUs for the NetWeaver machines"
+  type        = number
+  default     = 4
+}
+
+variable "netweaver_node_memory" {
+  description = "Memory (in MBs) for the NetWeaver machines"
+  type        = number
+  default     = 8192
+}
+
+variable "netweaver_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the NetWeaver machines"
+  type        = number
+  default     = 68719476736
+}
+
+variable "netweaver_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
-  default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
+  default     = []
+}
+
+variable "netweaver_virtual_ips" {
+  description = "IP addresses of the netweaver nodes"
+  type        = list(string)
+  default     = []
 }
 
 variable "netweaver_nfs_share" {
@@ -251,12 +385,25 @@ variable "netweaver_additional_dvds" {
   default     = []
 }
 
+#
 # DRBD related variables
-
+#
 variable "drbd_enabled" {
   description = "Enable the drbd cluster for nfs"
   type        = bool
   default     = false
+}
+
+variable "drbd_source_image" {
+  description = "Source image used to bot the drbd machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
+  type        = string
+  default     = ""
+}
+
+variable "drbd_volume_name" {
+  description = "Already existing volume name boot to create the drbd machines. It must be in the same storage pool. It's only used if drbd_source_image is not provided"
+  type        = string
+  default     = ""
 }
 
 variable "drbd_count" {
@@ -264,10 +411,40 @@ variable "drbd_count" {
   default     = 2
 }
 
+variable "drbd_node_vcpu" {
+  description = "Number of CPUs for the DRBD machines"
+  type        = number
+  default     = 1
+}
+
+variable "drbd_node_memory" {
+  description = "Memory (in MBs) for the DRBD machines"
+  type        = number
+  default     = 1024
+}
+
+variable "drbd_disk_size" {
+  description = "Disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 10737418240
+}
+
+variable "drbd_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 104857600
+}
+
 variable "drbd_ips" {
   description = "IP addresses of the drbd nodes"
   type        = list(string)
-  default     = ["192.168.106.23", "192.168.106.24"]
+  default     = []
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
 }
 
 variable "drbd_shared_storage_type" {
@@ -276,8 +453,9 @@ variable "drbd_shared_storage_type" {
   default     = "iscsi"
 }
 
+#
 # Specific QA variables
-
+#
 variable "qa_mode" {
   description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
@@ -290,8 +468,9 @@ variable "hwcct" {
   default     = false
 }
 
+#
 # Pre deployment
-
+#
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool

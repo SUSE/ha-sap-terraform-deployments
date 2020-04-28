@@ -8,13 +8,14 @@ download_files_from_s3:
 
 {% elif grains['provider'] == 'gcp' %}
 
+{% set hana_inst_disk_device = salt['cmd.run']('realpath '~grains['hana_inst_disk_device']) %}
 hana_inst_partition:
   cmd.run:
     - name: |
-        /usr/sbin/parted -s {{ grains['hana_inst_disk_device'] }} mklabel msdos && \
-        /usr/sbin/parted -s {{ grains['hana_inst_disk_device'] }} mkpart primary ext2 1M 100% && sleep 1 && \
-        /sbin/mkfs -t xfs {{ grains['hana_inst_disk_device'] }}1
-    - unless: ls {{ grains['hana_inst_disk_device'] }}1
+        /usr/sbin/parted -s {{ hana_inst_disk_device }} mklabel msdos && \
+        /usr/sbin/parted -s {{ hana_inst_disk_device }} mkpart primary ext2 1M 100% && sleep 1 && \
+        /sbin/mkfs -t xfs {{ hana_inst_disk_device }}1
+    - unless: ls {{ hana_inst_disk_device }}1
     - require:
       - pkg: parted
 
@@ -26,7 +27,7 @@ hana_inst_directory:
     - makedirs: True
   mount.mounted:
     - name: {{ grains['hana_inst_folder'] }}
-    - device: {{ grains['hana_inst_disk_device'] }}1
+    - device: {{ hana_inst_disk_device }}1
     - fstype: xfs
     - mkmnt: True
     - persist: True

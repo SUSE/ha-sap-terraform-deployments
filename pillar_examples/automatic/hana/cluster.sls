@@ -56,11 +56,7 @@ cluster:
         route_table: {{ grains['route_table'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {% endif %}
-        {% if grains['provider'] in ['azure', 'aws', 'gcp'] %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
-        {% else %}
-        virtual_ip: {{ ".".join(grains['host_ips'][0].split('.')[0:-1]) }}.200
-        {% endif %}
         virtual_ip_mask: 24
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false

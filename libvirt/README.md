@@ -54,6 +54,12 @@ The project has been created in order to provide the option to run the deploymen
 
 Besides the `terraform.tfvars` file usage to configure the deployment, a more advanced configuration is available through pillar files customization. Find more information [here](../pillar_examples/README.md).
 
+## Use already existing network resources
+
+The usage of already existing network resources (virtual network and images) can be done configuring
+the `terraform.tfvars` file and adjusting some variables. The example of how to use them is available
+at [terraform.tfvars.example](terraform.tfvars.example).
+
 # Troubleshooting
 
 ### Resources have not been destroyed

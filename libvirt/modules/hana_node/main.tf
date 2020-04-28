@@ -1,13 +1,14 @@
-resource "libvirt_volume" "hana_main_disk" {
-  name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
-  base_volume_id   = var.base_image_id
-  pool             = var.pool
+resource "libvirt_volume" "hana_image_disk" {
   count            = var.hana_count
+  name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
+  source           = var.source_image
+  base_volume_name = var.volume_name
+  pool             = var.storage_pool
 }
 
-resource "libvirt_volume" "hana_disk" {
+resource "libvirt_volume" "hana_data_disk" {
   name  = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-hana-disk"
-  pool  = var.pool
+  pool  = var.storage_pool
   count = var.hana_count
   size  = var.hana_disk_size
 }
@@ -20,12 +21,12 @@ resource "libvirt_domain" "hana_domain" {
   qemu_agent = true
   dynamic "disk" {
     for_each = [
-        {
-          "vol_id" = element(libvirt_volume.hana_main_disk.*.id, count.index)
-        },
-        {
-          "vol_id" = element(libvirt_volume.hana_disk.*.id, count.index)
-        },
+      {
+        "vol_id" = element(libvirt_volume.hana_image_disk.*.id, count.index)
+      },
+      {
+        "vol_id" = element(libvirt_volume.hana_data_disk.*.id, count.index)
+      },
     ]
     content {
       volume_id = disk.value.vol_id
@@ -37,16 +38,15 @@ resource "libvirt_domain" "hana_domain" {
     for_each = slice(
       [
         {
-         // we set null but it will never reached because the slice with 0 cut it off
-          "volume_id" =  var.shared_storage_type == "shared-disk" ?  var.sbd_disk_id : "null"
+          // we set null but it will never reached because the slice with 0 cut it off
+          "volume_id" = var.shared_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
         },
-      ], 0,  var.shared_storage_type == "shared-disk" ? 1 : 0
+      ], 0, var.shared_storage_type == "shared-disk" ? 1 : 0
     )
     content {
       volume_id = disk.value.volume_id
     }
   }
-
 
   network_interface {
     wait_for_lease = true
@@ -57,7 +57,8 @@ resource "libvirt_domain" "hana_domain" {
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.network_id
+    network_name   = var.isolated_network_name
+    network_id     = var.isolated_network_id
     hostname       = "${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
     addresses      = [element(var.host_ips, count.index)]
   }

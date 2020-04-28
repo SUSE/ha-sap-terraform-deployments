@@ -15,6 +15,30 @@ variable "gcp_credentials_file" {
   type        = string
 }
 
+variable "vpc_name" {
+  description = "Already existing vpc name used by the created infrastructure. If it's not set a new one will be created"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created"
+  type        = string
+  default     = ""
+}
+
+variable "create_firewall_rules" {
+  description = "Create predifined firewall rules for the connections outside the network (internal connections are always allowed). Set to false if custom firewall rules are already created for the used network"
+  type        = bool
+  default     = true
+}
+
+variable "ip_cidr_range" {
+  description = "Internal IPv4 range of the created network"
+  type        = string
+  default     = "10.0.0.0/24"
+}
+
 variable "public_key_location" {
   description = "Path to a SSH public key used to connect to the created machines"
   type        = string
@@ -23,11 +47,6 @@ variable "public_key_location" {
 variable "private_key_location" {
   description = "Path to a SSH private key used to connect to the created machines"
   type        = string
-}
-
-variable "ip_cidr_range" {
-  description = "Internal IPv4 range of the created network"
-  default     = "10.0.0.0/24"
 }
 
 # Deployment variables
@@ -133,6 +152,7 @@ variable "sles4sap_boot_image" {
 variable "host_ips" {
   description = "ip addresses to set to the nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
+  default     = []
 }
 
 variable "sap_hana_deployment_bucket" {
@@ -194,24 +214,6 @@ variable "hana_backup_disk_size" {
   default     = "416"
 }
 
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-  default     = "/dev/sdb"
-}
-
-variable "hana_backup_device" {
-  description = "Device where hana backup is stored"
-  type        = string
-  default     = "/dev/sdc"
-}
-
-variable "hana_inst_disk_device" {
-  description = "Device where hana installation software CIFS share is mounted"
-  type        = string
-  default     = "/dev/sdd"
-}
-
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string
@@ -221,6 +223,7 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+  default     = ""
 }
 
 variable "scenario_type" {
@@ -228,7 +231,7 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-# Monitoring related variables	
+# Monitoring related variables
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
@@ -254,14 +257,10 @@ variable "machine_type_iscsi_server" {
   default     = "custom-1-2048"
 }
 
-variable "iscsi_ip" {
+variable "iscsi_srv_ip" {
   description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
-}
-
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
   type        = string
-  default     = "/dev/sdb"
+  default     = ""
 }
 
 variable "iscsi_disks" {
