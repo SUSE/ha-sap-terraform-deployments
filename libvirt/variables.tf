@@ -1,5 +1,6 @@
+#
 # Libvirt related variables
-
+#
 variable "qemu_uri" {
   description = "URI to connect with the qemu-service."
   default     = "qemu:///system"
@@ -7,11 +8,13 @@ variable "qemu_uri" {
 
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
+  type        = string
   default     = "default"
 }
 
 variable "iprange" {
   description = "IP range of the isolated network"
+  type        = string
   default     = "192.168.106.0/24"
 }
 
@@ -21,8 +24,9 @@ variable "isolated_network_bridge" {
   default     = ""
 }
 
+#
 # Deployment variables
-
+#
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -73,11 +77,36 @@ variable "background" {
   default     = false
 }
 
+#
 # Hana related variables
-
+#
 variable "base_image" {
   description = "qcow2 image used to create the hana machines"
   type        = string
+}
+
+variable "hana_node_vcpu" {
+  description = "Number of CPUs for the HANA machines"
+  type        = number
+  default     = 4
+}
+
+variable "hana_node_memory" {
+  description = "Memory (in MBs) for the HANA machines"
+  type        = number
+  default     = 32678
+}
+
+variable "hana_node_disk_size" {
+  description = "Disk size (in bytes) for the HANA machines"
+  type        = number
+  default     = 68719476736
+}
+
+variable "hana_host_ips" {
+  description = "IP addresses of the HANA nodes"
+  type        = list(string)
+  default     = ["192.168.106.15", "192.168.106.16"]
 }
 
 variable "hana_inst_media" {
@@ -121,23 +150,36 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
-variable "host_ips" {
-  description = "IP addresses of the hana nodes"
-  type        = list(string)
-  default     = ["192.168.106.15", "192.168.106.16"]
-}
-
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
 }
 
-# Iscsi server related variables
+#
+# iSCSI server related variables
+#
+variable "iscsi_vcpu" {
+  description = "Number of CPUs for the iSCSI server"
+  type        = number
+  default     = 2
+}
+
+variable "iscsi_memory" {
+  description = "Memory size (in MBs) for the iSCSI server"
+  type        = number
+  default     = 4096
+}
 
 variable "shared_storage_type" {
   description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string
   default     = "iscsi"
+}
+
+variable "sbd_disk_size" {
+  description = "Disk size (in bytes) for the SBD disk"
+  type        = number
+  default     = 10737418240
 }
 
 variable "iscsi_image" {
@@ -147,18 +189,20 @@ variable "iscsi_image" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address (only used if shared_storage_type is iscsi)"
+  description = "iSCSI server address (only used if shared_storage_type is iscsi)"
   type        = string
   default     = "192.168.106.21"
 }
 
 variable "iscsi_disks" {
   description = "Number of partitions attach to iscsi server. 0 means `all`."
+  type        = number
   default     = 0
 }
 
+#
 # Monitoring related variables
-
+#
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -171,27 +215,58 @@ variable "monitoring_image" {
   default     = ""
 }
 
+variable "monitoring_vcpu" {
+  description = "Number of CPUs for the monitor machine"
+  type        = number
+  default     = 4
+}
+
+variable "monitoring_memory" {
+  description = "Memory (in MBs) for the monitor machine"
+  type        = number
+  default     = 4096
+}
+
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
   default     = "192.168.106.22"
 }
 
+#
 # Netweaver related variables
-
+#
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver deployment"
   type        = bool
   default     = false
 }
 
-variable "nw_ips" {
+variable "netweaver_node_vcpu" {
+  description = "Number of CPUs for the NetWeaver machines"
+  type        = number
+  default     = 4
+}
+
+variable "netweaver_node_memory" {
+  description = "Memory (in MBs) for the NetWeaver machines"
+  type        = number
+  default     = 8192
+}
+
+variable "netweaver_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the NetWeaver machines"
+  type        = number
+  default     = 68719476736
+}
+
+variable "netweaver_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
   default     = ["192.168.106.17", "192.168.106.18", "192.168.106.19", "192.168.106.20"]
 }
 
-variable "nw_virtual_ips" {
+variable "netweaver_virtual_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
   default     = ["192.168.106.30", "192.168.106.31", "192.168.106.32", "192.168.106.33"]
@@ -251,8 +326,9 @@ variable "netweaver_additional_dvds" {
   default     = []
 }
 
+#
 # DRBD related variables
-
+#
 variable "drbd_enabled" {
   description = "Enable the drbd cluster for nfs"
   type        = bool
@@ -262,6 +338,30 @@ variable "drbd_enabled" {
 variable "drbd_count" {
   description = "Number of drbd machines to create the cluster"
   default     = 2
+}
+
+variable "drbd_node_vcpu" {
+  description = "Number of CPUs for the DRBD machines"
+  type        = number
+  default     = 1
+}
+
+variable "drbd_node_memory" {
+  description = "Memory (in MBs) for the DRBD machines"
+  type        = number
+  default     = 1024
+}
+
+variable "drbd_disk_size" {
+  description = "Disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 10737418240
+}
+
+variable "drbd_shared_disk_size" {
+  description = "Shared disk size (in bytes) for the DRBD machines"
+  type        = number
+  default     = 104857600
 }
 
 variable "drbd_ips" {
@@ -276,8 +376,9 @@ variable "drbd_shared_storage_type" {
   default     = "iscsi"
 }
 
+#
 # Specific QA variables
-
+#
 variable "qa_mode" {
   description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
   type        = bool
@@ -290,8 +391,9 @@ variable "hwcct" {
   default     = false
 }
 
+#
 # Pre deployment
-
+#
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
