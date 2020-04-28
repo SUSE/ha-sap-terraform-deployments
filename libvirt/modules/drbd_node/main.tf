@@ -2,7 +2,7 @@ resource "libvirt_volume" "drbd_image_disk" {
   count            = var.drbd_count
   name             = "${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   source           = var.source_image
-  base_volume_name = var.image_name
+  base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 

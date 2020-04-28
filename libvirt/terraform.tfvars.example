@@ -8,16 +8,16 @@ qemu_uri = "qemu:///system"
 iprange = "192.168.XXX.Y/24"
 
 # Base image configuration. This images will be used for all deployed machines unless the specific image is defined
-# The source image has preference over the `base_image _name` parameter
-#base_source_image = "url-to-your-sles4sap-image"
+# The source image has preference over the `volume_name` parameter
+#source_image = "url-to-your-sles4sap-image"
 # Use an already existing image. The image must be in the same storage pool defined in `storage_pool` parameter
 # This option is way faster as the image must not be downloaded
-#base_image_name = "SLES4SAP-15_SP1"
+#volume_name = "SLES4SAP-15_SP1"
 
 # Set specific image for hana (it's the same for iscsi, monitoring, netweaver and drbd)
 # This option has preference over base image options
 # hana_source_image = "url-to-your-sles4sap-image"
-# hana_image_name   = "SLES4SAP-15_SP0"
+# hana_volume_name   = "SLES4SAP-15_SP0"
 
 hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # Or you can combine the `hana_inst_media` with `hana_platform_folder` variable.
@@ -32,9 +32,7 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 hana_sapcar_exe = "SAPCAR"
 hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
-
-base_image = "url-to-your-sles4sap-image"
-#hana_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+#hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"

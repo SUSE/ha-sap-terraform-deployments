@@ -19,7 +19,7 @@ variable "network_name" {
 }
 
 variable "iprange" {
-  description = "IP range of the isolated network (it must be provided even when the network_name is given, due terraform-libvirt-provider limitations we cannot get the current network data)"
+  description = "IP range of the isolated network (it must be provided even when the network_name is given, due to terraform-libvirt-provider limitations we cannot get the current network data)"
   type        = string
 }
 
@@ -29,14 +29,14 @@ variable "isolated_network_bridge" {
   default     = ""
 }
 
-variable "base_source_image" {
-  description = "qcow2 image used to create the generic base image"
+variable "source_image" {
+  description = "Source image used to boot the machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now. Specific node images have preference over this value"
   type        = string
   default     = ""
 }
 
-variable "base_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used (specific nodes images will have preference over this image). It's only used if base_source_image is not provided"
+variable "volume_name" {
+  description = "Already existing volume name used to boot the machines. It must be in the same storage pool. It's only used if source_image is not provided. Specific node images have preference over this value"
   type        = string
   default     = ""
 }
@@ -103,13 +103,13 @@ variable "hana_count" {
 }
 
 variable "hana_source_image" {
-  description = "qcow2 image used to create the hana image"
+  description = "Source image used to boot the hana machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
 }
 
-variable "hana_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if hana_source_image is not provided"
+variable "hana_volume_name" {
+  description = "Already existing volume name used to boot the hana machines. It must be in the same storage pool. It's only used if source_image is not provided"
   type        = string
   default     = ""
 }
@@ -218,13 +218,13 @@ variable "sbd_disk_size" {
 }
 
 variable "iscsi_source_image" {
-  description = "qcow2 image used to create the iscsi image"
+  description = "Source image used to boot the iscsi machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
 }
 
-variable "iscsi_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if iscsi_source_image is not provided"
+variable "iscsi_volume_name" {
+  description = "Already existing volume name used to boot the iscsi machines. It must be in the same storage pool. It's only used if iscsi_source_image is not provided"
   type        = string
   default     = ""
 }
@@ -251,13 +251,13 @@ variable "monitoring_enabled" {
 }
 
 variable "monitoring_source_image" {
-  description = "qcow2 image used to create the monitoring image"
+  description = "Source image used to boot the monitoring machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
 }
 
-variable "monitoring_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if monitoring_source_image is not provided"
+variable "monitoring_volume_name" {
+  description = "Already existing volume name used to boot the monitoring machines. It must be in the same storage pool. It's only used if monitoring_source_image is not provided"
   type        = string
   default     = ""
 }
@@ -290,13 +290,13 @@ variable "netweaver_enabled" {
 }
 
 variable "netweaver_source_image" {
-  description = "qcow2 image used to create the netweaver image"
+  description = "Source image used to boot the netweaver machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
 }
 
-variable "netweaver_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if netweaver_source_image is not provided"
+variable "netweaver_volume_name" {
+  description = "Already existing volume name used to boot the netweaver machines. It must be in the same storage pool. It's only used if netweaver_source_image is not provided"
   type        = string
   default     = ""
 }
@@ -395,13 +395,13 @@ variable "drbd_enabled" {
 }
 
 variable "drbd_source_image" {
-  description = "qcow2 image used to create the drbd image"
+  description = "Source image used to bot the drbd machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
   default     = ""
 }
 
-variable "drbd_image_name" {
-  description = "Already existing volume name in the same storage pool with a sles4sap image that will be used. It's only used if drbd_source_image is not provided"
+variable "drbd_volume_name" {
+  description = "Already existing volume name boot to create the drbd machines. It must be in the same storage pool. It's only used if drbd_source_image is not provided"
   type        = string
   default     = ""
 }

@@ -6,7 +6,7 @@ resource "libvirt_volume" "iscsi_image_disk" {
   count            = var.iscsi_count
   name             = format("%s-iscsi-disk", terraform.workspace)
   source           = var.source_image
-  base_volume_name = var.image_name
+  base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 

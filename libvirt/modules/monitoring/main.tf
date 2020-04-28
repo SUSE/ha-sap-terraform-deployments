@@ -6,7 +6,7 @@ resource "libvirt_volume" "monitoring_image_disk" {
   count            = var.monitoring_enabled == true ? 1 : 0
   name             = format("%s-monitoring-disk", terraform.workspace)
   source           = var.source_image
-  base_volume_name = var.image_name
+  base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 

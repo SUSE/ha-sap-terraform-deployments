@@ -37,7 +37,7 @@ module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
   source_image           = var.iscsi_source_image
-  image_name             = var.iscsi_source_image != "" ? "" : (var.iscsi_image_name != "" ? var.iscsi_image_name : local.base_image_name)
+  volume_name            = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
   vcpu                   = var.iscsi_vcpu
   memory                 = var.iscsi_memory
   bridge                 = "br0"
@@ -59,7 +59,7 @@ module "hana_node" {
   source                 = "./modules/hana_node"
   name                   = "hana"
   source_image           = var.hana_source_image
-  image_name             = var.hana_source_image != "" ? "" : (var.hana_image_name != "" ? var.hana_image_name : local.base_image_name)
+  volume_name            = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
   hana_count             = var.hana_count
   vcpu                   = var.hana_node_vcpu
   memory                 = var.hana_node_memory
@@ -97,7 +97,7 @@ module "drbd_node" {
   source                 = "./modules/drbd_node"
   name                   = "drbd"
   source_image           = var.drbd_source_image
-  image_name             = var.drbd_source_image != "" ? "" : (var.drbd_image_name != "" ? var.drbd_image_name : local.base_image_name)
+  volume_name            = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
   drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
   vcpu                   = var.drbd_node_vcpu
   memory                 = var.drbd_node_memory
@@ -126,7 +126,7 @@ module "monitoring" {
   name                   = "monitoring"
   monitoring_enabled     = var.monitoring_enabled
   source_image           = var.monitoring_source_image
-  image_name             = var.monitoring_source_image != "" ? "" : (var.monitoring_image_name != "" ? var.monitoring_image_name : local.base_image_name)
+  volume_name            = var.monitoring_source_image != "" ? "" : (var.monitoring_volume_name != "" ? var.monitoring_volume_name : local.generic_volume_name)
   vcpu                   = var.monitoring_vcpu
   memory                 = var.monitoring_memory
   bridge                 = "br0"
@@ -149,7 +149,7 @@ module "netweaver_node" {
   source                     = "./modules/netweaver_node"
   name                       = "netweaver"
   source_image               = var.netweaver_source_image
-  image_name                 = var.netweaver_source_image != "" ? "" : (var.netweaver_image_name != "" ? var.netweaver_image_name : local.base_image_name)
+  volume_name                = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
   vcpu                       = var.netweaver_node_vcpu
   memory                     = var.netweaver_node_memory

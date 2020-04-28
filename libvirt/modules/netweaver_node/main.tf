@@ -2,7 +2,7 @@ resource "libvirt_volume" "netweaver_image_disk" {
   count            = var.netweaver_count
   name             = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
   source           = var.source_image
-  base_volume_name = var.image_name
+  base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
