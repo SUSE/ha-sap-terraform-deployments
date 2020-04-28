@@ -1,4 +1,23 @@
+# qemu uri, this example is to run locally
 qemu_uri = "qemu:///system"
+
+# Use already existing network
+#network_name = "my-network"
+# Due to some internal limitations, the iprange of the existing network must be defined
+# The iprange must be defined for already existing network and to create a new one
+iprange = "192.168.XXX.Y/24"
+
+# Base image configuration. This images will be used for all deployed machines unless the specific image is defined
+# The source image has preference over the `volume_name` parameter
+#source_image = "url-to-your-sles4sap-image"
+# Use an already existing image. The image must be in the same storage pool defined in `storage_pool` parameter
+# This option is way faster as the image must not be downloaded
+#volume_name = "SLES4SAP-15_SP1"
+
+# Set specific image for hana (it's the same for iscsi, monitoring, netweaver and drbd)
+# This option has preference over base image options
+# hana_source_image = "url-to-your-sles4sap-image"
+# hana_volume_name   = "SLES4SAP-15_SP0"
 
 hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # Or you can combine the `hana_inst_media` with `hana_platform_folder` variable.
@@ -13,15 +32,11 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 hana_sapcar_exe = "SAPCAR"
 hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
-
-base_image = "url-to-your-sles4sap-image"
-iprange = "192.168.XXX.Y/24"
-host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+#hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
-iscsi_srv_ip = "192.168.XXX.Y+6"
-iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+#iscsi_srv_ip = "192.168.XXX.Y+6"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -59,14 +74,11 @@ devel_mode = false
 
 # Monitoring variables
 
-# Custom sles4sap image for the monitoring server. If not used the same image than the hana nodes will be used
-#monitoring_image = "url-to-your-sles4sap-image"
-
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
 # IP address of the machine where prometheus and grafana are running
-monitoring_srv_ip = "192.168.XXX.Y+7"
+#monitoring_srv_ip = "192.168.XXX.Y+7"
 
 # Netweaver variables
 
@@ -90,7 +102,9 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
 # IP addresses of the machines hosting Netweaver instances
-#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+#netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+#netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
 
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true

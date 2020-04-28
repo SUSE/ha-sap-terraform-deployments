@@ -52,11 +52,7 @@ netweaver:
 {%- endif %}
 
   hana:
-{%- if grains['provider'] in ['aws', 'azure', 'gcp'] %}
     host: {{ grains['hana_ip'] }}
-{%- else %}
-    host: {{ iprange }}.200
-{%- endif %}
     sid: PRD
     instance: '00'
     password: YourPassword1234

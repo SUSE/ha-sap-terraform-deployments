@@ -12,7 +12,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: libvirt
 role: iscsi_srv
 host_ip: ${var.iscsi_srv_ip}

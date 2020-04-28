@@ -15,7 +15,7 @@ resource "null_resource" "drbd_node_provisioner" {
   }
 
   provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: ${var.network_domain}
@@ -23,11 +23,12 @@ timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 devel_mode: ${var.devel_mode}
 reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ",formatlist("'%s': '%s'",keys(var.reg_additional_modules),values(var.reg_additional_modules),),)}}
+reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
+drbd_cluster_vip: ${var.drbd_cluster_vip}
 provider: libvirt
 role: drbd_node
 drbd_disk_device: /dev/vdb
@@ -41,7 +42,7 @@ partitions:
     start: 0%
     end: 100%
 EOF
-  destination = "/tmp/grains"
+    destination = "/tmp/grains"
   }
 }
 
