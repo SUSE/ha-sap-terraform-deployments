@@ -58,7 +58,7 @@ netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: ${var.netweaver_nfs_share}
 nw_inst_disk_device : /dev/sdb
-hana_cluster_vip: ${var.hana_cluster_vip}
+hana_ip: ${var.hana_ip}
 vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.nw-route[0].name}
 
