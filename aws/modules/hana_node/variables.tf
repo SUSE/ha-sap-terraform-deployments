@@ -49,19 +49,14 @@ variable "sles4sap_images" {
   }
 }
 
-variable "subnet_ids" {
-  type        = list(string)
-  description = "List of subnet IDs"
-}
-
 variable "vpc_id" {
   type        = string
   description = "Id of the vpc used for this deployment"
 }
 
-variable "vpc_cidr_block" {
-  type        = string
-  description = "cidr block of the used vpc"
+variable "subnet_address_range" {
+  type        = list(string)
+  description = "List with subnet address ranges in cidr notation to create the netweaver subnets"
 }
 
 variable "key_name" {

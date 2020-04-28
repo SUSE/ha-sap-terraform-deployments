@@ -2,7 +2,7 @@
 resource "aws_subnet" "netweaver-subnet" {
   count             = min(var.netweaver_count, 2) # Create 2 subnets max
   vpc_id            = var.vpc_id
-  cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index + 2) # +2 is done to don't conflict with hana subnets addresses
+  cidr_block        = element(var.subnet_address_range, count.index)
   availability_zone = element(var.availability_zones, count.index)
   tags = {
     Name      = "${terraform.workspace}-netweaver-subnet-${count.index + 1}"
