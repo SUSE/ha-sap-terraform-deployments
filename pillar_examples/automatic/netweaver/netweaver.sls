@@ -52,12 +52,7 @@ netweaver:
 {%- endif %}
 
   hana:
-# We have to unify the usage of this parameter, the aws option looks better
-{%- if grains['provider'] == 'gcp' %}
-    host: {{ grains['hana_cluster_vip'] }}
-{%- elif grains['provider'] in ['aws', 'azure', 'libvirt'] %}
     host: {{ grains['hana_ip'] }}
-{%- endif %}
     sid: PRD
     instance: '00'
     password: YourPassword1234

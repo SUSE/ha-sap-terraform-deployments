@@ -18,7 +18,7 @@ variable "iscsi_server_boot_image" {
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
-variable "iscsi_ip" {
+variable "iscsi_srv_ip" {
   description = "IP for iSCSI server"
 }
 

@@ -14,24 +14,40 @@ terraform {
   required_version = ">= 0.12"
 }
 
+data "google_compute_subnetwork" "current-subnet" {
+  count  = var.ip_cidr_range == "" ? 1 : 0
+  name   = var.subnet_name
+  region = var.region
+}
+
+locals {
+  network_link = var.vpc_name == "" ? google_compute_network.ha_network.0.self_link : format(
+  "https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", var.project, var.vpc_name)
+  vpc_name             = var.vpc_name == "" ? google_compute_network.ha_network.0.name : var.vpc_name
+  subnet_name          = var.subnet_name == "" ? google_compute_subnetwork.ha_subnet.0.name : var.subnet_name
+  subnet_address_range = var.subnet_name == "" ? var.ip_cidr_range : (var.ip_cidr_range == "" ? data.google_compute_subnetwork.current-subnet.0.ip_cidr_range : var.ip_cidr_range)
+}
+
 # Network resources: Network, Subnet
 resource "google_compute_network" "ha_network" {
+  count                   = var.vpc_name == "" ? 1 : 0
   name                    = "${terraform.workspace}-network"
   auto_create_subnetworks = "false"
 }
 
 resource "google_compute_subnetwork" "ha_subnet" {
+  count         = var.subnet_name == "" ? 1 : 0
   name          = "${terraform.workspace}-subnet"
-  network       = google_compute_network.ha_network.self_link
+  network       = local.network_link
   region        = var.region
-  ip_cidr_range = var.ip_cidr_range
+  ip_cidr_range = local.subnet_address_range
 }
 
 # Network firewall rules
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
   name          = "${terraform.workspace}-fw-internal"
-  network       = google_compute_network.ha_network.name
-  source_ranges = [var.ip_cidr_range]
+  network       = local.vpc_name
+  source_ranges = [local.subnet_address_range]
 
   allow {
     protocol = "icmp"
@@ -49,8 +65,9 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${terraform.workspace}-fw-icmp"
-  network = google_compute_network.ha_network.name
+  network = local.vpc_name
 
   allow {
     protocol = "icmp"
@@ -58,8 +75,9 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${terraform.workspace}-fw-tcp"
-  network = google_compute_network.ha_network.name
+  network = local.vpc_name
 
   allow {
     protocol = "tcp"
