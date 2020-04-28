@@ -17,7 +17,7 @@ resource "null_resource" "iscsi_provisioner" {
 provider: gcp
 role: iscsi_srv
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-iscsidev: ${var.iscsidev}
+iscsidev: ${format("%s%s","/dev/disk/by-id/google-", google_compute_instance.iscsisrv.attached_disk.0.device_name)}
 iscsi_disks: ${var.iscsi_disks}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}

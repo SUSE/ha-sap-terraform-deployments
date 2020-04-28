@@ -214,24 +214,6 @@ variable "hana_backup_disk_size" {
   default     = "416"
 }
 
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-  default     = "/dev/sdb"
-}
-
-variable "hana_backup_device" {
-  description = "Device where hana backup is stored"
-  type        = string
-  default     = "/dev/sdc"
-}
-
-variable "hana_inst_disk_device" {
-  description = "Device where hana installation software CIFS share is mounted"
-  type        = string
-  default     = "/dev/sdd"
-}
-
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string
@@ -279,12 +261,6 @@ variable "iscsi_srv_ip" {
   description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
   type        = string
   default     = ""
-}
-
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
-  default     = "/dev/sdb"
 }
 
 variable "iscsi_disks" {

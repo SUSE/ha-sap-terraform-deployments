@@ -72,18 +72,19 @@ sapcd_folder:
       - wait_until_sw_downloaded
 
 {% elif grains['provider'] == 'gcp' %}
+{% set nw_inst_disk_device = salt['cmd.run']('realpath '~grains['nw_inst_disk_device']) %}
 nw_inst_partition:
   cmd.run:
     - name: |
-        /usr/sbin/parted -s {{ grains['nw_inst_disk_device'] }} mklabel msdos && \
-        /usr/sbin/parted -s {{ grains['nw_inst_disk_device'] }} mkpart primary ext2 1M 100% && sleep 1 && \
-        /sbin/mkfs -t xfs {{ grains['nw_inst_disk_device'] }}1
-    - unless: ls {{ grains['nw_inst_disk_device'] }}1
+        /usr/sbin/parted -s {{ nw_inst_disk_device }} mklabel msdos && \
+        /usr/sbin/parted -s {{ nw_inst_disk_device }} mkpart primary ext2 1M 100% && sleep 1 && \
+        /sbin/mkfs -t xfs {{ nw_inst_disk_device }}1
+    - unless: ls {{ nw_inst_disk_device }}1
 
 mount_swpm:
   mount.mounted:
     - name: {{ sapcd }}
-    - device: {{ grains['nw_inst_disk_device'] }}1
+    - device: {{ nw_inst_disk_device }}1
     - fstype: xfs
     - mkmnt: True
     - persist: True
