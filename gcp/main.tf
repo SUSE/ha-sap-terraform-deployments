@@ -127,9 +127,6 @@ module "hana_node" {
   hana_data_disk_size        = var.hana_data_disk_size
   hana_backup_disk_type      = var.hana_backup_disk_type
   hana_backup_disk_size      = var.hana_backup_disk_size
-  hana_disk_device           = var.hana_disk_device
-  hana_backup_device         = var.hana_backup_device
-  hana_inst_disk_device      = var.hana_inst_disk_device
   hana_fstype                = var.hana_fstype
   hana_cluster_vip           = local.hana_cluster_vip
   scenario_type              = var.scenario_type
@@ -186,7 +183,6 @@ module "iscsi_server" {
   network_subnet_name       = local.subnet_name
   iscsi_server_boot_image   = var.iscsi_server_boot_image
   iscsi_srv_ip              = local.iscsi_srv_ip
-  iscsidev                  = var.iscsidev
   iscsi_disks               = var.iscsi_disks
   public_key_location       = var.public_key_location
   private_key_location      = var.private_key_location

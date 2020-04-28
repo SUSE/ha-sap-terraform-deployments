@@ -70,9 +70,6 @@ sles4sap_boot_image = "MySles4SapImage"
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/sdb"
-
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
 cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
@@ -87,15 +84,6 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Local folder where HANA installation master will be mounted
 hana_inst_folder = "/sapmedia/HANA"
-
-# Device used by node where HANA will be installed
-hana_disk_device = "/dev/sdb"
-
-# Device used by node where HANA backup will be stored
-hana_backup_device = "/dev/sdc"
-
-# Device used by node where HANA will be downloaded
-hana_inst_disk_device = "/dev/sdd"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
