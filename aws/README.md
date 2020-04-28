@@ -150,6 +150,8 @@ Besides the `terraform.tfvars` file usage to configure the deployment, a more ad
 
 The usage of already existing network resources (vpc and security groups) can be done configuring the `terraform.tfvars` file and adjusting some variables. The example of how to use them is available at [terraform.tfvars.example](terraform.tfvars.example).
 
+**Important: In order to use the deployment with an already existing vpc, it must have an internet gateway attached.**
+
 ### Relevant Details
 
 There are some fixed values used throughout the terraform configuration:

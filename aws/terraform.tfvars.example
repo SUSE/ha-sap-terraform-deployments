@@ -1,6 +1,6 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
-# Use an already existing vpc
+# Use an already existing vpc. Make sure the vpc has the internet gateway already attached
 #vpc_id = "vpc-xxxxxxxxxxxxxxxxx"
 
 # Use an already existing security group
