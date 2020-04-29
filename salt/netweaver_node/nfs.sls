@@ -9,6 +9,28 @@ install_nfs_client:
        attempts: 3
        interval: 15
 
+# We cannot use showmount in aws as efs doesn't provide this service
+# But we can use it to have more reliable output in the other providers as by use drbd
+# efs name is something like: fs-xxxxxxxx.efs.eu-central-1.amazonaws.com 
+{% set nfs_server_data = grains['netweaver_nfs_share'].split(':') %}
+{% set nfs_server_ip = nfs_server_data[0] %}
+{% if 'efs' in grains['netweaver_nfs_share'] %}
+wait_until_nfs_is_ready:
+  cmd.run:
+    - name: until nc -zvw5 {{ nfs_server_ip }} 2049;do sleep 30;done
+    - timeout: 600
+
+{% else %}
+{% set nfs_export = "''" if nfs_server_data|length == 1 else nfs_server_data[1] %}
+wait_until_nfs_is_ready:
+  cmd.run:
+    - name: until showmount -e {{ nfs_server_ip }} | grep {{ nfs_export }};do sleep 30;done
+    - timeout: 600
+{% endif %}
+
+# Initialized NFS share folders, only with the first node
+# Executing these states in all the nodes might cause errors during deletion, as they try to delete the same files
+{% if grains['host_ip'] == grains['host_ips'][0] %}
 mount_sapmnt_temporary:
   mount.mounted:
     - name: /tmp/sapmnt
@@ -18,13 +40,9 @@ mount_sapmnt_temporary:
     - persist: False
     - opts:
       - defaults
-    - retry:
-       attempts: 30
-       interval: 60
+    - require:
+      - wait_until_nfs_is_ready
 
-# Initialized NFS share folders, only with the first node
-# Executing these states in all the nodes might cause errors during deletion, as they try to delete the same files
-{% if grains['host_ip'] == grains['host_ips'][0] %}
 /tmp/sapmnt/sapmnt:
   file.directory:
     - user: root
@@ -71,8 +89,6 @@ mount_sapmnt_temporary:
     - require:
       - mount_sapmnt_temporary
 
-{% endif %}
-
 unmount_sapmnt:
   mount.unmounted:
     - name: /tmp/sapmnt
@@ -83,3 +99,4 @@ unmount_sapmnt:
 remove_tmp_folder:
   file.absent:
     - name: /tmp/sapmnt
+{% endif %}
