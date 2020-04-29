@@ -9,10 +9,10 @@ module "local_execution" {
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.1.10, 10.0.2.11 (hana machines must be in different subnets)
 # Hana cluster vip: 192.168.1.10 (virtual ip address must be in a different range than the vpc)
-# DRBD ips: 10.0.0.20, 10.0.0.21
-# DRBD cluster vip: 10.74.0.22
 # Netweaver ips: 10.0.3.30, 10.0.4.31, 10.0.3.32, 10.0.4.33 (netweaver ASCS and ERS must be in different subnets)
 # Netweaver virtual ips: 192.168.1.30, 192.168.1.31, 192.168.1.32, 192.168.1.33 (virtual ip addresses must be in a different range than the vpc)
+# DRBD ips: 10.0.5.20, 10.0.5.21
+# DRBD cluster vip: 192.168.1.20 (virtual ip address must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.infra_subnet_address_range, 4)
@@ -24,8 +24,8 @@ locals {
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, local.hana_ip_start)
 
   drbd_ip_start    = 20
-  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for index in range(var.drbd_count) : cidrhost(element(local.drbd_subnet_address_range, index % 2), index + local.drbd_ip_start)]
-  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(var.virtual_address_range, local.drbd_ip_start + 2)
+  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for index in range(2) : cidrhost(element(local.drbd_subnet_address_range, index % 2), index + local.drbd_ip_start)]
+  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(var.virtual_address_range, local.drbd_ip_start)
 
   # range(4) hardcoded as we always deploy 4 nw machines
   netweaver_ip_start    = 30
@@ -50,7 +50,6 @@ module "drbd_node" {
   aws_access_key_id      = var.aws_access_key_id
   aws_secret_access_key  = var.aws_secret_access_key
   host_ips               = local.drbd_ips
-  drbd_enabled           = var.drbd_enabled
   drbd_cluster_vip       = local.drbd_cluster_vip
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type

@@ -261,12 +261,6 @@ variable "scenario_type" {
 
 # DRBD related variables
 
-variable "drbd_count" {
-  description = "Number of drbd nodes"
-  type        = number
-  default     = 2
-}
-
 variable "drbd_enabled" {
   description = "Enable the DRBD cluster for nfs"
   type        = bool
