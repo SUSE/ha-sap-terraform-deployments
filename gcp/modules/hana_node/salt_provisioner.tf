@@ -31,7 +31,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 hostname: ${terraform.workspace}-hana${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-+sbd_disk_index: 1
+sbd_disk_index: 1
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
