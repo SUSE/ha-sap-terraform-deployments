@@ -31,6 +31,10 @@ locals {
   # The 2 is hardcoded because we create 2 subnets for NW always
   netweaver_subnet_address_range = length(var.netweaver_subnet_address_range) != 0 ? var.netweaver_subnet_address_range : [
   for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 1)]
+
+  # The 4 is hardcoded considering 4 ip addresses for NW
+  drbd_subnet_address_range = length(var.drbd_subnet_address_range) != 0 ? var.drbd_subnet_address_range : [
+  for index in range(var.drbd_count) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 4 + 1)]
 }
 
 # AWS key pair
