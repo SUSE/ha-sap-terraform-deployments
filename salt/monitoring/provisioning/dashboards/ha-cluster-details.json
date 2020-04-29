@@ -62,7 +62,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1588169860198,
+  "iteration": 1588173658321,
   "links": [],
   "panels": [
     {
@@ -877,7 +877,7 @@
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 7,
+        "h": 10,
         "w": 10,
         "x": 0,
         "y": 11
@@ -890,7 +890,7 @@
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 4,
+        "col": 3,
         "desc": false
       },
       "styles": [
@@ -981,7 +981,7 @@
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 7,
+        "h": 10,
         "w": 14,
         "x": 10,
         "y": 11
@@ -995,7 +995,7 @@
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 1,
+        "col": 3,
         "desc": false
       },
       "styles": [
@@ -1100,6 +1100,22 @@
           "unit": "short"
         },
         {
+          "alias": "Type",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "agent",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
           "alias": "",
           "colorMode": null,
           "colors": [
@@ -1116,7 +1132,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(ha_cluster_pacemaker_resources{instance=\"$dc_instance\"} == 1) by(resource, status, node, role)",
+          "expr": "sum(ha_cluster_pacemaker_resources{instance=\"$dc_instance\"} == 1) by(resource, node, status, role, agent)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -1148,10 +1164,10 @@
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 10,
         "x": 0,
-        "y": 18
+        "y": 21
       },
       "id": 142,
       "links": [],
@@ -1249,10 +1265,10 @@
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 14,
         "x": 10,
-        "y": 18
+        "y": 21
       },
       "id": 165,
       "options": {},
