@@ -18,7 +18,7 @@ locals {
 
   # The next locals are used to map the ip index with the subnet range (something like python enumerate method)
   hana_ip_start    = 10
-  hana_ips         = length(var.host_ips) != 0 ? var.host_ips : [for index in range(var.hana_count) : cidrhost(element(local.hana_subnet_address_range, index % 2), index + local.hana_ip_start)]
+  hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for index in range(var.hana_count) : cidrhost(element(local.hana_subnet_address_range, index % 2), index + local.hana_ip_start)]
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, local.hana_ip_start)
 
   # range(4) hardcoded as we always deploy 4 nw machines
