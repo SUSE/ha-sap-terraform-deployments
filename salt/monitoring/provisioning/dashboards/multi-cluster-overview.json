@@ -731,7 +731,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (job) / count(ha_cluster_pacemaker_nodes{status=\"expected_up\"}) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"} == 1) by (job,node)) by (job) / count(count(ha_cluster_pacemaker_nodes) by (job,node)) by (job)",
           "hide": false,
           "instant": false,
           "legendFormat": "{{job}}",
@@ -787,7 +787,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (job) / count(ha_cluster_pacemaker_resources) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_resources{status=\"active\"} == 1) by (resource,node,job)) by (job) / count(count(ha_cluster_pacemaker_resources) by (resource,job,node)) by (job)",
           "interval": "",
           "legendFormat": "{{job}}",
           "refId": "A"
@@ -963,7 +963,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"}) by (node,job)) by (job)",
+          "expr": "count(count(ha_cluster_pacemaker_nodes{status=\"online\"} == 1) by (node,job)) by (job)",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{job}}",
@@ -1053,7 +1053,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{status=\"active\"}) by (node,job) / count(count(ha_cluster_pacemaker_resources) by (node,instance,job)) by (node,job)",
+          "expr": "count(count(ha_cluster_pacemaker_resources{status=\"active\"} == 1) by (resource,node,job)) by (job,node)",
           "interval": "",
           "legendFormat": "{{node}}",
           "refId": "A"
@@ -1325,7 +1325,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -1345,5 +1345,5 @@
   "timezone": "",
   "title": "Multi-Cluster Overview",
   "uid": "5b0v3y-Wz1",
-  "version": 8
+  "version": 9
 }
