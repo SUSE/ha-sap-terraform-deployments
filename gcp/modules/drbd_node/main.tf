@@ -22,7 +22,7 @@ resource "google_compute_route" "drbd-route" {
 
 resource "google_compute_instance" "drbd" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-drbd${var.drbd_count > 1 ? "0${count.index + 1}" : ""}"
+  name         = "${terraform.workspace}-drbd0${count.index + 1}"
   count        = var.drbd_count
   zone         = element(var.compute_zones, count.index)
 

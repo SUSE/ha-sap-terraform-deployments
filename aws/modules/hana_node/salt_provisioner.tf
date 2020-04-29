@@ -31,8 +31,8 @@ hana_cluster_vip: ${var.hana_cluster_vip}
 route_table: ${var.route_table_id}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-${var.name}
+hostname: ${terraform.workspace}-${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sda

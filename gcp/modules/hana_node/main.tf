@@ -38,7 +38,7 @@ resource "google_compute_route" "hana-route" {
 
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-hana${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
+  name         = "${terraform.workspace}-hana0${count.index + 1}"
   count        = var.hana_count
   zone         = element(var.compute_zones, count.index)
 
