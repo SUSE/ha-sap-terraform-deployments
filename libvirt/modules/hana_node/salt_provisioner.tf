@@ -38,6 +38,7 @@ sbd_disk_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
+hana_cluster_vip: ${var.hana_cluster_vip}
 hana_fstype: ${var.hana_fstype}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}

@@ -31,7 +31,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-drbd_disk_device: /dev/sdb
+drbd_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.drbd.*.attached_disk.0.device_name, count.index))}
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 shared_storage_type: iscsi
 sbd_disk_index: 3
