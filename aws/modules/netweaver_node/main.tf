@@ -80,9 +80,9 @@ resource "aws_instance" "netweaver" {
   }
 
   tags = {
-    Name      = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace = terraform.workspace
-    Cluster   = "${terraform.workspace}-${var.name}0${count.index + 1}"
+    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
+    Workspace                        = terraform.workspace
+    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 
