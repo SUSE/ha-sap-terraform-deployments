@@ -1,3 +1,9 @@
+{% if not grains.get('sbd_disk_device') %}
+{% set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
+{% else %}
+{% set sbd_disk_device = grains['sbd_disk_device'] %}
+{% endif %}
+
 cluster:
   install_packages: true
   name: 'drbd_cluster'
@@ -14,7 +20,7 @@ cluster:
     module: softdog
     device: /dev/watchdog
   sbd:
-    device: {{ grains['sbd_disk_device'] }}
+    device: {{ sbd_disk_device }}
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:

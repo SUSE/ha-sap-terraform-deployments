@@ -46,7 +46,8 @@ pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 shared_storage_type: shared-disk
-sbd_disk_device: /dev/vdb1
+sbd_disk_device: "${var.shared_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
+sbd_disk_index: 2
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
 EOF
