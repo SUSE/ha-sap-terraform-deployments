@@ -168,7 +168,7 @@ module "monitoring" {
   availability_zones     = data.aws_availability_zones.available.names
   sles4sap_images        = var.sles4sap
   subnet_ids             = aws_subnet.infra-subnet.*.id
-  host_ips               = [local.hana_ips]
+  host_ips               = local.hana_ips
   timezone               = var.timezone
   reg_code               = var.reg_code
   reg_email              = var.reg_email
