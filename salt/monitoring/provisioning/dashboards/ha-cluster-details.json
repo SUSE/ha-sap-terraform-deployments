@@ -20,6 +20,12 @@
       "version": "6.3.5"
     },
     {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
       "type": "datasource",
       "id": "prometheus",
       "name": "Prometheus",
@@ -56,252 +62,26 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1580985999837,
+  "iteration": 1588173658321,
   "links": [],
   "panels": [
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 155,
-      "panels": [],
-      "title": "Alerts",
-      "type": "row"
-    },
-    {
-      "columns": [],
-      "fontSize": "100%",
-      "gridPos": {
-        "h": 3,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "id": 151,
-      "options": {},
-      "pageSize": 6,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
-      },
-      "styles": [
-        {
-          "alias": "Name",
-          "colorMode": "row",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "alertname",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "State",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "alertstate",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": []
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Time",
-          "thresholds": [],
-          "type": "date",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "__name__",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": "row",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "/.*/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
-      "targets": [
-        {
-          "expr": "ALERTS{job=\"$hacluster\"}",
-          "format": "table",
-          "instant": true,
-          "intervalFactor": 1,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "",
-      "transform": "table",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
-      "id": 149,
-      "panels": [],
-      "title": "Pacemaker and Corosync",
-      "type": "row"
-    },
-    {
-      "cacheTimeout": null,
       "gridPos": {
         "h": 5,
-        "w": 9,
+        "w": 3,
         "x": 0,
-        "y": 5
-      },
-      "id": 104,
-      "links": [],
-      "options": {
-        "displayMode": "gradient",
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "0",
-                "to": "",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "max": 2,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 0
-              }
-            ],
-            "title": ""
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"expected_up\"})",
-          "instant": true,
-          "legendFormat": "Expected Up",
-          "refId": "A"
-        },
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"dc\"})",
-          "instant": true,
-          "legendFormat": "DC",
-          "refId": "C"
-        },
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"online\", type=\"member\"})",
-          "instant": true,
-          "legendFormat": "Members",
-          "refId": "D"
-        },
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"online\", type=\"remote\"})",
-          "instant": true,
-          "legendFormat": "Remote",
-          "refId": "E"
-        },
-        {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"online\", type=\"ping\"})",
-          "instant": true,
-          "legendFormat": "Ping",
-          "refId": "F"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Nodes",
-      "type": "bargauge"
-    },
-    {
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 9,
-        "y": 5
+        "y": 0
       },
       "id": 92,
       "options": {
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
+            "decimals": 0,
             "mappings": [],
-            "max": 2,
+            "max": 1,
             "min": 0,
             "thresholds": [
               {
@@ -309,10 +89,15 @@
                 "value": null
               },
               {
+                "color": "#EAB839",
+                "value": 0.5
+              },
+              {
                 "color": "dark-green",
                 "value": 1
               }
-            ]
+            ],
+            "unit": "percentunit"
           },
           "override": {},
           "values": false
@@ -324,7 +109,7 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"online\"})",
+          "expr": "count(ha_cluster_pacemaker_nodes{instance=\"$dc_instance\", status=\"online\"} == 1) / count(count(ha_cluster_pacemaker_nodes{instance=\"$dc_instance\"}) by (node))",
           "instant": true,
           "refId": "A"
         }
@@ -335,11 +120,247 @@
       "type": "gauge"
     },
     {
+      "cacheTimeout": null,
+      "columns": [],
+      "fontSize": "100%",
       "gridPos": {
-        "h": 8,
-        "w": 6,
+        "h": 5,
+        "w": 7,
+        "x": 3,
+        "y": 0
+      },
+      "id": 98,
+      "links": [],
+      "options": {},
+      "pageSize": null,
+      "pluginVersion": "6.3.5",
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Name",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "node",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Type",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "type",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Online",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "sanitize": false,
+          "thresholds": [
+            "0",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "Yes",
+              "value": "1"
+            },
+            {
+              "text": "No",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "alias": "Ip",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "ip",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Unclean",
+          "colorMode": "cell",
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Value #C",
+          "thresholds": [
+            "1",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "Yes",
+              "value": "1"
+            },
+            {
+              "text": "No",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "sum(label_replace(label_replace(node_uname_info{job=\"$cluster\"}, 'node', '$1', 'nodename', '(.*)'), 'ip', '$1', 'instance','(.*):.*')) by (node,ip)",
+          "format": "table",
+          "hide": true,
+          "instant": true,
+          "refId": "B"
+        },
+        {
+          "expr": "sum(ha_cluster_pacemaker_nodes{status=\"unclean\", instance=\"$dc_instance\"}) by (node)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "refId": "C"
+        },
+        {
+          "expr": "sum(ha_cluster_pacemaker_nodes{status=\"online\", instance=\"$dc_instance\"}) by (node)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(ha_cluster_pacemaker_nodes{instance=\"$dc_instance\"}) by (type)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "refId": "D"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 10,
+        "y": 0
+      },
+      "id": 168,
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "decimals": 0,
+            "mappings": [],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 0.5
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ],
+            "unit": "percentunit"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.3.5",
+      "targets": [
+        {
+          "expr": "count(ha_cluster_pacemaker_resources{instance=\"$dc_instance\", status=\"active\"} == 1) / count(count(ha_cluster_pacemaker_resources{instance=\"$dc_instance\"}) by (resource,node))",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Active Resources",
+      "type": "gauge"
+    },
+    {
+      "gridPos": {
+        "h": 5,
+        "w": 7,
         "x": 13,
-        "y": 5
+        "y": 0
       },
       "id": 140,
       "options": {
@@ -371,25 +392,25 @@
       "pluginVersion": "6.3.5",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\",type=\"expected_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=\"$dc_instance\",type=\"expected_votes\"}",
           "instant": true,
           "legendFormat": "Expected votes",
           "refId": "A"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\",type=\"highest_expected\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=\"$dc_instance\",type=\"highest_expected\"}",
           "instant": true,
           "legendFormat": "Highest expected votes",
           "refId": "B"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\", type=\"total_votes\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=\"$dc_instance\", type=\"total_votes\"}",
           "instant": true,
           "legendFormat": "Total votes",
           "refId": "C"
         },
         {
-          "expr": "ha_cluster_corosync_quorum_votes{instance=~\"$node_ip:\\\\d+\", type=\"quorum\"}",
+          "expr": "ha_cluster_corosync_quorum_votes{instance=\"$dc_instance\", type=\"quorum\"}",
           "instant": true,
           "legendFormat": "Quorum",
           "refId": "D"
@@ -405,9 +426,9 @@
       "colorBackground": true,
       "colorValue": false,
       "colors": [
-        "#299c46",
-        "#37872D",
-        "#d44a3a"
+        "#F2495C",
+        "#F2495C",
+        "#37872D"
       ],
       "format": "none",
       "gauge": {
@@ -418,10 +439,10 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 19,
-        "y": 5
+        "h": 3,
+        "w": 2,
+        "x": 20,
+        "y": 0
       },
       "id": 138,
       "interval": null,
@@ -463,12 +484,12 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_quorate{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "ha_cluster_corosync_quorate{instance=\"$dc_instance\"}",
           "instant": true,
           "refId": "A"
         }
       ],
-      "thresholds": "0.1",
+      "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
       "title": "Cluster quorate",
@@ -482,183 +503,16 @@
         },
         {
           "op": "=",
-          "text": "YES",
+          "text": "OK",
           "value": "1"
         },
         {
           "op": "=",
-          "text": "NO",
+          "text": "KO",
           "value": "0"
         }
       ],
-      "valueName": "avg"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "decimals": null,
-      "format": "dateTimeFromNow",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 5
-      },
-      "id": 159,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "ha_cluster_pacemaker_config_last_change{instance=~\"$node_ip:\\\\d+\"} * 1000 - 3600000",
-          "instant": false,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Last CIB change",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
       "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 8
-      },
-      "id": 112,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\", status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resouces configured",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
     },
     {
       "cacheTimeout": null,
@@ -678,10 +532,10 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 19,
-        "y": 9
+        "h": 3,
+        "w": 2,
+        "x": 22,
+        "y": 0
       },
       "id": 136,
       "interval": null,
@@ -723,7 +577,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "ha_cluster_corosync_ring_errors{instance=~\"$node_ip:\\\\d+\"}",
+          "expr": "ha_cluster_corosync_ring_errors{instance=\"$dc_instance\"}",
           "instant": true,
           "refId": "A"
         }
@@ -731,7 +585,7 @@
       "thresholds": "0,1",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Corosync Ring  errors total",
+      "title": "Faulty Corosync Rings",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -745,101 +599,15 @@
     },
     {
       "cacheTimeout": null,
-      "gridPos": {
-        "h": 5,
-        "w": 9,
-        "x": 0,
-        "y": 10
-      },
-      "id": 98,
-      "links": [],
-      "options": {
-        "displayMode": "gradient",
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "0",
-                "to": "",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "max": 2,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "red",
-                "value": 2
-              }
-            ]
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal"
-      },
-      "pluginVersion": "6.3.5",
-      "targets": [
-        {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"pending\"}) or up{instance=~\"$node_ip:\\\\d+\"} * 0)",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "Pending",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"standby\"}) or up{instance=~\"$node_ip:\\\\d+\"} * 0)",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "Stand-by",
-          "refId": "B"
-        },
-        {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"maintenance\"}) or up{instance=~\"$node_ip:\\\\d+\"} * 0)",
-          "format": "time_series",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "Maintenance",
-          "refId": "C"
-        },
-        {
-          "expr": "sum(count(ha_cluster_pacemaker_nodes{instance=~\"$node_ip:\\\\d+\", status=\"unclean\"}) or up{instance=~\"$node_ip:\\\\d+\"} * 0)",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "Unclean",
-          "refId": "D"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "",
-      "type": "bargauge"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": true,
+      "colorBackground": false,
       "colorValue": false,
       "colors": [
-        "#d44a3a",
+        "#299c46",
         "rgba(237, 129, 40, 0.89)",
-        "#37872D"
+        "#d44a3a"
       ],
-      "format": "none",
+      "decimals": null,
+      "format": "dateTimeFromNow",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -848,12 +616,12 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 11
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 3
       },
-      "id": 118,
+      "id": 159,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -893,17 +661,17 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\", role=\"master\",status=\"active\"})",
+          "expr": "ha_cluster_pacemaker_config_last_change{instance=\"$dc_instance\"} * 1000",
           "instant": true,
           "refId": "A"
         }
       ],
-      "thresholds": "0,1",
+      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Master resources",
+      "title": "Last CIB change",
       "type": "singlestat",
-      "valueFontSize": "100%",
+      "valueFontSize": "50%",
       "valueMaps": [
         {
           "op": "=",
@@ -911,16 +679,312 @@
           "value": "null"
         }
       ],
-      "valueName": "avg"
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {
+        "dc": "blue",
+        "expected_up": "dark-green",
+        "maintenance": "yellow",
+        "online": "green",
+        "pending": "dark-yellow",
+        "shutdown": "orange",
+        "standby": "light-yellow",
+        "standby_onfail": "semi-dark-red",
+        "unclean": "dark-red"
+      },
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 4,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 10,
+        "x": 0,
+        "y": 5
+      },
+      "id": 104,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.3.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(ha_cluster_pacemaker_nodes{instance=\"$dc_instance\"}) by (status)",
+          "instant": false,
+          "legendFormat": "{{status}}",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Node statuses over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "blocked": "orange",
+        "failed": "red",
+        "failure_ignored": "yellow"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 14,
+        "x": 10,
+        "y": 5
+      },
+      "id": 167,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(ha_cluster_pacemaker_resources{instance=\"$dc_instance\"}) by (status)",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Resource statuses over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 6,
-        "w": 13,
-        "x": 9,
-        "y": 13
+        "h": 10,
+        "w": 10,
+        "x": 0,
+        "y": 11
+      },
+      "id": 157,
+      "options": {},
+      "pageSize": 10,
+      "repeat": "node",
+      "repeatDirection": "v",
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 3,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Service",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "name",
+          "preserveFormat": false,
+          "sanitize": false,
+          "type": "string"
+        },
+        {
+          "alias": "Active",
+          "colorMode": "cell",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "Value",
+          "thresholds": [
+            "1",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "Yes",
+              "value": "1"
+            },
+            {
+              "text": "No",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "alias": "Node",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "nodename",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "node_systemd_unit_state{name=~\"((corosync|pacemaker|sbd|prometheus|hawk).*)\", state=\"active\"} + on(instance) group_left(nodename) 0 * node_uname_info{job=\"$cluster\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "systemd units",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 10,
+        "w": 14,
+        "x": 10,
+        "y": 11
       },
       "id": 108,
       "options": {},
@@ -931,7 +995,7 @@
       "scroll": true,
       "showHeader": true,
       "sort": {
-        "col": 2,
+        "col": 3,
         "desc": false
       },
       "styles": [
@@ -1036,6 +1100,22 @@
           "unit": "short"
         },
         {
+          "alias": "Type",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "agent",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
           "alias": "",
           "colorMode": null,
           "colors": [
@@ -1052,21 +1132,21 @@
       ],
       "targets": [
         {
-          "expr": "sum(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\"}) by(resource, status, node, role)",
+          "expr": "sum(ha_cluster_pacemaker_resources{instance=\"$dc_instance\"} == 1) by(resource, node, status, role, agent)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_migration_threshold{instance=\"$dc_instance\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=~\"$node_ip:\\\\d+\"}) by(resource, node)",
+          "expr": "sum(ha_cluster_pacemaker_fail_count{instance=\"$dc_instance\"}) by(resource, node)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1081,180 +1161,13 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
+      "columns": [],
+      "fontSize": "100%",
       "gridPos": {
         "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 14
-      },
-      "id": 119,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\", role=\"slave\", status=\"active\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Slave resources",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "columns": [],
-      "fontSize": "100%",
-      "gridPos": {
-        "h": 8,
-        "w": 5,
+        "w": 10,
         "x": 0,
-        "y": 15
-      },
-      "id": 157,
-      "options": {},
-      "pageSize": 10,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
-      },
-      "styles": [
-        {
-          "alias": "",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "name",
-          "type": "string"
-        },
-        {
-          "alias": "Active",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "Value",
-          "thresholds": [
-            "1",
-            "1"
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": [
-            {
-              "text": "Yes",
-              "value": "1"
-            },
-            {
-              "text": "No",
-              "value": "0"
-            }
-          ]
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "/.*/",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        }
-      ],
-      "targets": [
-        {
-          "expr": "node_systemd_unit_state{name=~\"(corosync|pacemaker|sbd|hanadb_exporter|prometheus-ha_cluster_exporter|hawk).*\", instance=~\"$node_ip:9100\", state=\"active\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "systemd units",
-      "transform": "table",
-      "type": "table"
-    },
-    {
-      "cacheTimeout": null,
-      "columns": [],
-      "fontSize": "100%",
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 5,
-        "y": 15
+        "y": 21
       },
       "id": 142,
       "links": [],
@@ -1330,13 +1243,13 @@
       ],
       "targets": [
         {
-          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\"}) by (device,status)",
+          "expr": "count(ha_cluster_sbd_devices{instance=\"$dc_instance\"}) by (device,status)",
           "format": "table",
           "instant": true,
           "refId": "A"
         },
         {
-          "expr": "count(ha_cluster_sbd_devices{instance=~\"$node_ip:\\\\d+\",status=\"healthy\"}) by (device,status)",
+          "expr": "count(ha_cluster_sbd_devices{instance=\"$dc_instance\",status=\"healthy\"}) by (device,status)",
           "format": "table",
           "instant": true,
           "refId": "B"
@@ -1349,98 +1262,13 @@
       "type": "table"
     },
     {
-      "cacheTimeout": null,
-      "colorBackground": true,
-      "colorPrefix": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "#C4162A",
-        "#C4162A"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 17
-      },
-      "id": 116,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "pluginVersion": "6.3.3",
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\", status=\"failed\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "0,1",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resources failed",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 4,
-        "w": 13,
-        "x": 9,
-        "y": 19
+        "h": 3,
+        "w": 14,
+        "x": 10,
+        "y": 21
       },
       "id": 165,
       "options": {},
@@ -1558,7 +1386,7 @@
       ],
       "targets": [
         {
-          "expr": "clamp_min(clamp_max(ha_cluster_pacemaker_location_constraints{instance=~\"$node_ip:\\\\d+\"}, 1000000), -1000000)",
+          "expr": "clamp_min(clamp_max(ha_cluster_pacemaker_location_constraints{instance=\"$dc_instance\"}, 1000000), -1000000)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1570,236 +1398,9 @@
       "title": "Resource location constraints",
       "transform": "table",
       "type": "table"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 2,
-        "x": 22,
-        "y": 20
-      },
-      "id": 114,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "count(ha_cluster_pacemaker_resources{instance=~\"$node_ip:\\\\d+\", status=\"disabled\"})",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Resources disabled",
-      "type": "singlestat",
-      "valueFontSize": "100%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "id": 163,
-      "panels": [],
-      "title": "DRBD",
-      "type": "row"
-    },
-    {
-      "columns": [],
-      "fontSize": "100%",
-      "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 0,
-        "y": 24
-      },
-      "id": 161,
-      "options": {},
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": 0,
-        "desc": true
-      },
-      "styles": [
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "__name__",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "job",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Time",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "instance",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        },
-        {
-          "alias": "drbd disk status",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "#56A64B",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "disk_state",
-          "thresholds": [
-            ""
-          ],
-          "type": "string",
-          "unit": "short",
-          "valueMaps": []
-        }
-      ],
-      "targets": [
-        {
-          "expr": "ha_cluster_drbd_resources{job=\"$hacluster\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Drbd  disks resources ",
-      "transform": "table",
-      "type": "table"
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 19,
   "style": "dark",
   "tags": [],
@@ -1829,9 +1430,9 @@
         "definition": "Cluster name",
         "hide": 0,
         "includeAll": false,
-        "label": "HA Cluster",
+        "label": "Cluster",
         "multi": false,
-        "name": "hacluster",
+        "name": "cluster",
         "options": [],
         "query": "label_values(job)",
         "refresh": 2,
@@ -1848,38 +1449,16 @@
         "allValue": null,
         "current": {},
         "datasource": "$data_source",
-        "definition": "Node name",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Node",
-        "multi": false,
-        "name": "node_name",
-        "options": [],
-        "query": "query_result(label_replace(ha_cluster_pacemaker_nodes{job='$hacluster'}, 'ip', '$1', 'instance','(.*):.*') + on(ip) group_left(nodename) label_replace(node_uname_info, 'ip', '$1', 'instance','(.*):.*'))",
-        "refresh": 2,
-        "regex": ".*nodename=\"([^,]+)\".*",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": "$data_source",
-        "definition": "Node IP",
+        "definition": "DC Exporter Instance",
         "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
-        "name": "node_ip",
+        "name": "dc_instance",
         "options": [],
-        "query": "label_values(node_uname_info{nodename=\"$node_name\", job=\"$hacluster\"}, instance)",
+        "query": "query_result(label_replace((ha_cluster_pacemaker_nodes{job='$cluster',status='dc'} == 1), 'ip', '$1', 'instance', '(.*):.*') + on(node, ip) group_left label_replace(label_replace(0 * node_uname_info{job='$cluster'}, 'node', '$1', 'nodename', '(.*)'), 'ip', '$1', 'instance','(.*):.*'))",
         "refresh": 2,
-        "regex": "^(.*):\\d+$",
+        "regex": ".*instance=\"(.+?)\".*",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -1891,7 +1470,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -1922,5 +1501,5 @@
   "timezone": "",
   "title": "HA Cluster details",
   "uid": "Q5YJpwtZk1",
-  "version": 2
+  "version": 3
 }
