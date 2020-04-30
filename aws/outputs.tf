@@ -75,3 +75,13 @@ output "iscsisrv_name" {
 output "iscsisrv_public_name" {
   value = module.iscsi_server.iscsisrv_public_name
 }
+
+# For openQA (QA mode)
+
+output openqa_vms {
+  value = concat(module.hana_node.cluster_nodes_name, module.netweaver_node.netweaver_name)
+}
+
+output openqa_ips {
+  value = concat(module.hana_node.cluster_nodes_public_ip, module.netweaver_node.netweaver_public_ip)
+}

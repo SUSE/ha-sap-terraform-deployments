@@ -25,3 +25,7 @@ output "drbd_name" {
 output "drbd_public_name" {
   value = data.azurerm_public_ip.drbd.*.fqdn
 }
+
+output "drbd_id" {
+  value = azurerm_virtual_machine.drbd.*.id
+}

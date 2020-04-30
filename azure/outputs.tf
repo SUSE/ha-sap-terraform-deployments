@@ -58,6 +58,10 @@ output "cluster_nodes_public_name" {
   value = module.hana_node.cluster_nodes_public_name
 }
 
+output "cluster_nodes_id" {
+  value = module.hana_node.cluster_nodes_id
+}
+
 # drbd
 
 output "drbd_ip" {
@@ -76,6 +80,10 @@ output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
 
+output "drbd_id" {
+  value = module.drbd_node.drbd_id
+}
+
 # netweaver
 
 output "netweaver_ip" {
@@ -92,4 +100,18 @@ output "netweaver_name" {
 
 output "netweaver_public_name" {
   value = module.netweaver_node.netweaver_public_name
+}
+
+output "netweaver_id" {
+  value = module.netweaver_node.netweaver_id
+}
+
+# For openQA (QA mode)
+
+output openqa_vms {
+  value = concat(module.hana_node.cluster_nodes_id, module.drbd_node.drbd_id, module.netweaver_node.netweaver_id)
+}
+
+output openqa_ips {
+  value = concat(module.hana_node.cluster_nodes_public_ip, module.drbd_node.drbd_public_ip, module.netweaver_node.netweaver_public_ip)
 }

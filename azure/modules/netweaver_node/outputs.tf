@@ -25,3 +25,7 @@ output "netweaver_name" {
 output "netweaver_public_name" {
   value = data.azurerm_public_ip.netweaver.*.fqdn
 }
+
+output "netweaver_id" {
+  value = azurerm_virtual_machine.netweaver.*.id
+}
