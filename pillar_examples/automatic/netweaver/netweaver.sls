@@ -45,11 +45,7 @@ netweaver:
   # apply by default the netweaver solution
   saptune_solution: 'NETWEAVER'
 
-  # enable exporter if monitoring enabled
-{%- if grains.get('monitoring_enabled', False) %}
-  sap_host_exporter:
-    enabled: true
-{%- endif %}
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
 
   hana:
     host: {{ grains['hana_ip'] }}
