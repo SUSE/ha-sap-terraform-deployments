@@ -190,7 +190,7 @@ variable "hana_subnet_address_range" {
   default     = []
 }
 
-variable "host_ips" {
+variable "hana_ips" {
   description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)
   default     = []

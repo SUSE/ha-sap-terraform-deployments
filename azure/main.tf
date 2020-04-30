@@ -17,7 +17,7 @@ module "local_execution" {
 locals {
   iscsi_ip              = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
   monitoring_ip         = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
-  hana_ips              = length(var.host_ips) != 0 ? var.host_ips : [for ip_index in range(10, 12) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_ips              = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(10, 12) : cidrhost(local.subnet_address_range, ip_index)]
   hana_cluster_vip      = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, 12)
   drbd_ips              = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(20, 22) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip      = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, 22)

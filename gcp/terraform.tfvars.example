@@ -79,8 +79,7 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order).
-# example : host_ips = ["10.0.0.2", "10.0.0.3"]
-#host_ips = ["10.0.0.2", "10.0.0.3"]
+#hana_ips = ["10.0.0.2", "10.0.0.3"]
 
 # Local folder where HANA installation master will be mounted
 hana_inst_folder = "/sapmedia/HANA"
@@ -150,7 +149,6 @@ ha_sap_deployment_repo = ""
 #drbd_data_disk_type = pd-standard
 
 # Each drbd cluster host IP address (sequential order).
-# example : drbd_host_ips = ["10.0.0.10", "10.0.0.11"]
 #drbd_ips = ["10.0.0.10", "10.0.0.11"]
 #drbd_cluster_vip = "10.0.1.201"
 
