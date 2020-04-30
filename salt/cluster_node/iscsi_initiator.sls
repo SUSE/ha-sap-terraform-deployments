@@ -4,6 +4,13 @@ open-iscsi:
       attempts: 3
       interval: 15
 
+# lsscsi is used to retrieve the sbd disk in the automatic pillar files
+lsscsi:
+  pkg.installed:
+  - retry:
+      attempts: 3
+      interval: 15
+
 /etc/iscsi/initiatorname.iscsi:
   file.replace:
     - pattern: "^InitiatorName=.*"

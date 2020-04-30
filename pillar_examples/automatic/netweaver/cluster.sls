@@ -1,5 +1,4 @@
 {%- import_yaml "/root/salt/netweaver_node/files/pillar/netweaver.sls" as netweaver %}
-{%- set iprange = ".".join(grains['host_ips'][0].split('.')[0:-1]) %}
 {%- if not grains.get('sbd_disk_device') %}
 {%- set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
 {%- else %}
