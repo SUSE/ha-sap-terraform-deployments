@@ -23,12 +23,15 @@ provider: aws
 region: ${var.aws_region}
 role: drbd_node
 name_prefix: vm${var.name}
+aws_cluster_profile: Cluster
+aws_instance_tag: Cluster
 hostname: vm${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 drbd_disk_device: /dev/sdc
 drbd_cluster_vip: ${var.drbd_cluster_vip}
+route_table: ${var.route_table_id}
 shared_storage_type: iscsi
 sbd_disk_device: /dev/sde
 iscsi_srv_ip: ${var.iscsi_srv_ip}

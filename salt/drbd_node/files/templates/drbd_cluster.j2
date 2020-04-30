@@ -65,6 +65,29 @@ primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
 
 {% endif %}
 
+{%- if cloud_provider == "amazon-web-services" %}
+
+property $id="cib-bootstrap-options" \
+    stonith-enabled="true" \
+    stonith-action="off" \
+    stonith-timeout="150s"
+
+primitive rsc_aws_stonith_{{ res.name }}_nfs stonith:external/ec2 \
+    params tag={{ data.instance_tag }} profile={{ data.cluster_profile }} \
+    op start interval=0 timeout=180 \
+    op stop interval=0 timeout=180 \
+    op monitor interval=120 timeout=60 \
+    meta target-role=Started
+
+primitive rsc_aws_vip_{{ res.name }}_nfs ocf:suse:aws-vpc-move-ip \
+    params ip={{ data.virtual_ip }} routing_table={{ data.route_table }} \
+    interface={{ pillar.cluster.interface|default('eth0')|json }} profile={{ data.cluster_profile }} \
+    op start interval=0 timeout=180 \
+    op stop interval=0 timeout=180 \
+    op monitor interval=60 timeout=60
+
+{%- endif %}
+
 primitive exportfs_work_{{ res.name }} exportfs \
   params directory={{ res.mount_point }} fsid={{ nfsid + loop.index0 }} \
   options="rw,no_root_squash" clientspec="*" wait_for_leasetime_on_stop=true \

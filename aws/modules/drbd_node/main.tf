@@ -64,9 +64,9 @@ resource "aws_instance" "drbd" {
   }
 
   tags = {
-    Name      = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace = terraform.workspace
-    "${terraform.workspace}-cluster"   = "${var.name}0${count.index + 1}"
+    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
+    Workspace                        = terraform.workspace
+    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 
