@@ -22,10 +22,10 @@ resource "null_resource" "drbd_provisioner" {
 provider: aws
 region: ${var.aws_region}
 role: drbd_node
-name_prefix: vm${var.name}
+name_prefix: ${var.name}
 aws_cluster_profile: Cluster
-aws_instance_tag: Cluster
-hostname: vm${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
+aws_instance_tag: ${terraform.workspace}-cluster
+hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
@@ -33,7 +33,7 @@ drbd_disk_device: /dev/sdc
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 route_table: ${var.route_table_id}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sde
+sbd_disk_index: 3
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}

@@ -63,9 +63,7 @@ primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
   op stop interval=0 timeout=180 \
   op monitor interval=60 timeout=60
 
-{% endif %}
-
-{%- if cloud_provider == "amazon-web-services" %}
+{%- elif cloud_provider == "amazon-web-services" %}
 
 property $id="cib-bootstrap-options" \
     stonith-enabled="true" \
