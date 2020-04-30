@@ -4,10 +4,6 @@ provider "aws" {
   region  = var.aws_region
 }
 
-provider "template" {
-  version = "~> 2.1"
-}
-
 data "aws_vpc" "current-vpc" {
   count = var.vpc_id != "" ? 1 : 0
   id    = var.vpc_id

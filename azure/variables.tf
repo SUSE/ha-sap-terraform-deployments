@@ -218,7 +218,7 @@ variable "hana_enable_accelerated_networking" {
   default     = true
 }
 
-variable "host_ips" {
+variable "hana_ips" {
   description = "ip addresses to set to the hana nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []

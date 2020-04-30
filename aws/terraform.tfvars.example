@@ -74,7 +74,7 @@ hana_cluster_vip = "192.168.1.10"
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
-# iSCSI server address. It should be in same iprange as host_ips
+# iSCSI server address. It should be in same iprange as hana_ips
 iscsi_srv_ip = "10.0.0.254"
 
 # Device used by the iSCSI server to provide LUNs
@@ -89,8 +89,7 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
-# example : host_ips = ["10.0.0.5", "10.0.1.6"]
-host_ips = ["10.0.0.5", "10.0.1.6"]
+#hana_ips = ["10.0.0.5", "10.0.1.6"]
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:

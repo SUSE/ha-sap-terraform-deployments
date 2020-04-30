@@ -30,7 +30,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdf
+sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

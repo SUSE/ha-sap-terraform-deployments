@@ -149,8 +149,8 @@ variable "sles4sap_boot_image" {
   default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
+variable "hana_ips" {
+  description = "ip addresses to set to the hana nodes. They must be in the same network addresses range defined in `ip_cidr_range`"
   type        = list(string)
   default     = []
 }

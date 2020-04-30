@@ -35,7 +35,7 @@ hostname: ${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sda
+sbd_disk_index: 1
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
