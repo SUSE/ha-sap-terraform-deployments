@@ -17,7 +17,7 @@ resource "null_resource" "monitoring_provisioner" {
 provider: azure
 role: monitoring
 name_prefix: vmmonitoring
-hostname: "vmmonitoring"
+hostname: vmmonitoring
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}

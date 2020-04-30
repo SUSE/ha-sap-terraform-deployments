@@ -23,13 +23,13 @@ provider: aws
 region: ${var.aws_region}
 role: netweaver_node
 name_prefix: ${var.name}
+hostname: ${var.name}0${count.index + 1}
 aws_cluster_profile: Cluster
-aws_instance_tag: Cluster
+aws_instance_tag: ${terraform.workspace}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
-hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}

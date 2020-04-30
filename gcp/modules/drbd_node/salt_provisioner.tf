@@ -20,7 +20,7 @@ resource "null_resource" "drbd_provisioner" {
 provider: gcp
 role: drbd_node
 name_prefix: ${terraform.workspace}-drbd
-hostname: ${terraform.workspace}-drbd${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-drbd$0${count.index + 1}"
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}

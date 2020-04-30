@@ -1,20 +1,20 @@
 resource "libvirt_volume" "hana_image_disk" {
   count            = var.hana_count
-  name             = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
+  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_volume" "hana_data_disk" {
-  name  = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}-hana-disk"
+  name  = "${terraform.workspace}-${var.name}-${count.index + 1}-hana-disk"
   pool  = var.storage_pool
   count = var.hana_count
   size  = var.hana_disk_size
 }
 
 resource "libvirt_domain" "hana_domain" {
-  name       = "${terraform.workspace}-${var.name}${var.hana_count > 1 ? "-${count.index + 1}" : ""}"
+  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.hana_count
@@ -59,7 +59,7 @@ resource "libvirt_domain" "hana_domain" {
     wait_for_lease = false
     network_name   = var.isolated_network_name
     network_id     = var.isolated_network_id
-    hostname       = "${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}"
+    hostname       = "${var.name}0${count.index + 1}"
     addresses      = [element(var.host_ips, count.index)]
   }
 

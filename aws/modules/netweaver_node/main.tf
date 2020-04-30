@@ -76,13 +76,13 @@ resource "aws_instance" "netweaver" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+    Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
   }
 
   tags = {
-    Name      = "${terraform.workspace} - ${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
-    Workspace = terraform.workspace
-    Cluster   = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
+    Workspace                        = terraform.workspace
+    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 

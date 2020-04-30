@@ -165,7 +165,7 @@ resource "azurerm_image" "drbd-image" {
 
 resource "azurerm_virtual_machine" "drbd" {
   count                            = var.drbd_count
-  name                             = "vm${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}"
+  name                             = "vm${var.name}0${count.index + 1}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.drbd.*.id, count.index)]
@@ -175,7 +175,7 @@ resource "azurerm_virtual_machine" "drbd" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}-Os"
+    name              = "disk-${var.name}0${count.index + 1}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -190,7 +190,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   storage_data_disk {
-    name              = "disk-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}-Data01"
+    name              = "disk-${var.name}0${count.index + 1}-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"
@@ -199,7 +199,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   os_profile {
-    computer_name  = "drbd0${count.index + 1}"
+    computer_name  = "vmdrbd0${count.index + 1}"
     admin_username = var.admin_user
   }
 

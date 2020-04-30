@@ -1,13 +1,13 @@
 resource "libvirt_volume" "netweaver_image_disk" {
   count            = var.netweaver_count
-  name             = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}-main-disk"
+  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${terraform.workspace}-${var.name}${var.netweaver_count > 1 ? "-${count.index + 1}" : ""}"
+  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.netweaver_count
@@ -38,7 +38,7 @@ resource "libvirt_domain" "netweaver_domain" {
     wait_for_lease = false
     network_name   = var.isolated_network_name
     network_id     = var.isolated_network_id
-    hostname       = "${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+    hostname       = "${var.name}0${count.index + 1}"
     addresses      = [element(var.host_ips, count.index)]
   }
 

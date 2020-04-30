@@ -22,7 +22,7 @@ resource "google_compute_route" "nw-route" {
 
 resource "google_compute_instance" "netweaver" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-netweaver${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}"
+  name         = "${terraform.workspace}-netweaver0${count.index + 1}"
   count        = var.netweaver_count
   zone         = element(var.compute_zones, count.index)
 
