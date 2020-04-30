@@ -17,7 +17,7 @@ resource "null_resource" "netweaver_node_provisioner" {
   provisioner "file" {
     content     = <<EOF
 name_prefix: ${var.name}
-hostname: ${var.name}${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
@@ -46,7 +46,8 @@ pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 shared_storage_type: shared-disk
-sbd_disk_device: /dev/vdb1
+sbd_disk_device: "${var.shared_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
+sbd_disk_index: 2
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
 EOF

@@ -16,8 +16,8 @@ resource "null_resource" "drbd_node_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
+name_prefix: ${var.name}
+hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
@@ -33,7 +33,8 @@ provider: libvirt
 role: drbd_node
 drbd_disk_device: /dev/vdb
 shared_storage_type: ${var.shared_storage_type}
-sbd_disk_device: "${var.shared_storage_type == "iscsi" ? "/dev/sda" : "/dev/vdc"}"
+sbd_disk_device: "${var.shared_storage_type == "shared-disk" ? "/dev/vdc" : ""}"
+sbd_disk_index: 3
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

@@ -25,7 +25,7 @@ resource "null_resource" "netweaver_provisioner" {
 provider: gcp
 role: netweaver_node
 name_prefix: ${terraform.workspace}-netweaver
-hostname: ${terraform.workspace}-netweaver${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}
@@ -38,7 +38,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sde
+sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

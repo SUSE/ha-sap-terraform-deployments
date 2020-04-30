@@ -17,7 +17,7 @@ resource "null_resource" "drbd_provisioner" {
 provider: azure
 role: drbd_node
 name_prefix: vm${var.name}
-hostname: vm${var.name}${var.drbd_count > 1 ? "0${count.index + 1}" : ""}
+hostname: vm${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}
@@ -31,7 +31,7 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 drbd_disk_device: /dev/sdc
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sde
+sbd_disk_index: 3
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

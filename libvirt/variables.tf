@@ -133,7 +133,7 @@ variable "hana_node_disk_size" {
 }
 
 variable "hana_ips" {
-  description = "IP addresses of the HANA nodes"
+  description = "ip addresses to set to the hana nodes"
   type        = list(string)
   default     = []
 }

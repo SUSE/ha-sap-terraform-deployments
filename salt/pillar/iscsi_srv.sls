@@ -1,6 +1,7 @@
 {% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
 {% set partitions = grains['partitions'] %}
 {% set num = grains['iscsi_disks'] %}
+{% set real_iscsidev = salt['cmd.run']('realpath '~grains['iscsidev']) %}
 
 {% if num > 0 and num < partitions|length %}
 {% set partitions = (partitions|list)[:num] %}
@@ -28,7 +29,7 @@ iscsi:
               block_size: 512
               emulate_write_cache: 0
               unmap_granularity: 0
-            dev: {{ grains['iscsidev'] }}{{ loop.index }}
+            dev: {{ real_iscsidev }}{{ loop.index }}
             name: sd{{ devicenum[loop.index0] }}
             plugin: "block"
 {%- endfor %}

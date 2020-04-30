@@ -127,12 +127,10 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
-# example : host_ips = ["10.0.1.0", "10.0.1.1"]
-#host_ips = ["10.74.1.11", "10.74.1.12"]
+#hana_ips = ["10.74.1.11", "10.74.1.12"]
 #hana_cluster_vip = "10.74.1.13"
 
 # Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
-# example : drbd_host_ips = ["10.0.1.10", "10.0.1.11"]
 #drbd_ips = ["10.74.1.21", "10.74.1.22"]
 #drbd_cluster_vip = "10.74.1.23"
 

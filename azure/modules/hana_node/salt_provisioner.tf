@@ -22,11 +22,11 @@ role: hana_node
 devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
+hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdf
+sbd_disk_index: 1
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}

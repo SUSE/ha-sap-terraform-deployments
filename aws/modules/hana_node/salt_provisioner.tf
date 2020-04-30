@@ -23,19 +23,19 @@ provider: aws
 region: ${var.aws_region}
 role: hana_node
 aws_cluster_profile: Cluster
-aws_instance_tag: Cluster
+aws_instance_tag: ${terraform.workspace}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 hana_cluster_vip: ${var.hana_cluster_vip}
 route_table: ${var.route_table_id}
 scenario_type: ${var.scenario_type}
-name_prefix: ${terraform.workspace}-${var.name}
+name_prefix: ${var.name}
+hostname: ${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sda
+sbd_disk_index: 1
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}

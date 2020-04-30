@@ -17,9 +17,9 @@ resource "null_resource" "monitoring_provisioner" {
 provider: aws
 region: ${var.aws_region}
 role: monitoring
-name_prefix: ${terraform.workspace}-monitoring
+name_prefix: monitoring
+hostname: monitoring
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: ${terraform.workspace}-monitoring
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
