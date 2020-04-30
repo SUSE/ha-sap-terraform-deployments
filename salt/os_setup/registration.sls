@@ -15,7 +15,7 @@ register_system:
 
 
 {% if grains['osmajorrelease'] == 12 %}
-# hardcode the 12 version number for the 2 following modules, since they don't offer a sp version only 1. 
+# hardcode the 12 version number for the 2 following modules, since they don't offer a sp version only 1.
 default_sle_module_adv_systems_management_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-adv-systems-management/12/{{ arch }} -r $reg_code
@@ -48,16 +48,6 @@ default_sle_module_public_cloud_registration:
         interval: 15
 
 {% endif %}
-
-# sle15 PackageHub (temporarily for GCP until ECO-1148 is released) and sle12 PackageHub (temporarily for GCP until ECO-1148 is released)
-default_PackageHub_registration:
-  cmd.run:
-    - name: /usr/bin/SUSEConnect -p  PackageHub/{{ grains['osrelease'] }}/{{ arch }} -r $reg_code
-    - env:
-        - reg_code: {{ reg_code }}
-    - retry:
-        attempts: 3
-        interval: 15
 
 {% if grains['reg_additional_modules'] %}
 {% for module, mod_reg_code in grains['reg_additional_modules'].items() %}
