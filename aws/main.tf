@@ -53,6 +53,7 @@ module "drbd_node" {
   drbd_cluster_vip       = local.drbd_cluster_vip
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type
+  public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key

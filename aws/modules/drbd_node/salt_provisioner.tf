@@ -25,6 +25,9 @@ role: drbd_node
 name_prefix: ${var.name}
 aws_cluster_profile: Cluster
 aws_instance_tag: ${terraform.workspace}-cluster
+aws_credentials_file: /tmp/credentials
+aws_access_key_id: ${var.aws_access_key_id}
+aws_secret_access_key: ${var.aws_secret_access_key}
 hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
@@ -40,6 +43,7 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
+authorized_keys: [${trimspace(file(var.public_key_location))}]
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
