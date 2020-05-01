@@ -37,6 +37,18 @@ locals {
   for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 2 + 1)]
 }
 
+# EFS storage for nfs share used by Netweaver for /usr/sap/{sid} and /sapmnt
+# It will be created for netweaver only when drbd is disabled
+resource "aws_efs_file_system" "netweaver-efs" {
+  count            = var.netweaver_enabled == true && var.drbd_enabled == false ? 1 : 0
+  creation_token   = "${terraform.workspace}-netweaver-efs"
+  performance_mode = var.netweaver_efs_performance_mode
+
+  tags = {
+    Name = "${terraform.workspace}-efs"
+  }
+}
+
 # AWS key pair
 resource "aws_key_pair" "key-pair" {
   key_name   = "${terraform.workspace} - terraform"

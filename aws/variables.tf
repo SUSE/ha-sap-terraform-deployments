@@ -294,7 +294,7 @@ variable "drbd_subnet_address_range" {
 variable "drbd_data_disk_size" {
   description = "Disk size of the disks used to store drbd content"
   type        = string
-  default     = "10"
+  default     = "15"
 }
 
 variable "drbd_data_disk_type" {

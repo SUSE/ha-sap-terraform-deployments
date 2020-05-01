@@ -13,7 +13,7 @@ variable "drbd_count" {
 variable "drbd_instancetype" {
   description = "The instance type of drbd node"
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "min_instancetype" {

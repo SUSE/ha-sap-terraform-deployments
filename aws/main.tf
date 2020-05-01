@@ -117,7 +117,7 @@ module "netweaver_node" {
   key_name                   = aws_key_pair.key-pair.key_name
   security_group_id          = local.security_group_id
   route_table_id             = aws_route_table.route-table.id
-  efs_performance_mode       = var.netweaver_efs_performance_mode
+  efs_file_system_ids        = aws_efs_file_system.netweaver-efs.*.id
   aws_credentials            = var.aws_credentials
   aws_access_key_id          = var.aws_access_key_id
   aws_secret_access_key      = var.aws_secret_access_key
@@ -129,6 +129,7 @@ module "netweaver_node" {
   netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
+  netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
   hana_ip                    = var.hana_cluster_vip
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
