@@ -248,6 +248,12 @@ variable "background" {
   default     = false
 }
 
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  type        = bool
+  default     = false
+}
+
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool

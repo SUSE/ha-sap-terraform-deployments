@@ -31,7 +31,7 @@ resource "aws_route" "ers-cluster-vip" {
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
-  count           = min(var.netweaver_count, 2)
+  count           = var.netweaver_count > 0 && var.drbd_enabled == false ? 2 : 0
   file_system_id  = element(var.efs_file_system_ids, 0)
   subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
   security_groups = [var.security_group_id]

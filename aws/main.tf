@@ -131,6 +131,7 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
+  drbd_enabled               = var.drbd_enabled
   hana_ip                    = var.hana_cluster_vip
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
