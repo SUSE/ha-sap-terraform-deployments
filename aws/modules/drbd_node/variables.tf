@@ -89,13 +89,11 @@ variable "aws_secret_access_key" {
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
-  default     = ["10.0.5.20", "10.0.5.21"]
 }
 
 variable "drbd_cluster_vip" {
   description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
   type        = string
-  default     = "192.168.1.20"
 }
 
 variable "drbd_data_disk_size" {

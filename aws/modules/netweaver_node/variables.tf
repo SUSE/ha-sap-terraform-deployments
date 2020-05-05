@@ -63,9 +63,9 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
-variable "efs_file_system_ids" {
-  description = "AWS efs file system IDs to be used by EFS mount target"
-  type        = list(string)
+variable "efs_file_system_id" {
+  type        = string
+  description = "AWS efs file system ID to be used by EFS mount target"
 }
 
 variable "aws_credentials" {
@@ -244,12 +244,6 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
   type        = bool
   default     = false
 }

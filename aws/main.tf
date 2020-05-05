@@ -11,7 +11,7 @@ module "local_execution" {
 # Hana cluster vip: 192.168.1.10 (virtual ip address must be in a different range than the vpc)
 # Netweaver ips: 10.0.3.30, 10.0.4.31, 10.0.3.32, 10.0.4.33 (netweaver ASCS and ERS must be in different subnets)
 # Netweaver virtual ips: 192.168.1.30, 192.168.1.31, 192.168.1.32, 192.168.1.33 (virtual ip addresses must be in a different range than the vpc)
-# DRBD ips: 10.0.5.20, 10.0.5.21
+# DRBD ips: 10.0.5.20, 10.0.6.21
 # DRBD cluster vip: 192.168.1.20 (virtual ip address must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
@@ -118,7 +118,7 @@ module "netweaver_node" {
   key_name                   = aws_key_pair.key-pair.key_name
   security_group_id          = local.security_group_id
   route_table_id             = aws_route_table.route-table.id
-  efs_file_system_ids        = aws_efs_file_system.netweaver-efs.*.id
+  efs_file_system_id        = join("", aws_efs_file_system.netweaver-efs.*.id)
   aws_credentials            = var.aws_credentials
   aws_access_key_id          = var.aws_access_key_id
   aws_secret_access_key      = var.aws_secret_access_key
@@ -131,7 +131,6 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
-  drbd_enabled               = var.drbd_enabled
   hana_ip                    = var.hana_cluster_vip
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
@@ -228,6 +227,8 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  drbd_enabled           = var.drbd_enabled
+  drbd_ips               = local.drbd_ips  
   netweaver_enabled      = var.netweaver_enabled
   netweaver_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
