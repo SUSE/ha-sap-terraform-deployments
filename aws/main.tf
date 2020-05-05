@@ -118,7 +118,7 @@ module "netweaver_node" {
   key_name                   = aws_key_pair.key-pair.key_name
   security_group_id          = local.security_group_id
   route_table_id             = aws_route_table.route-table.id
-  efs_file_system_id        = join("", aws_efs_file_system.netweaver-efs.*.id)
+  efs_file_system_id         = join("", aws_efs_file_system.netweaver-efs.*.id)
   aws_credentials            = var.aws_credentials
   aws_access_key_id          = var.aws_access_key_id
   aws_secret_access_key      = var.aws_secret_access_key
@@ -228,7 +228,7 @@ module "monitoring" {
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
   drbd_enabled           = var.drbd_enabled
-  drbd_ips               = local.drbd_ips  
+  drbd_ips               = local.drbd_ips
   netweaver_enabled      = var.netweaver_enabled
   netweaver_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
