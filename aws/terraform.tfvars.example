@@ -66,13 +66,16 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
-hana_cluster_vip = "192.168.1.10"
+#hana_cluster_vip = "192.168.1.10"
 
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
+# Enable iscsi server creation
+#iscsi_enabled = true
+
 # iSCSI server address. It should be in same iprange as hana_ips
-iscsi_srv_ip = "10.0.0.254"
+#iscsi_srv_ip = "10.0.0.254"
 
 # Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
 iscsi_lun_count = 3

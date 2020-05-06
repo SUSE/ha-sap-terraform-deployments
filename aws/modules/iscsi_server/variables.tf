@@ -3,14 +3,14 @@ variable "aws_region" {
   description = "AWS region where the deployment machines will be created"
 }
 
-variable "availability_zone" {
-  type        = string
-  description = "Availability zone name where the machine is deployed"
+variable "availability_zones" {
+  type        = list(string)
+  description = "Used availability zones"
 }
 
-variable "subnet_id" {
-  type        = string
-  description = "Subnet id to attach the machine network interface"
+variable "subnet_ids" {
+  type        = list(string)
+  description = "Subnet ids to attach the machines network interface"
 }
 
 variable "iscsi_srv_images" {
@@ -27,6 +27,11 @@ variable "iscsi_srv_images" {
     "eu-west-2"    = "ami-00189dbab3fd43af2"
     "eu-west-3"    = "ami-00e70e3421f053648"
   }
+}
+
+variable "iscsi_count" {
+  type        = number
+  description = "Number of iscsi machines to deploy"
 }
 
 variable "instance_type" {
@@ -50,9 +55,9 @@ variable "private_key_location" {
   description = "Path to a SSH private key used to connect to the created machines"
 }
 
-variable "host_ip" {
-  description = "Machine private ip"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
 variable "lun_count" {

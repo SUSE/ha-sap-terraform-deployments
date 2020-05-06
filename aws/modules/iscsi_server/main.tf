@@ -5,14 +5,15 @@ locals {
 }
 
 resource "aws_instance" "iscsisrv" {
+  count                       = var.iscsi_count
   ami                         = var.iscsi_srv_images[var.aws_region]
   instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
-  subnet_id                   = var.subnet_id
-  private_ip                  = var.host_ip
+  subnet_id                   = element(var.subnet_ids, count.index)
+  private_ip                  = element(var.host_ips, count.index)
   vpc_security_group_ids      = [var.security_group_id]
-  availability_zone           = var.availability_zone
+  availability_zone           = element(var.availability_zones, count.index)
 
   root_block_device {
     volume_type = "gp2"
@@ -26,18 +27,18 @@ resource "aws_instance" "iscsisrv" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-iscsi"
+    Name = "${terraform.workspace}-iscsi-${count.index + 1}"
   }
 
   tags = {
-    Name      = "${terraform.workspace} - iSCSI Server"
+    Name      = "${terraform.workspace} - iSCSI Server - ${count.index + 1}"
     Workspace = terraform.workspace
   }
 }
 
 module "iscsi_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = 1
+  node_count           = var.iscsi_count
   instance_ids         = aws_instance.iscsisrv.*.id
   user                 = "ec2-user"
   private_key_location = var.private_key_location

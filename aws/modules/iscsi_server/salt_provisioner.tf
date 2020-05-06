@@ -1,5 +1,5 @@
 resource "null_resource" "iscsi_provisioner" {
-  count = var.provisioner == "salt" ? 1 : 0
+  count = var.provisioner == "salt" ? var.iscsi_count : 0
 
   triggers = {
     iscsi_id = join(",", aws_instance.iscsisrv.*.id)
@@ -16,7 +16,7 @@ resource "null_resource" "iscsi_provisioner" {
     content     = <<EOF
 provider: aws
 role: iscsi_srv
-iscsi_srv_ip: ${aws_instance.iscsisrv.private_ip}
+iscsi_srv_ip: ${element(aws_instance.iscsisrv.*.private_ip, count.index)}
 iscsidev: ${local.iscsi_device_name}
 qa_mode: ${var.qa_mode}
 reg_code: ${var.reg_code}

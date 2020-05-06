@@ -29,15 +29,16 @@ locals {
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
+  iscsi_count            = var.iscsi_enabled == true ? 1 : 0
   aws_region             = var.aws_region
-  availability_zone      = data.aws_availability_zones.available.names.0
-  subnet_id              = aws_subnet.infra-subnet.id
+  availability_zones     = data.aws_availability_zones.available.names
+  subnet_ids             = aws_subnet.infra-subnet.*.id
   iscsi_srv_images       = var.iscsi_srv
   instance_type          = var.iscsi_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   private_key_location   = var.private_key_location
-  host_ip                = local.iscsi_ip
+  host_ips               = [local.iscsi_ip]
   lun_count              = var.iscsi_lun_count
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -85,7 +86,7 @@ module "netweaver_node" {
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
-  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip.0
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
   reg_code                   = var.reg_code
@@ -133,7 +134,7 @@ module "hana_node" {
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip.0
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   reg_code               = var.reg_code

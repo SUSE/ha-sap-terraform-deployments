@@ -61,17 +61,17 @@ output "netweaver_public_name" {
 # iSCSI server
 
 output "iscsisrv_ip" {
-  value = module.iscsi_server.iscsisrv_ip
+  value = module.iscsi_server.iscsisrv_ip.0
 }
 
 output "iscsisrv_public_ip" {
-  value = module.iscsi_server.iscsisrv_public_ip
+  value = module.iscsi_server.iscsisrv_public_ip.0
 }
 
 output "iscsisrv_name" {
-  value = module.iscsi_server.iscsisrv_name
+  value = module.iscsi_server.iscsisrv_name.0
 }
 
 output "iscsisrv_public_name" {
-  value = module.iscsi_server.iscsisrv_public_name
+  value = module.iscsi_server.iscsisrv_public_name.0
 }

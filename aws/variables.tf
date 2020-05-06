@@ -255,6 +255,12 @@ variable "scenario_type" {
 
 # Iscsi server related variables
 
+variable "iscsi_enabled" {
+  description = "Enable iscsi server creation"
+  type        = bool
+  default     = false
+}
+
 variable "iscsi_srv" {
   description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
   type        = map(string)
