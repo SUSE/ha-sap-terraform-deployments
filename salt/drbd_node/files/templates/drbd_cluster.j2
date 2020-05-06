@@ -77,7 +77,7 @@ primitive rsc_aws_stonith_{{ res.name }}_nfs stonith:external/ec2 \
     op monitor interval=120 timeout=60 \
     meta target-role=Started
 
-primitive rsc_aws_vip_{{ res.name }}_nfs ocf:suse:aws-vpc-move-ip \
+primitive vip_{{ res.name }}_nfs ocf:suse:aws-vpc-move-ip \
     params ip={{ data.virtual_ip }} routing_table={{ data.route_table }} \
     interface={{ pillar.cluster.interface|default('eth0')|json }} profile={{ data.cluster_profile }} \
     op start interval=0 timeout=180 \

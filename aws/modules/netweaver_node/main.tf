@@ -64,6 +64,13 @@ resource "aws_instance" "netweaver" {
     volume_size = "60"
   }
 
+  # Disk to store Netweaver software installation files
+  ebs_block_device {
+    volume_type = "gp2"
+    volume_size = "60"
+    device_name = "/dev/xvdd"
+  }
+
   volume_tags = {
     Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
   }
