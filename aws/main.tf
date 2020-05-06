@@ -30,17 +30,15 @@ locals {
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
   aws_region             = var.aws_region
-  availability_zones     = data.aws_availability_zones.available.names
-  subnet_ids             = aws_subnet.infra-subnet.*.id
+  availability_zone      = data.aws_availability_zones.available.names.0
+  subnet_id              = aws_subnet.infra-subnet.id
   iscsi_srv_images       = var.iscsi_srv
-  iscsi_instancetype     = var.iscsi_instancetype
-  min_instancetype       = var.min_instancetype
+  instance_type          = var.iscsi_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = local.iscsi_ip
-  iscsidev               = var.iscsidev
-  iscsi_disks            = var.iscsi_disks
+  host_ip                = local.iscsi_ip
+  lun_count              = var.iscsi_lun_count
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules

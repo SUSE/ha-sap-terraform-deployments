@@ -1,14 +1,18 @@
 # iscsi server resources
 
+locals {
+  iscsi_device_name = "/dev/xvdd"
+}
+
 resource "aws_instance" "iscsisrv" {
   ami                         = var.iscsi_srv_images[var.aws_region]
-  instance_type               = var.iscsi_instancetype == "" ? var.min_instancetype : var.iscsi_instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
-  subnet_id                   = element(var.subnet_ids, 0)
-  private_ip                  = var.iscsi_srv_ip
+  subnet_id                   = var.subnet_id
+  private_ip                  = var.host_ip
   vpc_security_group_ids      = [var.security_group_id]
-  availability_zone           = element(var.availability_zones, 0)
+  availability_zone           = var.availability_zone
 
   root_block_device {
     volume_type = "gp2"
@@ -18,7 +22,7 @@ resource "aws_instance" "iscsisrv" {
   ebs_block_device {
     volume_type = "gp2"
     volume_size = "10"
-    device_name = "/dev/xvdd"
+    device_name = local.iscsi_device_name
   }
 
   volume_tags = {

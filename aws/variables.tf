@@ -280,12 +280,7 @@ variable "iscsi_srv" {
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = ""
-}
-
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
+  default     = "t2.micro"
 }
 
 variable "iscsi_srv_ip" {
@@ -294,9 +289,9 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
 # Monitoring related variables

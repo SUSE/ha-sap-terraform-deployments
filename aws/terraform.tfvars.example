@@ -77,8 +77,8 @@ init_type = "all"
 # iSCSI server address. It should be in same iprange as hana_ips
 iscsi_srv_ip = "10.0.0.254"
 
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/xvdd"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+iscsi_lun_count = 3
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
