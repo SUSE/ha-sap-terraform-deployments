@@ -118,6 +118,7 @@ module "netweaver_node" {
   key_name                   = aws_key_pair.key-pair.key_name
   security_group_id          = local.security_group_id
   route_table_id             = aws_route_table.route-table.id
+  efs_enable_mount           = var.netweaver_enabled == true && var.drbd_enabled == false ? true : false
   efs_file_system_id         = join("", aws_efs_file_system.netweaver-efs.*.id)
   aws_credentials            = var.aws_credentials
   aws_access_key_id          = var.aws_access_key_id

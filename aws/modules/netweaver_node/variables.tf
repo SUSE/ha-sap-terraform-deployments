@@ -63,6 +63,11 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
+variable "efs_enable_mount" {
+  type        = bool
+  description = "Enable the mount operation on the EFS storage"
+}
+
 variable "efs_file_system_id" {
   type        = string
   description = "AWS efs file system ID to be used by EFS mount target"

@@ -59,7 +59,7 @@ netweaver_swpm_sar: ${var.netweaver_swpm_sar}
 netweaver_swpm_extract_dir: ${var.netweaver_swpm_extract_dir}
 netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
-netweaver_nfs_share: ${var.netweaver_nfs_share}
+netweaver_nfs_share: "${var.netweaver_nfs_share}"
 netweaver_inst_disk_device: /dev/xvdd
 hana_ip: ${var.hana_ip}
 s3_bucket: ${var.s3_bucket}
