@@ -58,7 +58,7 @@ module "iscsi_server" {
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
-  instancetype               = var.netweaver_instancetype
+  instance_type              = var.netweaver_instancetype
   name                       = "netweaver"
   aws_region                 = var.aws_region
   availability_zones         = data.aws_availability_zones.available.names
@@ -106,7 +106,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                 = "./modules/hana_node"
   hana_count             = var.hana_count
-  instancetype           = var.instancetype
+  instance_type          = var.hana_instancetype
   name                   = var.name
   init_type              = var.init_type
   scenario_type          = var.scenario_type
@@ -156,8 +156,7 @@ module "hana_node" {
 
 module "monitoring" {
   source                 = "./modules/monitoring"
-  monitor_instancetype   = var.monitor_instancetype
-  min_instancetype       = var.min_instancetype
+  instance_type          = var.monitor_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   monitoring_srv_ip      = local.monitoring_ip

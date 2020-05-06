@@ -3,7 +3,7 @@ variable "netweaver_count" {
   default = "4"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }

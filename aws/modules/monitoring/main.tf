@@ -1,7 +1,7 @@
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
   ami                         = var.sles4sap_images[var.aws_region]
-  instance_type               = var.monitor_instancetype == "" ? var.min_instancetype : var.monitor_instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(var.subnet_ids, 0)

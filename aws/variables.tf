@@ -166,16 +166,10 @@ variable "sles4sap" {
   }
 }
 
-variable "instancetype" {
+variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
   default     = "r3.8xlarge"
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region"
-  type        = string
-  default     = "t2.micro"
 }
 
 variable "init_type" {

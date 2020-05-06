@@ -15,10 +15,7 @@
 #vpc_address_range = ""
 
 # Instance type to use for the hana cluster nodes
-instancetype = "r3.8xlarge"
-
-# The minimum instance type of a region, not suitable to hana nodes
-min_instancetype = "t2.micro"
+hana_instancetype = "r3.8xlarge"
 
 # Disk type for HANA
 hana_data_disk_type = "gp2"

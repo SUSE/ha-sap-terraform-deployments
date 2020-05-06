@@ -3,7 +3,7 @@ variable "hana_count" {
   default = "2"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }
