@@ -248,18 +248,29 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
 }
 
-# Iscsi server related variables
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
 
-variable "iscsi_enabled" {
-  description = "Enable iscsi server creation"
-  type        = bool
-  default     = false
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
+
+# If iscsi is selected as sbd_storage_type
+# Use the next variables for advanced configuration
 
 variable "iscsi_srv" {
   description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
@@ -292,6 +303,12 @@ variable "iscsi_srv_ip" {
 variable "iscsi_lun_count" {
   description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
   default     = 3
+}
+
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
 # Monitoring related variables
@@ -356,6 +373,12 @@ variable "netweaver_virtual_ips" {
   description = "Virtual ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
   default     = []
+}
+
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_product_id" {

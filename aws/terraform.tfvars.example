@@ -68,17 +68,23 @@ hana_disk_device = "/dev/xvdd"
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
 
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
+
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
-# Enable iscsi server creation
-#iscsi_enabled = true
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
 # iSCSI server address. It should be in same iprange as hana_ips
 #iscsi_srv_ip = "10.0.0.254"
-
 # Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
-iscsi_lun_count = 3
+#iscsi_lun_count = 3
+# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
+#iscsi_disk_size = 10
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
@@ -149,6 +155,10 @@ monitoring_srv_ip = "10.0.0.253"
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
+
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
+
 # Netweaver installation required folders
 #netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 # SAP SWPM installation folder, relative to the netweaver_s3_bucket folder

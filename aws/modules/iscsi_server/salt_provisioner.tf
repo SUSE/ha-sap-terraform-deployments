@@ -40,7 +40,7 @@ EOF
 
 module "iscsi_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? 1 : 0
+  node_count           = var.provisioner == "salt" ? var.iscsi_count : 0
   instance_ids         = null_resource.iscsi_provisioner.*.id
   user                 = "ec2-user"
   private_key_location = var.private_key_location

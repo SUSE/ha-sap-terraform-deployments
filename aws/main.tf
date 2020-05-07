@@ -25,11 +25,14 @@ locals {
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(4) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
+
+  # Check if iscsi server has to be created
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || var.netweaver_cluster_sbd_enabled == true) ? true : false
 }
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
-  iscsi_count            = var.iscsi_enabled == true ? 1 : 0
+  iscsi_count            = local.iscsi_enabled == true ? 1 : 0
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   subnet_ids             = aws_subnet.infra-subnet.*.id
@@ -40,6 +43,7 @@ module "iscsi_server" {
   private_key_location   = var.private_key_location
   host_ips               = [local.iscsi_ip]
   lun_count              = var.iscsi_lun_count
+  iscsi_disk_size        = var.iscsi_disk_size
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
@@ -86,7 +90,9 @@ module "netweaver_node" {
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
-  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip.0
+  sbd_enabled                = var.netweaver_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
+  iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
   reg_code                   = var.reg_code
@@ -134,7 +140,9 @@ module "hana_node" {
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip.0
+  sbd_enabled            = var.hana_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   reg_code               = var.reg_code
