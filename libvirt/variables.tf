@@ -185,14 +185,27 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
 }
 
-#
-# iSCSI server related variables
-#
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
+  type        = string
+  default     = "shared-disk"
+}
+
 variable "iscsi_vcpu" {
   description = "Number of CPUs for the iSCSI server"
   type        = number
@@ -205,16 +218,15 @@ variable "iscsi_memory" {
   default     = 4096
 }
 
-variable "shared_storage_type" {
-  description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
-}
-
 variable "sbd_disk_size" {
-  description = "Disk size (in bytes) for the SBD disk"
+  description = "Disk size (in bytes) for the SBD disk. It's used to create the ISCSI server disk too"
   type        = number
   default     = 10737418240
+}
+
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
 variable "iscsi_source_image" {
@@ -233,12 +245,6 @@ variable "iscsi_srv_ip" {
   description = "iSCSI server address (only used if shared_storage_type is iscsi)"
   type        = string
   default     = ""
-}
-
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  type        = number
-  default     = 0
 }
 
 #
@@ -329,6 +335,12 @@ variable "netweaver_virtual_ips" {
   description = "IP addresses of the netweaver nodes"
   type        = list(string)
   default     = []
+}
+
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_nfs_share" {
@@ -429,12 +441,6 @@ variable "drbd_disk_size" {
   default     = 10737418240
 }
 
-variable "drbd_shared_disk_size" {
-  description = "Shared disk size (in bytes) for the DRBD machines"
-  type        = number
-  default     = 104857600
-}
-
 variable "drbd_ips" {
   description = "IP addresses of the drbd nodes"
   type        = list(string)
@@ -447,10 +453,10 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_shared_storage_type" {
-  description = "Used shared storage type for fencing (sbd) for drbd cluster. Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
 }
 
 #

@@ -73,10 +73,21 @@ variable "drbd_cluster_vip" {
   type        = string
 }
 
-variable "shared_storage_type" {
-  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
   type        = string
-  default     = "iscsi"
+  default     = "shared-disk"
+}
+
+variable "sbd_disk_id" {
+  description = "SBD disk volume id. Only used if sbd_storage_type is shared-disk"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {
@@ -151,12 +162,6 @@ variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
-}
-
-// sbd disks
-variable "sbd_disk_id" {
-  description = "SBD disk volume id"
-  type        = string
 }
 
 variable "storage_pool" {

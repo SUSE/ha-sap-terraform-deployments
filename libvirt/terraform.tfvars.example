@@ -34,9 +34,20 @@ hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 #hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
-# Shared storage type information
-shared_storage_type = "iscsi"
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
+
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+
+#sbd_storage_type = "iscsi"
 #iscsi_srv_ip = "192.168.XXX.Y+6"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service
+#sbd_disk_size = 10737418240
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -104,7 +115,8 @@ devel_mode = false
 # IP addresses of the machines hosting Netweaver instances
 #netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 #netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
-
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
 
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true
@@ -117,6 +129,9 @@ devel_mode = false
 
 # IP of DRBD cluster
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
+# Enable SBD for the drbd cluster
+#drbd_cluster_sbd_enabled = true
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 

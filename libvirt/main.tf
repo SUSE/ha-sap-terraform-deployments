@@ -15,7 +15,7 @@ module "local_execution" {
 # Netweaver virtual ips: 19.168.135.34, 19.168.135.35, 19.168.135.36, 19.168.135.37
 # If the addresses are provided by the user they will always have preference
 locals {
-  iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.iprange, 4)
+  iscsi_ip          = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.iprange, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.iprange, 5)
 
   hana_ip_start    = 10
@@ -31,11 +31,14 @@ locals {
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index + 4)]
+
+  # Check if iscsi server has to be created
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
-  iscsi_count            = var.shared_storage_type == "iscsi" ? 1 : 0
+  iscsi_count            = local.iscsi_enabled == true ? 1 : 0
   source_image           = var.iscsi_source_image
   volume_name            = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
   vcpu                   = var.iscsi_vcpu
@@ -44,9 +47,9 @@ module "iscsi_server" {
   storage_pool           = var.storage_pool
   isolated_network_id    = local.internal_network_id
   isolated_network_name  = local.internal_network_name
-  iscsi_srv_ip           = local.iscsi_srv_ip
-  iscsidev               = "/dev/vdb"
-  iscsi_disks            = var.iscsi_disks
+  host_ips               = [local.iscsi_ip]
+  lun_count              = var.iscsi_lun_count
+  iscsi_disk_size        = var.sbd_disk_size
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
@@ -77,8 +80,9 @@ module "hana_node" {
   hana_disk_size         = var.hana_node_disk_size
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
-  shared_storage_type    = var.shared_storage_type
-  sbd_disk_id            = module.sbd_disk.id
+  sbd_enabled            = var.hana_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  sbd_disk_id            = module.hana_sbd_disk.id
   iscsi_srv_ip           = module.iscsi_server.output_data.private_addresses.0
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -105,7 +109,9 @@ module "drbd_node" {
   host_ips               = local.drbd_ips
   drbd_cluster_vip       = local.drbd_cluster_vip
   drbd_disk_size         = var.drbd_disk_size
-  shared_storage_type    = var.drbd_shared_storage_type
+  sbd_enabled            = var.drbd_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  sbd_disk_id            = module.drbd_sbd_disk.id
   iscsi_srv_ip           = module.iscsi_server.output_data.private_addresses.0
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -118,7 +124,6 @@ module "drbd_node" {
   isolated_network_id    = local.internal_network_id
   isolated_network_name  = local.internal_network_name
   storage_pool           = var.storage_pool
-  sbd_disk_id            = module.drbd_sbd_disk.id
 }
 
 module "monitoring" {
@@ -159,7 +164,10 @@ module "netweaver_node" {
   isolated_network_name      = local.internal_network_name
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
+  sbd_enabled                = var.netweaver_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
   shared_disk_id             = module.netweaver_shared_disk.id
+  iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
   hana_ip                    = local.hana_cluster_vip
   netweaver_product_id       = var.netweaver_product_id
   netweaver_inst_media       = var.netweaver_inst_media
