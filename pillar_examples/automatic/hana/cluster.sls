@@ -1,9 +1,4 @@
 {% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
-{% if not grains.get('sbd_disk_device') %}
-{% set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{% else %}
-{% set sbd_disk_device = grains['sbd_disk_device'] %}
-{% endif %}
 
 cluster:
   {% if grains.get('qa_mode') %}
@@ -18,11 +13,13 @@ cluster:
   unicast: True
   {% endif %}
   join_timeout: 180
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device'] }}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:

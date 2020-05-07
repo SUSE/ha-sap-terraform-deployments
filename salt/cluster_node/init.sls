@@ -7,7 +7,7 @@ include:
   {% if grains['cluster_ssh_pub'] is defined and grains['cluster_ssh_key'] is defined %}
   - cluster_node.ssh
   {% endif %}
-  {% if grains['shared_storage_type'] == 'iscsi' %}
+  {% if grains['sbd_enabled'] and grains['sbd_storage_type'] == 'iscsi' %}
   - cluster_node.iscsi_initiator
   {% endif %}
   {% if grains.get('monitoring_enabled') %}
