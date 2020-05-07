@@ -11,6 +11,8 @@ module "local_execution" {
 # Hana cluster vip: 192.168.1.10 (virtual ip address must be in a different range than the vpc)
 # Netweaver ips: 10.0.3.30, 10.0.4.31, 10.0.3.32, 10.0.4.33 (netweaver ASCS and ERS must be in different subnets)
 # Netweaver virtual ips: 192.168.1.30, 192.168.1.31, 192.168.1.32, 192.168.1.33 (virtual ip addresses must be in a different range than the vpc)
+# DRBD ips: 10.0.5.20, 10.0.6.21
+# DRBD cluster vip: 192.168.1.20 (virtual ip address must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.infra_subnet_address_range, 4)
@@ -21,10 +23,56 @@ locals {
   hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for index in range(var.hana_count) : cidrhost(element(local.hana_subnet_address_range, index % 2), index + local.hana_ip_start)]
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, local.hana_ip_start)
 
+  drbd_ip_start    = 20
+  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for index in range(2) : cidrhost(element(local.drbd_subnet_address_range, index % 2), index + local.drbd_ip_start)]
+  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(var.virtual_address_range, local.drbd_ip_start)
+
   # range(4) hardcoded as we always deploy 4 nw machines
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(4) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
+}
+
+module "drbd_node" {
+  source                 = "./modules/drbd_node"
+  drbd_count             = var.drbd_enabled == true ? 2 : 0
+  drbd_instancetype      = var.drbd_instancetype
+  min_instancetype       = var.min_instancetype
+  aws_region             = var.aws_region
+  availability_zones     = data.aws_availability_zones.available.names
+  sles4sap_images        = var.sles4sap
+  vpc_id                 = local.vpc_id
+  subnet_address_range   = local.drbd_subnet_address_range
+  key_name               = aws_key_pair.key-pair.key_name
+  security_group_id      = local.security_group_id
+  route_table_id         = aws_route_table.route-table.id
+  aws_credentials        = var.aws_credentials
+  aws_access_key_id      = var.aws_access_key_id
+  aws_secret_access_key  = var.aws_secret_access_key
+  host_ips               = local.drbd_ips
+  drbd_cluster_vip       = local.drbd_cluster_vip
+  drbd_data_disk_size    = var.drbd_data_disk_size
+  drbd_data_disk_type    = var.drbd_data_disk_type
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
+  cluster_ssh_pub        = var.cluster_ssh_pub
+  cluster_ssh_key        = var.cluster_ssh_key
+  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  additional_packages    = var.additional_packages
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  devel_mode             = var.devel_mode
+  monitoring_enabled     = var.monitoring_enabled
+  provisioner            = var.provisioner
+  background             = var.background
+  qa_mode                = var.qa_mode
+  on_destroy_dependencies = [
+    aws_route.public,
+    aws_security_group_rule.ssh,
+    aws_security_group_rule.outall
+  ]
 }
 
 module "iscsi_server" {
@@ -70,7 +118,8 @@ module "netweaver_node" {
   key_name                   = aws_key_pair.key-pair.key_name
   security_group_id          = local.security_group_id
   route_table_id             = aws_route_table.route-table.id
-  efs_performance_mode       = var.netweaver_efs_performance_mode
+  efs_enable_mount           = var.netweaver_enabled == true && var.drbd_enabled == false ? true : false
+  efs_file_system_id         = join("", aws_efs_file_system.netweaver-efs.*.id)
   aws_credentials            = var.aws_credentials
   aws_access_key_id          = var.aws_access_key_id
   aws_secret_access_key      = var.aws_secret_access_key
@@ -82,7 +131,8 @@ module "netweaver_node" {
   netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
-  hana_ip                    = var.hana_cluster_vip
+  netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
+  hana_ip                    = local.hana_cluster_vip
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
@@ -178,6 +228,8 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  drbd_enabled           = var.drbd_enabled
+  drbd_ips               = local.drbd_ips
   netweaver_enabled      = var.netweaver_enabled
   netweaver_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [

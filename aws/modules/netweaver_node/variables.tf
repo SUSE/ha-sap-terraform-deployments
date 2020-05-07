@@ -63,10 +63,14 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
-variable "efs_performance_mode" {
+variable "efs_enable_mount" {
+  type        = bool
+  description = "Enable the mount operation on the EFS storage"
+}
+
+variable "efs_file_system_id" {
   type        = string
-  description = "Performance mode of the EFS storage"
-  default     = "generalPurpose"
+  description = "AWS efs file system ID to be used by EFS mount target"
 }
 
 variable "aws_credentials" {
@@ -128,6 +132,11 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
 }
 
 variable "hana_ip" {

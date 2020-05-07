@@ -30,20 +30,9 @@ resource "aws_route" "ers-cluster-vip" {
   instance_id            = aws_instance.netweaver.1.id
 }
 
-# EFS storage for /usr/sap/{sid} and /sapmnt
-resource "aws_efs_file_system" "netweaver-efs" {
-  count            = var.netweaver_count > 0 ? 1 : 0
-  creation_token   = "${terraform.workspace}-netweaver-efs"
-  performance_mode = var.efs_performance_mode
-
-  tags = {
-    Name = "${terraform.workspace}-efs"
-  }
-}
-
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
-  count           = min(var.netweaver_count, 2)
-  file_system_id  = element(aws_efs_file_system.netweaver-efs.*.id, 0)
+  count           = var.netweaver_count > 0 && var.efs_enable_mount ? 2 : 0
+  file_system_id  = var.efs_file_system_id
   subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
   security_groups = [var.security_group_id]
 }
@@ -73,6 +62,13 @@ resource "aws_instance" "netweaver" {
   root_block_device {
     volume_type = "gp2"
     volume_size = "60"
+  }
+
+  # Disk to store Netweaver software installation files
+  ebs_block_device {
+    volume_type = "gp2"
+    volume_size = "60"
+    device_name = "/dev/xvdd"
   }
 
   volume_tags = {

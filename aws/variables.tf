@@ -259,6 +259,50 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+# DRBD related variables
+
+variable "drbd_enabled" {
+  description = "Enable the DRBD cluster for nfs"
+  type        = bool
+  default     = false
+}
+
+variable "drbd_instancetype" {
+  description = "The instance type of the drbd node"
+  type        = string
+  default     = ""
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP"
+  type        = string
+  default     = ""
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_subnet_address_range" {
+  description = "List of address ranges to create the subnets for the drbd machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_data_disk_size" {
+  description = "Disk size of the disks used to store drbd content"
+  type        = string
+  default     = "15"
+}
+
+variable "drbd_data_disk_type" {
+  description = "Disk type of the disks used to store drbd content"
+  type        = string
+  default     = "gp2"
+}
+
 # Iscsi server related variables
 
 variable "iscsi_srv" {

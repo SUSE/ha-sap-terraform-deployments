@@ -142,10 +142,27 @@ monitoring_srv_ip = "10.0.0.253"
 # true or false (default)
 #hwcct = false
 
+# drbd related variables
+
+# netweaver will use AWS efs for nfs share by default, unless drbd is enabled
+# Enable drbd cluster
+#drbd_enabled = false
+
+#drbd_instancetype = "t2.micro"
+
+#drbd_data_disk_size = 15
+
+#drbd_data_disk_type = gp2
+
+# Each drbd cluster host IP address (sequential order).
+#drbd_ips = ["10.0.5.20", "10.0.6.21"]
+#drbd_cluster_vip = "192.168.1.20"
+
 # Netweaver variables
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
+#AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]

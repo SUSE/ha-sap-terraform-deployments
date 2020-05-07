@@ -124,6 +124,18 @@ variable "netweaver_ips" {
   default     = []
 }
 
+variable "drbd_enabled" {
+  description = "enable the DRBD cluster for nfs"
+  type        = bool
+  default     = false
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes"
+  type        = list(string)
+  default     = []
+}
+
 variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any
