@@ -22,7 +22,7 @@ resource "aws_instance" "iscsisrv" {
 
   ebs_block_device {
     volume_type = "gp2"
-    volume_size = "10"
+    volume_size = var.iscsi_disk_size
     device_name = local.iscsi_device_name
   }
 

@@ -60,6 +60,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
+}
+
 variable "lun_count" {
   description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
   type        = number
