@@ -98,6 +98,18 @@ variable "private_key_location" {
   type = string
 }
 
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -210,11 +222,6 @@ variable "hana_extract_dir" {
   description = "Absolute path to folder where SAP HANA sar archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
 }
 
 variable "hana_fstype" {

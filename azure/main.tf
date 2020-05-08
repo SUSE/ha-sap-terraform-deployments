@@ -23,6 +23,9 @@ locals {
   drbd_cluster_vip      = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, 22)
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(30, 34) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(34, 38) : cidrhost(local.subnet_address_range, ip_index)]
+
+  # Check if iscsi server has to be created
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
 module "drbd_node" {
@@ -45,7 +48,9 @@ module "drbd_node" {
   cluster_ssh_key        = var.cluster_ssh_key
   admin_user             = var.admin_user
   host_ips               = local.drbd_ips
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip.0
+  sbd_enabled            = var.drbd_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
@@ -93,7 +98,9 @@ module "netweaver_node" {
   enable_accelerated_networking = var.netweaver_enable_accelerated_networking
   host_ips                      = local.netweaver_ips
   virtual_host_ips              = local.netweaver_virtual_ips
-  iscsi_srv_ip                  = module.iscsi_server.iscsisrv_ip.0
+  sbd_enabled                   = var.netweaver_cluster_sbd_enabled
+  sbd_storage_type              = var.sbd_storage_type
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
   hana_ip                       = local.hana_cluster_vip
   reg_code                      = var.reg_code
   reg_email                     = var.reg_email
@@ -129,7 +136,6 @@ module "hana_node" {
   hana_sapcar_exe               = var.hana_sapcar_exe
   hdbserver_sar                 = var.hdbserver_sar
   hana_extract_dir              = var.hana_extract_dir
-  hana_disk_device              = var.hana_disk_device
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
@@ -143,7 +149,9 @@ module "hana_node" {
   hana_public_sku               = var.hana_public_sku
   hana_public_version           = var.hana_public_version
   admin_user                    = var.admin_user
-  iscsi_srv_ip                  = module.iscsi_server.iscsisrv_ip.0
+  sbd_enabled                   = var.hana_cluster_sbd_enabled
+  sbd_storage_type              = var.sbd_storage_type
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
   reg_code                      = var.reg_code
   reg_email                     = var.reg_email
   reg_additional_modules        = var.reg_additional_modules
@@ -191,6 +199,7 @@ module "monitoring" {
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
+  iscsi_count            = local.iscsi_enabled ? 1 : 0
   az_region              = var.az_region
   vm_size                = var.iscsi_vm_size
   resource_group_name    = local.resource_group_name
@@ -204,10 +213,10 @@ module "iscsi_server" {
   iscsi_public_version   = var.iscsi_public_version
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
-  iscsidev               = var.iscsidev
-  iscsi_disks            = var.iscsi_disks
+  host_ips               = [local.iscsi_ip]
+  lun_count              = var.iscsi_lun_count
+  iscsi_disk_size        = var.iscsi_disk_size
   admin_user             = var.admin_user
-  iscsi_srv_ip           = local.iscsi_ip
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
