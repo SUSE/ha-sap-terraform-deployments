@@ -1,0 +1,41 @@
+# this test will just run terraform without salt
+name: terraform end-to-end tests
+
+on:
+  pull_request:
+    branches: [ master, develop ]
+    # this filter prs
+    #    paths:
+     # build only for PR modifying libvirt and salt folders
+     #    - 'libvirt/**'
+     # - 'salt/**'
+     # - 'pillar_examples/**'
+
+jobs:
+  terraform-deploy-netweaver-hana:
+    runs-on: self-hosted 
+
+    steps:
+    - uses: actions/checkout@v2
+    - shell: bash
+      env: #
+        QEMU_URI: ${{ secrets.qemu_uri }}
+        SOURCE_IMAGE: ${{ secrets.source_image }}
+        
+    - name: terraform apply netweaver and hana
+      run: |
+        cp .github/hana-netweaver-tf-only.tfvars libvirt/terraform.tfvars
+        cd libvirt
+        terraform workspace new gh-terraform
+        terraform workspace select gh-terraform
+        terraform init -var qemu_uri="$QEMU_URI" -var source_image="$SOURCE_IMAGE"
+        terraform apply -auto-approve -var qemu_uri="$QEMU_URI" -var source_image="$SOURCE_IMAGE"
+
+    - name: terraform destroy
+      if: ${{ always() }}
+      run: |
+        cp .github/hana-netweaver-tf-only.tfvars libvirt/terraform.tfvars
+        cd libvirt
+        terraform workspace select gh-terraform
+        terraform init -var qemu_uri="$QEMU_URI" -var source_image="$SOURCE_IMAGE"
+        terraform destroy -auto-approve -var qemu_uri="$QEMU_URI" -var source_image="$SOURCE_IMAGE"
