@@ -177,11 +177,21 @@ If the use of a private/custom image is required (for example, to perform the Bu
 To define the custom AMI in terraform, you should use the [terraform.tfvars](terraform.tfvars.example) file:
 
 ```
- # Custom AMI for nodes
-sles4sap = {
-    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-}
+hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
 ```
+
+You could also use an image available in the AWS store, in human readable form:
+
+```
+hana_os_image = "suse-sles-sap-15-sp1-byos"
+```
+
+An image owner can also be specified:
+```
+hana_os_owner = "amazon"
+```
+
+OS for each module can be configured independently.
 
 
 After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:

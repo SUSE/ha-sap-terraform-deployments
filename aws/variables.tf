@@ -150,20 +150,16 @@ variable "hana_count" {
   default     = 2
 }
 
-variable "sles4sap" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the hana machines"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "hana_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "hana_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "instancetype" {
@@ -267,6 +263,18 @@ variable "drbd_enabled" {
   default     = false
 }
 
+variable "drbd_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "drbd_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
@@ -305,20 +313,16 @@ variable "drbd_data_disk_type" {
 
 # Iscsi server related variables
 
-variable "iscsi_srv" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "iscsi_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "iscsi_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "iscsi_instancetype" {
@@ -345,6 +349,18 @@ variable "iscsi_disks" {
 
 # Monitoring related variables
 
+variable "monitoring_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "monitoring_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
@@ -369,6 +385,18 @@ variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
+}
+
+variable "netweaver_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "netweaver_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "netweaver_instancetype" {
