@@ -174,7 +174,6 @@ module "monitoring" {
   public_key_location         = var.public_key_location
   private_key_location        = var.private_key_location
   admin_user                  = var.admin_user
-  host_ips                    = local.hana_ips
   reg_code                    = var.reg_code
   reg_email                   = var.reg_email
   reg_additional_modules      = var.reg_additional_modules
@@ -183,10 +182,9 @@ module "monitoring" {
   provisioner                 = var.provisioner
   background                  = var.background
   monitoring_enabled          = var.monitoring_enabled
-  drbd_enabled                = var.drbd_enabled
-  drbd_ips                    = local.drbd_ips
-  netweaver_enabled           = var.netweaver_enabled
-  netweaver_ips               = local.netweaver_virtual_ips
+  hana_targets                = concat(local.hana_ips, [ local.hana_cluster_vip ])
+  drbd_targets                = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets           = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "iscsi_server" {

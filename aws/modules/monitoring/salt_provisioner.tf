@@ -19,7 +19,6 @@ region: ${var.aws_region}
 role: monitoring
 name_prefix: monitoring
 hostname: monitoring
-host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 timezone: ${var.timezone}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
@@ -27,9 +26,9 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 host_ip: ${var.monitoring_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_hosts: [${join(", ", formatlist("'%s'", var.host_ips))}]
-drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_enabled ? var.drbd_ips : []))}]
-nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.netweaver_enabled ? var.netweaver_ips : []))}]
+hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
+drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
+netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
 network_domain: "tf.local"
 EOF
 

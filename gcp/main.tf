@@ -155,7 +155,6 @@ module "monitoring" {
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = local.subnet_name
   sles4sap_boot_image    = var.sles4sap_boot_image
-  host_ips               = local.hana_ips
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
   reg_code               = var.reg_code
@@ -165,10 +164,9 @@ module "monitoring" {
   additional_packages    = var.additional_packages
   monitoring_srv_ip      = local.monitoring_srv_ip
   monitoring_enabled     = var.monitoring_enabled
-  drbd_enabled           = var.drbd_enabled
-  drbd_ips               = local.drbd_ips
-  netweaver_enabled      = var.netweaver_enabled
-  netweaver_ips          = local.netweaver_virtual_ips
+  hana_targets           = concat(local.hana_ips, [ local.hana_cluster_vip ])
+  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   provisioner            = var.provisioner
   background             = var.background
   on_destroy_dependencies = [
