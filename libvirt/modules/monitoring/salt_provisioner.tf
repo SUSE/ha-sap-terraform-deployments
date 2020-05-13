@@ -22,6 +22,7 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ip: ${var.monitoring_srv_ip}
+public_ip: ${libvirt_domain.monitoring_domain[0].network_interface[0].addresses[0]}
 role: monitoring
 provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}

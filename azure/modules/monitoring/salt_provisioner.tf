@@ -25,6 +25,7 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
 host_ip: ${var.monitoring_srv_ip}
+public_ip: ${data.azurerm_public_ip.monitoring[0].ip_address}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
 drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]

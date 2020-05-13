@@ -25,6 +25,7 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 host_ip: ${var.monitoring_srv_ip}
+public_ip: ${aws_instance.monitoring[0].public_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
 drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
