@@ -28,24 +28,24 @@ grafana_port_configuration:
     - require:
       - grafana
 
-grafana_provisioning_directory:
+grafana_provisioning:
   file.recurse:
     - name: /etc/grafana/provisioning
-    - source: salt://monitoring/provisioning
+    - source: salt://monitoring/grafana/provisioning
     - clean: True
     - user: grafana
     - group: grafana
     - require:
       - grafana
 
-grafana_datasources_configuration:
+grafana_provisioning_datasources:
   file.managed:
     - name:  /etc/grafana/provisioning/datasources/datasources.yml
     - source: salt://monitoring/grafana/datasources.yml.j2
     - template: jinja
     - require:
       - grafana
-      - grafana_provisioning_directory
+      - grafana_provisioning
 
 grafana_service:
   service.running:
@@ -56,5 +56,5 @@ grafana_service:
       - grafana
       - grafana_port_configuration
       - grafana_anonymous_login_configuration
-      - grafana_provisioning_directory
-      - grafana_datasource_configuration
+      - grafana_provisioning
+      - grafana_provisioning_datasources
