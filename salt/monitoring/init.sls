@@ -2,7 +2,7 @@
 {% set repository = repository~'_SP'~grains['osrelease_info'][1] if grains['osrelease_info']|length > 1 else repository %}
 
 server_monitoring_repo:
- pkgrepo.managed:
+  pkgrepo.managed:
     - humanname: Server:Monitoring
     - baseurl: https://download.opensuse.org/repositories/server:/monitoring/{{ repository }}/
     - refresh: True
@@ -10,6 +10,9 @@ server_monitoring_repo:
     - retry:
         attempts: 3
         interval: 15
+    - require_in:
+        - .prometheus
+        - .grafana
 
 include:
   - .prometheus

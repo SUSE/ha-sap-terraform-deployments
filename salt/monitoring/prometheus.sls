@@ -1,8 +1,6 @@
 prometheus:
   pkg.installed:
     - name: golang-github-prometheus-prometheus
-    - require:
-      - pkgrepo: server_monitoring_repo
     - retry:
         attempts: 3
         interval: 15

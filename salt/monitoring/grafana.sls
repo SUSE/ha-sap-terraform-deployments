@@ -1,8 +1,6 @@
 grafana:
   pkg.installed:
     - name: grafana
-    - require:
-      - pkgrepo: server_monitoring_repo
     - retry:
         attempts: 3
         interval: 15
@@ -18,7 +16,7 @@ grafana_anonymous_login_configuration:
         org_name = Main Org.
         org_role = Admin
     - require:
-      - grafana
+      - pkg: grafana
 
 grafana_port_configuration:
   file.replace:
@@ -26,7 +24,7 @@ grafana_port_configuration:
     - pattern: ;http_port = 3000
     - repl: http_port = 80
     - require:
-      - grafana
+      - pkg: grafana
 
 grafana_provisioning:
   file.recurse:
@@ -36,17 +34,17 @@ grafana_provisioning:
     - user: grafana
     - group: grafana
     - require:
-      - grafana
+      - pkg: grafana
 
 grafana_provisioning_datasources:
   file.managed:
     - name:  /etc/grafana/provisioning/datasources/datasources.yml
     - source: salt://monitoring/grafana/datasources.yml.j2
     - template: jinja
-    - makeDirs: true
+    - makedirs: True
     - require:
-      - grafana
-      - grafana_provisioning
+      - pkg: grafana
+      - file: grafana_provisioning
 
 grafana_service:
   service.running:
@@ -54,8 +52,8 @@ grafana_service:
     - enable: True
     - restart: True
     - require:
-      - grafana
-      - grafana_port_configuration
-      - grafana_anonymous_login_configuration
-      - grafana_provisioning
-      - grafana_provisioning_datasources
+      - pkg: grafana
+      - file: grafana_port_configuration
+      - file: grafana_anonymous_login_configuration
+      - file: grafana_provisioning
+      - file: grafana_provisioning_datasources
