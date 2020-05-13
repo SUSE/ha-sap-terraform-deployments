@@ -1,8 +1,6 @@
 grafana:
   pkg.installed:
     - name: grafana
-    - require:
-      - pkgrepo: server_monitoring_repo
     - retry:
         attempts: 3
         interval: 15
@@ -43,7 +41,7 @@ grafana_provisioning_datasources:
     - name:  /etc/grafana/provisioning/datasources/datasources.yml
     - source: salt://monitoring/grafana/datasources.yml.j2
     - template: jinja
-    - makeDirs: true
+    - makedirs: True
     - require:
       - grafana
       - grafana_provisioning
