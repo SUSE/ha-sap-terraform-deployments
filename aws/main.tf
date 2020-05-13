@@ -227,7 +227,7 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  hana_targets           = concat(local.hana_ips, [ local.hana_cluster_vip ])
+  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip])
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [

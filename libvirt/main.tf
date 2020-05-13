@@ -140,7 +140,7 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  hana_targets           = concat(local.hana_ips, [ local.hana_cluster_vip ])
+  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip])
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
