@@ -11,8 +11,8 @@ server_monitoring_repo:
         attempts: 3
         interval: 15
     - require_in:
-        - .prometheus
-        - .grafana
+        - pkg: prometheus
+        - pkg: grafana
 
 include:
   - .prometheus
