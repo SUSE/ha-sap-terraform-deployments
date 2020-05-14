@@ -5,7 +5,7 @@ datasources:
 - name: prometheus
   type: prometheus
   access: proxy
-  url: http://{{ grains['public_ip'] }}:9090/
+  url: http://{{ grains['public_ip'] }}:9090
   basicAuth: False
   isDefault: True
   editable: true
