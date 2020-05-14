@@ -18,14 +18,6 @@ grafana_anonymous_login_configuration:
     - require:
       - pkg: grafana
 
-grafana_port_configuration:
-  file.replace:
-    - name: /etc/grafana/grafana.ini
-    - pattern: ;http_port = 3000
-    - repl: http_port = 80
-    - require:
-      - pkg: grafana
-
 grafana_provisioning:
   file.recurse:
     - name: /etc/grafana/provisioning
@@ -42,6 +34,8 @@ grafana_provisioning_datasources:
     - source: salt://monitoring/grafana/datasources.yml.j2
     - template: jinja
     - makedirs: True
+    - user: grafana
+    - group: grafana
     - require:
       - pkg: grafana
       - file: grafana_provisioning
@@ -53,7 +47,6 @@ grafana_service:
     - restart: True
     - require:
       - pkg: grafana
-      - file: grafana_port_configuration
       - file: grafana_anonymous_login_configuration
       - file: grafana_provisioning
       - file: grafana_provisioning_datasources
