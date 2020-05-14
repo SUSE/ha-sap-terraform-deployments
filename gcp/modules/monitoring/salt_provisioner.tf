@@ -20,7 +20,7 @@ name_prefix: ${terraform.workspace}-monitoring
 hostname: ${terraform.workspace}-monitoring
 network_domain: "tf.local"
 host_ip: ${var.monitoring_srv_ip}
-public_ip: ${google_compute_instance.monitoring[0].network_interface.access_config.nat_ip}
+public_ip: ${google_compute_instance.monitoring[0].network_interface[0].access_config.nat_ip}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
