@@ -17,6 +17,7 @@ This configuration will create an additional VM with the chosen provider and ins
 
 The address of the Grafana dashboard will be made available in the final Terraform output.
 
+
 ### DRBD and Netweaver monitoring
 
 If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
@@ -26,42 +27,17 @@ If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `
 
 These are the exporters installed in the cluster nodes, which provide metrics to be scraped by the Prometheus server:
 
+- [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
 - [ClusterLabs/ha_cluster_exporter](http://github.com/ClusterLabs/ha_cluster_exporter)
 - [SUSE/hanadb_exporter](https://github.com/SUSE/hanadb_exporter)
-- [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
-
-#### `ha_cluster_exporter`
-
-In order to enable `ha_cluster_exporter` for each cluster node, the `cluster` pillar must be as follows:
-
-```
-cluster:
-  // etc.
-  ha_exporter: true
-```
-
-#### `hanadb_exporter`
-
-In order to enable `hanadb_exporter` for each HANA node, the `hana` pillar entries must be modified as follows:
-
-```
-hana:
-  nodes:
-    - // etc.
-      exporter:
-        exposition_port: 9668 # http port where the data is exported
-        user: SYSTEM # HANA db user
-        password: YourPassword1234 # HANA db password
-```
-
-**Note**: SAP HANA already uses some ports in the 8000 range (specifically the port 80{instance number} where instance number usually is '00').
+- [SUSE/sap_host_exporter](https://github.com/SUSE/sap_host_exporter)
 
 
 ### Multi-cluster monitoring
 
-To enable multiple clusters in our monitoring solution, you will need to manually apply some changes to the `/etc/prometheus/prometheus.yaml` configuration.
+To enable multiple clusters in our monitoring solution, we have made some changes to the `/etc/prometheus/prometheus.yaml` configuration.
 
-Each cluster is a different "job" grouping all the exporters (aka "targets") to scrape, so if you had two clusters you would have 2 jobs, e.g.:
+We leverage the `job_name` settings to group all the exporters (a.k.a. scraping targets) by their cluster, so if you had two clusters you would have one job each, e.g.:
 
 ```
 scrape_configs:
@@ -89,7 +65,7 @@ scrape_configs:
 
 This will add a `job` label in all the Prometheus metrics, in this example `job="hacluster-01"` and `job="hacluster-02"`.
 
-You will find a dedicated cluster selector switch at the top of the Grafana dashboard.
+We leverage this to implement a cluster selector switch at the top of the Multi-Cluster Grafana dashboard.
 
 
 ### DRBD split-brain detection

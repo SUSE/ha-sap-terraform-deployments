@@ -14,6 +14,7 @@ hana:
   hdbserver_extract_dir: {{ grains['hana_extract_dir'] }}
   {%- endif %}
   saptune_solution: 'HANA'
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
