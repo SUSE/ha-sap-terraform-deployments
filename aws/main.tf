@@ -223,7 +223,6 @@ module "monitoring" {
   os_image               = var.monitoring_os_image
   os_owner               = var.monitoring_os_owner
   subnet_ids             = aws_subnet.infra-subnet.*.id
-  host_ips               = local.hana_ips
   timezone               = var.timezone
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -233,10 +232,9 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  drbd_enabled           = var.drbd_enabled
-  drbd_ips               = local.drbd_ips
-  netweaver_enabled      = var.netweaver_enabled
-  netweaver_ips          = local.netweaver_virtual_ips
+  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

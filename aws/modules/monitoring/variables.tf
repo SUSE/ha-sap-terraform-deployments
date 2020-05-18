@@ -44,11 +44,6 @@ variable "subnet_ids" {
   description = "List of subnet IDs"
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
-  type        = list(string)
-}
-
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -97,25 +92,19 @@ variable "monitoring_enabled" {
   default     = false
 }
 
-variable "netweaver_enabled" {
-  description = "enable SAP Netweaver cluster deployment"
-  default     = false
+variable "hana_targets" {
+  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
+  type        = list(string)
 }
 
-variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
+variable "drbd_targets" {
+  description = "IPs of DRBD hosts you want to monitor"
   type        = list(string)
   default     = []
 }
 
-variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
-  type        = bool
-  default     = false
-}
-
-variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
+variable "netweaver_targets" {
+  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
   type        = list(string)
   default     = []
 }

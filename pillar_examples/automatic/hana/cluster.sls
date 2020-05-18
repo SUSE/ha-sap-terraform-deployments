@@ -40,11 +40,7 @@ cluster:
       consensus: 36000
       max_messages: 20
   {% endif %}
-  {% if grains.get('monitoring_enabled', False) %}
-  ha_exporter: true
-  {% else %}
-  ha_exporter: false
-  {% endif %}
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     method: update

@@ -37,13 +37,7 @@ cluster:
       consensus: 36000
       max_messages: 20
   {% endif %}
-  {%- for node in netweaver.netweaver.nodes if node.host == grains['host'] %}
-  {%- if grains.get('monitoring_enabled', False) and node.sap_instance in ['ascs', 'ers'] %}
-  ha_exporter: true
-  {%- else %}
-  ha_exporter: false
-  {%- endif %}
-  {%- endfor %}
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
     method: update
     template:
@@ -75,4 +69,3 @@ cluster:
         route_table: {{ grains['route_table'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
-        monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
