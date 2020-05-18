@@ -77,7 +77,7 @@ resource "libvirt_domain" "iscsisrv" {
 output "output_data" {
   value = {
     id                = libvirt_domain.iscsisrv.*.id
-    hostname          = libvirt_domain.iscsisrv.*.name
+    name              = libvirt_domain.iscsisrv.*.name
     private_addresses = [var.iscsi_srv_ip]
     addresses         = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
   }

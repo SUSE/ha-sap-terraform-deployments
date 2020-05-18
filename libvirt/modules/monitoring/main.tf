@@ -32,7 +32,6 @@ resource "libvirt_domain" "monitoring_domain" {
     wait_for_lease = false
     network_name   = var.isolated_network_name
     network_id     = var.isolated_network_id
-    hostname       = "${terraform.workspace}-${var.name}"
     addresses      = [var.monitoring_srv_ip]
   }
 
@@ -62,7 +61,7 @@ resource "libvirt_domain" "monitoring_domain" {
 output "output_data" {
   value = {
     id              = join("", libvirt_domain.monitoring_domain.*.id)
-    hostname        = join("", libvirt_domain.monitoring_domain.*.name)
+    name            = join("", libvirt_domain.monitoring_domain.*.name)
     private_address = var.monitoring_srv_ip
     address         = join("", libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0)
   }
