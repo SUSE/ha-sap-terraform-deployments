@@ -1,7 +1,13 @@
 # iscsi server resources
 
+module "get_os_image" {
+  source   = "../../modules/get_os_image"
+  os_image = var.os_image
+  os_owner = var.os_owner
+}
+
 resource "aws_instance" "iscsisrv" {
-  ami                         = var.iscsi_srv_images[var.aws_region]
+  ami                         = module.get_os_image.image_id
   instance_type               = var.iscsi_instancetype == "" ? var.min_instancetype : var.iscsi_instancetype
   key_name                    = var.key_name
   associate_public_ip_address = true

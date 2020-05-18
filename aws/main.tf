@@ -40,7 +40,8 @@ module "drbd_node" {
   min_instancetype       = var.min_instancetype
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.drbd_os_image
+  os_owner               = var.drbd_os_owner
   vpc_id                 = local.vpc_id
   subnet_address_range   = local.drbd_subnet_address_range
   key_name               = aws_key_pair.key-pair.key_name
@@ -80,7 +81,8 @@ module "iscsi_server" {
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   subnet_ids             = aws_subnet.infra-subnet.*.id
-  iscsi_srv_images       = var.iscsi_srv
+  os_image               = var.iscsi_os_image
+  os_owner               = var.iscsi_os_owner
   iscsi_instancetype     = var.iscsi_instancetype
   min_instancetype       = var.min_instancetype
   key_name               = aws_key_pair.key-pair.key_name
@@ -112,7 +114,8 @@ module "netweaver_node" {
   name                       = "netweaver"
   aws_region                 = var.aws_region
   availability_zones         = data.aws_availability_zones.available.names
-  sles4sap_images            = var.sles4sap
+  os_image                   = var.netweaver_os_image
+  os_owner                   = var.netweaver_os_owner
   vpc_id                     = local.vpc_id
   subnet_address_range       = local.netweaver_subnet_address_range
   key_name                   = aws_key_pair.key-pair.key_name
@@ -164,7 +167,8 @@ module "hana_node" {
   scenario_type          = var.scenario_type
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.hana_os_image
+  os_owner               = var.hana_os_owner
   vpc_id                 = local.vpc_id
   subnet_address_range   = local.hana_subnet_address_range
   key_name               = aws_key_pair.key-pair.key_name
@@ -216,7 +220,8 @@ module "monitoring" {
   private_key_location   = var.private_key_location
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.monitoring_os_image
+  os_owner               = var.monitoring_os_owner
   subnet_ids             = aws_subnet.infra-subnet.*.id
   timezone               = var.timezone
   reg_code               = var.reg_code
