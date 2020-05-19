@@ -72,13 +72,13 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
-hana_cluster_vip = "192.168.1.10"
+#hana_cluster_vip = "192.168.1.10"
 
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
 # iSCSI server address. It should be in same iprange as hana_ips
-iscsi_srv_ip = "10.0.0.254"
+#iscsi_srv_ip = "10.0.0.254"
 
 # iSCSI OS image
 #iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
@@ -137,7 +137,7 @@ ha_sap_deployment_repo = ""
 #monitoring_os_owner = "self"
 
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
-monitoring_srv_ip = "10.0.0.253"
+#monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 

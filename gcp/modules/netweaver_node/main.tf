@@ -9,14 +9,24 @@ resource "google_compute_disk" "netweaver-software" {
   zone  = element(var.compute_zones, count.index)
 }
 
-# temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
-resource "google_compute_route" "nw-route" {
-  name                   = "${terraform.workspace}-nw-route"
+# Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
+resource "google_compute_route" "nw-ascs-route" {
+  name                   = "${terraform.workspace}-nw-ascs-route"
   count                  = var.netweaver_count > 0 ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)
+  priority               = 1000
+}
+
+resource "google_compute_route" "nw-ers-route" {
+  name                   = "${terraform.workspace}-nw-ers-route"
+  count                  = var.netweaver_count > 0 ? 1 : 0
+  dest_range             = "${element(var.virtual_host_ips, 1)}/32"
+  network                = var.network_name
+  next_hop_instance      = google_compute_instance.netweaver.1.name
+  next_hop_instance_zone = element(var.compute_zones, 1)
   priority               = 1000
 }
 

@@ -60,7 +60,8 @@ netweaver_nfs_share: ${var.netweaver_nfs_share}
 netweaver_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.netweaver.*.attached_disk.0.device_name, count.index))}
 hana_ip: ${var.hana_ip}
 vpc_network_name: ${var.network_name}
-route_table: ${google_compute_route.nw-route[0].name}
+ascs_route_name: ${google_compute_route.nw-ascs-route[0].name}
+ers_route_name: ${google_compute_route.nw-ers-route[0].name}
 
 EOF
     destination = "/tmp/grains"

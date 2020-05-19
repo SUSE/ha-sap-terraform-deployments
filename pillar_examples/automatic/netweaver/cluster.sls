@@ -66,6 +66,7 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {%- elif grains['provider'] == 'gcp' %}
-        route_table: {{ grains['route_table'] }}
+        ascs_route_name: {{ grains['ascs_route_name'] }}
+        ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
