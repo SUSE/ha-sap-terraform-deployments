@@ -226,6 +226,18 @@ resource "azurerm_network_security_group" "mysecgroup" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "grafana"
+    priority                   = 1009
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "3000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
   tags = {
     workspace = terraform.workspace
   }
