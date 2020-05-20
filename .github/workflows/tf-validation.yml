@@ -10,13 +10,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-       
-    - name: terraform apply
-      run:  /tmp/terraform-apply.sh
-
     - name: some stuff
       run:  uptime
-
-    - name: terraform destroy
-      if: ${{ always() }}
-      run:  /tmp/terraform-destroy.sh
