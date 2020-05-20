@@ -36,9 +36,12 @@ public_key_location = "/path/to/your/public/ssh/key"
 private_key_location = "/path/to/your/private/ssh/key"
 
 # Custom AMI for nodes
-#sles4sap = {
-#    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-#}
+#hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
+# Or use a pattern to find the image
+#hana_os_image = "suse-sles-sap-15-sp1-byos"
+
+# Custom owner for private AMI
+#hana_os_owner = "self"
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -69,13 +72,17 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
-hana_cluster_vip = "192.168.1.10"
+#hana_cluster_vip = "192.168.1.10"
 
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
 # iSCSI server address. It should be in same iprange as hana_ips
-iscsi_srv_ip = "10.0.0.254"
+#iscsi_srv_ip = "10.0.0.254"
+
+# iSCSI OS image
+#iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#iscsi_os_owner = "self"
 
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/xvdd"
@@ -126,8 +133,11 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+#monitoring_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#monitoring_os_owner = "self"
+
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
-monitoring_srv_ip = "10.0.0.253"
+#monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
@@ -150,6 +160,9 @@ monitoring_srv_ip = "10.0.0.253"
 
 #drbd_instancetype = "t2.micro"
 
+#drbd_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#drbd_os_owner = "self"
+
 #drbd_data_disk_size = 15
 
 #drbd_data_disk_type = gp2
@@ -162,6 +175,8 @@ monitoring_srv_ip = "10.0.0.253"
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
+#netweaver_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#netweaver_os_owner = "self"
 #AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]

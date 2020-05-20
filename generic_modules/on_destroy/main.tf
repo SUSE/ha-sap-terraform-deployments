@@ -26,7 +26,7 @@ resource "null_resource" "on_destroy" {
 
   provisioner "remote-exec" {
     when       = destroy
-    inline     = ["sudo sh /tmp/on_destroy.sh"]
+    inline     = ["sudo timeout 300 sh /tmp/on_destroy.sh"]
     on_failure = continue
   }
 

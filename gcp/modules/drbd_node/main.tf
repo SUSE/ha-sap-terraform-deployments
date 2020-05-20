@@ -9,7 +9,7 @@ resource "google_compute_disk" "data" {
   zone  = element(var.compute_zones, count.index)
 }
 
-# temporary HA solution to create the static routes, eventually this routes must be created by the RA gcp-vpc-move-route
+# Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "drbd-route" {
   name                   = "${terraform.workspace}-drbd-route"
   count                  = var.drbd_count > 0 ? 1 : 0

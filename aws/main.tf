@@ -40,7 +40,8 @@ module "drbd_node" {
   min_instancetype       = var.min_instancetype
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.drbd_os_image
+  os_owner               = var.drbd_os_owner
   vpc_id                 = local.vpc_id
   subnet_address_range   = local.drbd_subnet_address_range
   key_name               = aws_key_pair.key-pair.key_name
@@ -80,7 +81,8 @@ module "iscsi_server" {
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   subnet_ids             = aws_subnet.infra-subnet.*.id
-  iscsi_srv_images       = var.iscsi_srv
+  os_image               = var.iscsi_os_image
+  os_owner               = var.iscsi_os_owner
   iscsi_instancetype     = var.iscsi_instancetype
   min_instancetype       = var.min_instancetype
   key_name               = aws_key_pair.key-pair.key_name
@@ -112,7 +114,8 @@ module "netweaver_node" {
   name                       = "netweaver"
   aws_region                 = var.aws_region
   availability_zones         = data.aws_availability_zones.available.names
-  sles4sap_images            = var.sles4sap
+  os_image                   = var.netweaver_os_image
+  os_owner                   = var.netweaver_os_owner
   vpc_id                     = local.vpc_id
   subnet_address_range       = local.netweaver_subnet_address_range
   key_name                   = aws_key_pair.key-pair.key_name
@@ -131,7 +134,7 @@ module "netweaver_node" {
   netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
-  netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
+  netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   hana_ip                    = local.hana_cluster_vip
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
@@ -164,7 +167,8 @@ module "hana_node" {
   scenario_type          = var.scenario_type
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.hana_os_image
+  os_owner               = var.hana_os_owner
   vpc_id                 = local.vpc_id
   subnet_address_range   = local.hana_subnet_address_range
   key_name               = aws_key_pair.key-pair.key_name
@@ -216,9 +220,9 @@ module "monitoring" {
   private_key_location   = var.private_key_location
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
-  sles4sap_images        = var.sles4sap
+  os_image               = var.monitoring_os_image
+  os_owner               = var.monitoring_os_owner
   subnet_ids             = aws_subnet.infra-subnet.*.id
-  host_ips               = local.hana_ips
   timezone               = var.timezone
   reg_code               = var.reg_code
   reg_email              = var.reg_email
@@ -228,10 +232,9 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  drbd_enabled           = var.drbd_enabled
-  drbd_ips               = local.drbd_ips
-  netweaver_enabled      = var.netweaver_enabled
-  netweaver_ips          = local.netweaver_virtual_ips
+  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

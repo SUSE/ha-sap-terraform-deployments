@@ -21,14 +21,14 @@ reg_email: ${var.reg_email}
 reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
-host_ips: [${join(", ", formatlist("'%s'", [var.monitoring_srv_ip]))}]
 host_ip: ${var.monitoring_srv_ip}
+public_ip: ${libvirt_domain.monitoring_domain[0].network_interface[0].addresses[0]}
 role: monitoring
 provider: libvirt
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitored_hosts: [${join(", ", formatlist("'%s'", var.monitored_hosts))}]
-drbd_monitored_hosts: [${join(", ", formatlist("'%s'", var.drbd_monitored_hosts))}]
-nw_monitored_hosts: [${join(", ", formatlist("'%s'", var.nw_monitored_hosts))}]
+hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
+drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
+netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
 EOF
     destination = "/tmp/grains"
   }
