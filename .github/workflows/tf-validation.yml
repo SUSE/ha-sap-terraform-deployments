@@ -10,15 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
        
     - name: terraform apply
-      env:
-        VAULT_ADDR:  "http://10.162.32.32:8200"
       run:  /tmp/terraform-apply.sh
 
     - name: terraform destroy
-      env:
-        VAULT_ADDR:  "http://10.162.32.32:8200"
       if: ${{ always() }}
       run:  /tmp/terraform-destroy.sh
