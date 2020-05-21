@@ -184,25 +184,25 @@ module "monitoring" {
 }
 
 module "iscsi_server" {
-  iscsi_count               = local.iscsi_enabled == true ? 1 : 0
-  source                    = "./modules/iscsi_server"
-  machine_type              = var.machine_type_iscsi_server
-  compute_zones             = data.google_compute_zones.available.names
-  network_subnet_name       = local.subnet_name
-  iscsi_server_boot_image   = var.iscsi_server_boot_image
-  host_ips                  = [local.iscsi_srv_ip]
-  lun_count                 = var.iscsi_lun_count
-  iscsi_disk_size           = var.iscsi_disk_size
-  public_key_location       = var.public_key_location
-  private_key_location      = var.private_key_location
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  additional_packages       = var.additional_packages
-  qa_mode                   = var.qa_mode
-  provisioner               = var.provisioner
-  background                = var.background
+  iscsi_count             = local.iscsi_enabled == true ? 1 : 0
+  source                  = "./modules/iscsi_server"
+  machine_type            = var.machine_type_iscsi_server
+  compute_zones           = data.google_compute_zones.available.names
+  network_subnet_name     = local.subnet_name
+  iscsi_server_boot_image = var.iscsi_server_boot_image
+  host_ips                = [local.iscsi_srv_ip]
+  lun_count               = var.iscsi_lun_count
+  iscsi_disk_size         = var.iscsi_disk_size
+  public_key_location     = var.public_key_location
+  private_key_location    = var.private_key_location
+  reg_code                = var.reg_code
+  reg_email               = var.reg_email
+  reg_additional_modules  = var.reg_additional_modules
+  ha_sap_deployment_repo  = var.ha_sap_deployment_repo
+  additional_packages     = var.additional_packages
+  qa_mode                 = var.qa_mode
+  provisioner             = var.provisioner
+  background              = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

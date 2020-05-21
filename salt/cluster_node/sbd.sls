@@ -4,4 +4,4 @@
 sbd_disk_device:
   grains.present:
     - name: sbd_disk_device
-    - value: {{ sbd_disk_device}}
+    - value: {{ sbd_disk_device }}
