@@ -10,14 +10,8 @@ variable "drbd_count" {
   default     = 2
 }
 
-variable "drbd_instancetype" {
+variable "instance_type" {
   description = "The instance type of drbd node"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region"
   type        = string
   default     = "t2.micro"
 }

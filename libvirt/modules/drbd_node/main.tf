@@ -39,9 +39,9 @@ resource "libvirt_domain" "drbd_domain" {
       [
         {
           // we set null but it will never reached because the slice with 0 cut it off
-          "volume_id" = var.shared_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
+          "volume_id" = var.sbd_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
         },
-    ], 0, var.shared_storage_type == "shared-disk" ? 1 : 0, )
+    ], 0, var.sbd_enabled && var.sbd_storage_type == "shared-disk" ? 1 : 0, )
     content {
       volume_id = disk.value.volume_id
     }

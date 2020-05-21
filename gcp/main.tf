@@ -31,6 +31,9 @@ locals {
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+
+  # Check if iscsi server has to be created
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
 module "drbd_node" {
@@ -47,6 +50,8 @@ module "drbd_node" {
   gcp_credentials_file   = var.gcp_credentials_file
   network_domain         = "tf.local"
   host_ips               = local.drbd_ips
+  sbd_enabled            = var.drbd_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
   iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
@@ -76,6 +81,8 @@ module "netweaver_node" {
   gcp_credentials_file       = var.gcp_credentials_file
   network_domain             = "tf.local"
   host_ips                   = local.netweaver_ips
+  sbd_enabled                = var.netweaver_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
@@ -116,6 +123,8 @@ module "hana_node" {
   sles4sap_boot_image        = var.sles4sap_boot_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips
+  sbd_enabled                = var.hana_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   sap_hana_deployment_bucket = var.sap_hana_deployment_bucket
   hana_inst_folder           = var.hana_inst_folder
@@ -175,23 +184,25 @@ module "monitoring" {
 }
 
 module "iscsi_server" {
-  source                    = "./modules/iscsi_server"
-  machine_type_iscsi_server = var.machine_type_iscsi_server
-  compute_zones             = data.google_compute_zones.available.names
-  network_subnet_name       = local.subnet_name
-  iscsi_server_boot_image   = var.iscsi_server_boot_image
-  iscsi_srv_ip              = local.iscsi_srv_ip
-  iscsi_disks               = var.iscsi_disks
-  public_key_location       = var.public_key_location
-  private_key_location      = var.private_key_location
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  additional_packages       = var.additional_packages
-  qa_mode                   = var.qa_mode
-  provisioner               = var.provisioner
-  background                = var.background
+  iscsi_count             = local.iscsi_enabled == true ? 1 : 0
+  source                  = "./modules/iscsi_server"
+  machine_type            = var.machine_type_iscsi_server
+  compute_zones           = data.google_compute_zones.available.names
+  network_subnet_name     = local.subnet_name
+  iscsi_server_boot_image = var.iscsi_server_boot_image
+  host_ips                = [local.iscsi_srv_ip]
+  lun_count               = var.iscsi_lun_count
+  iscsi_disk_size         = var.iscsi_disk_size
+  public_key_location     = var.public_key_location
+  private_key_location    = var.private_key_location
+  reg_code                = var.reg_code
+  reg_email               = var.reg_email
+  reg_additional_modules  = var.reg_additional_modules
+  ha_sap_deployment_repo  = var.ha_sap_deployment_repo
+  additional_packages     = var.additional_packages
+  qa_mode                 = var.qa_mode
+  provisioner             = var.provisioner
+  background              = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

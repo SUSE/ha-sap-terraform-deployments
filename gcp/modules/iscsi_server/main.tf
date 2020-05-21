@@ -1,14 +1,16 @@
 resource "google_compute_disk" "iscsi_data" {
-  name = "${terraform.workspace}-iscsi-data"
-  type = "pd-standard"
-  size = "10"
-  zone = element(var.compute_zones, 0)
+  count = var.iscsi_count
+  name  = "${terraform.workspace}-iscsi-data-${count.index + 1}"
+  type  = "pd-standard"
+  size  = var.iscsi_disk_size
+  zone  = element(var.compute_zones, 0)
 }
 
 resource "google_compute_instance" "iscsisrv" {
-  name         = "${terraform.workspace}-iscsisrv"
+  count        = var.iscsi_count
+  name         = "${terraform.workspace}-iscsisrv-${count.index + 1}"
   description  = "iSCSI server"
-  machine_type = var.machine_type_iscsi_server
+  machine_type = var.machine_type
   zone         = element(var.compute_zones, 0)
 
   lifecycle {
@@ -17,7 +19,7 @@ resource "google_compute_instance" "iscsisrv" {
 
   network_interface {
     subnetwork = var.network_subnet_name
-    network_ip = var.iscsi_srv_ip
+    network_ip = element(var.host_ips, count.index)
 
     access_config {
       nat_ip = ""
@@ -39,8 +41,8 @@ resource "google_compute_instance" "iscsisrv" {
   }
 
   attached_disk {
-    source      = google_compute_disk.iscsi_data.self_link
-    device_name = google_compute_disk.iscsi_data.name
+    source      = element(google_compute_disk.iscsi_data.*.self_link, count.index)
+    device_name = element(google_compute_disk.iscsi_data.*.name, count.index)
     mode        = "READ_WRITE"
   }
 
@@ -51,7 +53,7 @@ resource "google_compute_instance" "iscsisrv" {
 
 module "iscsi_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = 1
+  node_count           = var.iscsi_count
   instance_ids         = google_compute_instance.iscsisrv.*.id
   user                 = "root"
   private_key_location = var.private_key_location

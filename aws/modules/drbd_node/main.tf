@@ -44,7 +44,7 @@ module "get_os_image" {
 resource "aws_instance" "drbd" {
   count                       = var.drbd_count
   ami                         = module.get_os_image.image_id
-  instance_type               = var.drbd_instancetype == "" ? var.min_instancetype : var.drbd_instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.drbd-subnet.*.id, count.index)

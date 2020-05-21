@@ -45,6 +45,18 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string

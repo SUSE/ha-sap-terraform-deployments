@@ -109,14 +109,17 @@ hana_sapcar_exe = "SAPCAR"
 hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 
-# Device used by node where HANA will be installed
-hana_disk_device = "/dev/sdc"
-
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/sdc"
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
 # IP address of the iSCSI server. If it's not set the address will be auto generated from the provided vnet address range
 #iscsi_srv_ip = "10.74.1.14"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
+#iscsi_disk_size = 10
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
@@ -130,9 +133,8 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
 #hana_cluster_vip = "10.74.1.13"
 
-# Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
-#drbd_ips = ["10.74.1.21", "10.74.1.22"]
-#drbd_cluster_vip = "10.74.1.23"
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -175,12 +177,22 @@ ha_sap_deployment_repo = ""
 # Enable drbd cluster
 #drbd_enabled = true
 
+# Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
+#drbd_ips = ["10.74.1.21", "10.74.1.22"]
+#drbd_cluster_vip = "10.74.1.23"
+
+# Enable SBD for the drbd cluster
+#drbd_cluster_sbd_enabled = true
+
 # Netweaver variables
 
 #netweaver_enabled = true
 # If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
 
 #netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 #netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"

@@ -4,7 +4,7 @@ terraform {
 
 resource "libvirt_volume" "iscsi_image_disk" {
   count            = var.iscsi_count
-  name             = format("%s-iscsi-disk", terraform.workspace)
+  name             = format("%s-iscsi-disk-%s", terraform.workspace, count.index + 1)
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
@@ -12,13 +12,13 @@ resource "libvirt_volume" "iscsi_image_disk" {
 
 resource "libvirt_volume" "iscsi_dev_disk" {
   count = var.iscsi_count
-  name  = format("%s-iscsi-dev", terraform.workspace)
+  name  = format("%s-iscsi-dev-%s", terraform.workspace, count.index + 1)
   pool  = var.storage_pool
-  size  = "10000000000" # 10GB
+  size  = var.iscsi_disk_size
 }
 
 resource "libvirt_domain" "iscsisrv" {
-  name       = format("%s-iscsi", terraform.workspace)
+  name       = format("%s-iscsi-%s", terraform.workspace, count.index + 1)
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.iscsi_count
@@ -48,7 +48,7 @@ resource "libvirt_domain" "iscsisrv" {
     network_name = var.isolated_network_name
     network_id   = var.isolated_network_id
     mac          = var.mac
-    addresses    = [var.iscsi_srv_ip]
+    addresses    = [element(var.host_ips, count.index)]
   }
 
   console {
@@ -78,7 +78,7 @@ output "output_data" {
   value = {
     id                = libvirt_domain.iscsisrv.*.id
     name              = libvirt_domain.iscsisrv.*.name
-    private_addresses = [var.iscsi_srv_ip]
+    private_addresses = var.host_ips
     addresses         = libvirt_domain.iscsisrv.*.network_interface.0.addresses.0
   }
 }

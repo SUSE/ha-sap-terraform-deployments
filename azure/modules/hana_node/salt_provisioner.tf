@@ -25,18 +25,18 @@ name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
-shared_storage_type: iscsi
-sbd_disk_index: 1
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
 hdbserver_sar: ${var.hdbserver_sar}
 hana_extract_dir: ${var.hana_extract_dir}
-hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
+sbd_disk_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_cluster_vip: ${azurerm_lb.hana-load-balancer.private_ip_address}
 init_type: ${var.init_type}

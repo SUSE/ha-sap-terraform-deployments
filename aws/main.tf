@@ -31,13 +31,15 @@ locals {
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(4) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
+
+  # Check if iscsi server has to be created
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || var.netweaver_cluster_sbd_enabled == true) ? true : false
 }
 
 module "drbd_node" {
   source                 = "./modules/drbd_node"
   drbd_count             = var.drbd_enabled == true ? 2 : 0
-  drbd_instancetype      = var.drbd_instancetype
-  min_instancetype       = var.min_instancetype
+  instance_type          = var.drbd_instancetype
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   os_image               = var.drbd_os_image
@@ -58,7 +60,7 @@ module "drbd_node" {
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
@@ -78,19 +80,19 @@ module "drbd_node" {
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
+  iscsi_count            = local.iscsi_enabled == true ? 1 : 0
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   subnet_ids             = aws_subnet.infra-subnet.*.id
   os_image               = var.iscsi_os_image
   os_owner               = var.iscsi_os_owner
-  iscsi_instancetype     = var.iscsi_instancetype
-  min_instancetype       = var.min_instancetype
+  instance_type          = var.iscsi_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = local.iscsi_ip
-  iscsidev               = var.iscsidev
-  iscsi_disks            = var.iscsi_disks
+  host_ips               = [local.iscsi_ip]
+  lun_count              = var.iscsi_lun_count
+  iscsi_disk_size        = var.iscsi_disk_size
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
@@ -110,7 +112,7 @@ module "iscsi_server" {
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
   netweaver_count            = var.netweaver_enabled == true ? 4 : 0
-  instancetype               = var.netweaver_instancetype
+  instance_type              = var.netweaver_instancetype
   name                       = "netweaver"
   aws_region                 = var.aws_region
   availability_zones         = data.aws_availability_zones.available.names
@@ -140,7 +142,9 @@ module "netweaver_node" {
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
-  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
+  sbd_enabled                = var.netweaver_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
+  iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
   reg_code                   = var.reg_code
@@ -161,7 +165,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                 = "./modules/hana_node"
   hana_count             = var.hana_count
-  instancetype           = var.instancetype
+  instance_type          = var.hana_instancetype
   name                   = var.name
   init_type              = var.init_type
   scenario_type          = var.scenario_type
@@ -189,7 +193,9 @@ module "hana_node" {
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
   private_key_location   = var.private_key_location
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
+  sbd_enabled            = var.hana_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   reg_code               = var.reg_code
@@ -212,8 +218,7 @@ module "hana_node" {
 
 module "monitoring" {
   source                 = "./modules/monitoring"
-  monitor_instancetype   = var.monitor_instancetype
-  min_instancetype       = var.min_instancetype
+  instance_type          = var.monitor_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   monitoring_srv_ip      = local.monitoring_ip

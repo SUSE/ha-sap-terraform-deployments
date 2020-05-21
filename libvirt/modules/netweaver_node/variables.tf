@@ -55,9 +55,27 @@ variable "virtual_host_ips" {
   type        = list(string)
 }
 
-variable "shared_disk_id" {
-  description = "ASCS and ERS shared disk volume id"
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
   type        = string
+  default     = "shared-disk"
+}
+
+variable "shared_disk_id" {
+  description = "Disk used by SBD and, ASCS/ERS"
+  type        = string
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address. Only used if sbd_storage_type is iscsi"
+  type        = string
+  default     = ""
 }
 
 variable "hana_ip" {
