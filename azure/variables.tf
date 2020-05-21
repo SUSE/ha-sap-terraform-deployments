@@ -158,13 +158,13 @@ variable "hana_public_publisher" {
 variable "hana_public_offer" {
   description = "Public image offer name used to create the hana machines"
   type        = string
-  default     = "SLES-SAP-BYOS"
+  default     = "sles-sap-15-sp1-byos"
 }
 
 variable "hana_public_sku" {
   description = "Public image sku used to create the hana machines"
   type        = string
-  default     = "12-sp4"
+  default     = "gen2"
 }
 
 variable "hana_public_version" {
@@ -310,13 +310,13 @@ variable "iscsi_public_publisher" {
 variable "iscsi_public_offer" {
   description = "Public image offer name used to create the iscsi machines"
   type        = string
-  default     = "SLES-SAP-BYOS"
+  default     = "sles-sap-15-sp1-byos"
 }
 
 variable "iscsi_public_sku" {
   description = "Public image sku used to create the iscsi machines"
   type        = string
-  default     = "15"
+  default     = "gen2"
 }
 
 variable "iscsi_public_version" {
@@ -377,13 +377,13 @@ variable "monitoring_public_publisher" {
 variable "monitoring_public_offer" {
   description = "Public image offer name used to create the monitoring machines"
   type        = string
-  default     = "SLES-SAP-BYOS"
+  default     = "sles-sap-15-sp1-byos"
 }
 
 variable "monitoring_public_sku" {
   description = "Public image sku used to create the monitoring machines"
   type        = string
-  default     = "15"
+  default     = "gen2"
 }
 
 variable "monitoring_public_version" {
@@ -433,13 +433,13 @@ variable "drbd_public_publisher" {
 variable "drbd_public_offer" {
   description = "Public image offer name used to create the drbd machines"
   type        = string
-  default     = "SLES-SAP-BYOS"
+  default     = "sles-sap-15-sp1-byos"
 }
 
 variable "drbd_public_sku" {
   description = "Public image sku used to create the drbd machines"
   type        = string
-  default     = "15"
+  default     = "gen2"
 }
 
 variable "drbd_public_version" {
@@ -483,13 +483,13 @@ variable "netweaver_public_publisher" {
 variable "netweaver_public_offer" {
   description = "Public image offer name used to create the netweaver machines"
   type        = string
-  default     = "SLES-SAP-BYOS"
+  default     = "sles-sap-15-sp1-byos"
 }
 
 variable "netweaver_public_sku" {
   description = "Public image sku used to create the netweaver machines"
   type        = string
-  default     = "15"
+  default     = "gen2"
 }
 
 variable "netweaver_public_version" {

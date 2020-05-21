@@ -32,18 +32,18 @@ cluster:
       consensus: 36000
       max_messages: 20
   {% endif %}
-  {% if grains.get('monitoring_enabled', False) %}
-  ha_exporter: true
-  {% else %}
-  ha_exporter: false
-  {% endif %}
-
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
     method: 'update'
     template:
       source: /srv/salt/drbd_files/templates/drbd_cluster.j2
       parameters:
-        {% if grains['provider']== "azure" %}
+        {% if grains['provider'] == 'aws' %}
+        virtual_ip: {{ grains['drbd_cluster_vip'] }}
+        route_table: {{ grains['route_table'] }}
+        cluster_profile: {{ grains['aws_cluster_profile'] }}
+        instance_tag: {{ grains['aws_instance_tag'] }}
+        {% elif grains['provider']== "azure" %}
         probe: 61000
         {% elif grains['provider'] == 'gcp' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}

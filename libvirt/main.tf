@@ -22,7 +22,7 @@ locals {
   hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
   hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
 
-  # 2 is hardcoded for drbd because we always deploy 4 machines
+  # 2 is hardcoded for drbd because we always deploy 2 machines
   drbd_ip_start    = 20
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.iprange, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.iprange, local.drbd_ip_start + 2)
@@ -145,9 +145,9 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  monitored_hosts        = local.hana_ips
-  drbd_monitored_hosts   = var.drbd_enabled ? local.drbd_ips : []
-  nw_monitored_hosts     = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "netweaver_node" {

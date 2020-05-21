@@ -33,9 +33,12 @@ public_key_location = "/path/to/your/public/ssh/key"
 private_key_location = "/path/to/your/private/ssh/key"
 
 # Custom AMI for nodes
-#sles4sap = {
-#    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-#}
+#hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
+# Or use a pattern to find the image
+#hana_os_image = "suse-sles-sap-15-sp1-byos"
+
+# Custom owner for private AMI
+#hana_os_owner = "self"
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -71,6 +74,7 @@ hana_disk_device = "/dev/xvdd"
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
+
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
 
@@ -78,6 +82,10 @@ init_type = "all"
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+
+# iSCSI OS image
+#iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#iscsi_os_owner = "self"
 
 # iSCSI server address. It should be in same iprange as hana_ips
 #iscsi_srv_ip = "10.0.0.254"
@@ -132,8 +140,11 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+#monitoring_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#monitoring_os_owner = "self"
+
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
-monitoring_srv_ip = "10.0.0.253"
+#monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
@@ -148,10 +159,32 @@ monitoring_srv_ip = "10.0.0.253"
 # true or false (default)
 #hwcct = false
 
+# drbd related variables
+
+# netweaver will use AWS efs for nfs share by default, unless drbd is enabled
+# Enable drbd cluster
+#drbd_enabled = false
+
+#drbd_instancetype = "t2.micro"
+
+#drbd_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#drbd_os_owner = "self"
+
+#drbd_data_disk_size = 15
+
+#drbd_data_disk_type = gp2
+
+# Each drbd cluster host IP address (sequential order).
+#drbd_ips = ["10.0.5.20", "10.0.6.21"]
+#drbd_cluster_vip = "192.168.1.20"
+
 # Netweaver variables
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
+#netweaver_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#netweaver_os_owner = "self"
+#AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]

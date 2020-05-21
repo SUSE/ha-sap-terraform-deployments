@@ -3,10 +3,16 @@
 locals {
   iscsi_device_name = "/dev/xvdd"
 }
+  
+module "get_os_image" {
+  source   = "../../modules/get_os_image"
+  os_image = var.os_image
+  os_owner = var.os_owner
+}
 
 resource "aws_instance" "iscsisrv" {
   count                       = var.iscsi_count
-  ami                         = var.iscsi_srv_images[var.aws_region]
+  ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true

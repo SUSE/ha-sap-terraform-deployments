@@ -1,27 +1,19 @@
-variable "hana_count" {
-  type    = string
-  default = "2"
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "drbd"
+}
+
+variable "drbd_count" {
+  description = "Number of drbd machines to create the cluster"
+  type        = number
+  default     = 2
 }
 
 variable "instance_type" {
-  type    = string
-  default = "r3.8xlarge"
-}
-
-variable "name" {
-  description = "prefix of the machines names"
+  description = "The instance type of drbd node"
   type        = string
-  default     = "hana"
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
+  default     = "t2.micro"
 }
 
 variable "aws_region" {
@@ -73,84 +65,38 @@ variable "aws_secret_access_key" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
+  description = "ip addresses to set to the nodes"
   type        = list(string)
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "gp2"
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
 }
 
-variable "hana_inst_master" {
+variable "drbd_data_disk_size" {
+  description = "Disk size of the disks used to store drbd content"
+  type        = string
+  default     = "10"
+}
+
+variable "drbd_data_disk_type" {
+  description = "Disk type of the disks used to store drbd content"
+  type        = string
+  default     = "gp2"
+}
+
+variable "network_domain" {
+  type    = string
+  default = "tf.local"
+}
+
+variable "public_key_location" {
   type = string
-}
-
-variable "hana_inst_folder" {
-  type    = string
-  default = "/sapmedia/HANA"
-}
-
-variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
-  type        = string
-  default     = ""
-}
-
-variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
-  type        = string
-  default     = ""
-}
-
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
-  type        = string
-  default     = ""
-}
-
-variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
-  type        = string
-  default     = "/sapmedia/HANA"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = "192.168.1.10"
 }
 
 variable "private_key_location" {
   type = string
-}
-
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = false
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
 }
 
 variable "cluster_ssh_pub" {
@@ -160,6 +106,11 @@ variable "cluster_ssh_pub" {
 
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
+  type        = string
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address"
   type        = string
 }
 
@@ -195,14 +146,8 @@ variable "devel_mode" {
   default     = false
 }
 
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
-}
-
-variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
 }
@@ -218,8 +163,8 @@ variable "background" {
   default     = false
 }
 
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
+variable "qa_mode" {
+  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
   type        = bool
   default     = false
 }

@@ -58,7 +58,6 @@ resource "libvirt_domain" "drbd_domain" {
     wait_for_lease = false
     network_name   = var.isolated_network_name
     network_id     = var.isolated_network_id
-    hostname       = "${var.name}0${count.index + 1}"
     addresses      = [element(var.host_ips, count.index)]
   }
 
@@ -92,7 +91,7 @@ resource "libvirt_domain" "drbd_domain" {
 output "output_data" {
   value = {
     id                = libvirt_domain.drbd_domain.*.id
-    hostname          = libvirt_domain.drbd_domain.*.name
+    name              = libvirt_domain.drbd_domain.*.name
     private_addresses = var.host_ips
     addresses         = libvirt_domain.drbd_domain.*.network_interface.0.addresses.0
   }

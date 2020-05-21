@@ -150,20 +150,16 @@ variable "hana_count" {
   default     = 2
 }
 
-variable "sles4sap" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the hana machines"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "hana_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "hana_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "hana_instancetype" {
@@ -259,6 +255,62 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+# DRBD related variables
+
+variable "drbd_enabled" {
+  description = "Enable the DRBD cluster for nfs"
+  type        = bool
+  default     = false
+}
+
+variable "drbd_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "drbd_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
+variable "drbd_instancetype" {
+  description = "The instance type of the drbd node"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP"
+  type        = string
+  default     = ""
+}
+
+variable "drbd_ips" {
+  description = "ip addresses to set to the drbd cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_subnet_address_range" {
+  description = "List of address ranges to create the subnets for the drbd machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_data_disk_size" {
+  description = "Disk size of the disks used to store drbd content"
+  type        = string
+  default     = "15"
+}
+
+variable "drbd_data_disk_type" {
+  description = "Disk type of the disks used to store drbd content"
+  type        = string
+  default     = "gp2"
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
@@ -272,20 +324,16 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_srv" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "iscsi_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "iscsi_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "iscsi_instancetype" {
@@ -313,10 +361,22 @@ variable "iscsi_disk_size" {
 
 # Monitoring related variables
 
+variable "monitoring_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "monitoring_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "monitoring_srv_ip" {
@@ -337,6 +397,18 @@ variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
+}
+
+variable "netweaver_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "netweaver_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "netweaver_instancetype" {

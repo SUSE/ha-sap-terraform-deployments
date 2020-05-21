@@ -31,6 +31,22 @@ locals {
   # The 2 is hardcoded because we create 2 subnets for NW always
   netweaver_subnet_address_range = length(var.netweaver_subnet_address_range) != 0 ? var.netweaver_subnet_address_range : [
   for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 1)]
+
+  # The 2 is hardcoded considering we create 2 subnets for NW always
+  drbd_subnet_address_range = length(var.drbd_subnet_address_range) != 0 ? var.drbd_subnet_address_range : [
+  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 2 + 1)]
+}
+
+# EFS storage for nfs share used by Netweaver for /usr/sap/{sid} and /sapmnt
+# It will be created for netweaver only when drbd is disabled
+resource "aws_efs_file_system" "netweaver-efs" {
+  count            = var.netweaver_enabled == true && var.drbd_enabled == false ? 1 : 0
+  creation_token   = "${terraform.workspace}-netweaver-efs"
+  performance_mode = var.netweaver_efs_performance_mode
+
+  tags = {
+    Name = "${terraform.workspace}-efs"
+  }
 }
 
 # AWS key pair
@@ -221,6 +237,17 @@ resource "aws_security_group_rule" "prometheus_server" {
   type        = "ingress"
   from_port   = 9090
   to_port     = 9090
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = local.security_group_id
+}
+
+resource "aws_security_group_rule" "grafana_server" {
+  count       = local.create_security_group_monitoring
+  type        = "ingress"
+  from_port   = 3000
+  to_port     = 3000
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 

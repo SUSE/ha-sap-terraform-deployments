@@ -22,22 +22,6 @@ variable "availability_zones" {
   description = "Used availability zones"
 }
 
-variable "sles4sap_images" {
-  type = map(string)
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
-}
-
 variable "vpc_id" {
   type        = string
   description = "Id of the vpc used for this deployment"
@@ -63,10 +47,14 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
-variable "efs_performance_mode" {
+variable "efs_enable_mount" {
+  type        = bool
+  description = "Enable the mount operation on the EFS storage"
+}
+
+variable "efs_file_system_id" {
   type        = string
-  description = "Performance mode of the EFS storage"
-  default     = "generalPurpose"
+  description = "AWS efs file system ID to be used by EFS mount target"
 }
 
 variable "aws_credentials" {
@@ -128,6 +116,11 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
 }
 
 variable "hana_ip" {
@@ -266,4 +259,14 @@ variable "on_destroy_dependencies" {
   description = "Resource objects needed in on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
+}
+
+variable "os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+}
+
+variable "os_owner" {
+  description = "OS image owner"
+  type        = string
 }
