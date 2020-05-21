@@ -57,7 +57,8 @@ sap_hana_deployment_bucket = "MyHanaBucket/51053381"
 # This will have preference over hana archive installation media
 #hana_platform_folder = "51053381"
 
-# Or specify the path to the HANA installation archive, relative to the 'hana_inst_media' mounting point
+# Or specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_media' mounting point
+# For multipart RAR archives, you only need to provide the first part EXE file name.
 # If using hana sar archive, please also provide the compatible version of sapcar executable to extract the sar archive
 # HANA installation archives be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
 hana_archive_file = "IMDB_SERVER.SAR"

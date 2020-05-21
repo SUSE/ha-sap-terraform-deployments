@@ -220,7 +220,7 @@ variable "hana_sapcar_exe" {
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA installation archive, relative to the 'hana_inst_master' mounting point"
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
