@@ -2,12 +2,12 @@ terraform {
   required_version = ">= 0.12"
 }
 
-resource "libvirt_volume" "monitoring_main_disk" {
-  name            = format("%s-monitoring-disk", terraform.workspace)
-  source          = var.monitoring_image
-  base_volume_id  = var.monitoring_image == "" ? var.base_image_id: ""
-  pool            = var.pool
-  count           = var.monitoring_enabled == true ? 1 : 0
+resource "libvirt_volume" "monitoring_image_disk" {
+  count            = var.monitoring_enabled == true ? 1 : 0
+  name             = format("%s-monitoring-disk", terraform.workspace)
+  source           = var.source_image
+  base_volume_name = var.volume_name
+  pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "monitoring_domain" {
@@ -18,7 +18,7 @@ resource "libvirt_domain" "monitoring_domain" {
   qemu_agent = true
 
   disk {
-      volume_id = libvirt_volume.monitoring_main_disk.0.id
+    volume_id = libvirt_volume.monitoring_image_disk.0.id
   }
 
   network_interface {
@@ -30,8 +30,8 @@ resource "libvirt_domain" "monitoring_domain" {
 
   network_interface {
     wait_for_lease = false
-    network_id     = var.network_id
-    hostname       = "${terraform.workspace}-${var.name}"
+    network_name   = var.isolated_network_name
+    network_id     = var.isolated_network_id
     addresses      = [var.monitoring_srv_ip]
   }
 
@@ -61,8 +61,18 @@ resource "libvirt_domain" "monitoring_domain" {
 output "output_data" {
   value = {
     id              = join("", libvirt_domain.monitoring_domain.*.id)
-    hostname        = join("", libvirt_domain.monitoring_domain.*.name)
+    name            = join("", libvirt_domain.monitoring_domain.*.name)
     private_address = var.monitoring_srv_ip
     address         = join("", libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0)
   }
+}
+
+module "monitoring_on_destroy" {
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.monitoring_enabled ? 1 : 0
+  instance_ids = libvirt_domain.monitoring_domain.*.id
+  user         = "root"
+  password     = "linux"
+  public_ips   = libvirt_domain.monitoring_domain.*.network_interface.0.addresses.0
+  dependencies = [libvirt_domain.monitoring_domain]
 }

@@ -33,6 +33,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -67,6 +68,11 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "drbd_cluster_vip" {
+  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
 variable "shared_storage_type" {
   description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
   type        = string
@@ -86,14 +92,22 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
 // Provider-specific variables
 
-variable "base_image_id" {
-  description = "base image id which the module will use. You can create a baseimage and module will use it. Created in main.tf"
+variable "source_image" {
+  description = "Source image used to boot the machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
+  default     = ""
+}
+
+variable "volume_name" {
+  description = "Already existing volume name used to boot the machines. It must be in the same storage pool. It's only used if source_image is not provided"
+  type        = string
+  default     = ""
 }
 
 variable "memory" {
@@ -111,8 +125,13 @@ variable "mac" {
   default     = ""
 }
 
-variable "network_id" {
-  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+variable "isolated_network_id" {
+  description = "Network id, internally created by terraform"
+  type        = string
+}
+
+variable "isolated_network_name" {
+  description = "Network name to attach the isolated network interface"
   type        = string
 }
 
@@ -130,6 +149,7 @@ variable "bridge" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -139,7 +159,7 @@ variable "sbd_disk_id" {
   type        = string
 }
 
-variable "pool" {
+variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
 }

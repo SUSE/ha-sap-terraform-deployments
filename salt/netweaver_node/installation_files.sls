@@ -1,4 +1,4 @@
-{% set sapcd = '/netweaver_inst_media' %}
+{% set sapcd = '/sapmedia/NW' %}
 
 {% if grains['provider'] == 'libvirt' %}
 mount_swpm:
@@ -22,68 +22,20 @@ mount_swpm:
     - opts:
       - vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0777,file_mode=0777,sec=ntlmssp
 
-{% elif grains['provider'] == 'aws' %}
-
-# In AWS the NW installation software goes in the NFS share
-mount_sapcd:
-  mount.mounted:
-    - name: {{ sapcd }}
-    - device: {{ grains['netweaver_nfs_share'] }}/sapcd
-    - fstype: nfs4
-    - mkmnt: True
-    - persist: True
-    - opts:
-      - rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
-    - retry:
-       attempts: 5
-       interval: 60
-
-# Download only if it's the first node
-{% if grains['host_ip'] == grains['host_ips'][0] %}
-download_nw_files_from_s3:
-  cmd.run:
-    - name: "aws s3 sync {{ grains['s3_bucket'] }} {{ sapcd }} --region {{ grains['region'] }} --only-show-errors"
-    - onlyif: "aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ sapcd }} --region {{ grains['region'] }} | grep download > /dev/null 2>&1"
-    - output_loglevel: quiet
-    - hide_output: True
-{% endif %}
-
-wait_until_sw_downloaded:
-    cmd.run:
-      - name: |
-          until ! aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ sapcd }} \
-          --region {{ grains['region'] }} | grep download > /dev/null 2>&1;do sleep 30;done
-      - output_loglevel: quiet
-      - hide_output: True
-      - timeout: 600
-
-sapcd_folder:
-  file.directory:
-    - name: {{ sapcd }}
-    - user: root
-    - group: root
-    - dir_mode: "0755"
-    - file_mode: "0755"
-    - recurse:
-      - user
-      - group
-      - mode
-    - require:
-      - wait_until_sw_downloaded
-
-{% elif grains['provider'] == 'gcp' %}
+{% elif grains['provider'] in ['gcp', 'aws'] %}
+{% set netweaver_inst_disk_device = salt['cmd.run']('realpath '~grains['netweaver_inst_disk_device']) %}
 nw_inst_partition:
   cmd.run:
     - name: |
-        /usr/sbin/parted -s {{ grains['nw_inst_disk_device'] }} mklabel msdos && \
-        /usr/sbin/parted -s {{ grains['nw_inst_disk_device'] }} mkpart primary ext2 1M 100% && sleep 1 && \
-        /sbin/mkfs -t xfs {{ grains['nw_inst_disk_device'] }}1
-    - unless: ls {{ grains['nw_inst_disk_device'] }}1
+        /usr/sbin/parted -s {{ netweaver_inst_disk_device }} mklabel msdos && \
+        /usr/sbin/parted -s {{ netweaver_inst_disk_device }} mkpart primary ext2 1M 100% && sleep 1 && \
+        /sbin/mkfs -t xfs {{ netweaver_inst_disk_device }}1
+    - unless: ls {{ netweaver_inst_disk_device }}1
 
 mount_swpm:
   mount.mounted:
     - name: {{ sapcd }}
-    - device: {{ grains['nw_inst_disk_device'] }}1
+    - device: {{ netweaver_inst_disk_device }}1
     - fstype: xfs
     - mkmnt: True
     - persist: True
@@ -92,6 +44,7 @@ mount_swpm:
     - require:
       - cmd: nw_inst_partition
 
+{% if grains['provider'] == 'gcp' %}
 install_rclone:
   cmd.run:
     - name: "curl https://rclone.org/install.sh | sudo bash"
@@ -104,6 +57,17 @@ configure_rclone:
 download_files_from_gcp:
   cmd.run:
     - name: rclone copy remote:{{ grains['netweaver_software_bucket'] }} {{ sapcd }}
+
+{% elif grains['provider'] == 'aws' %}
+
+download_files_from_s3:
+  cmd.run:
+    - name: "aws s3 sync {{ grains['s3_bucket'] }} {{ sapcd }} --region {{ grains['region'] }} --only-show-errors"
+    - onlyif: "aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ sapcd }} --region {{ grains['region'] }} | grep download > /dev/null 2>&1"
+    - output_loglevel: quiet
+    - hide_output: True
+
+{% endif %}
 
 swpm_folder:
   file.directory:

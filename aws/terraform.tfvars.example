@@ -1,13 +1,30 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
-# Instance type to use for the cluster nodes
+# Use an already existing vpc. Make sure the vpc has the internet gateway already attached
+#vpc_id = "vpc-xxxxxxxxxxxxxxxxx"
+
+# Use an already existing security group
+#security_group_id = "sg-xxxxxxxxxxxxxxxxx"
+
+# vpc address range in CIDR notation
+# Only used if the vpc is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vpc address range set the value to an empty string
+# To define custom ranges
+#vpc_address_range = "10.0.0.0/16"
+# Or to use already existing vpc address ranges
+#vpc_address_range = ""
+
+# Instance type to use for the hana cluster nodes
 instancetype = "r3.8xlarge"
+
+# The minimum instance type of a region, not suitable to hana nodes
+min_instancetype = "t2.micro"
 
 # Disk type for HANA
 hana_data_disk_type = "gp2"
 
 # Number of nodes in the cluster
-ninstances = "2"
+hana_count = "2"
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"
@@ -19,9 +36,12 @@ public_key_location = "/path/to/your/public/ssh/key"
 private_key_location = "/path/to/your/private/ssh/key"
 
 # Custom AMI for nodes
-#sles4sap = {
-#    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-#}
+#hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
+# Or use a pattern to find the image
+#hana_os_image = "suse-sles-sap-15-sp1-byos"
+
+# Custom owner for private AMI
+#hana_os_owner = "self"
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -34,19 +54,35 @@ aws_credentials = "~/.aws/credentials"
 name = "hana"
 
 # S3 bucket where HANA installation master is located
-hana_inst_master = "s3://path/to/your/hana/installation/master"
+hana_inst_master = "s3://path/to/your/hana/installation/master/51053381"
+# Or you can combine the `hana_inst_master` with `hana_platform_folder` variable.
+#hana_inst_master = "s3://path/to/your/hana/installation/master"
+# Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point.
+# This will have preference over hdbserver sar archive installation media
+#hana_platform_folder = "51053381"
 
-# Local folder where HANA installation master will be downloaded from S3
-hana_inst_folder = "/root/hana_inst_media/"
+# Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point
+# The sar archive will be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
+# Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
+hana_sapcar_exe = "SAPCAR"
+hdbserver_sar = "IMDB_SERVER.SAR"
+hana_extract_dir = "/sapmedia/HDBSERVER"
 
 # Device used by node where HANA will be installed
 hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
-hana_cluster_vip = "192.168.1.10"
+#hana_cluster_vip = "192.168.1.10"
 
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
+
+# iSCSI server address. It should be in same iprange as hana_ips
+#iscsi_srv_ip = "10.0.0.254"
+
+# iSCSI OS image
+#iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#iscsi_os_owner = "self"
 
 # Device used by the iSCSI server to provide LUNs
 iscsidev = "/dev/xvdd"
@@ -60,13 +96,16 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
-# example : host_ips = ["10.0.0.5", "10.0.1.6"]
-host_ips = ["10.0.0.5", "10.0.1.6"]
+#hana_ips = ["10.0.0.5", "10.0.1.6"]
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
 ha_sap_deployment_repo = ""
 
 # Optional SUSE Customer Center Registration parameters
@@ -94,8 +133,11 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+#monitoring_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#monitoring_os_owner = "self"
+
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
-monitoring_srv_ip = "10.0.0.253"
+#monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
@@ -110,11 +152,50 @@ monitoring_srv_ip = "10.0.0.253"
 # true or false (default)
 #hwcct = false
 
+# drbd related variables
+
+# netweaver will use AWS efs for nfs share by default, unless drbd is enabled
+# Enable drbd cluster
+#drbd_enabled = false
+
+#drbd_instancetype = "t2.micro"
+
+#drbd_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#drbd_os_owner = "self"
+
+#drbd_data_disk_size = 15
+
+#drbd_data_disk_type = gp2
+
+# Each drbd cluster host IP address (sequential order).
+#drbd_ips = ["10.0.5.20", "10.0.6.21"]
+#drbd_cluster_vip = "192.168.1.20"
+
 # Netweaver variables
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
+#netweaver_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#netweaver_os_owner = "self"
+#AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
-#netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
+# Netweaver installation required folders
+#netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
+# SAP SWPM installation folder, relative to the netweaver_s3_bucket folder
+#netweaver_swpm_folder     =  "your_swpm"
+# Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_s3_bucket folder
+# The sar archive will be extracted to path specified at netweaver_swpm_extract_dir (optional, by default /sapmedia/NW/SWPM)
+#netweaver_sapcar_exe = "your_sapcar_exe_file_path"
+#netweaver_swpm_sar = "your_swpm_sar_file_path"
+#netweaver_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
+# Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_s3_bucket folder
+#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+# Additional folders (added in start_dir.cd), relative to the netweaver_s3_bucket folder
+#netweaver_additional_dvds = ["dvd1", "dvd2"]
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

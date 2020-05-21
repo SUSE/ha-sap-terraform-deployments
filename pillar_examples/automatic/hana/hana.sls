@@ -2,14 +2,25 @@ hana:
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
+  {%- if grains.get('hana_platform_folder', False) %}
+  software_path: {{ grains['hana_inst_folder'] }}/{{ grains['hana_platform_folder'] }}
+  {%- elif grains.get('hana_sapcar_exe', False) and grains.get('hdbserver_sar', False) %}
+  sapcar_exe_file: {{ grains['hana_inst_folder'] }}/{{ grains['hana_sapcar_exe'] }}
+  hdbserver_sar_file: {{ grains['hana_inst_folder'] }}/{{ grains['hdbserver_sar'] }}
+  {%- else %}
+  software_path: {{ grains['hana_inst_folder'] }}
+  {%- endif %}
+  {%- if grains.get('hana_extract_dir', False) %}
+  hdbserver_extract_dir: {{ grains['hana_extract_dir'] }}
+  {%- endif %}
   saptune_solution: 'HANA'
+  monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
       instance: "00"
       password: YourPassword1234
       install:
-        software_path: {{ grains['hana_inst_folder'] }}
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
         root_password: linux
@@ -48,7 +59,6 @@ hana:
         preload_column_tables: False
       {% endif %}
       install:
-        software_path: {{ grains['hana_inst_folder'] }}
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
         root_password: linux
@@ -74,7 +84,6 @@ hana:
         global_allocation_limit: '28600'
         preload_column_tables: False
       install:
-        software_path: {{ grains['hana_inst_folder'] }}
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
         root_password: linux

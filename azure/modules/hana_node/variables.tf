@@ -25,8 +25,8 @@ variable "hana_count" {
 }
 
 variable "name" {
-  type        = string
-  default     = "hana"
+  type    = string
+  default = "hana"
 }
 
 variable "hana_instance_number" {
@@ -51,7 +51,7 @@ variable "storage_account_key" {
 }
 
 variable "enable_accelerated_networking" {
- type        = bool
+  type = bool
 }
 
 variable "host_ips" {
@@ -65,19 +65,19 @@ variable "sles4sap_uri" {
 }
 
 variable "hana_public_publisher" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_offer" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_sku" {
-  type    = string
+  type = string
 }
 
 variable "hana_public_version" {
-  type    = string
+  type = string
 }
 
 variable "vm_size" {
@@ -125,6 +125,7 @@ variable "reg_email" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
@@ -146,6 +147,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "devel_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -157,6 +159,7 @@ variable "hwcct" {
 
 variable "qa_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
+  type        = bool
   default     = false
 }
 
@@ -167,6 +170,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -181,7 +185,31 @@ variable "hana_inst_master" {
 
 variable "hana_inst_folder" {
   type    = string
-  default = "/root/hana_inst_media"
+  default = "/sapmedia/HANA"
+}
+
+variable "hana_platform_folder" {
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_sapcar_exe" {
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hdbserver_sar" {
+  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_extract_dir" {
+  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  type        = string
+  default     = "/sapmedia/HANA"
 }
 
 variable "hana_disk_device" {
@@ -206,5 +234,10 @@ variable "hana_data_disk_size" {
 }
 
 variable "hana_data_disk_caching" {
-  type    = string
+  type = string
+}
+
+variable "hana_cluster_vip" {
+  description = "Virtual ip for the hana cluster"
+  type        = string
 }

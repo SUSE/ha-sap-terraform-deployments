@@ -5,6 +5,4 @@ install_additional_packages:
 {% for package in grains['additional_packages'] %}
       - {{ package }}
 {% endfor %}
-    - require:
-      - sls: default.repos
 {% endif %}

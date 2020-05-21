@@ -1,11 +1,3 @@
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "netweaver_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
 
@@ -29,21 +21,11 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
-  }
-
-  provisioner "file" {
-  content     = <<EOF
+    content     = <<EOF
 provider: gcp
 role: netweaver_node
 name_prefix: ${terraform.workspace}-netweaver
-hostname: ${terraform.workspace}-netweaver${var.netweaver_count > 1 ? "0${count.index + 1}" : ""}
+hostname: ${terraform.workspace}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}
@@ -56,7 +38,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sde
+sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
@@ -67,18 +49,31 @@ ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
+netweaver_product_id: ${var.netweaver_product_id}
+netweaver_swpm_folder: ${var.netweaver_swpm_folder}
+netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
+netweaver_swpm_sar: ${var.netweaver_swpm_sar}
+netweaver_swpm_extract_dir: ${var.netweaver_swpm_extract_dir}
+netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
+netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: ${var.netweaver_nfs_share}
-nw_inst_disk_device : /dev/sdb
-hana_cluster_vip: ${var.hana_cluster_vip}
+netweaver_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.netweaver.*.attached_disk.0.device_name, count.index))}
+hana_ip: ${var.hana_ip}
+vpc_network_name: ${var.network_name}
+ascs_route_name: ${google_compute_route.nw-ascs-route[0].name}
+ers_route_name: ${google_compute_route.nw-ers-route[0].name}
 
 EOF
-  destination = "/tmp/grains"
+    destination = "/tmp/grains"
+  }
 }
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "netweaver_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = null_resource.netweaver_provisioner.*.id
+  user                 = "root"
+  private_key_location = var.private_key_location
+  public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
+  background           = var.background
 }

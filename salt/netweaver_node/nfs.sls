@@ -9,6 +9,25 @@ install_nfs_client:
        attempts: 3
        interval: 15
 
+# We cannot use showmount as some of the required ports are not always available
+# (aws efs storage or azure load balancers don't serve portmapper 111 and mountd 20048 ports)
+netcat-openbsd:
+ pkg.installed:
+   - retry:
+      attempts: 3
+      interval: 15
+
+{% set nfs_server_ip = grains['netweaver_nfs_share'].split(':')[0] %}
+wait_until_nfs_is_ready:
+  cmd.run:
+    - name: until nc -zvw5 {{ nfs_server_ip }} 2049;do sleep 30;done
+    - timeout: 1200
+    - require:
+      - pkg: netcat-openbsd
+
+# Initialized NFS share folders, only with the first node
+# Executing these states in all the nodes might cause errors during deletion, as they try to delete the same files
+{% if grains['host_ip'] == grains['host_ips'][0] %}
 mount_sapmnt_temporary:
   mount.mounted:
     - name: /tmp/sapmnt
@@ -18,13 +37,9 @@ mount_sapmnt_temporary:
     - persist: False
     - opts:
       - defaults
-    - retry:
-       attempts: 30
-       interval: 60
+    - require:
+      - wait_until_nfs_is_ready
 
-# Initialized NFS share folders, only with the first node
-# Executing these states in all the nodes might cause errors during deletion, as they try to delete the same files
-{% if grains['host_ip'] == grains['host_ips'][0] %}
 /tmp/sapmnt/sapmnt:
   file.directory:
     - user: root
@@ -71,8 +86,6 @@ mount_sapmnt_temporary:
     - require:
       - mount_sapmnt_temporary
 
-{% endif %}
-
 unmount_sapmnt:
   mount.unmounted:
     - name: /tmp/sapmnt
@@ -83,3 +96,4 @@ unmount_sapmnt:
 remove_tmp_folder:
   file.absent:
     - name: /tmp/sapmnt
+{% endif %}

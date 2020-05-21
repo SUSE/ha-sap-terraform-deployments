@@ -1,12 +1,3 @@
-# Template file to launch the salt provisioing script
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.hana_count : 0
 
@@ -25,35 +16,29 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: azure
 role: hana_node
 devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
+hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-hostname: vm${var.name}${var.hana_count > 1 ? "0${count.index + 1}" : ""}
 network_domain: "tf.local"
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdf
+sbd_disk_index: 1
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hdbserver_sar: ${var.hdbserver_sar}
+hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${var.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-azure_lb_ip: ${azurerm_lb.hana-load-balancer.private_ip_address}
+hana_cluster_vip: ${azurerm_lb.hana-load-balancer.private_ip_address}
 init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
@@ -66,14 +51,16 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "hana_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.hana_count : 0
+  instance_ids         = null_resource.hana_node_provisioner.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.hana.*.ip_address
+  background           = var.background
 }

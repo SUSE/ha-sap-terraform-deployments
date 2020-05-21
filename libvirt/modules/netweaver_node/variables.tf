@@ -60,9 +60,56 @@ variable "shared_disk_id" {
   type        = string
 }
 
-variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/root/netweaver_inst_media`"
+variable "hana_ip" {
   type        = string
+  description = "Ip address of the hana database"
+}
+
+variable "netweaver_product_id" {
+  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
+  type        = string
+  default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_inst_media" {
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  type        = string
+}
+
+variable "netweaver_swpm_folder" {
+  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_sapcar_exe" {
+  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_sar" {
+  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_swpm_extract_dir" {
+  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
+  type        = string
+  default     = "/sapmedia/NW/SWPM"
+}
+
+variable "netweaver_sapexe_folder" {
+  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
+  type        = string
+  default     = ""
+}
+
+variable "netweaver_additional_dvds" {
+  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
+  type        = list
+  default     = []
 }
 
 variable "netweaver_nfs_share" {
@@ -101,6 +148,7 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
@@ -108,14 +156,22 @@ variable "background" {
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }
 
 // Provider-specific variables
 
-variable "base_image_id" {
-  description = "base image id which the module will use. You can create a baseimage and module will use it. Created in main.tf"
+variable "source_image" {
+  description = "Source image used to boot the machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
+  default     = ""
+}
+
+variable "volume_name" {
+  description = "Already existing volume name used to boot the machines. It must be in the same storage pool. It's only used if source_image is not provided"
+  type        = string
+  default     = ""
 }
 
 variable "memory" {
@@ -133,8 +189,13 @@ variable "mac" {
   default     = ""
 }
 
-variable "network_id" {
-  description = "network id to be injected into domain. normally the isolated network is created in main.tf"
+variable "isolated_network_id" {
+  description = "Network id, internally created by terraform"
+  type        = string
+}
+
+variable "isolated_network_name" {
+  description = "Network name to attach the isolated network interface"
   type        = string
 }
 
@@ -153,7 +214,13 @@ variable "bridge" {
   default     = ""
 }
 
-variable "pool" {
+variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
+}
+
+variable "devel_mode" {
+  description = "Whether or not to give preference to packages from `ha_sap_deployment_repo`"
+  type        = bool
+  default     = false
 }

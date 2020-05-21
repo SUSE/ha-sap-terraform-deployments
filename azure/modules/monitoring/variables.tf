@@ -60,11 +60,6 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
-  type        = list(string)
-}
-
 variable "admin_user" {
   type    = string
   default = "azadmin"
@@ -111,32 +106,29 @@ variable "provisioner" {
 
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
+  type        = bool
   default     = false
 }
 
-variable "drbd_enabled" {
-  description = "enable the DRBD cluster for nfs"
-  default     = false
+variable "hana_targets" {
+  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
+  type        = list(string)
 }
 
-variable "drbd_ips" {
-  description = "ip addresses to set to the drbd cluster nodes"
+variable "drbd_targets" {
+  description = "IPs of DRBD hosts you want to monitor"
   type        = list(string)
   default     = []
 }
 
-variable "netweaver_enabled" {
-  description = "enable SAP Netweaver cluster deployment"
-  default     = false
-}
-
-variable "netweaver_ips" {
-  description = "ip addresses to set to the netweaver cluster nodes"
+variable "netweaver_targets" {
+  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
   type        = list(string)
   default     = []
 }
 
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
   default     = false
 }

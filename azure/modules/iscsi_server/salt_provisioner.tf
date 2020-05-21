@@ -1,12 +1,3 @@
-# Template file to launch the salt provisioing script
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "iscsi_provisioner" {
   count = var.provisioner == "salt" ? 1 : 0
 
@@ -22,17 +13,7 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
-  }
-
-  provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 provider: azure
 role: iscsi_srv
 iscsi_srv_ip: ${var.iscsi_srv_ip}
@@ -57,15 +38,16 @@ partitions:
     end: 100%
 
 EOF
-
-
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "iscsi_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? 1 : 0
+  instance_ids         = null_resource.iscsi_provisioner.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.iscsisrv.*.ip_address
+  background           = var.background
 }

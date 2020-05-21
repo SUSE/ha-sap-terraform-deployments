@@ -1,12 +1,3 @@
-# Template file for user_data used in resource instances
-data "template_file" "salt_provisioner" {
-  template = file("../salt/salt_provisioner_script.tpl")
-
-  vars = {
-    regcode = var.reg_code
-  }
-}
-
 resource "null_resource" "netweaver_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
 
@@ -27,28 +18,18 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   provisioner "file" {
-    source      = "../salt"
-    destination = "/tmp"
-  }
-
-  provisioner "file" {
-    content     = data.template_file.salt_provisioner.rendered
-    destination = "/tmp/salt_provisioner.sh"
-  }
-
-  provisioner "file" {
     content     = <<EOF
 provider: aws
 region: ${var.aws_region}
 role: netweaver_node
 name_prefix: ${var.name}
+hostname: ${var.name}0${count.index + 1}
 aws_cluster_profile: Cluster
-aws_instance_tag: Cluster
+aws_instance_tag: ${terraform.workspace}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
-hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 additional_packages: []
 reg_code: ${var.reg_code}
@@ -61,7 +42,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 shared_storage_type: iscsi
-sbd_disk_device: /dev/sdb
+sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
@@ -71,18 +52,28 @@ ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
-netweaver_nfs_share: "${aws_efs_file_system.netweaver-efs.0.dns_name}:"
+netweaver_product_id: ${var.netweaver_product_id}
+netweaver_swpm_folder: ${var.netweaver_swpm_folder}
+netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
+netweaver_swpm_sar: ${var.netweaver_swpm_sar}
+netweaver_swpm_extract_dir: ${var.netweaver_swpm_extract_dir}
+netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
+netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
+netweaver_nfs_share: "${var.netweaver_nfs_share}"
+netweaver_inst_disk_device: /dev/xvdd
 hana_ip: ${var.hana_ip}
 s3_bucket: ${var.s3_bucket}
-
   EOF
     destination = "/tmp/grains"
   }
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "${var.background ? "nohup" : ""} sudo sh /tmp/salt_provisioner.sh > /tmp/provisioning.log ${var.background ? "&" : ""}",
-      "return_code=$? && sleep 1 && exit $return_code",
-    ] # Workaround to let the process start in background properly
-  }
+module "netweaver_provision" {
+  source               = "../../../generic_modules/salt_provisioner"
+  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  instance_ids         = null_resource.netweaver_provisioner.*.id
+  user                 = "ec2-user"
+  private_key_location = var.private_key_location
+  public_ips           = aws_instance.netweaver.*.public_ip
+  background           = var.background
 }

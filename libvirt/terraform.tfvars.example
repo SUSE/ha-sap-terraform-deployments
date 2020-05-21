@@ -1,18 +1,51 @@
+# qemu uri, this example is to run locally
 qemu_uri = "qemu:///system"
-hana_inst_media = "url-to-your-nfs-share"
-base_image = "url-to-your-sles4sap-image"
+
+# Use already existing network
+#network_name = "my-network"
+# Due to some internal limitations, the iprange of the existing network must be defined
+# The iprange must be defined for already existing network and to create a new one
 iprange = "192.168.XXX.Y/24"
-host_ips = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
+
+# Base image configuration. This images will be used for all deployed machines unless the specific image is defined
+# The source image has preference over the `volume_name` parameter
+#source_image = "url-to-your-sles4sap-image"
+# Use an already existing image. The image must be in the same storage pool defined in `storage_pool` parameter
+# This option is way faster as the image must not be downloaded
+#volume_name = "SLES4SAP-15_SP1"
+
+# Set specific image for hana (it's the same for iscsi, monitoring, netweaver and drbd)
+# This option has preference over base image options
+# hana_source_image = "url-to-your-sles4sap-image"
+# hana_volume_name   = "SLES4SAP-15_SP0"
+
+hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
+# Or you can combine the `hana_inst_media` with `hana_platform_folder` variable.
+#hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media"
+# Specify the path to already extracted HANA platform installation media, relative to hana_inst_media mounting point.
+# This will have preference over hdbserver sar archive installation media
+#hana_platform_folder = "51053381"
+
+# Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point
+# The sar archive will be extracted to path specified at hdbserver_extract_dir (optional, by default /sapmedia/HANA)
+# Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
+hana_sapcar_exe = "SAPCAR"
+hdbserver_sar = "IMDB_SERVER.SAR"
+hana_extract_dir = "/sapmedia/HDBSERVER"
+#hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
 # Shared storage type information
 shared_storage_type = "iscsi"
-iscsi_srv_ip = "192.168.XXX.Y+6"
-iscsi_image = "url-to-your-sles4sap-image" # sles15 or above
+#iscsi_srv_ip = "192.168.XXX.Y+6"
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
 ha_sap_deployment_repo = ""
 
 # Whether or not to install HA/SAP packages from ha_sap_deployment_repo
@@ -41,25 +74,37 @@ devel_mode = false
 
 # Monitoring variables
 
-# Custom sles4sap image for the monitoring server. If not used the same image than the hana nodes will be used
-#monitoring_image = "url-to-your-sles4sap-image"
-
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
 # IP address of the machine where prometheus and grafana are running
-monitoring_srv_ip = "192.168.XXX.Y+7"
+#monitoring_srv_ip = "192.168.XXX.Y+7"
 
 # Netweaver variables
 
 # NFS share with netweaver installation folders
 #netweaver_inst_media = "url-to-your-nfs-share"
 
+# Netweaver installation required folders
+# SAP SWPM installation folder, relative to the netweaver_inst_media mounting point
+#netweaver_swpm_folder     =  "your_swpm"
+# Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_inst_media mounting point
+# The sar archive will be extracted to path specified at netweaver_swpm_extract_dir (optional, by default /sapmedia/NW/SWPM)
+#netweaver_sapcar_exe = "your_sapcar_exe_file_path"
+#netweaver_swpm_sar = "your_swpm_sar_file_path"
+#netweaver_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
+# Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_inst_media mounting point
+#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+# Additional folders (added in start_dir.cd), relative to the netweaver_inst_media mounting point
+#netweaver_additional_dvds = ["dvd1", "dvd2"]
+
 # NFS share to store the Netweaver shared files
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
 # IP addresses of the machines hosting Netweaver instances
-#nw_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+#netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
+#netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
 
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true
@@ -89,3 +134,8 @@ monitoring_srv_ip = "192.168.XXX.Y+7"
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# Pre deployment
+
+# Enable all some pre deployment steps (disabled by default)
+#pre_deployment = true

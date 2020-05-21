@@ -373,13 +373,15 @@ resource "azurerm_image" "netweaver-image" {
 # netweaver instances
 
 resource "azurerm_virtual_machine" "netweaver" {
-  count                 = var.netweaver_count
-  name                  = "vmnetweaver0${count.index + 1}"
-  location              = var.az_region
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [element(azurerm_network_interface.netweaver.*.id, count.index)]
-  availability_set_id   = azurerm_availability_set.netweaver-availability-set[0].id
-  vm_size               = var.vm_size
+  count                            = var.netweaver_count
+  name                             = "vmnetweaver0${count.index + 1}"
+  location                         = var.az_region
+  resource_group_name              = var.resource_group_name
+  network_interface_ids            = [element(azurerm_network_interface.netweaver.*.id, count.index)]
+  availability_set_id              = azurerm_availability_set.netweaver-availability-set[0].id
+  vm_size                          = var.vm_size
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   storage_os_disk {
     name              = "disk-netweaver0${count.index + 1}-Os"
@@ -427,4 +429,14 @@ resource "azurerm_virtual_machine" "netweaver" {
   tags = {
     workspace = terraform.workspace
   }
+}
+
+module "netweaver_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.netweaver_count
+  instance_ids         = azurerm_virtual_machine.netweaver.*.id
+  user                 = var.admin_user
+  private_key_location = var.private_key_location
+  public_ips           = data.azurerm_public_ip.netweaver.*.ip_address
+  dependencies         = [data.azurerm_public_ip.netweaver]
 }

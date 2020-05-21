@@ -29,7 +29,8 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - **For azure**: Add the azure storage account variables to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
-- **For aws**: Add the aws S3 bucket variable (`netweaver_s3_bucket`) to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
+- **For aws**: Add the aws S3 bucket variable (`netweaver_s3_bucket`) to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list. Note: Netweaver will use the Amazon Elastic File System(EFS) for its NFS share by default, unless drbd option is enabled (using `drbd_enabled` variable).
+
 
 - **For gcp**: Add the gcp storage bucket variable to the `terraform.tfvars` with the , `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
@@ -38,3 +39,5 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 - Add the `netweaver_nfs_share` variable to the `terraform.tfvars` with the address to the NFS share containing the `sapmnt` and `usrsapsys` folders. Following the current example this would be `nfs_address:/sapdata/HA1`.
 
 - Modify the content of [cluster.sls](../salt/netweaver_node/files/pillar/cluster.sls) and [netweaver.sls](../salt/netweaver_node/files/pillar/netweaver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `sap_inst_media`, the current values are just an example.
+
+- If the [netweaver.sls](pillar_examples/automatic/netweaver/netweaver.sls) pillar file from `pillar_examples/automatic/netweaver` is used, the parameters `netweaver_swpm_folder`, `netweaver_sapexe_folder` and `netweaver_additional_dvds` must be set in the `tfvars` file with the same data explained in the previous points.
