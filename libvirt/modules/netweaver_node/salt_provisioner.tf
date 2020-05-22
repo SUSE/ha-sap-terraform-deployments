@@ -31,6 +31,7 @@ host_ip: ${element(var.host_ips, count.index)}
 hana_ip: ${var.hana_ip}
 provider: libvirt
 role: netweaver_node
+ha_enabled: ${var.ha_enabled}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_swpm_folder: ${var.netweaver_swpm_folder}

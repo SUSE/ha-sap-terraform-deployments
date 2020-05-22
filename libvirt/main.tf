@@ -27,13 +27,13 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.iprange, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.iprange, local.drbd_ip_start + 2)
 
-  # 4 is hardcoded for netweaver because we always deploy 4 machines
   netweaver_ip_start    = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.iprange, ip_index + 4)]
+  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.iprange, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.iprange, ip_index + local.netweaver_count)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (local.netweaver_count > 1 && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
 module "iscsi_server" {
@@ -80,6 +80,7 @@ module "hana_node" {
   hana_disk_size         = var.hana_node_disk_size
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
+  ha_enabled             = var.hana_ha_enabled
   sbd_enabled            = var.hana_cluster_sbd_enabled
   sbd_storage_type       = var.sbd_storage_type
   sbd_disk_id            = module.hana_sbd_disk.id
@@ -102,7 +103,7 @@ module "drbd_node" {
   name                   = "drbd"
   source_image           = var.drbd_source_image
   volume_name            = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
-  drbd_count             = var.drbd_enabled == true ? var.drbd_count : 0
+  drbd_count             = var.drbd_enabled == true ? 2 : 0
   vcpu                   = var.drbd_node_vcpu
   memory                 = var.drbd_node_memory
   bridge                 = "br0"
@@ -145,17 +146,17 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : []) # we use the vip to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  netweaver_targets      = local.netweaver_virtual_ips
 }
 
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
+  netweaver_count            = local.netweaver_count
   name                       = "netweaver"
   source_image               = var.netweaver_source_image
   volume_name                = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
-  netweaver_count            = var.netweaver_enabled == true ? 4 : 0
   vcpu                       = var.netweaver_node_vcpu
   memory                     = var.netweaver_node_memory
   bridge                     = "br0"
@@ -168,7 +169,7 @@ module "netweaver_node" {
   sbd_storage_type           = var.sbd_storage_type
   shared_disk_id             = module.netweaver_shared_disk.id
   iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
-  hana_ip                    = local.hana_cluster_vip
+  hana_ip                    = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_product_id       = var.netweaver_product_id
   netweaver_inst_media       = var.netweaver_inst_media
   netweaver_swpm_folder      = var.netweaver_swpm_folder
@@ -178,6 +179,7 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : var.netweaver_nfs_share
+  ha_enabled                 = var.netweaver_ha_enabled
   reg_code                   = var.reg_code
   reg_email                  = var.reg_email
   reg_additional_modules     = var.reg_additional_modules

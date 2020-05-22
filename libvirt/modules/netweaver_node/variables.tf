@@ -159,6 +159,12 @@ variable "aas_instance_number" {
   default     = "02"
 }
 
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
