@@ -53,7 +53,7 @@ set_grains_sbd_disk_device:
   module.run:
     - state.sls:
       - mods:
-        - cluster_node.sbd
+        - cluster_node.ha.sbd
     - require:
       - lsscsi
       - iscsi_discovery
