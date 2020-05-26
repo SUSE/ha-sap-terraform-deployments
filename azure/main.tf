@@ -141,9 +141,7 @@ module "hana_node" {
   cluster_ssh_key               = var.cluster_ssh_key
   public_key_location           = var.public_key_location
   private_key_location          = var.private_key_location
-  hana_data_disk_type           = var.hana_data_disk_type
-  hana_data_disk_size           = var.hana_data_disk_size
-  hana_data_disk_caching        = var.hana_data_disk_caching
+  hana_data_disks_configuration = var.hana_data_disks_configuration
   hana_public_publisher         = var.hana_public_publisher
   hana_public_offer             = var.hana_public_offer
   hana_public_sku               = var.hana_public_sku

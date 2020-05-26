@@ -213,6 +213,14 @@ resource "azurerm_image" "sles4sap" {
 
 # hana instances
 
+locals {
+  disks_number           = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size             = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type             = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  disks_caching          = [for caching in split(",", var.hana_data_disks_configuration["caching"]) : trimspace(caching)]
+  disks_writeaccelerator = [for writeaccelerator in split(",", var.hana_data_disks_configuration["writeaccelerator"]) : tobool(trimspace(writeaccelerator))]
+}
+
 resource "azurerm_virtual_machine" "hana" {
   count                            = var.hana_count
   name                             = "vm${var.name}0${count.index + 1}"
@@ -239,31 +247,17 @@ resource "azurerm_virtual_machine" "hana" {
     version   = var.sles4sap_uri != "" ? "" : var.hana_public_version
   }
 
-  storage_data_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Data01"
-    managed_disk_type = var.hana_data_disk_type
-    create_option     = "Empty"
-    lun               = 0
-    disk_size_gb      = var.hana_data_disk_size
-    caching           = var.hana_data_disk_caching
-  }
-
-  storage_data_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Data02"
-    managed_disk_type = var.hana_data_disk_type
-    create_option     = "Empty"
-    lun               = 1
-    disk_size_gb      = var.hana_data_disk_size
-    caching           = var.hana_data_disk_caching
-  }
-
-  storage_data_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Data03"
-    managed_disk_type = var.hana_data_disk_type
-    create_option     = "Empty"
-    lun               = 2
-    disk_size_gb      = var.hana_data_disk_size
-    caching           = var.hana_data_disk_caching
+  dynamic "storage_data_disk" {
+    for_each = [for v in range(local.disks_number) : { index = v }]
+    content {
+      name                      = "disk-${var.name}0${count.index + 1}-Data0${storage_data_disk.value.index + 1}"
+      managed_disk_type         = element(local.disks_type, storage_data_disk.value.index)
+      create_option             = "Empty"
+      lun                       = storage_data_disk.value.index
+      disk_size_gb              = element(local.disks_size, storage_data_disk.value.index)
+      caching                   = element(local.disks_caching, storage_data_disk.value.index)
+      write_accelerator_enabled = element(local.disks_writeaccelerator, storage_data_disk.value.index)
+    }
   }
 
   os_profile {
