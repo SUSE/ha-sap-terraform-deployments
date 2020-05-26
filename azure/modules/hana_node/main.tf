@@ -157,6 +157,21 @@ resource "azurerm_lb_rule" "lb_3xx17" {
   enable_floating_ip             = "true"
 }
 
+resource "azurerm_lb_rule" "hanadb_exporter" {
+  count                          = var.monitoring_enabled ? 1 : 0
+  resource_group_name            = var.resource_group_name
+  loadbalancer_id                = azurerm_lb.hana-load-balancer.id
+  name                           = "hanadb_exporter"
+  protocol                       = "Tcp"
+  frontend_ip_configuration_name = "lbfe-hana"
+  frontend_port                  = 9668
+  backend_port                   = 9668
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer.id
+  probe_id                       = azurerm_lb_probe.hana-load-balancer.id
+  idle_timeout_in_minutes        = 30
+  enable_floating_ip             = "true"
+}
+
 # hana network configuration
 
 resource "azurerm_network_interface" "hana" {
