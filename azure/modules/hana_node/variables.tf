@@ -82,7 +82,7 @@ variable "hana_public_version" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_M32ls"
+  default = "Standard_E4s_v3"
 }
 
 variable "admin_user" {

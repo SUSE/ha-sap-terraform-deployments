@@ -185,7 +185,7 @@ variable "sles4sap_uri" {
 variable "hana_vm_size" {
   description = "VM size for the hana machine"
   type        = string
-  default     = "Standard_M32ls"
+  default     = "Standard_E4s_v3"
 }
 
 variable "init_type" {

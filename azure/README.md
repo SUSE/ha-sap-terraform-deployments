@@ -121,14 +121,16 @@ Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
 
 ## HANA configuration
 
-### Disks configuration
+The database configuration may vary depending on the expected performance. In order to have different options, the virtual machine size, disks, network configuration, etc must be configured differently. Here some predefined options that might help in the configuration.
 
-The disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. Bye default the **demo** option is deployed.
+For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. Bye default the **demo** option is deployed.
 **Use other values only if you know what you are doing**.
 
 #### Demo
 
 ```
+hana_vm_size = "Standard_E4s_v3"
+hana_enable_accelerated_networking = false
 hana_data_disks_configuration = {
   disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
   disks_size       = "128,128,128,128,128,128,128"
@@ -144,6 +146,8 @@ hana_data_disks_configuration = {
 #### Small
 
 ```
+hana_vm_size = "Standard_E64s_v3"
+hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
   disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
   disks_size       = "512,512,512,512,64,1024"
@@ -159,6 +163,8 @@ hana_data_disks_configuration = {
 #### Medium
 
 ```
+hana_vm_size = "Standard_M64s"
+hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
   disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
   disks_size       = "512,512,512,512,512,512,1024,64,1024,1024"
@@ -174,6 +180,8 @@ hana_data_disks_configuration = {
 #### Large
 
 ```
+hana_vm_size = "Standard_M128s"
+hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
   disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
   disks_size       = "1024,1024,1024,512,512,1024,64,2048,2048"
