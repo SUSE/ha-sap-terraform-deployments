@@ -1,3 +1,6 @@
+# Region where to deploy the configuration
+az_region = "westeurope"
+
 # Use an already existing resource group
 #resource_group_name = "my-resource-group"
 
@@ -20,23 +23,24 @@
 # VM size to use for the cluster nodes
 hana_vm_size = "Standard_M32ls"
 
-# Disk type for HANA
-hana_data_disk_type = "StandardSSD_LRS"
-
-# Disk size for HANA
-hana_data_disk_size = "60"
-
-# Caching used for HANA disk
-hana_data_disk_caching = "ReadWrite"
-
 # Number of nodes in the cluster
 hana_count = "2"
 
 # Instance number for the HANA database. 00 by default.
 hana_instance_number = "00"
 
-# Region where to deploy the configuration
-az_region = "westeurope"
+# HANA disk configuration for demo purposes. Find more options in the README file.
+# By default the demo option is deployed
+#hana_data_disks_configuration = {
+#  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+#  disks_size       = "512,512,512,512,64,1024"
+#  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+#  writeaccelerator = "false,false,false,false,false,false"
+#  luns             = "0,1,2#3#4#5"
+#  names            = "datalog#shared#usrsap#backup"
+#  lv_sizes         = "70,100#100#100#100"
+#  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
 
 # Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
 init_type = "all"
