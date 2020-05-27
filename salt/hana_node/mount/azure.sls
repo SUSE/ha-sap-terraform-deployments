@@ -29,21 +29,22 @@ hana_lvm_lvcreate_{{ vg }}_{{ loop.index0 }}_azure:
 hana_format_lv_{{ vg }}_{{ loop.index0 }}_azure:
   cmd.run:
     - name: /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hana_{{ vg }}/lv_hana_{{ vg }}_{{ loop.index0 }}
+    - unless: blkid /dev/mapper/vg_hana_{{ vg }}-lv_hana_{{ vg }}_{{ loop.index0 }}
 
-hana_{{ vg }}_{{ loop.index0 }}_directory_mount_azure:
-  file.directory:
-    - name: {{ grains['hana_data_disks_configuration']['paths'].split('#')[vg_index].split(',')[loop.index0] }}
-    - user: root
-    - mode: "0755"
-    - makedirs: True
-  mount.mounted:
-    - name: {{ grains['hana_data_disks_configuration']['paths'].split('#')[vg_index].split(',')[loop.index0] }}
-    - device: /dev/vg_hana_{{ vg }}/lv_hana_{{ vg }}_{{ loop.index0 }}
-    - fstype: {{ grains['hana_fstype'] }}
-    - mkmnt: True
-    - persist: True
-    - opts: defaults,nofail
-    - pass_num: 2
+# This state mounts the new disk using the UUID, as we need to get this value running blkid after the
+# previous command, we need to run it as a new state execution
+mount_{{ vg }}_{{ loop.index0 }}:
+  module.run:
+    - state.sls:
+      - mods:
+        - hana_node.mount.mount_uuid
+      - pillar:
+          data:
+            device: /dev/mapper/vg_hana_{{ vg }}-lv_hana_{{ vg }}_{{ loop.index0 }}
+            path: {{ grains['hana_data_disks_configuration']['paths'].split('#')[vg_index].split(',')[loop.index0] }}
+            fstype: {{ grains['hana_fstype'] }}
+    - require:
+      - hana_format_lv_{{ vg }}_{{ loop.index0 }}_azure
 
 {% endfor %}
 {%- endfor %}
