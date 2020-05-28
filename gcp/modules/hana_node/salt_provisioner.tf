@@ -30,6 +30,7 @@ name_prefix: ${terraform.workspace}-hana
 hostname: ${terraform.workspace}-hana0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
+ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 1

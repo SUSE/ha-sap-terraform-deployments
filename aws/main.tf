@@ -143,6 +143,7 @@ module "netweaver_node" {
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location
+  ha_enabled                 = var.netweaver_ha_enabled
   sbd_enabled                = var.netweaver_cluster_sbd_enabled
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
@@ -192,6 +193,7 @@ module "hana_node" {
   hana_disk_device       = var.hana_disk_device
   hana_fstype            = var.hana_fstype
   hana_cluster_vip       = local.hana_cluster_vip
+  ha_enabled             = var.hana_ha_enabled
   private_key_location   = var.private_key_location
   sbd_enabled            = var.hana_cluster_sbd_enabled
   sbd_storage_type       = var.sbd_storage_type

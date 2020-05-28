@@ -34,6 +34,7 @@ hana_extract_dir: ${var.hana_extract_dir}
 hana_fstype: ${var.hana_fstype}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
+ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 1

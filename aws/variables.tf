@@ -244,6 +244,12 @@ variable "hana_cluster_sbd_enabled" {
   default     = false
 }
 
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -493,6 +499,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

@@ -144,6 +144,12 @@ variable "hana_cluster_vip" {
   type        = string
 }
 
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"

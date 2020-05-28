@@ -67,6 +67,10 @@ variable "aws_secret_access_key" {
   type = string
 }
 
+variable "private_key_location" {
+  type = string
+}
+
 variable "host_ips" {
   description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)
@@ -127,8 +131,10 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "sbd_enabled" {

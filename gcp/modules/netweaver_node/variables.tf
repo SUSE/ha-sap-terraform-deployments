@@ -44,6 +44,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
+}
+
 variable "sbd_enabled" {
   description = "Enable sbd usage in the HA cluster"
   type        = bool

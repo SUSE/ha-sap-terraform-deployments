@@ -100,6 +100,7 @@ module "netweaver_node" {
   virtual_host_ips              = local.netweaver_virtual_ips
   sbd_enabled                   = var.netweaver_cluster_sbd_enabled
   sbd_storage_type              = var.sbd_storage_type
+  ha_enabled                    = var.netweaver_ha_enabled
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
   hana_ip                       = local.hana_cluster_vip
   reg_code                      = var.reg_code
@@ -129,6 +130,7 @@ module "hana_node" {
   enable_accelerated_networking = var.hana_enable_accelerated_networking
   sles4sap_uri                  = var.sles4sap_uri
   hana_cluster_vip              = local.hana_cluster_vip
+  ha_enabled                    = var.hana_ha_enabled
   hana_inst_master              = var.hana_inst_master
   hana_inst_folder              = var.hana_inst_folder
   hana_platform_folder          = var.hana_platform_folder

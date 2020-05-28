@@ -76,6 +76,19 @@ variable "s3_bucket" {
   type        = string
 }
 
+variable "network_domain" {
+  type    = string
+  default = "tf.local"
+}
+
+variable "public_key_location" {
+  type = string
+}
+
+variable "private_key_location" {
+  type = string
+}
+
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string
@@ -165,17 +178,10 @@ variable "aas_instance_number" {
   default     = "02"
 }
 
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
-}
-
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 variable "sbd_enabled" {

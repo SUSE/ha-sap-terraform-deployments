@@ -97,6 +97,7 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = "${local.drbd_cluster_vip}:/HA1"
+  ha_enabled                 = var.netweaver_ha_enabled
   hana_ip                    = local.hana_cluster_vip
   virtual_host_ips           = local.netweaver_virtual_ips
   reg_code                   = var.reg_code
@@ -137,6 +138,7 @@ module "hana_node" {
   hana_backup_disk_size      = var.hana_backup_disk_size
   hana_fstype                = var.hana_fstype
   hana_cluster_vip           = local.hana_cluster_vip
+  ha_enabled                 = var.hana_ha_enabled
   scenario_type              = var.scenario_type
   public_key_location        = var.public_key_location
   private_key_location       = var.private_key_location

@@ -24,6 +24,24 @@ variable "netweaver_count" {
   default = "2"
 }
 
+variable "admin_user" {
+  type    = string
+  default = "azadmin"
+}
+
+variable "network_domain" {
+  type    = string
+  default = "tf.local"
+}
+
+variable "public_key_location" {
+  type = string
+}
+
+variable "private_key_location" {
+  type = string
+}
+
 variable "vm_size" {
   type    = string
   default = "Standard_D4s_v3"
@@ -179,22 +197,10 @@ variable "hana_ip" {
   description = "Ip address of the hana database"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
-}
-
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 variable "sbd_enabled" {
