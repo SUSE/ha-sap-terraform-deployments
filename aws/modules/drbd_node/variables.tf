@@ -69,6 +69,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
 variable "drbd_cluster_vip" {
   description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
   type        = string

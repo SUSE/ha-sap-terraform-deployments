@@ -33,7 +33,7 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || var.netweaver_cluster_sbd_enabled == true) ? true : false
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || var.drbd_cluster_sbd_enabled == true || var.netweaver_cluster_sbd_enabled == true) ? true : false
 }
 
 module "drbd_node" {
@@ -53,6 +53,7 @@ module "drbd_node" {
   aws_access_key_id      = var.aws_access_key_id
   aws_secret_access_key  = var.aws_secret_access_key
   host_ips               = local.drbd_ips
+  sbd_enabled            = var.drbd_cluster_sbd_enabled
   drbd_cluster_vip       = local.drbd_cluster_vip
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type

@@ -305,6 +305,12 @@ variable "drbd_data_disk_type" {
   default     = "gp2"
 }
 
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
