@@ -29,11 +29,12 @@ locals {
 
   # range(4) hardcoded as we always deploy 4 nw machines
   netweaver_ip_start    = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(4) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(var.virtual_address_range, ip_index)]
+  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(local.netweaver_count) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(var.virtual_address_range, ip_index)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_cluster_sbd_enabled == true || var.drbd_cluster_sbd_enabled == true || var.netweaver_cluster_sbd_enabled == true) ? true : false
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || var.drbd_enabled && var.drbd_cluster_sbd_enabled == true || local.netweaver_count > 2 && var.netweaver_cluster_sbd_enabled == true) ? true : false
 }
 
 module "drbd_node" {
@@ -112,7 +113,7 @@ module "iscsi_server" {
 
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
-  netweaver_count            = var.netweaver_enabled == true ? 4 : 0
+  netweaver_count            = local.netweaver_count
   instance_type              = var.netweaver_instancetype
   name                       = "netweaver"
   aws_region                 = var.aws_region
@@ -138,7 +139,7 @@ module "netweaver_node" {
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
-  hana_ip                    = local.hana_cluster_vip
+  hana_ip                    = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   host_ips                   = local.netweaver_ips
   virtual_host_ips           = local.netweaver_virtual_ips
   public_key_location        = var.public_key_location
@@ -239,7 +240,7 @@ module "monitoring" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : []) # we use the vip to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [

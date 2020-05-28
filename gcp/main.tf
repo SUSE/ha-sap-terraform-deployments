@@ -27,10 +27,10 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
 
-  # 4 is hardcoded for netweaver because we always deploy 4 machines
   netweaver_ip_start    = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + 4) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
+  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 
   # Check if iscsi server has to be created
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
@@ -72,7 +72,7 @@ module "drbd_node" {
 
 module "netweaver_node" {
   source                     = "./modules/netweaver_node"
-  netweaver_count            = var.netweaver_enabled == true ? 4 : 0
+  netweaver_count            = local.netweaver_count
   machine_type               = var.netweaver_machine_type
   compute_zones              = data.google_compute_zones.available.names
   network_name               = local.vpc_name
@@ -98,7 +98,7 @@ module "netweaver_node" {
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = "${local.drbd_cluster_vip}:/HA1"
   ha_enabled                 = var.netweaver_ha_enabled
-  hana_ip                    = local.hana_cluster_vip
+  hana_ip                    = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   virtual_host_ips           = local.netweaver_virtual_ips
   reg_code                   = var.reg_code
   reg_email                  = var.reg_email
@@ -174,7 +174,7 @@ module "monitoring" {
   additional_packages    = var.additional_packages
   monitoring_srv_ip      = local.monitoring_srv_ip
   monitoring_enabled     = var.monitoring_enabled
-  hana_targets           = concat(local.hana_ips, [local.hana_cluster_vip]) # we use the vip to target the active hana instance
+  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : []) # we use the vip to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   provisioner            = var.provisioner
