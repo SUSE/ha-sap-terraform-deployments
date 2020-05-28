@@ -126,6 +126,9 @@ cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
 # Used for cluster communication for example
 cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
+
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
 #hana_cluster_vip = "10.74.1.13"
@@ -188,8 +191,24 @@ ha_sap_deployment_repo = ""
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
 
+# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
+# Set to false to only create a ASCS and PAS instances
+#netweaver_ha_enabled = true
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
+
 # Enable SBD for the netweaver cluster
 #netweaver_cluster_sbd_enabled = true
+
+# This storage account must contain the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
 
 #netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 #netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
