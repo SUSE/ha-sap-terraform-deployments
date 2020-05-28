@@ -14,11 +14,6 @@ variable "name" {
   default     = "hana"
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"

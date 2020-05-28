@@ -168,12 +168,6 @@ variable "hana_instancetype" {
   default     = "r3.8xlarge"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "hana_subnet_address_range" {
   description = "List of address ranges to create the subnets for the hana machines. If not given the addresses will be generated based on vpc_address_range"
   type        = list(string)

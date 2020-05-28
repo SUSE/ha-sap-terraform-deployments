@@ -186,11 +186,6 @@ variable "background" {
   default     = false
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "hana_inst_master" {
   type = string
 }

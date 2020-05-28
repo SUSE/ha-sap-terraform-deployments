@@ -38,9 +38,6 @@ hana_instance_number = "00"
 # Region where to deploy the configuration
 az_region = "westeurope"
 
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
-
 # SLES4SAP image information
 # If custom uris are enabled public information will be omitted
 # Custom sles4sap image

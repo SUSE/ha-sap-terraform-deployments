@@ -119,7 +119,6 @@ module "hana_node" {
   compute_zones              = data.google_compute_zones.available.names
   network_name               = local.vpc_name
   network_subnet_name        = local.subnet_name
-  init_type                  = var.init_type
   sles4sap_boot_image        = var.sles4sap_boot_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips

@@ -137,12 +137,6 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "sles4sap_boot_image" {
   description = "The image used to create the hana machines"
   type        = string

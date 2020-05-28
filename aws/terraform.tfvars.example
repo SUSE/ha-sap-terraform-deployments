@@ -74,10 +74,6 @@ hana_disk_device = "/dev/xvdd"
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
-
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
-
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism

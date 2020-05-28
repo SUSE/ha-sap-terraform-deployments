@@ -167,7 +167,6 @@ module "hana_node" {
   hana_count             = var.hana_count
   instance_type          = var.hana_instancetype
   name                   = var.name
-  init_type              = var.init_type
   scenario_type          = var.scenario_type
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names

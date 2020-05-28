@@ -128,7 +128,6 @@ module "hana_node" {
   storage_account_key           = var.storage_account_key
   enable_accelerated_networking = var.hana_enable_accelerated_networking
   sles4sap_uri                  = var.sles4sap_uri
-  init_type                     = var.init_type
   hana_cluster_vip              = local.hana_cluster_vip
   hana_inst_master              = var.hana_inst_master
   hana_inst_folder              = var.hana_inst_folder

@@ -79,9 +79,6 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 # Custom sles4sap image
 sles4sap_boot_image = "MySles4SapImage"
 
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
-
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
 cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"

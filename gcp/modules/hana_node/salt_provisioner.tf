@@ -48,7 +48,6 @@ vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.hana-route[0].name}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}

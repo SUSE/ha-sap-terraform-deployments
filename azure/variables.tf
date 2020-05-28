@@ -188,12 +188,6 @@ variable "hana_vm_size" {
   default     = "Standard_M32ls"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "hana_data_disk_type" {
   description = "Disk type of the disks used to store hana database content"
   type        = string
