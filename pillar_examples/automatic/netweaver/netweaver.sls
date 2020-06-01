@@ -1,5 +1,3 @@
-{%- set iprange = '.'.join(grains['host_ips'][0].split('.')[0:-1]) %}
-
 {%- if grains['provider'] == 'libvirt' %}
 {%- set virtual_host_interface = 'eth1' %}
 {%- else %}
@@ -14,9 +12,11 @@
 netweaver:
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sapha1as
+    {{ grains['virtual_host_ips'][2 if grains['ha_enabled'] else 1] }}: sapha1pas
+    {% if grains['ha_enabled'] %}
     {{ grains['virtual_host_ips'][1] }}: sapha1er
-    {{ grains['virtual_host_ips'][2] }}: sapha1pas
     {{ grains['virtual_host_ips'][3] }}: sapha1aas
+    {%- endif %}
   sidadm_user:
     uid: 2001
     gid: 2002
@@ -63,6 +63,8 @@ netweaver:
   nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
 {%- endif %}
 
+  ha_enabled: {{ grains['ha_enabled'] }}
+
   nodes:
     - host: {{ grains['name_prefix'] }}01
       virtual_host: sapha1as
@@ -72,14 +74,39 @@ netweaver:
       instance: {{ grains['ascs_instance_number'] }}
       root_user: root
       root_password: linux
-      {%- if grains['provider'] == 'libvirt' %}
+      {%- if grains['ha_enabled'] and grains['provider'] == 'libvirt' %}
       shared_disk_dev: /dev/vdb
       init_shared_disk: True
-      {%- else %}
+      {%- elif grains['ha_enabled'] %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS
       {%- endif %}
       sap_instance: ascs
 
+    - host: {{ grains['name_prefix'] }}0{{ 3 if grains['ha_enabled'] else 2 }}
+      virtual_host: sapha1pas
+      virtual_host_interface: {{ virtual_host_interface }}
+      virtual_host_mask: {{ virtual_host_mask }}
+      sid: HA1
+      instance: '00' # Not used
+      root_user: root
+      root_password: linux
+      sap_instance: db
+
+    - host: {{ grains['name_prefix'] }}0{{ 3 if grains['ha_enabled'] else 2 }}
+      virtual_host: sapha1pas
+      virtual_host_interface: {{ virtual_host_interface }}
+      virtual_host_mask: {{ virtual_host_mask }}
+      ascs_virtual_host: sapha1as
+      sid: HA1
+      instance: {{ grains['pas_instance_number'] }}
+      root_user: root
+      root_password: linux
+      sap_instance: pas
+      # Add for S4/HANA
+      #extra_parameters:
+      #  NW_liveCache.useLiveCache: "false"
+
+    {% if grains['ha_enabled'] %}
     - host: {{ grains['name_prefix'] }}02
       virtual_host: sapha1er
       virtual_host_interface: {{ virtual_host_interface }}
@@ -95,30 +122,6 @@ netweaver:
       {%- endif %}
       sap_instance: ers
 
-    - host: {{ grains['name_prefix'] }}03
-      virtual_host: sapha1pas
-      virtual_host_interface: {{ virtual_host_interface }}
-      virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
-      instance: '00' # Not used
-      root_user: root
-      root_password: linux
-      sap_instance: db
-
-    - host: {{ grains['name_prefix'] }}03
-      virtual_host: sapha1pas
-      virtual_host_interface: {{ virtual_host_interface }}
-      virtual_host_mask: {{ virtual_host_mask }}
-      ascs_virtual_host: sapha1as
-      sid: HA1
-      instance: {{ grains['pas_instance_number'] }}
-      root_user: root
-      root_password: linux
-      sap_instance: pas
-      # Add for S4/HANA
-      #extra_parameters:
-      #  NW_liveCache.useLiveCache: "false"
-
     - host: {{ grains['name_prefix'] }}04
       virtual_host: sapha1aas
       virtual_host_interface: {{ virtual_host_interface }}
@@ -130,3 +133,4 @@ netweaver:
       sap_instance: aas
       # Add for S4/HANA
       #attempts: 500
+    {% endif %}

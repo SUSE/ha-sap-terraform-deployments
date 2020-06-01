@@ -32,6 +32,7 @@ provider: libvirt
 role: hana_node
 scenario_type: ${var.scenario_type}
 hana_disk_device: /dev/vdb
+ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdc" : ""}"

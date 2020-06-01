@@ -191,6 +191,12 @@ variable "hana_cluster_sbd_enabled" {
   default     = true
 }
 
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -340,7 +346,7 @@ variable "netweaver_virtual_ips" {
 variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "netweaver_nfs_share" {
@@ -397,6 +403,12 @@ variable "netweaver_additional_dvds" {
   default     = []
 }
 
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances. `netweaver_count` must be at least 2"
+  type        = bool
+  default     = true
+}
+
 #
 # DRBD related variables
 #
@@ -416,11 +428,6 @@ variable "drbd_volume_name" {
   description = "Already existing volume name boot to create the drbd machines. It must be in the same storage pool. It's only used if drbd_source_image is not provided"
   type        = string
   default     = ""
-}
-
-variable "drbd_count" {
-  description = "Number of drbd machines to create the cluster"
-  default     = 2
 }
 
 variable "drbd_node_vcpu" {
@@ -456,7 +463,7 @@ variable "drbd_cluster_vip" {
 variable "drbd_cluster_sbd_enabled" {
   description = "Enable sbd usage in the drbd HA cluster"
   type        = bool
-  default     = false
+  default     = true
 }
 
 #

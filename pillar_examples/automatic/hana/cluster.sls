@@ -16,6 +16,15 @@ cluster:
   {% if grains['sbd_enabled'] %}
   sbd:
     device: {{ grains['sbd_disk_device'] }}
+    {% if grains['provider'] == 'azure' %}
+    configure_resource:
+      params:
+        pcmk_delay_max: 15
+      op:
+        monitor:
+          timeout: 15
+          interval: 15
+    {% endif %}
   watchdog:
     module: softdog
     device: /dev/watchdog
@@ -40,7 +49,11 @@ cluster:
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
-    method: update
+    {% if grains['provider'] == 'azure' %}
+    properties:
+      stonith-timeout: 144s
+      stonith-enabled: true
+    {% endif %}
     template:
       source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
       parameters:

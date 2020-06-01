@@ -93,7 +93,17 @@ devel_mode = false
 
 # Netweaver variables
 
+# Enable/disable Netweaver deployment
+#netweaver_enabled = true
+
 # NFS share with netweaver installation folders
+# This share must contains the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+
 #netweaver_inst_media = "url-to-your-nfs-share"
 
 # Netweaver installation required folders
@@ -118,14 +128,8 @@ devel_mode = false
 # Enable SBD for the netweaver cluster
 #netweaver_cluster_sbd_enabled = true
 
-# Enable/disable Netweaver deployment
-#netweaver_enabled = true
-
 # Enable the DRBD cluster for nfs
 #drbd_enabled = true
-
-# Nodes number of DRBD cluster for nfs
-#drbd_count = 2
 
 # IP of DRBD cluster
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
