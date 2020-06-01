@@ -32,6 +32,7 @@ hana_sapcar_exe: ${var.hana_sapcar_exe}
 hdbserver_sar: ${var.hdbserver_sar}
 hana_extract_dir: ${var.hana_extract_dir}
 hana_fstype: ${var.hana_fstype}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 ha_enabled: ${var.ha_enabled}

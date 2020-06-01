@@ -82,7 +82,7 @@ variable "hana_public_version" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_M32ls"
+  default = "Standard_E4s_v3"
 }
 
 variable "admin_user" {
@@ -225,20 +225,6 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "Standard_LRS"
-}
-
-variable "hana_data_disk_size" {
-  type    = string
-  default = "60"
-}
-
-variable "hana_data_disk_caching" {
-  type = string
-}
-
 variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster"
   type        = string
@@ -248,4 +234,29 @@ variable "ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
+}
+
+variable "hana_data_disks_configuration" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+    disks_size       = "128,128,128,128,128,128,128"
+    caching          = "None,None,None,None,None,None,None"
+    writeaccelerator = "false,false,false,false,false,false,false"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups splitted by "#" must match in all of the entries
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup)
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5)
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
+  EOF
 }
