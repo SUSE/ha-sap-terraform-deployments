@@ -26,10 +26,13 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
 
+  netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
+  netweaver_count             = local.netweaver_xscs_server_count + var.netweaver_app_server_count
+
   netweaver_ip_start    = 30
-  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_count, local.netweaver_ip_start + (local.netweaver_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
+
 
   # Check if iscsi server has to be created
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
@@ -72,11 +75,15 @@ module "drbd_node" {
 module "netweaver_node" {
   source                        = "./modules/netweaver_node"
   az_region                     = var.az_region
-  vm_size                       = var.netweaver_vm_size
+  xscs_server_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count : 0
+  app_server_count              = var.netweaver_enabled ? var.netweaver_app_server_count : 0
+  xscs_vm_size                  = var.netweaver_xscs_vm_size
+  app_vm_size                   = var.netweaver_app_vm_size
+  xscs_accelerated_networking   = var.netweaver_xscs_accelerated_networking
+  app_accelerated_networking    = var.netweaver_app_accelerated_networking
   data_disk_caching             = var.netweaver_data_disk_caching
   data_disk_size                = var.netweaver_data_disk_size
   data_disk_type                = var.netweaver_data_disk_type
-  netweaver_count               = local.netweaver_count
   netweaver_image_uri           = var.netweaver_image_uri
   netweaver_public_publisher    = var.netweaver_public_publisher
   netweaver_public_offer        = var.netweaver_public_offer
@@ -102,7 +109,6 @@ module "netweaver_node" {
   storage_account_name          = var.netweaver_storage_account_name
   storage_account_key           = var.netweaver_storage_account_key
   storage_account_path          = var.netweaver_storage_account
-  enable_accelerated_networking = var.netweaver_enable_accelerated_networking
   host_ips                      = local.netweaver_ips
   virtual_host_ips              = local.netweaver_virtual_ips
   sbd_enabled                   = var.netweaver_cluster_sbd_enabled
