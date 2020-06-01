@@ -391,7 +391,7 @@ resource "azurerm_managed_disk" "app_server_disk" {
 resource "azurerm_virtual_machine_data_disk_attachment" "app_server_disk" {
   count              = var.app_server_count
   managed_disk_id    = azurerm_managed_disk.app_server_disk[count.index].id
-  virtual_machine_id = azurerm_virtual_machine.netweaver[count.index+var.xscs_server_count].id
+  virtual_machine_id = azurerm_virtual_machine.netweaver[count.index + var.xscs_server_count].id
   lun                = local.additional_lun_number
   caching            = var.data_disk_caching
 }

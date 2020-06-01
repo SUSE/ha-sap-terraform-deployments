@@ -547,6 +547,18 @@ variable "netweaver_data_disk_caching" {
   default     = "ReadWrite"
 }
 
+variable "netweaver_xscs_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver xSCS machines"
+  type        = bool
+  default     = false
+}
+
+variable "netweaver_app_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver application server machines"
+  type        = bool
+  default     = false
+}
+
 variable "netweaver_ips" {
   description = "ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
@@ -562,7 +574,13 @@ variable "netweaver_virtual_ips" {
 variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
-  default     = false
+  default     = true
+}
+
+variable "netweaver_nfs_share" {
+  description = "NFS share used to store shared netweaver files. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project"
+  type        = string
+  default     = ""
 }
 
 variable "netweaver_storage_account_name" {
@@ -581,18 +599,6 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
-}
-
-variable "netweaver_xscs_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver xSCS machines"
-  type        = bool
-  default     = false
-}
-
-variable "netweaver_app_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver application server machines"
-  type        = bool
-  default     = false
 }
 
 variable "netweaver_product_id" {
