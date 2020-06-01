@@ -188,12 +188,6 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "hana_data_disks_configuration" {
   type = map
   default = {
@@ -286,6 +280,12 @@ variable "hana_cluster_vip" {
 
 variable "hana_cluster_sbd_enabled" {
   description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
 }
@@ -617,6 +617,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

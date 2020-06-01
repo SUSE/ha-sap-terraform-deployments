@@ -34,6 +34,9 @@ hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 #hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
+
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
@@ -96,8 +99,17 @@ devel_mode = false
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true
 
+# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
+# Set to false to only create a ASCS and PAS instances
+#netweaver_ha_enabled = true
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
+
 # NFS share with netweaver installation folders
-# This share must contains the next software (select the version you want to install of course)
+# This share must contain the next software (select the version you want to install of course)
 #SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
 #Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
 #HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`

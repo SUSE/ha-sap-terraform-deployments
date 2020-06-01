@@ -58,6 +58,9 @@ hana_backup_disk_size = "416"
 # HANA cluster vip
 #hana_cluster_vip = "10.0.1.200"
 
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
+
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
@@ -78,9 +81,6 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 
 # Custom sles4sap image
 sles4sap_boot_image = "MySles4SapImage"
-
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
@@ -176,6 +176,13 @@ ha_sap_deployment_repo = ""
 
 #netweaver_image = suse-byos-cloud/sles-15-sap-byos
 
+# This storage bucket must contain the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+
 #netweaver_software_bucket = "MyNetweaverBucket"
 
 # Netweaver installation required folders
@@ -194,6 +201,15 @@ ha_sap_deployment_repo = ""
 #netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
 
 #netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]
+
+# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
+# Set to false to only create a ASCS and PAS instances
+#netweaver_ha_enabled = true
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
 
 # Enable SBD for the netweaver cluster
 #netweaver_cluster_sbd_enabled = true

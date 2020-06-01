@@ -137,12 +137,6 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "sles4sap_boot_image" {
   description = "The image used to create the hana machines"
   type        = string
@@ -230,6 +224,12 @@ variable "hana_cluster_sbd_enabled" {
   description = "Enable sbd usage in the hana HA cluster"
   type        = bool
   default     = false
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "scenario_type" {
@@ -425,6 +425,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

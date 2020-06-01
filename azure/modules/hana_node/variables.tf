@@ -186,11 +186,6 @@ variable "background" {
   default     = false
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "hana_inst_master" {
   type = string
 }
@@ -233,6 +228,12 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster"
   type        = string
+}
+
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "hana_data_disks_configuration" {

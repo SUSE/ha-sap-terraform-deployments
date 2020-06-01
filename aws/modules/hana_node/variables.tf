@@ -14,11 +14,6 @@ variable "name" {
   default     = "hana"
 }
 
-variable "init_type" {
-  type    = string
-  default = "all"
-}
-
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -69,6 +64,10 @@ variable "aws_access_key_id" {
 }
 
 variable "aws_secret_access_key" {
+  type = string
+}
+
+variable "private_key_location" {
   type = string
 }
 
@@ -132,8 +131,10 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "sbd_enabled" {

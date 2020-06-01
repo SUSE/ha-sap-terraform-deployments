@@ -23,12 +23,6 @@ variable "network_subnet_name" {
   type        = string
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "sles4sap_boot_image" {
   description = "The image used to create the hana machines"
   type        = string
@@ -148,6 +142,12 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+}
+
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "scenario_type" {

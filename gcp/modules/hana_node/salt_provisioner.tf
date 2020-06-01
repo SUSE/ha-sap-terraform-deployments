@@ -30,6 +30,7 @@ name_prefix: ${terraform.workspace}-hana
 hostname: ${terraform.workspace}-hana0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
+ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 1
@@ -48,7 +49,6 @@ vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.hana-route[0].name}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}

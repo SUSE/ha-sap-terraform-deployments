@@ -47,7 +47,6 @@ cluster:
       max_messages: 20
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
-  {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
     {% if grains['provider'] == 'azure' %}
     properties:
@@ -81,4 +80,3 @@ cluster:
           instance: {{ hana.hana.nodes[2].instance }}
           remote_host : {{ hana.hana.nodes[0].host }}
         {% endif %}
-  {% endif %}

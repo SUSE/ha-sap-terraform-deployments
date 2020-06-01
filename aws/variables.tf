@@ -168,12 +168,6 @@ variable "hana_instancetype" {
   default     = "r3.8xlarge"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "hana_subnet_address_range" {
   description = "List of address ranges to create the subnets for the hana machines. If not given the addresses will be generated based on vpc_address_range"
   type        = list(string)
@@ -250,6 +244,12 @@ variable "hana_cluster_sbd_enabled" {
   default     = false
 }
 
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -309,6 +309,12 @@ variable "drbd_data_disk_type" {
   description = "Disk type of the disks used to store drbd content"
   type        = string
   default     = "gp2"
+}
+
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
 }
 
 # SBD related variables
@@ -493,6 +499,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

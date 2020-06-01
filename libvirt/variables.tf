@@ -404,7 +404,7 @@ variable "netweaver_additional_dvds" {
 }
 
 variable "netweaver_ha_enabled" {
-  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances. `netweaver_count` must be at least 2"
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
   type        = bool
   default     = true
 }

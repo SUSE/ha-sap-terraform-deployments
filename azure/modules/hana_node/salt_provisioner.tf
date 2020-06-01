@@ -35,12 +35,12 @@ hana_fstype: ${var.hana_fstype}
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
+ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_cluster_vip: ${azurerm_lb.hana-load-balancer.private_ip_address}
-init_type: ${var.init_type}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
