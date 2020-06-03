@@ -31,6 +31,7 @@ host_ip: ${element(var.host_ips, count.index)}
 hana_ip: ${var.hana_ip}
 provider: libvirt
 role: netweaver_node
+ha_enabled: ${var.ha_enabled}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_swpm_folder: ${var.netweaver_swpm_folder}
@@ -45,8 +46,11 @@ ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-shared_storage_type: shared-disk
-sbd_disk_device: /dev/vdb1
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
+sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
+sbd_disk_index: 2
+iscsi_srv_ip: ${var.iscsi_srv_ip}
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}
 EOF

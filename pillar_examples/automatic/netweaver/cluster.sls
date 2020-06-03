@@ -1,9 +1,4 @@
 {%- import_yaml "/root/salt/netweaver_node/files/pillar/netweaver.sls" as netweaver %}
-{%- if not grains.get('sbd_disk_device') %}
-{%- set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{%- else %}
-{%- set sbd_disk_device = grains['sbd_disk_device'] %}
-{%- endif %}
 
 cluster:
   install_packages: true
@@ -15,11 +10,13 @@ cluster:
   interface: eth0
   unicast: True
   {%- endif %}
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device'] }}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   join_timeout: 180
   wait_for_initialization: 20
   ntp: pool.ntp.org
@@ -66,6 +63,7 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {%- elif grains['provider'] == 'gcp' %}
-        route_table: {{ grains['route_table'] }}
+        ascs_route_name: {{ grains['ascs_route_name'] }}
+        ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}

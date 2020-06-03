@@ -39,9 +39,9 @@ resource "libvirt_domain" "hana_domain" {
       [
         {
           // we set null but it will never reached because the slice with 0 cut it off
-          "volume_id" = var.shared_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
+          "volume_id" = var.sbd_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
         },
-      ], 0, var.shared_storage_type == "shared-disk" ? 1 : 0
+      ], 0, var.sbd_enabled && var.sbd_storage_type == "shared-disk" ? 1 : 0
     )
     content {
       volume_id = disk.value.volume_id
@@ -59,7 +59,6 @@ resource "libvirt_domain" "hana_domain" {
     wait_for_lease = false
     network_name   = var.isolated_network_name
     network_id     = var.isolated_network_id
-    hostname       = "${var.name}0${count.index + 1}"
     addresses      = [element(var.host_ips, count.index)]
   }
 
@@ -93,7 +92,7 @@ resource "libvirt_domain" "hana_domain" {
 output "output_data" {
   value = {
     id                = libvirt_domain.hana_domain.*.id
-    hostname          = libvirt_domain.hana_domain.*.name
+    name              = libvirt_domain.hana_domain.*.name
     private_addresses = var.host_ips
     addresses         = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
   }

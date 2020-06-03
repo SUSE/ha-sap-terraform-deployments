@@ -1,5 +1,6 @@
 variable "aws_region" {
-  type = string
+  type        = string
+  description = "AWS region where the deployment machines will be created"
 }
 
 variable "availability_zones" {
@@ -9,35 +10,18 @@ variable "availability_zones" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "List of subnet IDs"
+  description = "Subnet ids to attach the machines network interface"
 }
 
-variable "iscsi_srv_images" {
-  type = map(string)
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "iscsi_count" {
+  type        = number
+  description = "Number of iscsi machines to deploy"
 }
 
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
+variable "instance_type" {
   type        = string
-  default     = "t2.micro"
-}
-
-variable "iscsi_instancetype" {
   description = "The instance type of iscsi server node."
-  type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "key_name" {
@@ -51,22 +35,25 @@ variable "security_group_id" {
 }
 
 variable "private_key_location" {
-  type = string
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
   type        = string
+  description = "Path to a SSH private key used to connect to the created machines"
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
+}
+
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  type        = number
+  default     = 3
 }
 
 variable "reg_code" {
@@ -116,4 +103,14 @@ variable "on_destroy_dependencies" {
   description = "Resources objects needed in the on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
+}
+
+variable "os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+}
+
+variable "os_owner" {
+  description = "OS image owner"
+  type        = string
 }

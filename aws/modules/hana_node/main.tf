@@ -34,11 +34,17 @@ module "sap_cluster_policies" {
   route_table_id    = var.route_table_id
 }
 
+module "get_os_image" {
+  source   = "../../modules/get_os_image"
+  os_image = var.os_image
+  os_owner = var.os_owner
+}
+
 ## EC2 HANA Instance
 resource "aws_instance" "clusternodes" {
   count                       = var.hana_count
-  ami                         = var.sles4sap_images[var.aws_region]
-  instance_type               = var.instancetype
+  ami                         = module.get_os_image.image_id
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.hana-subnet.*.id, count.index)

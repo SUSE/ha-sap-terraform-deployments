@@ -1,16 +1,17 @@
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10000000000
 }
 
 variable "ha_sap_deployment_repo" {

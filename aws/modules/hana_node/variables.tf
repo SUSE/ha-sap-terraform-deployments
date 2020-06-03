@@ -3,7 +3,7 @@ variable "hana_count" {
   default = "2"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }
@@ -12,11 +12,6 @@ variable "name" {
   description = "prefix of the machines names"
   type        = string
   default     = "hana"
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
 }
 
 variable "scenario_type" {
@@ -31,22 +26,6 @@ variable "aws_region" {
 variable "availability_zones" {
   type        = list(string)
   description = "Used availability zones"
-}
-
-variable "sles4sap_images" {
-  type = map(string)
-
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
 }
 
 variable "vpc_id" {
@@ -85,6 +64,10 @@ variable "aws_access_key_id" {
 }
 
 variable "aws_secret_access_key" {
+  type = string
+}
+
+variable "private_key_location" {
   type = string
 }
 
@@ -148,8 +131,22 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
@@ -232,4 +229,14 @@ variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
+}
+
+variable "os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+}
+
+variable "os_owner" {
+  description = "OS image owner"
+  type        = string
 }

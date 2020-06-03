@@ -1,7 +1,13 @@
+module "get_os_image" {
+  source   = "../../modules/get_os_image"
+  os_image = var.os_image
+  os_owner = var.os_owner
+}
+
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
-  ami                         = var.sles4sap_images[var.aws_region]
-  instance_type               = var.monitor_instancetype == "" ? var.min_instancetype : var.monitor_instancetype
+  ami                         = module.get_os_image.image_id
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(var.subnet_ids, 0)

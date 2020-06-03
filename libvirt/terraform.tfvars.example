@@ -35,9 +35,23 @@ hana_sapcar_exe = "SAPCAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 #hana_ips         = ["192.168.XXX.Y", "192.168.XXX.Y+1"]
 
-# Shared storage type information
-shared_storage_type = "iscsi"
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
+
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
+
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+
+#sbd_storage_type = "iscsi"
 #iscsi_srv_ip = "192.168.XXX.Y+6"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service
+#sbd_disk_size = 10737418240
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -83,7 +97,26 @@ devel_mode = false
 
 # Netweaver variables
 
+# Enable/disable Netweaver deployment
+#netweaver_enabled = true
+
+# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
+# Set to false to only create a ASCS and PAS instances
+#netweaver_ha_enabled = true
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
+
 # NFS share with netweaver installation folders
+# This share must contain the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+
 #netweaver_inst_media = "url-to-your-nfs-share"
 
 # Netweaver installation required folders
@@ -105,19 +138,17 @@ devel_mode = false
 # IP addresses of the machines hosting Netweaver instances
 #netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 #netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
-
-
-# Enable/disable Netweaver deployment
-#netweaver_enabled = true
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
 
 # Enable the DRBD cluster for nfs
 #drbd_enabled = true
 
-# Nodes number of DRBD cluster for nfs
-#drbd_count = 2
-
 # IP of DRBD cluster
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
+# Enable SBD for the drbd cluster
+#drbd_cluster_sbd_enabled = true
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 

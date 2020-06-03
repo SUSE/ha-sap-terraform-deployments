@@ -37,7 +37,9 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-shared_storage_type: iscsi
+ha_enabled: ${var.ha_enabled}
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
@@ -60,7 +62,8 @@ netweaver_nfs_share: ${var.netweaver_nfs_share}
 netweaver_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.netweaver.*.attached_disk.0.device_name, count.index))}
 hana_ip: ${var.hana_ip}
 vpc_network_name: ${var.network_name}
-route_table: ${google_compute_route.nw-route[0].name}
+ascs_route_name: ${google_compute_route.nw-ascs-route[0].name}
+ers_route_name: ${google_compute_route.nw-ers-route[0].name}
 
 EOF
     destination = "/tmp/grains"

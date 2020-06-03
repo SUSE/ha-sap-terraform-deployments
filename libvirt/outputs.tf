@@ -9,7 +9,7 @@ output "cluster_nodes_public_ip" {
 }
 
 output "cluster_nodes_name" {
-  value = module.hana_node.output_data.hostname
+  value = module.hana_node.output_data.name
 }
 
 output "cluster_nodes_public_name" {
@@ -25,7 +25,7 @@ output "drbd_public_ip" {
 }
 
 output "drbd_name" {
-  value = module.drbd_node.output_data.hostname
+  value = module.drbd_node.output_data.name
 }
 
 output "drbd_public_name" {
@@ -41,7 +41,7 @@ output "iscsisrv_public_ip" {
 }
 
 output "iscsisrv_name" {
-  value = module.iscsi_server.output_data.hostname
+  value = module.iscsi_server.output_data.name
 }
 
 output "iscsisrv_public_name" {
@@ -57,7 +57,7 @@ output "monitoring_public_ip" {
 }
 
 output "monitoring_name" {
-  value = module.monitoring.output_data.hostname
+  value = module.monitoring.output_data.name
 }
 
 output "monitoring_public_name" {
@@ -73,7 +73,7 @@ output "netweaver_nodes_public_ip" {
 }
 
 output "netweaver_nodes_name" {
-  value = module.netweaver_node.output_data.hostname
+  value = module.netweaver_node.output_data.name
 }
 
 output "netweaver_nodes_public_name" {

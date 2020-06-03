@@ -150,38 +150,22 @@ variable "hana_count" {
   default     = 2
 }
 
-variable "sles4sap" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the hana machines"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+variable "hana_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
 }
 
-variable "instancetype" {
+variable "hana_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
+variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
   default     = "r3.8xlarge"
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
 }
 
 variable "hana_subnet_address_range" {
@@ -254,6 +238,18 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -267,10 +263,22 @@ variable "drbd_enabled" {
   default     = false
 }
 
+variable "drbd_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "drbd_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "drbd_cluster_vip" {
@@ -303,33 +311,41 @@ variable "drbd_data_disk_type" {
   default     = "gp2"
 }
 
-# Iscsi server related variables
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
+}
 
-variable "iscsi_srv" {
-  description = "Map of region->ami entries defining the desired SLE4SAP images for the iscsi machine"
-  type        = map(string)
-  default = {
-    "us-east-1"    = "ami-027447d2b7312df2d"
-    "us-east-2"    = "ami-099a51d3b131f3ce2"
-    "us-west-1"    = "ami-0f213357578720889"
-    "us-west-2"    = "ami-0fc86417df3e0f6d4"
-    "ca-central-1" = "ami-0811b93a30ab570f7"
-    "eu-central-1" = "ami-024f50fdc1f2f5603"
-    "eu-west-1"    = "ami-0ca96dfbaf35b0c31"
-    "eu-west-2"    = "ami-00189dbab3fd43af2"
-    "eu-west-3"    = "ami-00e70e3421f053648"
-  }
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
+# If iscsi is selected as sbd_storage_type
+# Use the next variables for advanced configuration
+
+variable "iscsi_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "iscsi_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = ""
-}
-
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
+  default     = "t2.micro"
 }
 
 variable "iscsi_srv_ip" {
@@ -338,17 +354,35 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
+}
+
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
 # Monitoring related variables
 
+variable "monitoring_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "monitoring_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
+}
+
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "monitoring_srv_ip" {
@@ -369,6 +403,18 @@ variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
+}
+
+variable "netweaver_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = "suse-sles-sap-15-sp1-byos"
+}
+
+variable "netweaver_os_owner" {
+  description = "OS image owner"
+  type        = string
+  default     = "amazon"
 }
 
 variable "netweaver_instancetype" {
@@ -405,6 +451,12 @@ variable "netweaver_virtual_ips" {
   description = "Virtual ip addresses to set to the netweaver cluster nodes"
   type        = list(string)
   default     = []
+}
+
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_product_id" {
@@ -447,6 +499,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

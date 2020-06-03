@@ -1,11 +1,6 @@
 {% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
 {% set partitions = grains['partitions'] %}
-{% set num = grains['iscsi_disks'] %}
 {% set real_iscsidev = salt['cmd.run']('realpath '~grains['iscsidev']) %}
-
-{% if num > 0 and num < partitions|length %}
-{% set partitions = (partitions|list)[:num] %}
-{% endif %}
 
 iscsi:
   target:

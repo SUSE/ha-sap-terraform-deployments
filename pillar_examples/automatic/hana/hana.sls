@@ -17,6 +17,7 @@ hana:
   {%- endif %}
   saptune_solution: 'HANA'
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
+  ha_enabled: {{ grains['ha_enabled'] }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: prd
@@ -31,6 +32,7 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+      {%- if grains.get('ha_enabled') %}
       primary:
         name: PRIMARY_SITE_NAME
         backup:
@@ -43,12 +45,13 @@ hana:
           user_name: SYSTEM
           user_password: YourPassword1234
           database: SYSTEMDB
-    {% if grains.get('monitoring_enabled', False) %}
+      {% endif %}
+      {% if grains.get('monitoring_enabled', False) %}
       exporter:
         exposition_port: 9668
         user: SYSTEM
         password: YourPassword1234
-    {% endif %}
+      {% endif %}
 
     - host: {{ grains['name_prefix'] }}02
       sid: prd
@@ -69,6 +72,7 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+      {%- if grains.get('ha_enabled') %}
       secondary:
         name: SECONDARY_SITE_NAME
         remote_host: {{ grains['name_prefix'] }}01
@@ -76,6 +80,7 @@ hana:
         replication_mode: sync
         operation_mode: logreplay
         primary_timeout: 3000
+      {% endif %}
     {% if grains['scenario_type'] == 'cost-optimized' %}
     - host: {{ grains['name_prefix'] }}02
       sid: qas

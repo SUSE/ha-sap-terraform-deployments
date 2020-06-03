@@ -1,5 +1,8 @@
 # Launch SLES-HAE of SLES4SAP cluster nodes
 
+# Region where to deploy the configuration
+aws_region = "eu-central-1"
+
 # Use an already existing vpc. Make sure the vpc has the internet gateway already attached
 #vpc_id = "vpc-xxxxxxxxxxxxxxxxx"
 
@@ -15,19 +18,13 @@
 #vpc_address_range = ""
 
 # Instance type to use for the hana cluster nodes
-instancetype = "r3.8xlarge"
-
-# The minimum instance type of a region, not suitable to hana nodes
-min_instancetype = "t2.micro"
+hana_instancetype = "r3.8xlarge"
 
 # Disk type for HANA
 hana_data_disk_type = "gp2"
 
 # Number of nodes in the cluster
 hana_count = "2"
-
-# Region where to deploy the configuration
-aws_region = "eu-central-1"
 
 # SSH Public key location to configure access to the remote instances
 public_key_location = "/path/to/your/public/ssh/key"
@@ -36,9 +33,12 @@ public_key_location = "/path/to/your/public/ssh/key"
 private_key_location = "/path/to/your/private/ssh/key"
 
 # Custom AMI for nodes
-#sles4sap = {
-#    "eu-central-1" = "ami-xxxxxxxxxxxxxxxxx"
-#}
+#hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
+# Or use a pattern to find the image
+#hana_os_image = "suse-sles-sap-15-sp1-byos"
+
+# Custom owner for private AMI
+#hana_os_owner = "self"
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -49,6 +49,9 @@ aws_credentials = "~/.aws/credentials"
 
 # Hostname, without the domain part
 name = "hana"
+
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
 
 # S3 bucket where HANA installation master is located
 hana_inst_master = "s3://path/to/your/hana/installation/master/51053381"
@@ -70,16 +73,26 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
-hana_cluster_vip = "192.168.1.10"
+#hana_cluster_vip = "192.168.1.10"
 
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
+
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+
+# iSCSI OS image
+#iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#iscsi_os_owner = "self"
 
 # iSCSI server address. It should be in same iprange as hana_ips
-iscsi_srv_ip = "10.0.0.254"
-
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/xvdd"
+#iscsi_srv_ip = "10.0.0.254"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
+#iscsi_disk_size = 10
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
@@ -127,8 +140,11 @@ ha_sap_deployment_repo = ""
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+#monitoring_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#monitoring_os_owner = "self"
+
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
-monitoring_srv_ip = "10.0.0.253"
+#monitoring_srv_ip = "10.0.0.253"
 
 # QA variables
 
@@ -151,6 +167,9 @@ monitoring_srv_ip = "10.0.0.253"
 
 #drbd_instancetype = "t2.micro"
 
+#drbd_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#drbd_os_owner = "self"
+
 #drbd_data_disk_size = 15
 
 #drbd_data_disk_type = gp2
@@ -163,11 +182,34 @@ monitoring_srv_ip = "10.0.0.253"
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
+#netweaver_os_image = "ami-xxxxxxxxxxxxxxxxx"
+#netweaver_os_owner = "self"
 #AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
+
+
+# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
+# Set to false to only create a ASCS and PAS instances
+#netweaver_ha_enabled = true
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
+
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
+
 # Netweaver installation required folders
+# This S3 bucket must contain the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+
 #netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
 # SAP SWPM installation folder, relative to the netweaver_s3_bucket folder
 #netweaver_swpm_folder     =  "your_swpm"
