@@ -1,4 +1,4 @@
-{% set sapcd = '/sapmedia/NW' %}
+{% set sapcd = '{{ grains['netweaver_inst_folder'] }}' %}
 
 {% if grains['provider'] == 'libvirt' %}
 mount_swpm:

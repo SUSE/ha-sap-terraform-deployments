@@ -132,10 +132,11 @@ module "netweaver_node" {
   aws_secret_access_key      = var.aws_secret_access_key
   s3_bucket                  = var.netweaver_s3_bucket
   netweaver_product_id       = var.netweaver_product_id
+  netweaver_inst_folder      = var.netweaver_inst_folder
+  netweaver_extract_dir      = var.netweaver_extract_dir
   netweaver_swpm_folder      = var.netweaver_swpm_folder
   netweaver_sapcar_exe       = var.netweaver_sapcar_exe
   netweaver_swpm_sar         = var.netweaver_swpm_sar
-  netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"

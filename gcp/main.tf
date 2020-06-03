@@ -90,10 +90,11 @@ module "netweaver_node" {
   cluster_ssh_key            = var.cluster_ssh_key
   netweaver_product_id       = var.netweaver_product_id
   netweaver_software_bucket  = var.netweaver_software_bucket
+  netweaver_inst_folder      = var.netweaver_inst_folder
+  netweaver_extract_dir      = var.netweaver_extract_dir
   netweaver_swpm_folder      = var.netweaver_swpm_folder
   netweaver_sapcar_exe       = var.netweaver_sapcar_exe
   netweaver_swpm_sar         = var.netweaver_swpm_sar
-  netweaver_swpm_extract_dir = var.netweaver_swpm_extract_dir
   netweaver_sapexe_folder    = var.netweaver_sapexe_folder
   netweaver_additional_dvds  = var.netweaver_additional_dvds
   netweaver_nfs_share        = "${local.drbd_cluster_vip}:/HA1"

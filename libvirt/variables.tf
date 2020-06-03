@@ -362,9 +362,21 @@ variable "netweaver_product_id" {
 }
 
 variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `netweaver_inst_folder`"
   type        = string
   default     = ""
+}
+
+variable "netweaver_inst_folder" {
+  description = "Folder where SAP Netweaver installation files are mounted"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
+variable "netweaver_extract_dir" {
+  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
+  type        = string
+  default     = "/sapmedia/NW"
 }
 
 variable "netweaver_swpm_folder" {
@@ -383,12 +395,6 @@ variable "netweaver_swpm_sar" {
   description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
-}
-
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {
