@@ -60,8 +60,12 @@ download_files_from_gcp:
 
 download_files_from_s3:
   cmd.run:
-    - name: "aws s3 sync {{ grains['s3_bucket'] }} {{ grains['netweaver_inst_folder'] }} --region {{ grains['region'] }} --only-show-errors"
-    - onlyif: "aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ grains['netweaver_inst_folder'] }} --region {{ grains['region'] }} | grep download > /dev/null 2>&1"
+    - name: |
+        "aws s3 sync {{ grains['s3_bucket'] }} {{ grains['netweaver_inst_folder'] }} 
+        --region {{ grains['region'] }} --only-show-errors"
+    - onlyif: |
+        "aws s3 sync --dryrun {{ grains['s3_bucket'] }} {{ grains['netweaver_inst_folder'] }} 
+        --region {{ grains['region'] }} | grep download > /dev/null 2>&1"
     - output_loglevel: quiet
     - hide_output: True
 
