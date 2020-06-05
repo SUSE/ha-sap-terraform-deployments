@@ -11,8 +11,6 @@ register_system:
     - retry:
         attempts: 3
         interval: 15
-{% endif %}
-
 
 {% if grains['osmajorrelease'] == 12 %}
 # hardcode the 12 version number for the 2 following modules, since they don't offer a sp version only 1.
@@ -60,6 +58,8 @@ default_sle_module_public_cloud_registration:
         attempts: 3
         interval: 15
 {% endfor %}
+{% endif %}
+
 {% endif %}
 {% endif %}
 {% endif %}
