@@ -1,9 +1,15 @@
 # netweaver deployment in Azure
 # official documentation: https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse
 
-resource "azurerm_availability_set" "netweaver-availability-set" {
-  count                       = var.netweaver_count > 0 ? 1 : 0
-  name                        = "avset-netweaver"
+locals {
+  vm_count              = var.xscs_server_count + var.app_server_count
+  create_ha_infra       = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
+  additional_lun_number = "0"
+}
+
+resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
+  count                       = local.create_ha_infra
+  name                        = "avset-xscs-netweaver"
   location                    = var.az_region
   resource_group_name         = var.resource_group_name
   managed                     = "true"
@@ -14,10 +20,24 @@ resource "azurerm_availability_set" "netweaver-availability-set" {
   }
 }
 
+resource "azurerm_availability_set" "netweaver-app-availability-set" {
+  count                        = var.app_server_count > 0 ? 1 : 0
+  name                         = "avset-app-netweaver"
+  location                     = var.az_region
+  resource_group_name          = var.resource_group_name
+  managed                      = "true"
+  platform_fault_domain_count  = 2
+  platform_update_domain_count = 10
+
+  tags = {
+    workspace = terraform.workspace
+  }
+}
+
 # netweaver load balancer items
 
 resource "azurerm_lb" "netweaver-load-balancer" {
-  count               = var.netweaver_count > 0 ? 1 : 0
+  count               = local.create_ha_infra
   name                = "lb-netweaver"
   location            = var.az_region
   resource_group_name = var.resource_group_name
@@ -36,20 +56,6 @@ resource "azurerm_lb" "netweaver-load-balancer" {
     private_ip_address            = element(var.virtual_host_ips, 1)
   }
 
-  frontend_ip_configuration {
-    name                          = "lbfe-netweaver-pas"
-    subnet_id                     = var.network_subnet_id
-    private_ip_address_allocation = "static"
-    private_ip_address            = element(var.virtual_host_ips, 2)
-  }
-
-  frontend_ip_configuration {
-    name                          = "lbfe-netweaver-aas"
-    subnet_id                     = var.network_subnet_id
-    private_ip_address_allocation = "static"
-    private_ip_address            = element(var.virtual_host_ips, 3)
-  }
-
   tags = {
     workspace = terraform.workspace
   }
@@ -58,14 +64,14 @@ resource "azurerm_lb" "netweaver-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "netweaver-backend-pool" {
-  count               = var.netweaver_count > 0 ? 1 : 0
+  count               = local.create_ha_infra
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
   name                = "lbbe-netweaver"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "netweaver-nodes" {
-  count                   = var.netweaver_count
+  count                   = var.xscs_server_count
   network_interface_id    = element(azurerm_network_interface.netweaver.*.id, count.index)
   ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
@@ -75,7 +81,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "netweaver
 # example: Instance number: 00, port: 62000, Instance number: 01, port: 62001
 
 resource "azurerm_lb_probe" "netweaver-ascs-health-probe" {
-  count               = var.netweaver_count > 0 ? 1 : 0
+  count               = local.create_ha_infra
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
   name                = "lbhp-netweaver-ascs"
@@ -86,7 +92,7 @@ resource "azurerm_lb_probe" "netweaver-ascs-health-probe" {
 }
 
 resource "azurerm_lb_probe" "netweaver-ers-health-probe" {
-  count               = var.netweaver_count > 0 ? 1 : 0
+  count               = local.create_ha_infra
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
   name                = "lbhp-netweaver-ers"
@@ -101,7 +107,7 @@ resource "azurerm_lb_probe" "netweaver-ers-health-probe" {
 
 # Only for Standard load balancer, which requires other more expensive registration
 #resource "azurerm_lb_rule" "netweaver-lb-ha-ascs" {
-#  count                          = var.netweaver_count > 0 ? 1 : 0
+#  count                          = local.create_ha_infra
 #  resource_group_name            = var.resource_group_name
 #  loadbalancer_id                = azurerm_lb.netweaver-load-balancer.id
 #  name                           = "lbrule-netweaver-ascs-all"
@@ -116,7 +122,7 @@ resource "azurerm_lb_probe" "netweaver-ers-health-probe" {
 #}
 
 #resource "azurerm_lb_rule" "netweaver-lb-ha-ers" {
-#  count                          = var.netweaver_count > 0 ? 1 : 0
+#  count                          = local.create_ha_infra
 #  resource_group_name            = var.resource_group_name
 #  loadbalancer_id                = azurerm_lb.netweaver-load-balancer.id
 #  name                           = "lbrule-netweaver-ers-all"
@@ -133,7 +139,7 @@ resource "azurerm_lb_probe" "netweaver-ers-health-probe" {
 # ascs
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-32xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-32${var.ascs_instance_number}"
@@ -148,7 +154,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-32xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-36xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-36${var.ascs_instance_number}"
@@ -163,7 +169,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-36xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-39xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-39${var.ascs_instance_number}"
@@ -178,7 +184,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-39xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-81xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-81${var.ascs_instance_number}"
@@ -193,7 +199,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-81xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx13" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}13"
@@ -208,7 +214,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx13" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx14" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}14"
@@ -223,7 +229,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx14" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx16" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}16"
@@ -240,7 +246,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx16" {
 # ers
 
 resource "azurerm_lb_rule" "netweaver-lb-ers-32xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-netweaver-ers-tcp-32${var.ers_instance_number}"
@@ -255,7 +261,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-32xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ers-33xx" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-netweaver-ers-tcp-33${var.ers_instance_number}"
@@ -270,7 +276,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-33xx" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ers-5xx13" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}13"
@@ -285,7 +291,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-5xx13" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ers-5xx14" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}14"
@@ -300,7 +306,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-5xx14" {
 }
 
 resource "azurerm_lb_rule" "netweaver-lb-ers-5xx16" {
-  count                          = var.netweaver_count > 0 ? 1 : 0
+  count                          = local.create_ha_infra
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
   name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}16"
@@ -317,7 +323,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-5xx16" {
 # netweaver network configuration
 
 resource "azurerm_public_ip" "netweaver" {
-  count                   = var.netweaver_count
+  count                   = local.vm_count
   name                    = "pip-netweaver0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -330,12 +336,12 @@ resource "azurerm_public_ip" "netweaver" {
 }
 
 resource "azurerm_network_interface" "netweaver" {
-  count                         = var.netweaver_count
+  count                         = local.vm_count
   name                          = "nic-netweaver0${count.index + 1}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   network_security_group_id     = var.sec_group_id
-  enable_accelerated_networking = var.enable_accelerated_networking
+  enable_accelerated_networking = count.index < var.xscs_server_count ? var.xscs_accelerated_networking : var.app_accelerated_networking
 
   ip_configuration {
     name                          = "ipconf-primary"
@@ -370,16 +376,36 @@ resource "azurerm_image" "netweaver-image" {
   }
 }
 
+# APP server disk
+
+resource "azurerm_managed_disk" "app_server_disk" {
+  count                = var.app_server_count
+  name                 = "disk-netweaver0${count.index + 1}-App"
+  location             = var.az_region
+  resource_group_name  = var.resource_group_name
+  storage_account_type = var.data_disk_type
+  create_option        = "Empty"
+  disk_size_gb         = var.data_disk_size
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "app_server_disk" {
+  count              = var.app_server_count
+  managed_disk_id    = azurerm_managed_disk.app_server_disk[count.index].id
+  virtual_machine_id = azurerm_virtual_machine.netweaver[count.index + var.xscs_server_count].id
+  lun                = local.additional_lun_number
+  caching            = var.data_disk_caching
+}
+
 # netweaver instances
 
 resource "azurerm_virtual_machine" "netweaver" {
-  count                            = var.netweaver_count
+  count                            = local.vm_count
   name                             = "vmnetweaver0${count.index + 1}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.netweaver.*.id, count.index)]
-  availability_set_id              = azurerm_availability_set.netweaver-availability-set[0].id
-  vm_size                          = var.vm_size
+  availability_set_id              = count.index < var.xscs_server_count ? (local.create_ha_infra > 0 ? azurerm_availability_set.netweaver-xscs-availability-set[0].id : null) : azurerm_availability_set.netweaver-app-availability-set[0].id
+  vm_size                          = count.index < var.xscs_server_count ? var.xscs_vm_size : var.app_vm_size
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
 
@@ -396,15 +422,6 @@ resource "azurerm_virtual_machine" "netweaver" {
     offer     = var.netweaver_image_uri != "" ? "" : var.netweaver_public_offer
     sku       = var.netweaver_image_uri != "" ? "" : var.netweaver_public_sku
     version   = var.netweaver_image_uri != "" ? "" : var.netweaver_public_version
-  }
-
-  storage_data_disk {
-    name              = "disk-netweaver0${count.index + 1}-Data01"
-    caching           = var.data_disk_caching
-    create_option     = "Empty"
-    disk_size_gb      = var.data_disk_size
-    lun               = "0"
-    managed_disk_type = var.data_disk_type
   }
 
   os_profile {
@@ -433,7 +450,7 @@ resource "azurerm_virtual_machine" "netweaver" {
 
 module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = var.netweaver_count
+  node_count           = local.vm_count
   instance_ids         = azurerm_virtual_machine.netweaver.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
