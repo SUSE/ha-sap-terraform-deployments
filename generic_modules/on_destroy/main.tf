@@ -7,6 +7,7 @@ resource "null_resource" "on_destroy" {
     password     = var.password
     private_key  = var.private_key_location
     public_ips   = join(",", var.public_ips)
+    bastion_host = var.bastion_host
   }
 
   connection {
@@ -15,6 +16,11 @@ resource "null_resource" "on_destroy" {
     user        = self.triggers.user
     password    = self.triggers.password
     private_key = self.triggers.private_key != "" ? file(self.triggers.private_key) : ""
+
+    bastion_host        = self.triggers.bastion_host
+    bastion_user        = self.triggers.user
+    bastion_private_key = self.triggers.private_key != "" ? file(self.triggers.private_key) : ""
+
   }
 
   provisioner "file" {
