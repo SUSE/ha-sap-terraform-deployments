@@ -137,12 +137,6 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
 variable "sles4sap_boot_image" {
   description = "The image used to create the hana machines"
   type        = string
@@ -226,6 +220,18 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
@@ -243,7 +249,18 @@ variable "monitoring_enabled" {
   default     = false
 }
 
-# Iscsi server related variables
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
+# If iscsi is selected as sbd_storage_type
+# Use the next variables for advanced configuration
 
 variable "iscsi_server_boot_image" {
   description = "The image used to create the iscsi machines"
@@ -263,9 +280,15 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
+}
+
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
 # DRBD related variables
@@ -312,6 +335,12 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
@@ -348,6 +377,12 @@ variable "netweaver_virtual_ips" {
   description = "virtual ip addresses to set to the nodes. The first 2 nodes will be part of the HA cluster so they addresses must be outside of the subnet mask"
   type        = list(string)
   default     = []
+}
+
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_product_id" {
@@ -390,6 +425,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

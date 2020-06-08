@@ -1,4 +1,4 @@
-variable "machine_type_iscsi_server" {
+variable "machine_type" {
   type    = string
   default = "custom-1-2048"
 }
@@ -18,19 +18,26 @@ variable "iscsi_server_boot_image" {
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
-variable "iscsi_srv_ip" {
-  description = "IP for iSCSI server"
+variable "iscsi_count" {
+  type        = number
+  description = "Number of iscsi machines to deploy"
 }
 
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
-  default     = "/dev/sdb"
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
+}
+
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  type        = number
+  default     = 3
 }
 
 variable "public_key_location" {

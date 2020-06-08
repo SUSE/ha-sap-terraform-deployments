@@ -44,7 +44,7 @@ module "get_os_image" {
 resource "aws_instance" "clusternodes" {
   count                       = var.hana_count
   ami                         = module.get_os_image.image_id
-  instance_type               = var.instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.hana-subnet.*.id, count.index)

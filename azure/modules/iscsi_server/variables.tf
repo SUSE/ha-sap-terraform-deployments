@@ -62,19 +62,26 @@ variable "private_key_location" {
   type = string
 }
 
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
+variable "iscsi_count" {
+  description = "Number of iscsi machines to deploy"
+  type        = number
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
+}
+
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  type        = number
+  default     = 3
 }
 
 variable "reg_code" {

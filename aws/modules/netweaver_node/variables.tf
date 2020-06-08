@@ -3,7 +3,7 @@ variable "netweaver_count" {
   default = "4"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }
@@ -74,6 +74,19 @@ variable "aws_secret_access_key" {
 variable "s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
   type        = string
+}
+
+variable "network_domain" {
+  type    = string
+  default = "tf.local"
+}
+
+variable "public_key_location" {
+  type = string
+}
+
+variable "private_key_location" {
+  type = string
 }
 
 variable "netweaver_product_id" {
@@ -165,17 +178,22 @@ variable "aas_instance_number" {
   default     = "02"
 }
 
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
-variable "public_key_location" {
-  type = string
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
 }
 
-variable "private_key_location" {
-  type = string
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {

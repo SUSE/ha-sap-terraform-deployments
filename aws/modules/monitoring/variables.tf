@@ -1,11 +1,5 @@
-variable "monitor_instancetype" {
+variable "instance_type" {
   description = "The instance type of monitoring node."
-  type        = string
-  default     = ""
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
   type        = string
   default     = "t2.micro"
 }

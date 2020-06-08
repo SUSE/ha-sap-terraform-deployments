@@ -3,7 +3,7 @@ variable "hana_count" {
   default = "2"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }
@@ -12,11 +12,6 @@ variable "name" {
   description = "prefix of the machines names"
   type        = string
   default     = "hana"
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
 }
 
 variable "scenario_type" {
@@ -69,6 +64,10 @@ variable "aws_access_key_id" {
 }
 
 variable "aws_secret_access_key" {
+  type = string
+}
+
+variable "private_key_location" {
   type = string
 }
 
@@ -132,8 +131,22 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
-variable "private_key_location" {
-  type = string
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {

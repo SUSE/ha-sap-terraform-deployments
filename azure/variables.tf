@@ -185,37 +185,38 @@ variable "sles4sap_uri" {
 variable "hana_vm_size" {
   description = "VM size for the hana machine"
   type        = string
-  default     = "Standard_M32ls"
+  default     = "Standard_E4s_v3"
 }
 
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
-}
-
-variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
-  type        = string
-  default     = "Standard_LRS"
-}
-
-variable "hana_data_disk_size" {
-  description = "Disk size of the disks used to store hana database content"
-  type        = string
-  default     = "60"
-}
-
-variable "hana_data_disk_caching" {
-  description = "Disk caching of the disks used to store hana database content"
-  type        = string
-  default     = "ReadWrite"
+variable "hana_data_disks_configuration" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+    disks_size       = "128,128,128,128,128,128,128"
+    caching          = "None,None,None,None,None,None,None"
+    writeaccelerator = "false,false,false,false,false,false,false"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups splitted by "#" must match in all of the entries
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
 }
 
 variable "hana_enable_accelerated_networking" {
   description = "Enable accelerated networking. This function is mandatory for certified HANA environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "hana_ips" {
@@ -259,11 +260,6 @@ variable "hana_extract_dir" {
   default     = "/sapmedia/HANA"
 }
 
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-}
-
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string
@@ -282,12 +278,35 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
 }
 
-# Iscsi server related variables
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
+# If iscsi is selected as sbd_storage_type
+# Use the next variables for advanced configuration
 
 variable "iscsi_public_publisher" {
   description = "Public image publisher name used to create the iscsi machines"
@@ -331,14 +350,15 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
 # Monitoring related variables
@@ -447,12 +467,24 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = true
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"
   type        = bool
   default     = false
+}
+
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS server (1 PAS and the rest will be AAS)"
+  type        = number
+  default     = 2
 }
 
 variable "netweaver_public_publisher" {
@@ -485,28 +517,46 @@ variable "netweaver_image_uri" {
   default     = ""
 }
 
-variable "netweaver_vm_size" {
-  description = "VM size for the Netweaver machines"
+variable "netweaver_xscs_vm_size" {
+  description = "VM size for the Netweaver xSCS machines"
   type        = string
-  default     = "Standard_D4s_v3"
+  default     = "Standard_D2s_v3"
+}
+
+variable "netweaver_app_vm_size" {
+  description = "VM size for the Netweaver application servers"
+  type        = string
+  default     = "Standard_D2s_v3"
 }
 
 variable "netweaver_data_disk_type" {
-  description = "Disk type of the disks used to store netweaver content"
+  description = "Disk type of the disks used to store netweaver content in the application servers"
   type        = string
-  default     = "Standard_LRS"
+  default     = "Premium_LRS"
 }
 
 variable "netweaver_data_disk_size" {
-  description = "Size of the Netweaver data disks, informed in GB"
+  description = "Size of the netweaver data disks in the application servers, informed in GB"
   type        = string
-  default     = "60"
+  default     = "128"
 }
 
 variable "netweaver_data_disk_caching" {
-  description = "Disk caching of the disks used to store hana database content"
+  description = "Disk caching of the disks used to store netweaver content in the application servers"
   type        = string
   default     = "ReadWrite"
+}
+
+variable "netweaver_xscs_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver xSCS machines"
+  type        = bool
+  default     = false
+}
+
+variable "netweaver_app_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver application server machines"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_ips" {
@@ -519,6 +569,18 @@ variable "netweaver_virtual_ips" {
   description = "Virtual ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
+}
+
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "netweaver_nfs_share" {
+  description = "NFS share used to store shared netweaver files. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project"
+  type        = string
+  default     = ""
 }
 
 variable "netweaver_storage_account_name" {
@@ -537,12 +599,6 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
-}
-
-variable "netweaver_enable_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
-  type        = bool
-  default     = true
 }
 
 variable "netweaver_product_id" {
@@ -585,6 +641,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

@@ -5,7 +5,14 @@ cloud-netconfig-ec2:
     - retry:
         attempts: 3
         interval: 15
+{% elif grains['provider'] == 'azure' %}
+cloud-netconfig-azure:
+  pkg.installed:
+    - retry:
+        attempts: 3
+        interval: 15
 {% endif %}
+
 # Add workaround: https://www.suse.com/support/kb/doc/?id=7023633
 /etc/sysconfig/network/ifcfg-eth0:
   file.replace:

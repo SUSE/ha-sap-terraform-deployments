@@ -14,14 +14,14 @@ resource "libvirt_domain" "netweaver_domain" {
   qemu_agent = true
 
   dynamic "disk" {
-    for_each = [
+    for_each = slice([
       {
         "vol_id" = element(libvirt_volume.netweaver_image_disk.*.id, count.index)
       },
       {
         "vol_id" = var.shared_disk_id
       },
-    ]
+    ], 0, var.ha_enabled ? 2 : 1)
     content {
       volume_id = disk.value.vol_id
     }

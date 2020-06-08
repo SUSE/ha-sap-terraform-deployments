@@ -37,7 +37,9 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-shared_storage_type: iscsi
+ha_enabled: ${var.ha_enabled}
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}

@@ -19,25 +19,53 @@ variable "storage_account" {
   type = string
 }
 
-variable "netweaver_count" {
+variable "admin_user" {
   type    = string
-  default = "2"
+  default = "azadmin"
 }
 
-variable "vm_size" {
+variable "network_domain" {
   type    = string
-  default = "Standard_D4s_v3"
+  default = "tf.local"
+}
+
+variable "public_key_location" {
+  type = string
+}
+
+variable "private_key_location" {
+  type = string
+}
+
+variable "xscs_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "app_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "xscs_vm_size" {
+  type    = string
+  default = "Standard_D2s_v3"
+}
+
+variable "app_vm_size" {
+  type    = string
+  default = "Standard_D2s_v3"
 }
 
 variable "data_disk_type" {
   type    = string
-  default = "Standard_LRS"
+  default = "Premium_LRS"
 }
 
 variable "data_disk_size" {
   description = "Size of the Netweaver data disks, informed in GB"
   type        = string
-  default     = "60"
+  default     = "128"
 }
 
 variable "data_disk_caching" {
@@ -61,12 +89,6 @@ variable "pas_instance_number" {
   description = "PAS instance number"
   type        = string
   default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
 }
 
 variable "netweaver_product_id" {
@@ -131,10 +153,16 @@ variable "storage_account_path" {
   type        = string
 }
 
-variable "enable_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+variable "xscs_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver xSCS machines"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "app_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver application server machines"
+  type        = bool
+  default     = false
 }
 
 variable "host_ips" {
@@ -179,22 +207,22 @@ variable "hana_ip" {
   description = "Ip address of the hana database"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
 }
 
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {

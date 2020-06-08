@@ -1,5 +1,5 @@
 resource "null_resource" "netweaver_provisioner" {
-  count = var.provisioner == "salt" ? var.netweaver_count : 0
+  count = var.provisioner == "salt" ? local.vm_count : 0
 
   triggers = {
     netweaver_id = join(",", azurerm_virtual_machine.netweaver.*.id)
@@ -29,7 +29,11 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-shared_storage_type: iscsi
+ha_enabled: ${var.ha_enabled}
+app_server_count: ${var.app_server_count}
+additional_lun: ${count.index < var.xscs_server_count ? "" : local.additional_lun_number}
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
@@ -39,7 +43,6 @@ qa_mode: ${var.qa_mode}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
-aas_instance_number: ${var.aas_instance_number}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_swpm_folder: ${var.netweaver_swpm_folder}
 netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
@@ -59,7 +62,7 @@ hana_ip: ${var.hana_ip}
 
 module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  node_count           = var.provisioner == "salt" ? local.vm_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location

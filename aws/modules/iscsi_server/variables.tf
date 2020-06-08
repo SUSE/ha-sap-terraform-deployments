@@ -1,5 +1,6 @@
 variable "aws_region" {
-  type = string
+  type        = string
+  description = "AWS region where the deployment machines will be created"
 }
 
 variable "availability_zones" {
@@ -9,19 +10,18 @@ variable "availability_zones" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "List of subnet IDs"
+  description = "Subnet ids to attach the machines network interface"
 }
 
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
+variable "iscsi_count" {
+  type        = number
+  description = "Number of iscsi machines to deploy"
+}
+
+variable "instance_type" {
   type        = string
-  default     = "t2.micro"
-}
-
-variable "iscsi_instancetype" {
   description = "The instance type of iscsi server node."
-  type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "key_name" {
@@ -35,22 +35,25 @@ variable "security_group_id" {
 }
 
 variable "private_key_location" {
-  type = string
-}
-
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
   type        = string
+  description = "Path to a SSH private key used to connect to the created machines"
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
+}
+
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  type        = number
+  default     = 3
 }
 
 variable "reg_code" {

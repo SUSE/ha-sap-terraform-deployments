@@ -1,9 +1,4 @@
 {% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
-{% if not grains.get('sbd_disk_device') %}
-{% set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{% else %}
-{% set sbd_disk_device = grains['sbd_disk_device'] %}
-{% endif %}
 
 cluster:
   {% if grains.get('qa_mode') %}
@@ -18,11 +13,22 @@ cluster:
   unicast: True
   {% endif %}
   join_timeout: 180
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device'] }}
+    {% if grains['provider'] == 'azure' %}
+    configure_resource:
+      params:
+        pcmk_delay_max: 15
+      op:
+        monitor:
+          timeout: 15
+          interval: 15
+    {% endif %}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:
@@ -41,9 +47,12 @@ cluster:
       max_messages: 20
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
-  {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
-    method: update
+    {% if grains['provider'] == 'azure' %}
+    properties:
+      stonith-timeout: 144s
+      stonith-enabled: true
+    {% endif %}
     template:
       source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
       parameters:
@@ -71,4 +80,3 @@ cluster:
           instance: {{ hana.hana.nodes[2].instance }}
           remote_host : {{ hana.hana.nodes[0].host }}
         {% endif %}
-  {% endif %}

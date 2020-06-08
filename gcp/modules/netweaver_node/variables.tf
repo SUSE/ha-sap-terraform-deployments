@@ -44,6 +44,24 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
