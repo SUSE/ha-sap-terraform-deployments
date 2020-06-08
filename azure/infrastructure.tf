@@ -242,3 +242,17 @@ resource "azurerm_network_security_group" "mysecgroup" {
     workspace = terraform.workspace
   }
 }
+
+# Bastion
+
+module "bastion" {
+  bastion_enabled     = var.bastion_enabled
+  source              = "./modules/bastion"
+  az_region           = var.az_region
+  resource_group_name = local.resource_group_name
+  vnet_name           = local.vnet_name
+  admin_user          = var.admin_user
+  public_key_location = var.public_key_location
+  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  snet_address_range  = cidrsubnet(local.vnet_address_range, 8, 2)
+}

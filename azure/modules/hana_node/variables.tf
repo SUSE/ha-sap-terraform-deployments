@@ -98,6 +98,18 @@ variable "private_key_location" {
   type = string
 }
 
+variable "bastion_enabled" {
+  description = "Use a bastion machine to create the ssh connections"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_host" {
+  description = "Bastion host address. "
+  type        = string
+  default     = ""
+}
+
 variable "sbd_enabled" {
   description = "Enable sbd usage in the HA cluster"
   type        = bool
