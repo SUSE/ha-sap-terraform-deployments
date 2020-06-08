@@ -6,10 +6,14 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   connection {
-    host        = element(data.azurerm_public_ip.iscsisrv.*.ip_address, count.index)
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
     private_key = file(var.private_key_location)
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.admin_user
+    bastion_private_key = file(var.private_key_location)
   }
 
   provisioner "file" {
@@ -44,6 +48,7 @@ module "iscsi_provision" {
   instance_ids         = null_resource.iscsi_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.iscsisrv.*.ip_address
+  bastion_host         = var.bastion_host
+  public_ips           = local.provisioning_addresses
   background           = var.background
 }
