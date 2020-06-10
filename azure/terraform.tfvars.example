@@ -199,9 +199,14 @@ ha_sap_deployment_repo = ""
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
 
-# Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
-# Set to false to only create a ASCS and PAS instances
+# Enabling this option will create a ASCS/ERS HA available cluster
 #netweaver_ha_enabled = true
+# Application servers number. The 1st one will be a PAS instance, and the rest AAS servers
+#netweaver_app_server_count = 2
+
+# VM sizes
+#netweaver_xscs_vm_size = Standard_D2s_v3
+#netweaver_app_vm_size = Standard_D2s_v3
 
 # Set the Netweaver product id for HA (this is just an example)
 #netweaver_product_id = NW750.HDB.ABAPHA

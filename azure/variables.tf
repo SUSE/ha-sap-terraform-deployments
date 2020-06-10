@@ -481,6 +481,12 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS server (1 PAS and the rest will be AAS)"
+  type        = number
+  default     = 2
+}
+
 variable "netweaver_public_publisher" {
   description = "Public image publisher name used to create the netweaver machines"
   type        = string
@@ -511,28 +517,46 @@ variable "netweaver_image_uri" {
   default     = ""
 }
 
-variable "netweaver_vm_size" {
-  description = "VM size for the Netweaver machines"
+variable "netweaver_xscs_vm_size" {
+  description = "VM size for the Netweaver xSCS machines"
   type        = string
-  default     = "Standard_D4s_v3"
+  default     = "Standard_D2s_v3"
+}
+
+variable "netweaver_app_vm_size" {
+  description = "VM size for the Netweaver application servers"
+  type        = string
+  default     = "Standard_D2s_v3"
 }
 
 variable "netweaver_data_disk_type" {
-  description = "Disk type of the disks used to store netweaver content"
+  description = "Disk type of the disks used to store netweaver content in the application servers"
   type        = string
-  default     = "Standard_LRS"
+  default     = "Premium_LRS"
 }
 
 variable "netweaver_data_disk_size" {
-  description = "Size of the Netweaver data disks, informed in GB"
+  description = "Size of the netweaver data disks in the application servers, informed in GB"
   type        = string
-  default     = "60"
+  default     = "128"
 }
 
 variable "netweaver_data_disk_caching" {
-  description = "Disk caching of the disks used to store hana database content"
+  description = "Disk caching of the disks used to store netweaver content in the application servers"
   type        = string
   default     = "ReadWrite"
+}
+
+variable "netweaver_xscs_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver xSCS machines"
+  type        = bool
+  default     = false
+}
+
+variable "netweaver_app_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver application server machines"
+  type        = bool
+  default     = false
 }
 
 variable "netweaver_ips" {
@@ -553,6 +577,12 @@ variable "netweaver_cluster_sbd_enabled" {
   default     = true
 }
 
+variable "netweaver_nfs_share" {
+  description = "NFS share used to store shared netweaver files. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project"
+  type        = string
+  default     = ""
+}
+
 variable "netweaver_storage_account_name" {
   description = "Azure storage account where SAP Netweaver installation files are stored"
   type        = string
@@ -569,12 +599,6 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
-}
-
-variable "netweaver_enable_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
-  type        = bool
-  default     = true
 }
 
 variable "netweaver_product_id" {

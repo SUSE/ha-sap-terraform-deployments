@@ -54,6 +54,13 @@ install_salt_minion () {
     fi
 }
 
+repeat_command () {
+  cmd=$1
+  timeout=${2:-120}
+  interval=${3:-15}
+  timeout $timeout bash -c "until $cmd;do sleep $interval;done"
+}
+
 bootstrap_salt () {
     mv /tmp/salt /root || true
 
@@ -69,6 +76,7 @@ bootstrap_salt () {
     # Check if the deployment is executed in a cloud provider
     [[ "$(get_grain provider /tmp/grains)" =~ aws|azure|gcp ]] && cloud=1
     if [[ ${qa_mode} != 1 && ${cloud} == 1 && "${reg_code}" == "" ]]; then
+        repeat_command "systemctl is-active guestregister.service | grep inactive" 300
         zypper lr || sudo /usr/sbin/registercloudguest --force-new
     fi
 

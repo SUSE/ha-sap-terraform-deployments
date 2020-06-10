@@ -123,7 +123,7 @@ Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
 
 The database configuration may vary depending on the expected performance. In order to have different options, the virtual machine size, disks, network configuration, etc must be configured differently. Here some predefined options that might help in the configuration.
 
-For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. Bye default the **demo** option is deployed.
+For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. By default the **demo** option is deployed.
 **Use other values only if you know what you are doing**.
 
 #### Demo
@@ -192,6 +192,83 @@ hana_data_disks_configuration = {
   lv_sizes         = "100#100#100#100#100"
   paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 }
+```
+
+## Netweaver configuration
+
+There are different Netweaver configurations available depending on if the environment is an HA one or not, and the expected performance. Here some guidelines for the different options:
+
+To set a 3-tier deployment (simple Netweaver, without HA) use the next options:
+
+```
+netweaver_enabled = true
+netweaver_ha_enabled = false
+netweaver_cluster_sbd_enabled = false
+drbd_enabled = false
+netweaver_nfs_share = your_nfs_share:/mount_point
+```
+
+For 3-tier HA deployment:
+
+```
+netweaver_enabled = true
+netweaver_ha_enabled = true
+netweaver_cluster_sbd_enabled = true
+drbd_enabled = true
+```
+
+Besides that, we need to define the expected performance setting the vm sizes, networking and disk different options. Here some different options (by default the **demo** option is deployed):
+
+#### Demo
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_D2s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = ""ReadWrite""
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = false
+netweaver_app_server_count = 2
+```
+
+#### Small
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = ""ReadWrite""
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 5
+```
+
+#### Medium
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 5
+```
+
+#### Large
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 10
 ```
 
 # Advanced usage
