@@ -202,6 +202,9 @@ module "monitoring" {
   monitoring_srv_ip           = local.monitoring_ip
   public_key_location         = var.public_key_location
   private_key_location        = var.private_key_location
+  bastion_enabled             = var.bastion_enabled
+  bastion_host                = module.bastion.public_ip
+  bastion_private_key         = local.bastion_private_key
   admin_user                  = var.admin_user
   reg_code                    = var.reg_code
   reg_email                   = var.reg_email

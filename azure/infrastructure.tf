@@ -34,7 +34,7 @@ locals {
   subnet_address_range = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
 
   bastion_private_key = var.bastion_private_key_location != "" ? var.bastion_private_key_location : var.private_key_location
-  bastion_public_key = var.bastion_public_key_location != "" ? var.bastion_public_key_location : var.public_key_location
+  bastion_public_key  = var.bastion_public_key_location != "" ? var.bastion_public_key_location : var.public_key_location
 }
 
 # Azure resource group and storage account resources
