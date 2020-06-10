@@ -19,11 +19,6 @@ variable "storage_account" {
   type = string
 }
 
-variable "netweaver_count" {
-  type    = string
-  default = "2"
-}
-
 variable "admin_user" {
   type    = string
   default = "azadmin"
@@ -42,20 +37,35 @@ variable "private_key_location" {
   type = string
 }
 
-variable "vm_size" {
+variable "xscs_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "app_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "xscs_vm_size" {
   type    = string
-  default = "Standard_D4s_v3"
+  default = "Standard_D2s_v3"
+}
+
+variable "app_vm_size" {
+  type    = string
+  default = "Standard_D2s_v3"
 }
 
 variable "data_disk_type" {
   type    = string
-  default = "Standard_LRS"
+  default = "Premium_LRS"
 }
 
 variable "data_disk_size" {
   description = "Size of the Netweaver data disks, informed in GB"
   type        = string
-  default     = "60"
+  default     = "128"
 }
 
 variable "data_disk_caching" {
@@ -79,12 +89,6 @@ variable "pas_instance_number" {
   description = "PAS instance number"
   type        = string
   default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
 }
 
 variable "netweaver_product_id" {
@@ -155,10 +159,16 @@ variable "storage_account_path" {
   type        = string
 }
 
-variable "enable_accelerated_networking" {
-  description = "Enable accelerated networking for netweaver. This function is mandatory for certified Netweaver environments and are not available for all kinds of instances. Check https://docs.microsoft.com/en-us/azure/virtual-network/create-vm-accelerated-networking-cli for more details"
+variable "xscs_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver xSCS machines"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "app_accelerated_networking" {
+  description = "Enable accelerated networking for netweaver application server machines"
+  type        = bool
+  default     = false
 }
 
 variable "host_ips" {

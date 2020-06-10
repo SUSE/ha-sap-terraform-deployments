@@ -10,13 +10,20 @@
 {%- endif %}
 
 netweaver:
+  {%- set app_start_index = 2 if grains['ha_enabled'] else 1 %}
+  {%- set app_server_count = grains['app_server_count']|default(2) %}
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sapha1as
-    {{ grains['virtual_host_ips'][2 if grains['ha_enabled'] else 1] }}: sapha1pas
-    {% if grains['ha_enabled'] %}
+    {%- if grains['ha_enabled'] %}
     {{ grains['virtual_host_ips'][1] }}: sapha1er
-    {{ grains['virtual_host_ips'][3] }}: sapha1aas
     {%- endif %}
+    {%- if app_server_count > 0 %}
+    {{ grains['virtual_host_ips'][app_start_index] }}: sapha1pas
+    {%- for index in range(app_server_count-1) %}
+    {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sapha1aas{{ loop.index }}
+    {%- endfor %}
+    {%- endif %}
+
   sidadm_user:
     uid: 2001
     gid: 2002
@@ -71,7 +78,7 @@ netweaver:
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: HA1
-      instance: {{ grains['ascs_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['ascs_instance_number']) }}
       root_user: root
       root_password: linux
       {%- if grains['ha_enabled'] and grains['provider'] == 'libvirt' %}
@@ -82,7 +89,25 @@ netweaver:
       {%- endif %}
       sap_instance: ascs
 
-    - host: {{ grains['name_prefix'] }}0{{ 3 if grains['ha_enabled'] else 2 }}
+    {% if grains['ha_enabled'] %}
+    - host: {{ grains['name_prefix'] }}02
+      virtual_host: sapha1er
+      virtual_host_interface: {{ virtual_host_interface }}
+      virtual_host_mask: {{ virtual_host_mask }}
+      sid: HA1
+      instance: {{ '{:0>2}'.format(grains['ers_instance_number']) }}
+      root_user: root
+      root_password: linux
+      {%- if grains['provider'] == 'libvirt' %}
+      shared_disk_dev: /dev/vdb
+      {%- else %}
+      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS
+      {%- endif %}
+      sap_instance: ers
+    {% endif %}
+
+    {% if app_server_count > 0 %}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sapha1pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
@@ -92,13 +117,13 @@ netweaver:
       root_password: linux
       sap_instance: db
 
-    - host: {{ grains['name_prefix'] }}0{{ 3 if grains['ha_enabled'] else 2 }}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sapha1pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       ascs_virtual_host: sapha1as
       sid: HA1
-      instance: {{ grains['pas_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['pas_instance_number']) }}
       root_user: root
       root_password: linux
       sap_instance: pas
@@ -106,31 +131,17 @@ netweaver:
       #extra_parameters:
       #  NW_liveCache.useLiveCache: "false"
 
-    {% if grains['ha_enabled'] %}
-    - host: {{ grains['name_prefix'] }}02
-      virtual_host: sapha1er
+    {%- for index in range(app_server_count-1) %}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1+loop.index }}
+      virtual_host: sapha1aas{{ loop.index }}
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: HA1
-      instance: {{ grains['ers_instance_number'] }}
-      root_user: root
-      root_password: linux
-      {%- if grains['provider'] == 'libvirt' %}
-      shared_disk_dev: /dev/vdb
-      {%- else %}
-      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS
-      {%- endif %}
-      sap_instance: ers
-
-    - host: {{ grains['name_prefix'] }}04
-      virtual_host: sapha1aas
-      virtual_host_interface: {{ virtual_host_interface }}
-      virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
-      instance: {{ grains['aas_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['pas_instance_number']+loop.index) }}
       root_user: root
       root_password: linux
       sap_instance: aas
       # Add for S4/HANA
       #attempts: 500
+    {% endfor %}
     {% endif %}
