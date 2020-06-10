@@ -23,7 +23,6 @@ default_sle_module_adv_systems_management_registration:
         attempts: 3
         interval: 15
 
-{%- if grains['provider'] in ['gcp', 'aws', 'azure'] %}
 default_sle_module_public_cloud_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/12/{{ arch }} -r $reg_code
@@ -32,8 +31,6 @@ default_sle_module_public_cloud_registration:
     - retry:
         attempts: 3
         interval: 15
-
-{% endif %}
 
 {% elif grains['osmajorrelease'] == 15 and grains['provider'] in ['gcp', 'aws', 'azure'] %}
 default_sle_module_public_cloud_registration:
