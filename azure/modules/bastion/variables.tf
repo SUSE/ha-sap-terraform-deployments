@@ -10,6 +10,12 @@ variable "az_region" {
   default = "westeurope"
 }
 
+variable "vm_size" {
+  description = "Bastion machine vm size"
+  type        = string
+  default     = "Standard_B1s"
+}
+
 variable "resource_group_name" {
   description = "Resource group name where the bastion will be created"
   type        = string
@@ -31,7 +37,7 @@ variable "admin_user" {
 }
 
 variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+  description = "Path to a SSH public key used to connect to the bastion. This key will be authorized"
   type        = string
 }
 

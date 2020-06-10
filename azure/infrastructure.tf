@@ -249,6 +249,7 @@ module "bastion" {
   bastion_enabled     = var.bastion_enabled
   source              = "./modules/bastion"
   az_region           = var.az_region
+  vm_size             = "Standard_B1s"
   resource_group_name = local.resource_group_name
   vnet_name           = local.vnet_name
   admin_user          = var.admin_user
