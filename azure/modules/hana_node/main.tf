@@ -174,7 +174,7 @@ resource "azurerm_lb_rule" "lb_3xx17" {
 }
 
 resource "azurerm_lb_rule" "hanadb_exporter" {
-  count                          = var.monitoring_enabled ? 1 : 0
+  count                          = var.monitoring_enabled ? local.create_ha_infra : 0
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
   name                           = "hanadb_exporter"
@@ -322,6 +322,7 @@ module "hana_on_destroy" {
   user                 = var.admin_user
   private_key_location = var.private_key_location
   bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.hana]
 }

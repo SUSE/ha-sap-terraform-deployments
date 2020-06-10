@@ -13,7 +13,7 @@ resource "null_resource" "drbd_provisioner" {
 
     bastion_host        = var.bastion_host
     bastion_user        = var.admin_user
-    bastion_private_key = file(var.private_key_location)
+    bastion_private_key = file(var.bastion_private_key)
   }
 
   provisioner "file" {
@@ -58,6 +58,7 @@ module "drbd_provision" {
   user                 = var.admin_user
   private_key_location = var.private_key_location
   bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses
   background           = var.background
 }

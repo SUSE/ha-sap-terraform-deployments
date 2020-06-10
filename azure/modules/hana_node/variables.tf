@@ -105,7 +105,13 @@ variable "bastion_enabled" {
 }
 
 variable "bastion_host" {
-  description = "Bastion host address. "
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
   type        = string
   default     = ""
 }

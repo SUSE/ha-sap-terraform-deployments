@@ -233,6 +233,7 @@ module "drbd_on_destroy" {
   user                 = var.admin_user
   private_key_location = var.private_key_location
   bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.drbd]
 }

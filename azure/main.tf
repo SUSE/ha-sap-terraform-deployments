@@ -56,6 +56,7 @@ module "drbd_node" {
   private_key_location   = var.private_key_location
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
+  bastion_private_key    = local.bastion_private_key
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   admin_user             = var.admin_user
@@ -99,6 +100,7 @@ module "netweaver_node" {
   private_key_location        = var.private_key_location
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
+  bastion_private_key         = local.bastion_private_key
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   admin_user                  = var.admin_user
@@ -161,6 +163,7 @@ module "hana_node" {
   private_key_location          = var.private_key_location
   bastion_enabled               = var.bastion_enabled
   bastion_host                  = module.bastion.public_ip
+  bastion_private_key           = local.bastion_private_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
   hana_public_publisher         = var.hana_public_publisher
   hana_public_offer             = var.hana_public_offer
@@ -231,6 +234,7 @@ module "iscsi_server" {
   private_key_location   = var.private_key_location
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
+  bastion_private_key    = local.bastion_private_key
   host_ips               = [local.iscsi_ip]
   lun_count              = var.iscsi_lun_count
   iscsi_disk_size        = var.iscsi_disk_size

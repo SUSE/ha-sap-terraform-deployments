@@ -27,7 +27,13 @@ variable "private_key_location" {
 }
 
 variable "bastion_host" {
-  description = "Address of a bastion host to use in the SSH connections. It uses the same user/private key combo of the normal connection. Let empty to use the normal connection"
+  description = "Address of a bastion host to use in the SSH connections. Let empty to use the normal connection"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion"
   type        = string
   default     = ""
 }

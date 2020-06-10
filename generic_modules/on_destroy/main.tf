@@ -2,12 +2,13 @@ resource "null_resource" "on_destroy" {
   count = var.node_count
 
   triggers = {
-    instance_ids = join(",", var.instance_ids)
-    user         = var.user
-    password     = var.password
-    private_key  = var.private_key_location
-    public_ips   = join(",", var.public_ips)
-    bastion_host = var.bastion_host
+    instance_ids        = join(",", var.instance_ids)
+    user                = var.user
+    password            = var.password
+    private_key         = var.private_key_location
+    public_ips          = join(",", var.public_ips)
+    bastion_host        = var.bastion_host
+    bastion_private_key = var.bastion_private_key
   }
 
   connection {
@@ -19,7 +20,7 @@ resource "null_resource" "on_destroy" {
 
     bastion_host        = self.triggers.bastion_host
     bastion_user        = self.triggers.user
-    bastion_private_key = self.triggers.private_key != "" ? file(self.triggers.private_key) : ""
+    bastion_private_key = self.triggers.bastion_private_key != "" ? file(self.triggers.bastion_private_key) : ""
 
   }
 
