@@ -9,6 +9,7 @@ resource "null_resource" "on_destroy" {
     public_ips          = join(",", var.public_ips)
     bastion_host        = var.bastion_host
     bastion_private_key = var.bastion_private_key
+    source              = "${path.module}/on_destroy.sh"
   }
 
   connection {
@@ -26,7 +27,7 @@ resource "null_resource" "on_destroy" {
 
   provisioner "file" {
     when        = destroy
-    source      = "${path.module}/on_destroy.sh"
+    source      = self.triggers.source
     destination = "/tmp/on_destroy.sh"
     on_failure  = continue
   }
