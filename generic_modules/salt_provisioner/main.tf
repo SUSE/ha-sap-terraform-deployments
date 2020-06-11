@@ -17,7 +17,7 @@ resource "null_resource" "provision_background" {
   }
 
   provisioner "file" {
-    source      = "../salt"
+    source      = "${path.module}/../../salt"
     destination = "/tmp"
   }
 
@@ -48,7 +48,7 @@ resource "null_resource" "provision" {
   }
 
   provisioner "file" {
-    source      = "../salt"
+    source      = "${path.module}/../../salt"
     destination = "/tmp"
   }
 
