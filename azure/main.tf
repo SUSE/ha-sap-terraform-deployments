@@ -54,6 +54,9 @@ module "drbd_node" {
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
+  bastion_enabled        = var.bastion_enabled
+  bastion_host           = module.bastion.public_ip
+  bastion_private_key    = local.bastion_private_key
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   admin_user             = var.admin_user
@@ -95,6 +98,9 @@ module "netweaver_node" {
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   public_key_location         = var.public_key_location
   private_key_location        = var.private_key_location
+  bastion_enabled             = var.bastion_enabled
+  bastion_host                = module.bastion.public_ip
+  bastion_private_key         = local.bastion_private_key
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   admin_user                  = var.admin_user
@@ -155,6 +161,9 @@ module "hana_node" {
   cluster_ssh_key               = var.cluster_ssh_key
   public_key_location           = var.public_key_location
   private_key_location          = var.private_key_location
+  bastion_enabled               = var.bastion_enabled
+  bastion_host                  = module.bastion.public_ip
+  bastion_private_key           = local.bastion_private_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
   hana_public_publisher         = var.hana_public_publisher
   hana_public_offer             = var.hana_public_offer
@@ -193,6 +202,9 @@ module "monitoring" {
   monitoring_srv_ip           = local.monitoring_ip
   public_key_location         = var.public_key_location
   private_key_location        = var.private_key_location
+  bastion_enabled             = var.bastion_enabled
+  bastion_host                = module.bastion.public_ip
+  bastion_private_key         = local.bastion_private_key
   admin_user                  = var.admin_user
   reg_code                    = var.reg_code
   reg_email                   = var.reg_email
@@ -223,6 +235,9 @@ module "iscsi_server" {
   iscsi_public_version   = var.iscsi_public_version
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
+  bastion_enabled        = var.bastion_enabled
+  bastion_host           = module.bastion.public_ip
+  bastion_private_key    = local.bastion_private_key
   host_ips               = [local.iscsi_ip]
   lun_count              = var.iscsi_lun_count
   iscsi_disk_size        = var.iscsi_disk_size

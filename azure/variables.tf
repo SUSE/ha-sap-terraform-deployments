@@ -61,6 +61,24 @@ variable "private_key_location" {
   type        = string
 }
 
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_public_key_location" {
+  description = "Path to a SSH public key used to connect to the bastion. If it's not set the key provided in public_key_location will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key_location" {
+  description = "Path to a SSH private key used to connect to the bastion. If it's not set the key provided in private_key_location will be used"
+  type        = string
+  default     = ""
+}
+
 # Deployment variables
 
 variable "name" {

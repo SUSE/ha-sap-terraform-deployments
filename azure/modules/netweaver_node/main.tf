@@ -2,9 +2,10 @@
 # official documentation: https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse
 
 locals {
-  vm_count              = var.xscs_server_count + var.app_server_count
-  create_ha_infra       = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
-  additional_lun_number = "0"
+  vm_count               = var.xscs_server_count + var.app_server_count
+  create_ha_infra        = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
+  additional_lun_number  = "0"
+  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
 }
 
 resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
@@ -323,7 +324,7 @@ resource "azurerm_lb_rule" "netweaver-lb-ers-5xx16" {
 # netweaver network configuration
 
 resource "azurerm_public_ip" "netweaver" {
-  count                   = local.vm_count
+  count                   = var.bastion_enabled ? 0 : local.vm_count
   name                    = "pip-netweaver0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -348,7 +349,7 @@ resource "azurerm_network_interface" "netweaver" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = element(azurerm_public_ip.netweaver.*.id, count.index)
+    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
   }
 
   tags = {
@@ -454,6 +455,8 @@ module "netweaver_on_destroy" {
   instance_ids         = azurerm_virtual_machine.netweaver.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.netweaver.*.ip_address
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.netweaver]
 }

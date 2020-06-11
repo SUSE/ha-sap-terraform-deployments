@@ -1,7 +1,8 @@
 # Availability set for the hana VMs
 
 locals {
-  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra        = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -173,7 +174,7 @@ resource "azurerm_lb_rule" "lb_3xx17" {
 }
 
 resource "azurerm_lb_rule" "hanadb_exporter" {
-  count                          = var.monitoring_enabled ? 1 : 0
+  count                          = var.monitoring_enabled ? local.create_ha_infra : 0
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
   name                           = "hanadb_exporter"
@@ -202,7 +203,7 @@ resource "azurerm_network_interface" "hana" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = element(azurerm_public_ip.hana.*.id, count.index)
+    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.hana.*.id, count.index)
   }
 
   tags = {
@@ -211,7 +212,7 @@ resource "azurerm_network_interface" "hana" {
 }
 
 resource "azurerm_public_ip" "hana" {
-  count                   = var.hana_count
+  count                   = var.bastion_enabled ? 0 : var.hana_count
   name                    = "pip-${var.name}0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -320,6 +321,8 @@ module "hana_on_destroy" {
   instance_ids         = azurerm_virtual_machine.hana.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.hana.*.ip_address
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.hana]
 }

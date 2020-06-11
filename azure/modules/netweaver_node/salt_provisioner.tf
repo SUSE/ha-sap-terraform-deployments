@@ -6,10 +6,14 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   connection {
-    host        = data.azurerm_public_ip.netweaver[count.index].ip_address
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
     private_key = file(var.private_key_location)
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.admin_user
+    bastion_private_key = file(var.bastion_private_key)
   }
 
   provisioner "file" {
@@ -66,6 +70,8 @@ module "netweaver_provision" {
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.netweaver.*.ip_address
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   background           = var.background
 }
