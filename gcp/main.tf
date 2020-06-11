@@ -174,7 +174,7 @@ module "monitoring" {
   additional_packages    = var.additional_packages
   monitoring_srv_ip      = local.monitoring_srv_ip
   monitoring_enabled     = var.monitoring_enabled
-  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : []) # we use the vip to target the active hana instance
+  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   provisioner            = var.provisioner
