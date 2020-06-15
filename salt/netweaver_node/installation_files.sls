@@ -45,18 +45,13 @@ mount_swpm:
       - cmd: nw_inst_partition
 
 {% if grains['provider'] == 'gcp' %}
-install_rclone:
-  cmd.run:
-    - name: "curl https://rclone.org/install.sh | sudo bash"
 
-configure_rclone:
-  file.append:
-    - name: /root/.rclone.conf
-    - source: /root/salt/hana_node/files/rclone/gcp.conf
+{% from 'macros/download_from_google_storage.sls' import download_from_google_storage with context %}
 
-download_files_from_gcp:
-  cmd.run:
-    - name: rclone copy remote:{{ grains['netweaver_software_bucket'] }} {{ sapcd }}
+{{ download_from_google_storage(
+  grains['gcp_credentials_file'],
+  grains['netweaver_software_bucket']],
+  sapcd) }}
 
 {% elif grains['provider'] == 'aws' %}
 
