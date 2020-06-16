@@ -13,7 +13,7 @@ lsscsi:
 /etc/iscsi/initiatorname.iscsi:
   file.replace:
     - pattern: "^InitiatorName=.*"
-    - repl: "InitiatorName=iqn.{{ grains['server_id'] }}.suse.qa"
+    - repl: "InitiatorName=iqn.{{ grains['hostname'] }}.{{ grains['server_id'] }}.suse"
 
 /etc/iscsi/iscsid.conf:
   file.replace:
