@@ -1,3 +1,7 @@
+locals {
+  gcp_credentials_dest = "/root/google_credentials.json"
+}
+
 resource "null_resource" "netweaver_provisioner" {
   count = var.provisioner == "salt" ? var.netweaver_count : 0
 
@@ -17,7 +21,7 @@ resource "null_resource" "netweaver_provisioner" {
 
   provisioner "file" {
     source      = var.gcp_credentials_file
-    destination = "/root/google_credentials.json"
+    destination = local.gcp_credentials_dest
   }
 
   provisioner "file" {
@@ -37,6 +41,7 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+gcp_credentials_file: ${local.gcp_credentials_dest}
 ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
