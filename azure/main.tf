@@ -154,7 +154,7 @@ module "hana_node" {
   hana_inst_folder              = var.hana_inst_folder
   hana_platform_folder          = var.hana_platform_folder
   hana_sapcar_exe               = var.hana_sapcar_exe
-  hdbserver_sar                 = var.hdbserver_sar
+  hana_archive_file             = var.hana_archive_file
   hana_extract_dir              = var.hana_extract_dir
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
