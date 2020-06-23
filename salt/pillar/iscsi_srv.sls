@@ -6,8 +6,13 @@ iscsi:
   target:
     pkgs:
       wanted:
+      {%- if grains['osmajorrelease'] == 12 %}
+        - targetcli-fb
+        - python-dbus-python
+      {%- else %}
         - targetcli-fb-common
         - python3-targetcli-fb
+      {%- endif %}
         - yast2-iscsi-lio-server
   config:
     data:
