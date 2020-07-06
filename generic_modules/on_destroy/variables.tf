@@ -26,6 +26,18 @@ variable "private_key_location" {
   default     = ""
 }
 
+variable "bastion_host" {
+  description = "Address of a bastion host to use in the SSH connections. Let empty to use the normal connection"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion"
+  type        = string
+  default     = ""
+}
+
 variable "public_ips" {
   description = "List of ips used to connect through SSH"
   type        = list(string)

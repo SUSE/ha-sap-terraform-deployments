@@ -6,13 +6,14 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   connection {
-    host = element(
-      data.azurerm_public_ip.hana.*.ip_address,
-      count.index,
-    )
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
     private_key = file(var.private_key_location)
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.admin_user
+    bastion_private_key = file(var.bastion_private_key)
   }
 
   provisioner "file" {
@@ -29,7 +30,7 @@ hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
-hdbserver_sar: ${var.hdbserver_sar}
+hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
 hana_fstype: ${var.hana_fstype}
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
@@ -62,6 +63,8 @@ module "hana_provision" {
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.hana.*.ip_address
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   background           = var.background
 }

@@ -75,7 +75,7 @@ module "hana_node" {
   hana_inst_media        = var.hana_inst_media
   hana_platform_folder   = var.hana_platform_folder
   hana_sapcar_exe        = var.hana_sapcar_exe
-  hdbserver_sar          = var.hdbserver_sar
+  hana_archive_file      = var.hana_archive_file
   hana_extract_dir       = var.hana_extract_dir
   hana_disk_size         = var.hana_node_disk_size
   hana_fstype            = var.hana_fstype
@@ -146,7 +146,7 @@ module "monitoring" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   provisioner            = var.provisioner
   background             = var.background
-  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : []) # we use the vip to target the active hana instance
+  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = local.netweaver_virtual_ips
 }

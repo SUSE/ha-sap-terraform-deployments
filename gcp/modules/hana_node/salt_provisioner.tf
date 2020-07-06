@@ -1,3 +1,7 @@
+locals {
+  gcp_credentials_dest = "/root/google_credentials.json"
+}
+
 resource "null_resource" "hana_node_provisioner" {
   count = var.provisioner == "salt" ? var.hana_count : 0
 
@@ -17,7 +21,7 @@ resource "null_resource" "hana_node_provisioner" {
 
   provisioner "file" {
     source      = var.gcp_credentials_file
-    destination = "/root/google_credentials.json"
+    destination = local.gcp_credentials_dest
   }
 
   provisioner "file" {
@@ -37,14 +41,14 @@ sbd_disk_index: 1
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
-hdbserver_sar: ${var.hdbserver_sar}
+hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
 hana_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.0.device_name, count.index))}
 hana_backup_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.1.device_name, count.index))}
 hana_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.2.device_name, count.index))}
 hana_fstype: ${var.hana_fstype}
 hana_cluster_vip: ${var.hana_cluster_vip}
-gcp_credentials_file: ${var.gcp_credentials_file}
+gcp_credentials_file: ${local.gcp_credentials_dest}
 vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.hana-route[0].name}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}

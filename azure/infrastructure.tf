@@ -32,6 +32,9 @@ locals {
   # If vnet_name is defined, and the vnet_address_range is empty, it will try to get the ip range from the real vnet using the data source. If vnet_address_range is defined it will use it
   vnet_address_range   = var.vnet_name == "" ? var.vnet_address_range : (var.vnet_address_range == "" ? data.azurerm_virtual_network.mynet.0.address_space.0 : var.vnet_address_range)
   subnet_address_range = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
+
+  bastion_private_key = var.bastion_private_key_location != "" ? var.bastion_private_key_location : var.private_key_location
+  bastion_public_key  = var.bastion_public_key_location != "" ? var.bastion_public_key_location : var.public_key_location
 }
 
 # Azure resource group and storage account resources
@@ -241,4 +244,19 @@ resource "azurerm_network_security_group" "mysecgroup" {
   tags = {
     workspace = terraform.workspace
   }
+}
+
+# Bastion
+
+module "bastion" {
+  bastion_enabled     = var.bastion_enabled
+  source              = "./modules/bastion"
+  az_region           = var.az_region
+  vm_size             = "Standard_B1s"
+  resource_group_name = local.resource_group_name
+  vnet_name           = local.vnet_name
+  admin_user          = var.admin_user
+  public_key_location = local.bastion_public_key
+  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  snet_address_range  = cidrsubnet(local.vnet_address_range, 8, 2)
 }

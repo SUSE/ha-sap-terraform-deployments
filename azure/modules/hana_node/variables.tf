@@ -98,6 +98,24 @@ variable "private_key_location" {
   type = string
 }
 
+variable "bastion_enabled" {
+  description = "Use a bastion machine to create the ssh connections"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
+  type        = string
+  default     = ""
+}
+
 variable "sbd_enabled" {
   description = "Enable sbd usage in the HA cluster"
   type        = bool
@@ -207,14 +225,14 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
 }
