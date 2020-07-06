@@ -122,6 +122,18 @@ variable "netweaver_product_id" {
   default     = "NW750.HDB.ABAPHA"
 }
 
+variable "netweaver_inst_folder" {
+  description = "Folder where SAP Netweaver installation files are mounted"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
+variable "netweaver_extract_dir" {
+  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
 variable "netweaver_swpm_folder" {
   description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
   type        = string
@@ -138,12 +150,6 @@ variable "netweaver_swpm_sar" {
   description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
-}
-
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {
