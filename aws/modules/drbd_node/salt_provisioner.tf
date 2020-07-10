@@ -37,7 +37,7 @@ drbd_disk_device: /dev/xvdd
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 route_table: ${var.route_table_id}
 shared_storage_type: iscsi
-sbd_disk_index: 3
+sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
