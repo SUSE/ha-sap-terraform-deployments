@@ -18,16 +18,6 @@ grafana_anonymous_login_configuration:
     - require:
       - pkg: grafana
 
-grafana_provisioning:
-  file.recurse:
-    - name: /etc/grafana/provisioning
-    - source: salt://monitoring/grafana/provisioning
-    - clean: True
-    - user: grafana
-    - group: grafana
-    - require:
-      - pkg: grafana
-
 grafana_provisioning_datasources:
   file.managed:
     - name:  /etc/grafana/provisioning/datasources/datasources.yml
@@ -48,5 +38,11 @@ grafana_service:
     - require:
       - pkg: grafana
       - file: grafana_anonymous_login_configuration
-      - file: grafana_provisioning
       - file: grafana_provisioning_datasources
+
+grafana_dashboards:
+  pkg.installed:
+    - pkgs:
+      - grafana-ha-cluster-dashboards
+      - grafana-sap-hana-dashboards
+      - grafana-sap-netweaver-dashboards
