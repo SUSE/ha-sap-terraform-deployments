@@ -28,7 +28,13 @@ grafana_provisioning_datasources:
     - group: grafana
     - require:
       - pkg: grafana
-      - file: grafana_provisioning
+
+grafana_dashboards:
+  pkg.installed:
+    - pkgs:
+      - grafana-ha-cluster-dashboards
+      - grafana-sap-hana-dashboards
+      - grafana-sap-netweaver-dashboards
 
 grafana_service:
   service.running:
@@ -37,12 +43,6 @@ grafana_service:
     - restart: True
     - require:
       - pkg: grafana
+      - pkg: grafana_dashboards
       - file: grafana_anonymous_login_configuration
       - file: grafana_provisioning_datasources
-
-grafana_dashboards:
-  pkg.installed:
-    - pkgs:
-      - grafana-ha-cluster-dashboards
-      - grafana-sap-hana-dashboards
-      - grafana-sap-netweaver-dashboards
