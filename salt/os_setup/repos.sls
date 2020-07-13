@@ -8,7 +8,7 @@ workaround_payg_cleanup:
   cmd.run:
     - name: |
         rm -f /etc/SUSEConnect &&
-        rm -f $(ls /etc/zypp/{repos,services,credentials}.d/* | grep -v -e 'ha-factory' -e 'server_monitoring') &&
+        rm -f $(ls /etc/zypp/{repos,services,credentials}.d/* | grep -v -e 'ha-factory') &&
         rm -f /usr/lib/zypp/plugins/services/* &&
         sed -i '/^# Added by SMT reg/,+1d' /etc/hosts
     - onlyif: 'test -e /usr/sbin/registercloudguest'
