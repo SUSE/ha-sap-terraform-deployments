@@ -50,7 +50,7 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
-sbd_disk_index: 2
+sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 monitoring_enabled: ${var.monitoring_enabled}
 devel_mode: ${var.devel_mode}

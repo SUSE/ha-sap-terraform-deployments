@@ -38,7 +38,7 @@ app_server_count: ${var.app_server_count}
 additional_lun: ${count.index < var.xscs_server_count ? "" : local.additional_lun_number}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
-sbd_disk_index: 2
+sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

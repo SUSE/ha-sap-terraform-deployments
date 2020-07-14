@@ -44,7 +44,7 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
-sbd_disk_index: 2
+sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}

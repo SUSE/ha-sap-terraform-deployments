@@ -37,7 +37,7 @@ network_domain: "tf.local"
 ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
-sbd_disk_index: 1
+sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}

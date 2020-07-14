@@ -39,7 +39,7 @@ storage_account_key: ${var.storage_account_key}
 ha_enabled: ${var.ha_enabled}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
-sbd_disk_index: 1
+sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_cluster_vip: ${var.ha_enabled ? azurerm_lb.hana-load-balancer[0].private_ip_address : ""}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
