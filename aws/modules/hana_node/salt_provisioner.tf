@@ -28,6 +28,7 @@ aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 route_table: ${var.route_table_id}
 scenario_type: ${var.scenario_type}
 name_prefix: ${var.name}
