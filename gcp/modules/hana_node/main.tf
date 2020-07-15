@@ -36,6 +36,17 @@ resource "google_compute_route" "hana-route" {
   priority               = 1000
 }
 
+# Route for Active/Active setup
+resource "google_compute_route" "hana-route-secondary" {
+  name                   = "${terraform.workspace}-hana-route-secondary"
+  count                  = var.hana_count > 0 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  dest_range             = "${var.hana_cluster_vip_secondary}/32"
+  network                = var.network_name
+  next_hop_instance      = google_compute_instance.clusternodes.1.name
+  next_hop_instance_zone = element(var.compute_zones, 1)
+  priority               = 1000
+}
+
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
   name         = "${terraform.workspace}-hana0${count.index + 1}"

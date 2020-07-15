@@ -64,6 +64,9 @@ hana_backup_disk_size = "416"
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
+# Enable Active/Active HANA setup (read-only access in the secondary instance)
+#hana_active_active = true
+
 # The name of the GCP storage bucket in your project that contains the SAP HANA installation files
 sap_hana_deployment_bucket = "MyHanaBucket/51053381"
 # Or you can combine the `sap_hana_deployment_bucket` with `hana_platform_folder` variable.
