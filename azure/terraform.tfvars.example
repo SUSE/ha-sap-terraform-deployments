@@ -144,6 +144,9 @@ cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
+# Enable Active/Active HANA setup (read-only access in the secondary instance)
+#hana_active_active = true
+
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
