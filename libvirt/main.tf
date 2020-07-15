@@ -9,6 +9,7 @@ module "local_execution" {
 # Monitoring: 19.168.135.5
 # Hana ips: 19.168.135.10, 19.168.135.11
 # Hana cluster vip: 19.168.135.12
+# Hana cluster vip secondary: 19.168.135.13
 # DRBD ips: 19.168.135.20, 19.168.135.21
 # DRBD cluster vip: 19.168.135.22
 # Netweaver ips: 19.168.135.30, 19.168.135.31, 19.168.135.32, 19.168.135.33
@@ -18,9 +19,10 @@ locals {
   iscsi_ip          = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.iprange, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.iprange, 5)
 
-  hana_ip_start    = 10
-  hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
-  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
+  hana_ip_start              = 10
+  hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
+  hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.iprange, local.hana_ip_start + var.hana_count + 1)
 
   # 2 is hardcoded for drbd because we always deploy 2 machines
   drbd_ip_start    = 20
@@ -59,43 +61,44 @@ module "iscsi_server" {
 }
 
 module "hana_node" {
-  source                 = "./modules/hana_node"
-  name                   = "hana"
-  source_image           = var.hana_source_image
-  volume_name            = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
-  hana_count             = var.hana_count
-  vcpu                   = var.hana_node_vcpu
-  memory                 = var.hana_node_memory
-  bridge                 = "br0"
-  isolated_network_id    = local.internal_network_id
-  isolated_network_name  = local.internal_network_name
-  storage_pool           = var.storage_pool
-  host_ips               = local.hana_ips
-  hana_inst_folder       = var.hana_inst_folder
-  hana_inst_media        = var.hana_inst_media
-  hana_platform_folder   = var.hana_platform_folder
-  hana_sapcar_exe        = var.hana_sapcar_exe
-  hana_archive_file      = var.hana_archive_file
-  hana_extract_dir       = var.hana_extract_dir
-  hana_disk_size         = var.hana_node_disk_size
-  hana_fstype            = var.hana_fstype
-  hana_cluster_vip       = local.hana_cluster_vip
-  ha_enabled             = var.hana_ha_enabled
-  sbd_enabled            = var.hana_cluster_sbd_enabled
-  sbd_storage_type       = var.sbd_storage_type
-  sbd_disk_id            = module.hana_sbd_disk.id
-  iscsi_srv_ip           = module.iscsi_server.output_data.private_addresses.0
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  qa_mode                = var.qa_mode
-  hwcct                  = var.hwcct
-  devel_mode             = var.devel_mode
-  scenario_type          = var.scenario_type
-  provisioner            = var.provisioner
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
+  source                     = "./modules/hana_node"
+  name                       = "hana"
+  source_image               = var.hana_source_image
+  volume_name                = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
+  hana_count                 = var.hana_count
+  vcpu                       = var.hana_node_vcpu
+  memory                     = var.hana_node_memory
+  bridge                     = "br0"
+  isolated_network_id        = local.internal_network_id
+  isolated_network_name      = local.internal_network_name
+  storage_pool               = var.storage_pool
+  host_ips                   = local.hana_ips
+  hana_inst_folder           = var.hana_inst_folder
+  hana_inst_media            = var.hana_inst_media
+  hana_platform_folder       = var.hana_platform_folder
+  hana_sapcar_exe            = var.hana_sapcar_exe
+  hana_archive_file          = var.hana_archive_file
+  hana_extract_dir           = var.hana_extract_dir
+  hana_disk_size             = var.hana_node_disk_size
+  hana_fstype                = var.hana_fstype
+  hana_cluster_vip           = local.hana_cluster_vip
+  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                 = var.hana_ha_enabled
+  sbd_enabled                = var.hana_cluster_sbd_enabled
+  sbd_storage_type           = var.sbd_storage_type
+  sbd_disk_id                = module.hana_sbd_disk.id
+  iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
+  reg_code                   = var.reg_code
+  reg_email                  = var.reg_email
+  reg_additional_modules     = var.reg_additional_modules
+  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
+  qa_mode                    = var.qa_mode
+  hwcct                      = var.hwcct
+  devel_mode                 = var.devel_mode
+  scenario_type              = var.scenario_type
+  provisioner                = var.provisioner
+  background                 = var.background
+  monitoring_enabled         = var.monitoring_enabled
 }
 
 module "drbd_node" {

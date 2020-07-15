@@ -41,6 +41,9 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 # Enable SBD for the hana cluster
 #hana_cluster_sbd_enabled = true
 
+# Enable Active/Active HANA setup (read-only access in the secondary instance)
+#hana_active_active = true
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
