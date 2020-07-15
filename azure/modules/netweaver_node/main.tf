@@ -6,6 +6,22 @@ locals {
   create_ha_infra        = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
   additional_lun_number  = "0"
   provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
+  ascs_lb_rules_ports    = local.create_ha_infra == 1 ? toset([
+    "32${var.ascs_instance_number}",
+    "36${var.ascs_instance_number}",
+    "39${var.ascs_instance_number}",
+    "81${var.ascs_instance_number}",
+    "5${var.ascs_instance_number}13",
+    "5${var.ascs_instance_number}14",
+    "5${var.ascs_instance_number}16"
+  ]) : toset([])
+  ers_lb_rules_ports     = local.create_ha_infra == 1 ? toset([
+    "32${var.ers_instance_number}",
+    "33${var.ers_instance_number}",
+    "5${var.ers_instance_number}13",
+    "5${var.ers_instance_number}14",
+    "5${var.ers_instance_number}16"
+  ]) : toset([])
 }
 
 resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
@@ -137,184 +153,30 @@ resource "azurerm_lb_probe" "netweaver-ers-health-probe" {
 #  enable_floating_ip             = "true"
 #}
 
-# ascs
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-32xx" {
-  count                          = local.create_ha_infra
+resource "azurerm_lb_rule" "ascs-lb-rules" {
+  for_each                       = local.ascs_lb_rules_ports
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-32${var.ascs_instance_number}"
+  name                           = "lbrule-netweaver-ascs-tcp-${each.value}"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("32${var.ascs_instance_number}")
-  backend_port                   = tonumber("32${var.ascs_instance_number}")
+  frontend_port                  = tonumber(each.value)
+  backend_port                   = tonumber(each.value)
   backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
   probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "netweaver-lb-ascs-36xx" {
-  count                          = local.create_ha_infra
+resource "azurerm_lb_rule" "ers-lb-rules" {
+  for_each                       = local.ers_lb_rules_ports
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-36${var.ascs_instance_number}"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("36${var.ascs_instance_number}")
-  backend_port                   = tonumber("36${var.ascs_instance_number}")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-39xx" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-39${var.ascs_instance_number}"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("39${var.ascs_instance_number}")
-  backend_port                   = tonumber("39${var.ascs_instance_number}")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-81xx" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-81${var.ascs_instance_number}"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("81${var.ascs_instance_number}")
-  backend_port                   = tonumber("81${var.ascs_instance_number}")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx13" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}13"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("5${var.ascs_instance_number}13")
-  backend_port                   = tonumber("5${var.ascs_instance_number}13")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx14" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}14"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("5${var.ascs_instance_number}14")
-  backend_port                   = tonumber("5${var.ascs_instance_number}14")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ascs-5xx16" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-neweaver-ascs-tcp-5${var.ascs_instance_number}16"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ascs"
-  frontend_port                  = tonumber("5${var.ascs_instance_number}16")
-  backend_port                   = tonumber("5${var.ascs_instance_number}16")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-# ers
-
-resource "azurerm_lb_rule" "netweaver-lb-ers-32xx" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-netweaver-ers-tcp-32${var.ers_instance_number}"
+  name                           = "lbrule-netweaver-ers-tcp-${each.value}"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-netweaver-ers"
-  frontend_port                  = tonumber("32${var.ers_instance_number}")
-  backend_port                   = tonumber("32${var.ers_instance_number}")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ers-33xx" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-netweaver-ers-tcp-33${var.ers_instance_number}"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ers"
-  frontend_port                  = tonumber("33${var.ers_instance_number}")
-  backend_port                   = tonumber("33${var.ers_instance_number}")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ers-5xx13" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}13"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ers"
-  frontend_port                  = tonumber("5${var.ers_instance_number}13")
-  backend_port                   = tonumber("5${var.ers_instance_number}13")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ers-5xx14" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}14"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ers"
-  frontend_port                  = tonumber("5${var.ers_instance_number}14")
-  backend_port                   = tonumber("5${var.ers_instance_number}14")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
-  probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "netweaver-lb-ers-5xx16" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.netweaver-load-balancer[0].id
-  name                           = "lbrule-netweaver-ers-tcp-5${var.ers_instance_number}16"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-netweaver-ers"
-  frontend_port                  = tonumber("5${var.ers_instance_number}16")
-  backend_port                   = tonumber("5${var.ers_instance_number}16")
+  frontend_port                  = tonumber(each.value)
+  backend_port                   = tonumber(each.value)
   backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
   probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
   idle_timeout_in_minutes        = 30
