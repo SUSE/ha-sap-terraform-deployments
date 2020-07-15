@@ -48,11 +48,11 @@ cluster:
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
-    {% if grains['provider'] == 'azure' %}
     properties:
-      stonith-timeout: 144s
       stonith-enabled: true
-    {% endif %}
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     template:
       source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
       parameters:
