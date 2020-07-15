@@ -58,7 +58,7 @@ primitive rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} stonith:fence_gce 
   meta target-role=Started
 
 primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
-  params ip={{ data.virtual_ip }} vpc_network={{ data.vpc_network_name }} route_name={{ data.route_table }} \
+  params ip={{ data.virtual_ip }} vpc_network={{ data.vpc_network_name }} route_name={{ data.route_name }} \
   op start interval=0 timeout=180 \
   op stop interval=0 timeout=180 \
   op monitor interval=60 timeout=60

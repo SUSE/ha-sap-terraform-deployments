@@ -63,11 +63,15 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {% elif grains['provider'] == 'gcp' %}
-        route_table: {{ grains['route_table'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
+        route_name: {{ grains['route_name'] }}
+        route_name_secondary: {{ grains['route_name_secondary'] }}
         {% endif %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
         virtual_ip_mask: 24
+        {% if grains['hana_cluster_vip_secondary'] %}
+        virtual_ip_secondary: {{ grains['hana_cluster_vip_secondary'] }}
+        {% endif %}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}
