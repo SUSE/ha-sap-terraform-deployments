@@ -11,6 +11,10 @@
 
 1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
 
+Now, the created file must be configured to define the deployment.
+
+**Note:** Find some help in the IP addresses configuration in [IP auto generation](../doc/ip_autogeneration.md#Azure)
+
 2) **Generate private and public keys for the cluster nodes with:**
 
 ```
