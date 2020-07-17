@@ -43,7 +43,7 @@ predeployment:
     - match: grain
     - iscsi_srv
 
-  'role:monitoring':
+  'role:monitoring_srv':
     - match: grain
     - default
-    - monitoring
+    - monitoring_srv
