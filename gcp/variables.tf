@@ -111,12 +111,6 @@ variable "provisioner" {
   default     = "salt"
 }
 
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
-}
-
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
   type        = bool

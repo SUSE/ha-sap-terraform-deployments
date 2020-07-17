@@ -142,12 +142,6 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
-}
-
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

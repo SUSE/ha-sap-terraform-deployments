@@ -199,12 +199,6 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
-}
-
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool

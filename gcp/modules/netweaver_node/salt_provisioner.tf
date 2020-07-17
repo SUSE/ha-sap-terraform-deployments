@@ -49,7 +49,6 @@ sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 netweaver_software_bucket: ${var.netweaver_software_bucket}
 ascs_instance_number: ${var.ascs_instance_number}
