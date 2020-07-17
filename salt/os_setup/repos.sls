@@ -31,7 +31,7 @@ refresh_repos_after_registration:
 {% if not grains.get('qa_mode') %}
 update_system_packages:
   cmd.run:
-    - name: zypper --non-interactive --gpg-auto-import-keys --no-recommends --auto-agree-with-licenses update
+    - name: zypper --non-interactive --gpg-auto-import-keys update --no-recommends --auto-agree-with-licenses
     - retry:
         attempts: 3
         interval: 15
