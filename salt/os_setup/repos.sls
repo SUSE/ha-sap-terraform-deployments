@@ -17,7 +17,6 @@ ha_sap_deployments_repo:
   pkgrepo.managed:
     - name: ha_sap_deployments
     - baseurl: {{ repository }}
-    - refresh: False
 {% endif %}
 
 refresh_repos_after_registration:
