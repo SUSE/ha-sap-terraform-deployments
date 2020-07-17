@@ -1,4 +1,4 @@
-{%- import_yaml "/root/salt/netweaver_node/files/pillar/netweaver.sls" as netweaver %}
+{%- import_yaml "/srv/pillar/netweaver/netweaver.sls" as netweaver %}
 
 cluster:
   install_packages: true
@@ -38,7 +38,7 @@ cluster:
   configure:
     method: update
     template:
-      source: /usr/share/salt-formulas/states/netweaver/templates/cluster_resources.j2
+      source: salt://netweaver/templates/cluster_resources.j2
       parameters:
         sid: {{ netweaver.netweaver.nodes[0].sid }}
         ascs_instance: {{ grains['ascs_instance_number'] }}

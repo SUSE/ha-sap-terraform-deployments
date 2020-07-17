@@ -4,16 +4,16 @@ This folder stores pillar examples to use in the Salt provisioning.
 To run an initial deployment without specific customization the usage of the pillar files stored in the `automatic` folder is recommended, as this files are customized with parameters coming from terraform execution. The pillar files stored there are able to deploy a basic functional set of clusters in all of the available cloud providers.
 
 The usage of the pillar files is really simple. Basically, copy the content of the examples directories in the next locations.
-- `salt/hana_node/files/pillar/` for HANA configuration.
-- `salt/drbd_node/files/pillar/` for DRBD configuration.
-- `salt/netweaver_node/files/pillar/` for NETWEAVER configuration.
+- `pillar/hana` for HANA configuration.
+- `pillar/drbd` for DRBD configuration.
+- `pillar/netweaver` for NETWEAVER configuration.
 
 The next commands can be used for that:
 
 ```
-cp pillar_examples/automatic/hana/*.sls salt/hana_node/files/pillar/
-cp pillar_examples/automatic/drbd/*.sls salt/drbd_node/files/pillar/
-cp pillar_examples/automatic/netweaver/*.sls salt/netweaver_node/files/pillar/
+cp pillar_examples/automatic/hana/*.sls pillar/hana
+cp pillar_examples/automatic/drbd/*.sls pillar/drbd
+cp pillar_examples/automatic/netweaver/*.sls pillar/netweaver
 ```
 
 Besides this option, the `terraform.tfvars` `pre_deployment` variable will execute these operations if it's enabled before the deployment.

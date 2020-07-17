@@ -6,4 +6,3 @@ include:
   {% endif %}
   - hana_node.mount
   - hana_node.hana_packages
-  - hana_node.formula
