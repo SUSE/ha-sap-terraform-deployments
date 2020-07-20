@@ -26,6 +26,6 @@ In order to deploy a DRBD environment for NFS, some changes must be executed in 
 
 - Configure the `drbd_disk_size` for the size of attached DRBD backing device. Modify the `partitions` grain in [salt_provisioner.tf](../libvirt/modules/drbd_node/salt_provisioner.tf) for the layout of the disk for DRBD resouce.
 
-- Modify the [drbd_cluster.j2](../salt/drbd_node/files/templates/drbd_cluster.j2) for the pacemaker resource configuration including *NFS* share mount options. To use customized template, need to adapt [formula.sls](../salt/drbd_node/formula.sls) and pillar file [cluster.sls](../salt/drbd_node/files/pillar/cluster.sls). **The default option deploys a NFS share in top of a single DRBD cluster**.
+- Modify the [drbd_cluster.j2](../salt/drbd_node/files/templates/drbd_cluster.j2) for the pacemaker resource configuration including *NFS* share mount options. **The default option deploys a NFS share in top of a single DRBD cluster**.
 
-- Modify the content of [cluster.sls](../salt/drbd_node/files/pillar/cluster.sls) and [drbd.sls](../salt/drbd_node/files/pillar/drbd.sls). The unique mandatory changes are `promotion` and `resource` in the `drbd.sls` file. Change `res_template` if want to use customized template. These values must match with the environment(hostname, ip, ports, etc...), the current values are just an example.
+- Modify the content of [cluster.sls](../pillar/drbd/cluster.sls) and [drbd.sls](../pillar/drbd/drbd.sls). The unique mandatory changes are `promotion` and `resource` in the `drbd.sls` file. Change `res_template` if want to use customized template. These values must match with the environment(hostname, ip, ports, etc...), the current values are just an example.

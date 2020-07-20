@@ -1,4 +1,4 @@
-{% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
+{% import_yaml "/srv/pillar/hana/hana.sls" as hana %}
 
 cluster:
   {% if grains.get('qa_mode') %}
@@ -54,7 +54,7 @@ cluster:
       stonith-enabled: true
     {% endif %}
     template:
-      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
+      source: salt://hana/templates/scale_up_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}

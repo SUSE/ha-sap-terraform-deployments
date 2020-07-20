@@ -62,7 +62,8 @@ repeat_command () {
 }
 
 bootstrap_salt () {
-    mv /tmp/salt /root || true
+    mv /tmp/salt /srv || true
+    mv /tmp/pillar /srv || true
 
     # Check if qa_mode is enabled
     [[ "$(get_grain qa_mode /tmp/grains)" == "true" ]] && qa_mode=1
@@ -92,9 +93,9 @@ bootstrap_salt () {
 }
 
 os_setup () {
-    # Execute the states within /root/salt/os_setup
+    # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
-    salt-call --local --file-root=/root/salt \
+    salt-call --local \
         --log-level=info \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
@@ -104,10 +105,9 @@ os_setup () {
 }
 
 predeploy () {
-    # Execute the states defined in /root/salt/top.sls
+    # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
-        --pillar-root=/root/salt/pillar/ \
         --log-level=info \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
@@ -136,7 +136,7 @@ run_tests () {
         # Otherwise, hwcct will error out.
         export HOST=$(hostname)
         # Execute qa state file
-        salt-call --local --file-root=/root/salt/ \
+        salt-call --local \
             --log-level=info \
             --log-file=/var/log/salt-qa.log \
             --log-file-level=info \

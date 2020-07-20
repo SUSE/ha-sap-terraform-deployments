@@ -36,7 +36,7 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /srv/salt/drbd_files/templates/drbd_cluster.j2
+      source: salt://drbd_node/files/templates/drbd_cluster.j2
       parameters:
         {% if grains['provider'] == 'aws' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
