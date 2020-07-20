@@ -53,13 +53,13 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 # Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service
 #sbd_disk_size = 10737418240
 
-# Repository url used to install HA/SAP deployment packages"
+# Repository url used to install development versions of HA/SAP deployment packages
 # The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR OS VERSION}
+# https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR SLE VERSION}
 # Contains the salt formulas rpm packages.
-# To auto detect the SLE version
+# To auto detect the SLE version, just leave it out from the url:
 #ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/"
-# Specific SLE version used in all the created machines
+# Otherwise use a specific SLE version:
 #ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15/"
 ha_sap_deployment_repo = ""
 
