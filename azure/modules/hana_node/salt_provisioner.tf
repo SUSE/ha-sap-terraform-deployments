@@ -20,7 +20,6 @@ resource "null_resource" "hana_node_provisioner" {
     content     = <<EOF
 provider: azure
 role: hana_node
-devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}

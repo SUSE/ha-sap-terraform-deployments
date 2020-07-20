@@ -41,7 +41,6 @@ ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 vpc_network_name: ${var.network_name}
 route_table: ${google_compute_route.drbd-route[0].name}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 partitions:
   1:
     start: 0%

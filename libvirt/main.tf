@@ -91,7 +91,6 @@ module "hana_node" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   qa_mode                = var.qa_mode
   hwcct                  = var.hwcct
-  devel_mode             = var.devel_mode
   scenario_type          = var.scenario_type
   provisioner            = var.provisioner
   background             = var.background
@@ -118,7 +117,6 @@ module "drbd_node" {
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
@@ -188,5 +186,4 @@ module "netweaver_node" {
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
-  devel_mode                = var.devel_mode
 }
