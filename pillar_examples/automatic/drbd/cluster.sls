@@ -48,5 +48,5 @@ cluster:
         {% elif grains['provider'] == 'gcp' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
-        route_table: {{ grains['route_table'] }}
+        route_name: {{ grains['route_name'] }}
         {% endif %}

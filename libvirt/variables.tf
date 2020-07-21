@@ -175,7 +175,7 @@ variable "hana_fstype" {
 }
 
 variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  description = "IP address used to configure the hana cluster floating IP"
   type        = string
   default     = ""
 }
@@ -190,6 +190,18 @@ variable "hana_ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
+}
+
+variable "hana_active_active" {
+  description = "Enable an Active/Active HANA system replication setup"
+  type        = bool
+  default     = false
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
+  type        = string
+  default     = ""
 }
 
 variable "scenario_type" {

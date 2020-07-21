@@ -41,6 +41,7 @@ sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_cluster_vip: ${var.ha_enabled ? azurerm_lb.hana-load-balancer[0].private_ip_address : ""}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}
