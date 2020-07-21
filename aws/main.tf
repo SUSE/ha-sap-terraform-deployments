@@ -192,7 +192,6 @@ module "hana_node" {
   hana_sapcar_exe            = var.hana_sapcar_exe
   hana_archive_file          = var.hana_archive_file
   hana_extract_dir           = var.hana_extract_dir
-  hana_disk_device           = var.hana_disk_device
   hana_fstype                = var.hana_fstype
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""

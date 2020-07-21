@@ -46,7 +46,7 @@ hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
 hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
-hana_disk_device: ${var.hana_disk_device}
+hana_disk_device: ${local.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}

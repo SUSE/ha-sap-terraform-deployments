@@ -216,11 +216,6 @@ variable "hana_data_disk_type" {
   default     = "gp2"
 }
 
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-}
-
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string

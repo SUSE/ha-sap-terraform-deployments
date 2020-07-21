@@ -114,11 +114,6 @@ variable "hana_extract_dir" {
   default     = "/sapmedia/HANA"
 }
 
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
-}
-
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
   type        = string
