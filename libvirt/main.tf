@@ -38,30 +38,39 @@ locals {
   iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (local.netweaver_count > 1 && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
-module "iscsi_server" {
-  source                 = "./modules/iscsi_server"
-  iscsi_count            = local.iscsi_enabled == true ? 1 : 0
-  source_image           = var.iscsi_source_image
-  volume_name            = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
-  vcpu                   = var.iscsi_vcpu
-  memory                 = var.iscsi_memory
-  bridge                 = "br0"
-  storage_pool           = var.storage_pool
-  isolated_network_id    = local.internal_network_id
-  isolated_network_name  = local.internal_network_name
-  host_ips               = [local.iscsi_ip]
-  lun_count              = var.iscsi_lun_count
-  iscsi_disk_size        = var.sbd_disk_size
+module "common_variables" {
+  source                 = "../generic_modules/common_variables"
   reg_code               = var.reg_code
   reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  qa_mode                = var.qa_mode
+  additional_packages    = var.additional_packages
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  qa_mode                = var.qa_mode
+}
+
+module "iscsi_server" {
+  source                = "./modules/iscsi_server"
+  common_variables      = module.common_variables.configuration
+  iscsi_count           = local.iscsi_enabled == true ? 1 : 0
+  source_image          = var.iscsi_source_image
+  volume_name           = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
+  vcpu                  = var.iscsi_vcpu
+  memory                = var.iscsi_memory
+  bridge                = "br0"
+  storage_pool          = var.storage_pool
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  host_ips              = [local.iscsi_ip]
+  lun_count             = var.iscsi_lun_count
+  iscsi_disk_size       = var.sbd_disk_size
 }
 
 module "hana_node" {
   source                     = "./modules/hana_node"
+  common_variables           = module.common_variables.configuration
   name                       = "hana"
   source_image               = var.hana_source_image
   volume_name                = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
@@ -88,72 +97,54 @@ module "hana_node" {
   sbd_storage_type           = var.sbd_storage_type
   sbd_disk_id                = module.hana_sbd_disk.id
   iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
-  reg_code                   = var.reg_code
-  reg_email                  = var.reg_email
-  reg_additional_modules     = var.reg_additional_modules
-  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
-  qa_mode                    = var.qa_mode
   hwcct                      = var.hwcct
   scenario_type              = var.scenario_type
-  provisioner                = var.provisioner
-  background                 = var.background
-  monitoring_enabled         = var.monitoring_enabled
 }
 
 module "drbd_node" {
-  source                 = "./modules/drbd_node"
-  name                   = "drbd"
-  source_image           = var.drbd_source_image
-  volume_name            = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
-  drbd_count             = var.drbd_enabled == true ? 2 : 0
-  vcpu                   = var.drbd_node_vcpu
-  memory                 = var.drbd_node_memory
-  bridge                 = "br0"
-  host_ips               = local.drbd_ips
-  drbd_cluster_vip       = local.drbd_cluster_vip
-  drbd_disk_size         = var.drbd_disk_size
-  sbd_enabled            = var.drbd_cluster_sbd_enabled
-  sbd_storage_type       = var.sbd_storage_type
-  sbd_disk_id            = module.drbd_sbd_disk.id
-  iscsi_srv_ip           = module.iscsi_server.output_data.private_addresses.0
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
-  isolated_network_id    = local.internal_network_id
-  isolated_network_name  = local.internal_network_name
-  storage_pool           = var.storage_pool
+  source                = "./modules/drbd_node"
+  common_variables      = module.common_variables.configuration
+  name                  = "drbd"
+  source_image          = var.drbd_source_image
+  volume_name           = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
+  drbd_count            = var.drbd_enabled == true ? 2 : 0
+  vcpu                  = var.drbd_node_vcpu
+  memory                = var.drbd_node_memory
+  bridge                = "br0"
+  host_ips              = local.drbd_ips
+  drbd_cluster_vip      = local.drbd_cluster_vip
+  drbd_disk_size        = var.drbd_disk_size
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  sbd_storage_type      = var.sbd_storage_type
+  sbd_disk_id           = module.drbd_sbd_disk.id
+  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  storage_pool          = var.storage_pool
 }
 
 module "monitoring" {
-  source                 = "./modules/monitoring"
-  name                   = "monitoring"
-  monitoring_enabled     = var.monitoring_enabled
-  source_image           = var.monitoring_source_image
-  volume_name            = var.monitoring_source_image != "" ? "" : (var.monitoring_volume_name != "" ? var.monitoring_volume_name : local.generic_volume_name)
-  vcpu                   = var.monitoring_vcpu
-  memory                 = var.monitoring_memory
-  bridge                 = "br0"
-  storage_pool           = var.storage_pool
-  isolated_network_id    = local.internal_network_id
-  isolated_network_name  = local.internal_network_name
-  monitoring_srv_ip      = local.monitoring_srv_ip
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets      = local.netweaver_virtual_ips
+  source                = "./modules/monitoring"
+  common_variables      = module.common_variables.configuration
+  name                  = "monitoring"
+  monitoring_enabled    = var.monitoring_enabled
+  source_image          = var.monitoring_source_image
+  volume_name           = var.monitoring_source_image != "" ? "" : (var.monitoring_volume_name != "" ? var.monitoring_volume_name : local.generic_volume_name)
+  vcpu                  = var.monitoring_vcpu
+  memory                = var.monitoring_memory
+  bridge                = "br0"
+  storage_pool          = var.storage_pool
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  monitoring_srv_ip     = local.monitoring_srv_ip
+  hana_targets          = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  drbd_targets          = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets     = local.netweaver_virtual_ips
 }
 
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
+  common_variables          = module.common_variables.configuration
   netweaver_count           = local.netweaver_count
   name                      = "netweaver"
   source_image              = var.netweaver_source_image
@@ -182,11 +173,4 @@ module "netweaver_node" {
   netweaver_additional_dvds = var.netweaver_additional_dvds
   netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : var.netweaver_nfs_share
   ha_enabled                = var.netweaver_ha_enabled
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  provisioner               = var.provisioner
-  background                = var.background
-  monitoring_enabled        = var.monitoring_enabled
 }

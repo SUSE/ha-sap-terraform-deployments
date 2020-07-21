@@ -3,7 +3,7 @@
 # libvirt_domain.domain (netweaver_node) resources are created (check triggers option).
 
 resource "null_resource" "netweaver_node_provisioner" {
-  count = var.provisioner == "salt" ? var.netweaver_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
   triggers = {
     netweaver_ids = libvirt_domain.netweaver_domain[count.index].id
   }
@@ -16,21 +16,18 @@ resource "null_resource" "netweaver_node_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
+provider: libvirt
+role: netweaver_node
+${var.common_variables["grains_output"]}
 name_prefix: ${var.name}
 hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 hana_ip: ${var.hana_ip}
-provider: libvirt
-role: netweaver_node
 ha_enabled: ${var.ha_enabled}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_media: ${var.netweaver_inst_media}
@@ -46,13 +43,11 @@ ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-monitoring_enabled: ${var.monitoring_enabled}
 EOF
     destination = "/tmp/grains"
   }
@@ -60,10 +55,10 @@ EOF
 
 module "netweaver_provision" {
   source       = "../../../generic_modules/salt_provisioner"
-  node_count   = var.provisioner == "salt" ? var.netweaver_count : 0
+  node_count   = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
   instance_ids = null_resource.netweaver_node_provisioner.*.id
   user         = "root"
   password     = "linux"
   public_ips   = libvirt_domain.netweaver_domain.*.network_interface.0.addresses.0
-  background   = var.background
+  background   = var.common_variables["background"]
 }

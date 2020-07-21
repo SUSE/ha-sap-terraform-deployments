@@ -77,6 +77,12 @@ variable "ha_sap_deployment_repo" {
   default     = ""
 }
 
+variable "additional_packages" {
+  description = "extra packages which should be installed"
+  type        = list
+  default     = []
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
