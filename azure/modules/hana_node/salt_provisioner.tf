@@ -20,7 +20,6 @@ resource "null_resource" "hana_node_provisioner" {
     content     = <<EOF
 provider: azure
 role: hana_node
-devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
@@ -42,6 +41,7 @@ sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_cluster_vip: ${var.ha_enabled ? azurerm_lb.hana-load-balancer[0].private_ip_address : ""}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 qa_mode: ${var.qa_mode}

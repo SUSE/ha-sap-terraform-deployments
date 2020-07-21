@@ -25,6 +25,13 @@ resource "aws_route" "hana-cluster-vip" {
   instance_id            = aws_instance.clusternodes.0.id
 }
 
+resource "aws_route" "hana-cluster-vip-secondary" {
+  count                  = var.hana_count > 0 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  route_table_id         = var.route_table_id
+  destination_cidr_block = "${var.hana_cluster_vip_secondary}/32"
+  instance_id            = aws_instance.clusternodes.1.id
+}
+
 module "sap_cluster_policies" {
   enabled           = var.hana_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"

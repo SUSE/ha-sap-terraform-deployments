@@ -142,6 +142,13 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
+  default     = ""
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
 }
 
 variable "ha_enabled" {
@@ -197,12 +204,6 @@ variable "additional_packages" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = string
-}
-
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
 }
 
 variable "hwcct" {

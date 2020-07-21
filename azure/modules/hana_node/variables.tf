@@ -175,12 +175,6 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
@@ -246,6 +240,12 @@ variable "hana_fstype" {
 variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster"
   type        = string
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
 }
 
 variable "ha_enabled" {

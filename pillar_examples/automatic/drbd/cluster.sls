@@ -36,7 +36,7 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /srv/salt/drbd_files/templates/drbd_cluster.j2
+      source: salt://drbd_node/files/templates/drbd_cluster.j2
       parameters:
         {% if grains['provider'] == 'aws' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
@@ -48,5 +48,5 @@ cluster:
         {% elif grains['provider'] == 'gcp' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
-        route_table: {{ grains['route_table'] }}
+        route_name: {{ grains['route_name'] }}
         {% endif %}

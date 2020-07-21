@@ -1,4 +1,4 @@
-{% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
+{% import_yaml "/srv/pillar/hana/hana.sls" as hana %}
 
 cluster:
   {% if grains.get('qa_mode') %}
@@ -48,13 +48,13 @@ cluster:
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
-    {% if grains['provider'] == 'azure' %}
     properties:
-      stonith-timeout: 144s
       stonith-enabled: true
-    {% endif %}
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     template:
-      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
+      source: salt://hana/templates/scale_up_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
@@ -63,11 +63,15 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {% elif grains['provider'] == 'gcp' %}
-        route_table: {{ grains['route_table'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
+        route_name: {{ grains['route_name'] }}
+        route_name_secondary: {{ grains['route_name_secondary'] }}
         {% endif %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
         virtual_ip_mask: 24
+        {% if grains['hana_cluster_vip_secondary'] %}
+        virtual_ip_secondary: {{ grains['hana_cluster_vip_secondary'] }}
+        {% endif %}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}

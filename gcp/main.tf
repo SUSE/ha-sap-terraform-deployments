@@ -9,6 +9,7 @@ module "local_execution" {
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.0.10, 10.0.0.11
 # Hana cluster vip: 10.0.1.12
+# Hana cluster vip secondary: 10.0.1.13
 # DRBD ips: 10.0.0.20, 10.0.0.21
 # DRBD cluster vip: 10.0.1.22
 # Netweaver ips: 10.0.0.30, 10.0.0.31, 10.0.0.32, 10.0.0.33
@@ -18,9 +19,10 @@ locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
 
-  hana_ip_start    = 10
-  hana_ips         = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
-  hana_cluster_vip = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
+  hana_ip_start              = 10
+  hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
   drbd_ip_start    = 20
@@ -62,7 +64,6 @@ module "drbd_node" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   monitoring_enabled     = var.monitoring_enabled
-  devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
   on_destroy_dependencies = [
@@ -105,7 +106,6 @@ module "netweaver_node" {
   reg_email                 = var.reg_email
   reg_additional_modules    = var.reg_additional_modules
   ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  devel_mode                = var.devel_mode
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
@@ -139,6 +139,7 @@ module "hana_node" {
   hana_backup_disk_size      = var.hana_backup_disk_size
   hana_fstype                = var.hana_fstype
   hana_cluster_vip           = local.hana_cluster_vip
+  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
   scenario_type              = var.scenario_type
   public_key_location        = var.public_key_location
@@ -150,7 +151,6 @@ module "hana_node" {
   reg_additional_modules     = var.reg_additional_modules
   ha_sap_deployment_repo     = var.ha_sap_deployment_repo
   additional_packages        = var.additional_packages
-  devel_mode                 = var.devel_mode
   hwcct                      = var.hwcct
   qa_mode                    = var.qa_mode
   provisioner                = var.provisioner

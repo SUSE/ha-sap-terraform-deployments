@@ -28,6 +28,7 @@ aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 route_table: ${var.route_table_id}
 scenario_type: ${var.scenario_type}
 name_prefix: ${var.name}
@@ -55,7 +56,6 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 EOF

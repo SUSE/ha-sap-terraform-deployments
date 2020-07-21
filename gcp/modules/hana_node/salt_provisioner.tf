@@ -28,7 +28,6 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: gcp
 role: hana_node
-devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-hana
 hostname: ${terraform.workspace}-hana0${count.index + 1}
@@ -48,9 +47,11 @@ hana_backup_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_co
 hana_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.2.device_name, count.index))}
 hana_fstype: ${var.hana_fstype}
 hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 gcp_credentials_file: ${local.gcp_credentials_dest}
 vpc_network_name: ${var.network_name}
-route_table: ${google_compute_route.hana-route[0].name}
+route_name: ${join(",", google_compute_route.hana-route.*.name)}
+route_name_secondary: ${join(",", google_compute_route.hana-route-secondary.*.name)}
 sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}

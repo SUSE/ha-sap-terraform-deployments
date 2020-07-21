@@ -53,7 +53,6 @@ sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 EOF
     destination = "/tmp/grains"
   }

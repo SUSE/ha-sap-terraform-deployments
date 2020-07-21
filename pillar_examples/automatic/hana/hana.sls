@@ -78,7 +78,11 @@ hana:
         remote_host: {{ grains['name_prefix'] }}01
         remote_instance: "00"
         replication_mode: sync
+        {% if grains['hana_cluster_vip_secondary'] != '' %}
+        operation_mode: logreplay_readaccess
+        {% else %}
         operation_mode: logreplay
+        {% endif %}
         primary_timeout: 3000
       {% endif %}
     {% if grains['scenario_type'] == 'cost-optimized' %}

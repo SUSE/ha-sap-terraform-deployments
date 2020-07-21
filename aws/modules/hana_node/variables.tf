@@ -131,6 +131,12 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
+}
+
 variable "ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
@@ -188,12 +194,6 @@ variable "additional_packages" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install HA/SAP deployment packages"
   type        = string
-}
-
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
 }
 
 variable "hwcct" {

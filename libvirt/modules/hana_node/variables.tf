@@ -31,12 +31,6 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
 variable "additional_packages" {
   description = "extra packages which should be installed"
   default     = []
@@ -75,8 +69,14 @@ variable "host_ips" {
 }
 
 variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  description = "IP address used to configure the hana cluster floating IP"
   type        = string
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
 }
 
 variable "sbd_enabled" {

@@ -67,19 +67,14 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-# Repository url used to install HA/SAP deployment packages"
+# Repository url used to install development versions of HA/SAP deployment packages
 # The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR SLE VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
+  description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-}
-
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
+  default     = ""
 }
 
 variable "provisioner" {
@@ -180,7 +175,7 @@ variable "hana_fstype" {
 }
 
 variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  description = "IP address used to configure the hana cluster floating IP"
   type        = string
   default     = ""
 }
@@ -195,6 +190,18 @@ variable "hana_ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
+}
+
+variable "hana_active_active" {
+  description = "Enable an Active/Active HANA system replication setup"
+  type        = bool
+  default     = false
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
+  type        = string
+  default     = ""
 }
 
 variable "scenario_type" {

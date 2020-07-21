@@ -1,8 +1,20 @@
 # Availability set for the hana VMs
 
 locals {
-  create_ha_infra        = var.hana_count > 1 && var.ha_enabled ? 1 : 0
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  create_ha_infra             = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_actitve_active_infra = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  provisioning_addresses      = var.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  hana_lb_rules_ports         = local.create_ha_infra == 1 ? toset([
+    "3${var.hana_instance_number}13",
+    "3${var.hana_instance_number}14",
+    "3${var.hana_instance_number}40",
+    "3${var.hana_instance_number}41",
+    "3${var.hana_instance_number}42",
+    "3${var.hana_instance_number}15",
+    "3${var.hana_instance_number}17"
+  ]) : toset([])
+
+  hana_lb_rules_ports_secondary = local.create_actitve_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -31,6 +43,17 @@ resource "azurerm_lb" "hana-load-balancer" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = var.hana_cluster_vip
+  }
+
+  # Create a new frontend for the Active/Active scenario
+  dynamic "frontend_ip_configuration" {
+    for_each = local.create_actitve_active_infra == 1 ? [var.hana_cluster_vip_secondary] : []
+    content {
+      name                          = "lbfe-hana-secondary"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = frontend_ip_configuration.value
+    }
   }
 
   tags = {
@@ -65,110 +88,45 @@ resource "azurerm_lb_probe" "hana-load-balancer" {
   number_of_probes    = 2
 }
 
+resource "azurerm_lb_probe" "hana-load-balancer-secondary" {
+  count               = local.create_actitve_active_infra
+  resource_group_name = var.resource_group_name
+  loadbalancer_id     = azurerm_lb.hana-load-balancer[0].id
+  name                = "lbhp-hana-secondary"
+  protocol            = "Tcp"
+  port                = tonumber("626${var.hana_instance_number}")
+  interval_in_seconds = 5
+  number_of_probes    = 2
+}
+
 # Load balancing rules for HANA 2.0
-resource "azurerm_lb_rule" "lb_3xx13" {
-  count                          = local.create_ha_infra
+resource "azurerm_lb_rule" "hana-lb-rules" {
+  for_each                       = local.hana_lb_rules_ports
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}13"
+  name                           = "lbrule-hana-tcp-${each.value}"
   protocol                       = "Tcp"
   frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}13")
-  backend_port                   = tonumber("3${var.hana_instance_number}13")
+  frontend_port                  = tonumber(each.value)
+  backend_port                   = tonumber(each.value)
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
   probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
 
-resource "azurerm_lb_rule" "lb_3xx14" {
-  count                          = local.create_ha_infra
+# Load balancing rules for the Active/Active setup
+resource "azurerm_lb_rule" "hana-lb-rules-secondary" {
+  for_each                       = local.hana_lb_rules_ports_secondary
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}14"
+  name                           = "lbrule-hana-tcp-${each.value}-secondary"
   protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}14")
-  backend_port                   = tonumber("3${var.hana_instance_number}14")
+  frontend_ip_configuration_name = "lbfe-hana-secondary"
+  frontend_port                  = tonumber(each.value)
+  backend_port                   = tonumber(each.value)
   backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "lb_3xx40" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}40"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}40")
-  backend_port                   = tonumber("3${var.hana_instance_number}40")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "lb_3xx41" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}41"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}41")
-  backend_port                   = tonumber("3${var.hana_instance_number}41")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "lb_3xx42" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}42"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}42")
-  backend_port                   = tonumber("3${var.hana_instance_number}42")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-
-# Load balancing rules for HANA 1.0
-resource "azurerm_lb_rule" "lb_3xx15" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}15"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}15")
-  backend_port                   = tonumber("3${var.hana_instance_number}15")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
-  idle_timeout_in_minutes        = 30
-  enable_floating_ip             = "true"
-}
-
-resource "azurerm_lb_rule" "lb_3xx17" {
-  count                          = local.create_ha_infra
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
-  name                           = "lbrule-hana-tcp-3${var.hana_instance_number}17"
-  protocol                       = "Tcp"
-  frontend_ip_configuration_name = "lbfe-hana"
-  frontend_port                  = tonumber("3${var.hana_instance_number}17")
-  backend_port                   = tonumber("3${var.hana_instance_number}17")
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
-  probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
+  probe_id                       = azurerm_lb_probe.hana-load-balancer-secondary[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
 }
