@@ -48,7 +48,6 @@ authorized_keys: [${trimspace(file(var.public_key_location))}]
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 partitions:
   1:

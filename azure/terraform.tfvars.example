@@ -128,11 +128,11 @@ hana_extract_dir = "/sapmedia/HDBSERVER"
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
+cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
 
 # Path to a custom ssh private key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
+cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true

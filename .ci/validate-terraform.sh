@@ -11,7 +11,7 @@ done
 
 
 echo "executing terraform check , init and validate for each provider"
-for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|doc'); do
+for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|doc|pillar'); do
   echo "============================"
   echo "doing tests for $provider"
   echo "============================"
@@ -43,7 +43,7 @@ for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|do
   echo "--------------------------"
 
   if [[ "$provider" == "gcp" ]]; then
-    /tmp/terraform validate -var-file=terraform.tfvars.example -var sap_hana_sidadm_password="NOT_SECRET" -var sap_hana_system_password="NOT_SECRET" -var gcp_credentials_file=/dev/null -var private_key_location=/dev/null -var public_key_location=/dev/null ;
+    /tmp/terraform validate -var-file=terraform.tfvars.example -var gcp_credentials_file=/dev/null -var private_key_location=/dev/null -var public_key_location=/dev/null ;
   else
     /tmp/terraform validate -var-file=terraform.tfvars.example -var private_key_location=/dev/null -var public_key_location=/dev/null ;
   fi ;

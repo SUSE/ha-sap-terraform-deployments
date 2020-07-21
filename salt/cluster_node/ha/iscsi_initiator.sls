@@ -47,6 +47,17 @@ iscsid:
     - watch:
       - cmd: iscsi_discovery
 
+# Wait until the disk id is displayed in the lsscsi command, as `-` is displayed at the beginning sometimes
+{% set sbd_disk_id_pattern = '/^\[[0-9]\:[0-9]\:[0-9]\:'~grains['sbd_lun_index']~'\].*/' %}
+
+wait_disk_id_available:
+  cmd.run:
+    - name: until [ "$(lsscsi -i | grep "LIO-ORG" | awk "{{ sbd_disk_id_pattern }}{print \$NF }")" != "-" ];do sleep 3;done
+    - timeout: 120
+    - require:
+      - lsscsi
+      - iscsi_discovery
+
 # This state sets the sbd_disk grain value. As we cannot run the lssci command directly to get the output (the output is change in the latest command)
 # this workaround that scenario to render the output during execution time
 set_grains_sbd_disk_device:
@@ -57,3 +68,4 @@ set_grains_sbd_disk_device:
     - require:
       - lsscsi
       - iscsi_discovery
+      - wait_disk_id_available

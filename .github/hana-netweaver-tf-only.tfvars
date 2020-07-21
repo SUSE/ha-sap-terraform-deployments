@@ -37,5 +37,3 @@ netweaver_additional_dvds = ["51050829_3", "51053787"]
 
 # Enable the DRBD cluster for nfs
 drbd_enabled = true
-
-devel_mode = false

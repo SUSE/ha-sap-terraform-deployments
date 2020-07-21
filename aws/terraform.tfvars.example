@@ -99,11 +99,11 @@ hana_disk_device = "/dev/xvdd"
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
+cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
 
 # Path to a custom ssh private key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
+cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 
 # Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
 #hana_ips = ["10.0.0.5", "10.0.1.6"]

@@ -28,7 +28,6 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: gcp
 role: hana_node
-devel_mode: ${var.devel_mode}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-hana
 hostname: ${terraform.workspace}-hana0${count.index + 1}

@@ -6,13 +6,14 @@ azure/terraform/provision/node0_id_rsa.pub
 azure/terraform/provision/node1_id_rsa
 azure/terraform/provision/node1_id_rsa.pub
 
-salt/hana_node/files/sshkeys
-salt/hana_node/files/pillar/*
-salt/drbd_node/files/pillar/*
-salt/netweaver_node/files/pillar/*
-!salt/hana_node/files/pillar/top.sls
-!salt/drbd_node/files/pillar/top.sls
-!salt/netweaver_node/files/pillar/top.sls
+salt/sshkeys
+pillar/hana/*
+!pillar/hana/.keep
+pillar/drbd/*
+!pillar/drbd/.keep
+pillar/netweaver/*
+!pillar/netweaver/.keep
+
 
 # Dev specific
 **/*.swp

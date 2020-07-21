@@ -70,7 +70,6 @@ module "drbd_node" {
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
@@ -129,7 +128,6 @@ module "netweaver_node" {
   reg_email                   = var.reg_email
   reg_additional_modules      = var.reg_additional_modules
   ha_sap_deployment_repo      = var.ha_sap_deployment_repo
-  devel_mode                  = var.devel_mode
   provisioner                 = var.provisioner
   background                  = var.background
   monitoring_enabled          = var.monitoring_enabled
@@ -182,7 +180,6 @@ module "hana_node" {
   reg_additional_modules        = var.reg_additional_modules
   additional_packages           = var.additional_packages
   ha_sap_deployment_repo        = var.ha_sap_deployment_repo
-  devel_mode                    = var.devel_mode
   provisioner                   = var.provisioner
   background                    = var.background
   monitoring_enabled            = var.monitoring_enabled

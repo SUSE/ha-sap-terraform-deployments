@@ -21,6 +21,11 @@ resource "null_resource" "provision_background" {
     destination = "/tmp"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/../../pillar"
+    destination = "/tmp"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "nohup sudo sh /tmp/salt/provision.sh -l /var/log/provisioning.log > /dev/null 2>&1 &",
@@ -52,6 +57,11 @@ resource "null_resource" "provision" {
     destination = "/tmp"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/../../pillar"
+    destination = "/tmp"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo sh /tmp/salt/provision.sh -sol /var/log/provisioning.log",
@@ -67,7 +77,7 @@ resource "null_resource" "provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo sh /root/salt/provision.sh -pdql /var/log/provisioning.log",
+      "sudo sh /srv/salt/provision.sh -pdql /var/log/provisioning.log",
     ]
   }
 }

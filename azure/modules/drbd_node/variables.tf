@@ -150,12 +150,6 @@ variable "ha_sap_deployment_repo" {
   type        = string
 }
 
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
 variable "qa_mode" {
   description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
   type        = bool

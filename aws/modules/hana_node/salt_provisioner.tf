@@ -56,7 +56,6 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
 qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 EOF

@@ -64,7 +64,6 @@ module "drbd_node" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   monitoring_enabled     = var.monitoring_enabled
-  devel_mode             = var.devel_mode
   provisioner            = var.provisioner
   background             = var.background
   on_destroy_dependencies = [
@@ -107,7 +106,6 @@ module "netweaver_node" {
   reg_email                 = var.reg_email
   reg_additional_modules    = var.reg_additional_modules
   ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  devel_mode                = var.devel_mode
   provisioner               = var.provisioner
   background                = var.background
   monitoring_enabled        = var.monitoring_enabled
@@ -153,7 +151,6 @@ module "hana_node" {
   reg_additional_modules     = var.reg_additional_modules
   ha_sap_deployment_repo     = var.ha_sap_deployment_repo
   additional_packages        = var.additional_packages
-  devel_mode                 = var.devel_mode
   hwcct                      = var.hwcct
   qa_mode                    = var.qa_mode
   provisioner                = var.provisioner

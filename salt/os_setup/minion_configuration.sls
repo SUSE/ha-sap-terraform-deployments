@@ -12,7 +12,7 @@ configure_file_roots:
             - /srv/salt
             - /usr/share/salt-formulas/states
           predeployment:
-            - /root/salt
+            - /srv/salt
             - /usr/share/salt-formulas/states
 
 # Old module.run style will be deprecated after sodium release
