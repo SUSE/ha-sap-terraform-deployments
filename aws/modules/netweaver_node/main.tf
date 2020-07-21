@@ -1,4 +1,9 @@
+locals {
+  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 # Network resources: subnets, routes, etc
+
 resource "aws_subnet" "netweaver-subnet" {
   count             = min(var.netweaver_count, 2) # Create 2 subnets max
   vpc_id            = var.vpc_id
@@ -17,14 +22,14 @@ resource "aws_route_table_association" "netweaver-subnet-route-association" {
 }
 
 resource "aws_route" "ascs-cluster-vip" {
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 0)}/32"
   instance_id            = aws_instance.netweaver.0.id
 }
 
 resource "aws_route" "ers-cluster-vip" {
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 1)}/32"
   instance_id            = aws_instance.netweaver.1.id

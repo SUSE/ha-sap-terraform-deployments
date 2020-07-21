@@ -1,5 +1,9 @@
 # HANA deployment in GCP
 
+locals {
+  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
 resource "google_compute_disk" "data" {
   count = var.hana_count
@@ -28,7 +32,7 @@ resource "google_compute_disk" "hana-software" {
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "hana-route" {
   name                   = "${terraform.workspace}-hana-route"
-  count                  = var.hana_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   dest_range             = "${var.hana_cluster_vip}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.0.name
@@ -39,7 +43,7 @@ resource "google_compute_route" "hana-route" {
 # Route for Active/Active setup
 resource "google_compute_route" "hana-route-secondary" {
   name                   = "${terraform.workspace}-hana-route-secondary"
-  count                  = var.hana_count > 0 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
   dest_range             = "${var.hana_cluster_vip_secondary}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.1.name

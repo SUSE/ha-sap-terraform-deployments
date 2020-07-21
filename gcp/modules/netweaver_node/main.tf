@@ -1,6 +1,10 @@
 # netweaver deployment in GCP
 # official documentation: https://cloud.google.com/solutions/sap/docs/netweaver-ha-planning-guide
 
+locals {
+  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 resource "google_compute_disk" "netweaver-software" {
   count = var.netweaver_count
   name  = "${terraform.workspace}-nw-installation-sw-${count.index}"
@@ -12,7 +16,7 @@ resource "google_compute_disk" "netweaver-software" {
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "nw-ascs-route" {
   name                   = "${terraform.workspace}-nw-ascs-route"
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
@@ -22,7 +26,7 @@ resource "google_compute_route" "nw-ascs-route" {
 
 resource "google_compute_route" "nw-ers-route" {
   name                   = "${terraform.workspace}-nw-ers-route"
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 1)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.1.name
