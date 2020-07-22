@@ -15,7 +15,7 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     content     = <<EOF
 provider: gcp
-role: monitoring
+role: monitoring_srv
 name_prefix: ${terraform.workspace}-monitoring
 hostname: ${terraform.workspace}-monitoring
 network_domain: "tf.local"

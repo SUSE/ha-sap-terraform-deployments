@@ -19,7 +19,7 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     content     = <<EOF
 provider: azure
-role: monitoring
+role: monitoring_srv
 name_prefix: vmmonitoring
 hostname: vmmonitoring
 timezone: ${var.timezone}
