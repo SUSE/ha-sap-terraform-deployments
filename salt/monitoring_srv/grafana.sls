@@ -21,7 +21,7 @@ grafana_anonymous_login_configuration:
 grafana_provisioning_datasources:
   file.managed:
     - name:  /etc/grafana/provisioning/datasources/datasources.yml
-    - source: salt://monitoring/grafana/datasources.yml.j2
+    - source: salt://monitoring_srv/grafana/datasources.yml.j2
     - template: jinja
     - makedirs: True
     - user: grafana
