@@ -10,9 +10,9 @@ clients:
 
 scrape_configs:
 - job_name: journal
-  journal_config:
+  journal:
     labels:
-      job: journal
+      job: systemd-journal
       hostname: {{ grains['hostname'] }}
   relabel_configs:
   - source_labels: ['__journal__systemd_unit']
