@@ -18,7 +18,6 @@ resource "null_resource" "drbd_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: azure
 role: drbd_node
 ${var.common_variables["grains_output"]}
 name_prefix: vm${var.name}

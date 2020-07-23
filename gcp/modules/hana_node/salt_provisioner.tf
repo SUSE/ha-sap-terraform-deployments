@@ -26,7 +26,6 @@ resource "null_resource" "hana_node_provisioner" {
 
   provisioner "file" {
     content = <<EOF
-provider: gcp
 role: hana_node
 ${var.common_variables["grains_output"]}
 scenario_type: ${var.scenario_type}

@@ -14,7 +14,6 @@ resource "null_resource" "iscsi_provisioner" {
 
   provisioner "file" {
     content = <<EOF
-provider: gcp
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 iscsi_srv_ip: ${element(google_compute_instance.iscsisrv.*.network_interface.0.network_ip, count.index)}

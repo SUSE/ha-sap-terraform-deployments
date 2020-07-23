@@ -18,7 +18,6 @@ resource "null_resource" "netweaver_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: azure
 role: netweaver_node
 ${var.common_variables["grains_output"]}
 name_prefix: vmnetweaver

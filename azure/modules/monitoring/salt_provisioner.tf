@@ -18,7 +18,6 @@ resource "null_resource" "monitoring_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: azure
 role: monitoring
 ${var.common_variables["grains_output"]}
 name_prefix: vmmonitoring

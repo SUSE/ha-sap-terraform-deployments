@@ -1,3 +1,8 @@
+variable "provider_type" {
+  description = "Used provider for the deployment"
+  type        = string
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""

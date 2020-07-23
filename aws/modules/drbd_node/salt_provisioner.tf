@@ -19,7 +19,6 @@ resource "null_resource" "drbd_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: aws
 role: drbd_node
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}

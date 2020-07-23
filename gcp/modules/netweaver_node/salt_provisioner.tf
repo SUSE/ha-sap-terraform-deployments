@@ -26,7 +26,6 @@ resource "null_resource" "netweaver_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: gcp
 role: netweaver_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-netweaver

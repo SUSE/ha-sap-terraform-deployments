@@ -16,7 +16,6 @@ resource "null_resource" "drbd_node_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: libvirt
 role: drbd_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${var.name}

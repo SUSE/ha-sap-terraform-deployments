@@ -17,7 +17,6 @@ resource "null_resource" "drbd_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: gcp
 role: drbd_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-drbd

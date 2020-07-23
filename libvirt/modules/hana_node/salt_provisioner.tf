@@ -16,7 +16,6 @@ resource "null_resource" "hana_node_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: libvirt
 role: hana_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${var.name}

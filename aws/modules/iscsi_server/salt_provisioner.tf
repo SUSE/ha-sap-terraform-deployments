@@ -14,7 +14,6 @@ resource "null_resource" "iscsi_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: aws
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}

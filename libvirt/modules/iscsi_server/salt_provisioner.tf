@@ -13,7 +13,6 @@ resource "null_resource" "iscsi_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: libvirt
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 host_ip: ${element(var.host_ips, count.index)}

@@ -18,7 +18,6 @@ resource "null_resource" "iscsi_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: azure
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}

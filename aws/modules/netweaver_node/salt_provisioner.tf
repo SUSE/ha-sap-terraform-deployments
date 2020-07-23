@@ -19,7 +19,6 @@ resource "null_resource" "netweaver_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: aws
 role: netweaver_node
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}

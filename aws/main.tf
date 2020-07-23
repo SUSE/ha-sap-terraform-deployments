@@ -41,6 +41,7 @@ locals {
 
 module "common_variables" {
   source                 = "../generic_modules/common_variables"
+  provider_type          = "aws"
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
