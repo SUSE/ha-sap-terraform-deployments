@@ -33,6 +33,7 @@ promtail_config:
     - template: jinja
     - source: salt://cluster_node/templates/promtail.yaml.j2
 
+# we need to add loki's user to the systemd-journal group, to let promtail read /run/log/journal
 loki_systemd_journal_member:
   group.present:
     - name: systemd-journal
