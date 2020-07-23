@@ -36,7 +36,8 @@ promtail_config:
 loki_systemd_journal_member:
   group.present:
     - name: systemd-journal
-    - addusers: loki
+    - addusers:
+      - loki
     - require:
       - pkg: loki
 
