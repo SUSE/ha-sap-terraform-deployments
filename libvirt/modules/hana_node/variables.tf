@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -7,35 +11,6 @@ variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
 }
-
-// repo and pkgs
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-// hana
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
 
 variable "network_domain" {
   description = "hostname's network domain"
@@ -147,17 +122,6 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
 // Provider-specific variables
 
 variable "source_image" {
@@ -212,21 +176,7 @@ variable "bridge" {
   default     = ""
 }
 
-// monitoring
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
-}
-
 // QA mode variables
-
-variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
-  type        = bool
-  default     = false
-}
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
