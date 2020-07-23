@@ -1,5 +1,5 @@
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? var.hana_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
 
   triggers = {
     cluster_instance_ids = join(",", aws_instance.clusternodes.*.id)
@@ -20,8 +20,9 @@ resource "null_resource" "hana_node_provisioner" {
   provisioner "file" {
     content     = <<EOF
 provider: aws
-region: ${var.aws_region}
 role: hana_node
+${var.common_variables["grains_output"]}
+region: ${var.aws_region}
 aws_cluster_profile: Cluster
 aws_instance_tag: ${terraform.workspace}-cluster
 aws_credentials_file: /tmp/credentials
@@ -50,13 +51,6 @@ hana_disk_device: ${local.hana_disk_device}
 hana_fstype: ${var.hana_fstype}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitoring_enabled: ${var.monitoring_enabled}
-qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
 EOF
     destination = "/tmp/grains"
@@ -65,10 +59,10 @@ EOF
 
 module "hana_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.hana_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = "ec2-user"
   private_key_location = var.private_key_location
   public_ips           = aws_instance.clusternodes.*.public_ip
-  background           = var.background
+  background           = var.common_variables["background"]
 }

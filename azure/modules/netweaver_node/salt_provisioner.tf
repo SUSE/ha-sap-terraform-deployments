@@ -1,5 +1,5 @@
 resource "null_resource" "netweaver_provisioner" {
-  count = var.provisioner == "salt" ? local.vm_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
 
   triggers = {
     netweaver_id = join(",", azurerm_virtual_machine.netweaver.*.id)
@@ -20,13 +20,10 @@ resource "null_resource" "netweaver_provisioner" {
     content     = <<EOF
 provider: azure
 role: netweaver_node
+${var.common_variables["grains_output"]}
 name_prefix: vmnetweaver
 hostname: vmnetweaver0${count.index + 1}
 network_domain: ${var.network_domain}
-additional_packages: []
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
@@ -40,9 +37,6 @@ sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitoring_enabled: ${var.monitoring_enabled}
-qa_mode: ${var.qa_mode}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
@@ -66,12 +60,12 @@ hana_ip: ${var.hana_ip}
 
 module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? local.vm_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.private_key_location
   bastion_host         = var.bastion_host
   bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses
-  background           = var.background
+  background           = var.common_variables["background"]
 }

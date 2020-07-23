@@ -132,7 +132,7 @@ resource "azurerm_lb_rule" "hana-lb-rules-secondary" {
 }
 
 resource "azurerm_lb_rule" "hanadb_exporter" {
-  count                          = var.monitoring_enabled ? local.create_ha_infra : 0
+  count                          = var.common_variables["monitoring_enabled"] ? local.create_ha_infra : 0
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.hana-load-balancer[0].id
   name                           = "hanadb_exporter"

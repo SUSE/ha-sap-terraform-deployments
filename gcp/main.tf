@@ -38,8 +38,22 @@ locals {
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
+module "common_variables" {
+  source                 = "../generic_modules/common_variables"
+  reg_code               = var.reg_code
+  reg_email              = var.reg_email
+  reg_additional_modules = var.reg_additional_modules
+  ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  additional_packages    = var.additional_packages
+  provisioner            = var.provisioner
+  background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  qa_mode                = var.qa_mode
+}
+
 module "drbd_node" {
   source                 = "./modules/drbd_node"
+  common_variables       = module.common_variables.configuration
   drbd_count             = var.drbd_enabled == true ? 2 : 0
   machine_type           = var.drbd_machine_type
   compute_zones          = data.google_compute_zones.available.names
@@ -59,13 +73,6 @@ module "drbd_node" {
   private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  monitoring_enabled     = var.monitoring_enabled
-  provisioner            = var.provisioner
-  background             = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -73,6 +80,7 @@ module "drbd_node" {
 
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
+  common_variables          = module.common_variables.configuration
   netweaver_count           = local.netweaver_count
   machine_type              = var.netweaver_machine_type
   compute_zones             = data.google_compute_zones.available.names
@@ -102,13 +110,6 @@ module "netweaver_node" {
   ha_enabled                = var.netweaver_ha_enabled
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   virtual_host_ips          = local.netweaver_virtual_ips
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  provisioner               = var.provisioner
-  background                = var.background
-  monitoring_enabled        = var.monitoring_enabled
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -116,6 +117,7 @@ module "netweaver_node" {
 
 module "hana_node" {
   source                     = "./modules/hana_node"
+  common_variables           = module.common_variables.configuration
   hana_count                 = var.hana_count
   machine_type               = var.machine_type
   compute_zones              = data.google_compute_zones.available.names
@@ -146,16 +148,7 @@ module "hana_node" {
   private_key_location       = var.private_key_location
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
-  reg_code                   = var.reg_code
-  reg_email                  = var.reg_email
-  reg_additional_modules     = var.reg_additional_modules
-  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
-  additional_packages        = var.additional_packages
   hwcct                      = var.hwcct
-  qa_mode                    = var.qa_mode
-  provisioner                = var.provisioner
-  background                 = var.background
-  monitoring_enabled         = var.monitoring_enabled
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -163,31 +156,26 @@ module "hana_node" {
 
 module "monitoring" {
   source                 = "./modules/monitoring"
+  common_variables       = module.common_variables.configuration
+  monitoring_enabled     = var.monitoring_enabled
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = local.subnet_name
   sles4sap_boot_image    = var.sles4sap_boot_image
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  additional_packages    = var.additional_packages
   monitoring_srv_ip      = local.monitoring_srv_ip
-  monitoring_enabled     = var.monitoring_enabled
   hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
-  provisioner            = var.provisioner
-  background             = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
 }
 
 module "iscsi_server" {
-  iscsi_count             = local.iscsi_enabled == true ? 1 : 0
   source                  = "./modules/iscsi_server"
+  common_variables        = module.common_variables.configuration
+  iscsi_count             = local.iscsi_enabled == true ? 1 : 0
   machine_type            = var.machine_type_iscsi_server
   compute_zones           = data.google_compute_zones.available.names
   network_subnet_name     = local.subnet_name
@@ -197,14 +185,6 @@ module "iscsi_server" {
   iscsi_disk_size         = var.iscsi_disk_size
   public_key_location     = var.public_key_location
   private_key_location    = var.private_key_location
-  reg_code                = var.reg_code
-  reg_email               = var.reg_email
-  reg_additional_modules  = var.reg_additional_modules
-  ha_sap_deployment_repo  = var.ha_sap_deployment_repo
-  additional_packages     = var.additional_packages
-  qa_mode                 = var.qa_mode
-  provisioner             = var.provisioner
-  background              = var.background
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

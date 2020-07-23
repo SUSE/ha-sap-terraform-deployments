@@ -3,7 +3,7 @@ locals {
 }
 
 resource "null_resource" "hana_node_provisioner" {
-  count = var.provisioner == "salt" ? var.hana_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
 
   triggers = {
     cluster_instance_ids = join(",", google_compute_instance.clusternodes.*.id)
@@ -28,6 +28,7 @@ resource "null_resource" "hana_node_provisioner" {
     content = <<EOF
 provider: gcp
 role: hana_node
+${var.common_variables["grains_output"]}
 scenario_type: ${var.scenario_type}
 name_prefix: ${terraform.workspace}-hana
 hostname: ${terraform.workspace}-hana0${count.index + 1}
@@ -56,21 +57,7 @@ sap_hana_deployment_bucket: ${var.sap_hana_deployment_bucket}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-qa_mode: ${var.qa_mode}
 hwcct: ${var.hwcct}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-monitoring_enabled: ${var.monitoring_enabled}
-reg_additional_modules: {${join(
-    ", ",
-    formatlist(
-      "'%s': '%s'",
-      keys(var.reg_additional_modules),
-      values(var.reg_additional_modules),
-    ),
-)}}
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 EOF
 destination = "/tmp/grains"
 }
@@ -78,10 +65,10 @@ destination = "/tmp/grains"
 
 module "hana_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.hana_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
-  background           = var.background
+  background           = var.common_variables["background"]
 }

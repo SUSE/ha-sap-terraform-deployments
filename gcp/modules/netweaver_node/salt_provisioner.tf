@@ -3,7 +3,7 @@ locals {
 }
 
 resource "null_resource" "netweaver_provisioner" {
-  count = var.provisioner == "salt" ? var.netweaver_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
 
   triggers = {
     netweaver_id = join(",", google_compute_instance.netweaver.*.id)
@@ -28,13 +28,10 @@ resource "null_resource" "netweaver_provisioner" {
     content     = <<EOF
 provider: gcp
 role: netweaver_node
+${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-netweaver
 hostname: ${terraform.workspace}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}
-additional_packages: []
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
 authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
@@ -47,9 +44,6 @@ sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitoring_enabled: ${var.monitoring_enabled}
-qa_mode: ${var.qa_mode}
 netweaver_software_bucket: ${var.netweaver_software_bucket}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
@@ -77,10 +71,10 @@ EOF
 
 module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = "root"
   private_key_location = var.private_key_location
   public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
-  background           = var.background
+  background           = var.common_variables["background"]
 }
