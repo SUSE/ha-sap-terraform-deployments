@@ -5,7 +5,7 @@
 
 The monitoring feature will install and configure all the tools required to monitor the various components of the HA SAP cluster (Pacemaker, Corosync, SBD, DRBD, SAP HANA, etc).
 
-**Note:** an extra instance, hosting a Prometheus/Grafana server, will be provisioned.
+**Note:** an extra instance, hosting a Prometheus/Grafana/Loki server, will be provisioned.
 
 
 ### Usage
@@ -16,11 +16,6 @@ In order to enable it, you will need to set the set `monitoring_enabled` Terrafo
 This configuration will create an additional VM with the chosen provider and install all the required packages in the monitored nodes.
 
 The address of the Grafana dashboard will be made available in the final Terraform output.
-
-
-### DRBD and Netweaver monitoring
-
-If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
 
 
 ### Prometheus metric exporters
@@ -66,6 +61,11 @@ scrape_configs:
 This will add a `job` label in all the Prometheus metrics, in this example `job="hacluster-01"` and `job="hacluster-02"`.
 
 We leverage this to implement a cluster selector switch at the top of the Multi-Cluster Grafana dashboard.
+
+
+### DRBD and Netweaver monitoring
+
+If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
 
 
 ### DRBD split-brain detection
