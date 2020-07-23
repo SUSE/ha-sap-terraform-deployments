@@ -22,11 +22,6 @@ variable "drbd_count" {
   default     = 2
 }
 
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
 variable "drbd_disk_size" {
   description = "drbd partition disk size"
   default     = "1024000000" # 1GB

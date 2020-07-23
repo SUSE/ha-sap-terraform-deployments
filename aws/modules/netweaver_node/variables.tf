@@ -85,14 +85,6 @@ variable "network_domain" {
   default = "tf.local"
 }
 
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
-}
-
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string

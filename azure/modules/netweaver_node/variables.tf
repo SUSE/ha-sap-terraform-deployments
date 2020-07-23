@@ -33,14 +33,6 @@ variable "network_domain" {
   default = "tf.local"
 }
 
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
-}
-
 variable "bastion_enabled" {
   description = "Use a bastion machine to create the ssh connections"
   type        = bool

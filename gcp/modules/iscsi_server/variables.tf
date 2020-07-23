@@ -44,16 +44,6 @@ variable "lun_count" {
   default     = 3
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
-  type        = string
-}
-
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
-  type        = string
-}
-
 variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any

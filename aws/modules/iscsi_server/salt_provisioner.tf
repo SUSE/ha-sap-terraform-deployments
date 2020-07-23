@@ -38,7 +38,7 @@ module "iscsi_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
   instance_ids         = null_resource.iscsi_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.iscsisrv.*.public_ip
   background           = var.common_variables["background"]
 }

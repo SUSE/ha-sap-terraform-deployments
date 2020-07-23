@@ -23,16 +23,6 @@ variable "sles4sap_boot_image" {
   default = "suse-byos-cloud/sles-15-sap-byos"
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
-  type        = string
-}
-
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
-  type        = string
-}
-
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string

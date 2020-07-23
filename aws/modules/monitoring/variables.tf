@@ -30,10 +30,6 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "private_key_location" {
-  type = string
-}
-
 variable "aws_region" {
   type = string
 }

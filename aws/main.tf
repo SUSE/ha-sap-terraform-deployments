@@ -47,6 +47,7 @@ module "common_variables" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
+  private_key_location   = var.private_key_location
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
@@ -75,8 +76,6 @@ module "drbd_node" {
   drbd_cluster_vip       = local.drbd_cluster_vip
   drbd_data_disk_size    = var.drbd_data_disk_size
   drbd_data_disk_type    = var.drbd_data_disk_type
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
@@ -99,7 +98,6 @@ module "iscsi_server" {
   instance_type          = var.iscsi_instancetype
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
-  private_key_location   = var.private_key_location
   host_ips               = [local.iscsi_ip]
   lun_count              = var.iscsi_lun_count
   iscsi_disk_size        = var.iscsi_disk_size
@@ -144,8 +142,6 @@ module "netweaver_node" {
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
-  public_key_location       = var.public_key_location
-  private_key_location      = var.private_key_location
   ha_enabled                = var.netweaver_ha_enabled
   sbd_enabled               = var.netweaver_cluster_sbd_enabled
   sbd_storage_type          = var.sbd_storage_type
@@ -190,7 +186,6 @@ module "hana_node" {
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  private_key_location       = var.private_key_location
   sbd_enabled                = var.hana_cluster_sbd_enabled
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
@@ -212,7 +207,6 @@ module "monitoring" {
   key_name               = aws_key_pair.key-pair.key_name
   security_group_id      = local.security_group_id
   monitoring_srv_ip      = local.monitoring_ip
-  private_key_location   = var.private_key_location
   aws_region             = var.aws_region
   availability_zones     = data.aws_availability_zones.available.names
   os_image               = var.monitoring_os_image

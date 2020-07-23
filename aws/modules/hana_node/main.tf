@@ -94,7 +94,7 @@ module "hana_on_destroy" {
   node_count           = var.hana_count
   instance_ids         = aws_instance.clusternodes.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.clusternodes.*.public_ip
   dependencies = concat(
     [aws_route_table_association.hana-subnet-route-association],

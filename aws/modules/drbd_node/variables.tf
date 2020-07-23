@@ -101,14 +101,6 @@ variable "network_domain" {
   default = "tf.local"
 }
 
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
-}
-
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string

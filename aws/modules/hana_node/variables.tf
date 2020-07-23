@@ -71,10 +71,6 @@ variable "aws_secret_access_key" {
   type = string
 }
 
-variable "private_key_location" {
-  type = string
-}
-
 variable "host_ips" {
   description = "ip addresses to set to the nodes. The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet"
   type        = list(string)

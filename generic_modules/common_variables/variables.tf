@@ -31,6 +31,18 @@ variable "additional_packages" {
   default     = []
 }
 
+variable "public_key_location" {
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
+  default     = ""
+}
+
+variable "private_key_location" {
+  description = "Path to a SSH private key used to connect to the created machines"
+  type        = string
+  default     = ""
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

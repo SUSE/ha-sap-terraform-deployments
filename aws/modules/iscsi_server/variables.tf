@@ -38,11 +38,6 @@ variable "security_group_id" {
   description = "Security group id"
 }
 
-variable "private_key_location" {
-  type        = string
-  description = "Path to a SSH private key used to connect to the created machines"
-}
-
 variable "host_ips" {
   description = "List of ip addresses to set to the machines"
   type        = list(string)

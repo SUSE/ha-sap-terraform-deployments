@@ -48,6 +48,8 @@ module "common_variables" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
@@ -69,8 +71,6 @@ module "drbd_node" {
   network_subnet_id      = local.subnet_id
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
   bastion_private_key    = local.bastion_private_key
@@ -106,8 +106,6 @@ module "netweaver_node" {
   network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  public_key_location         = var.public_key_location
-  private_key_location        = var.private_key_location
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
   bastion_private_key         = local.bastion_private_key
@@ -164,8 +162,6 @@ module "hana_node" {
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
-  public_key_location           = var.public_key_location
-  private_key_location          = var.private_key_location
   bastion_enabled               = var.bastion_enabled
   bastion_host                  = module.bastion.public_ip
   bastion_private_key           = local.bastion_private_key
@@ -197,8 +193,6 @@ module "monitoring" {
   monitoring_public_sku       = var.monitoring_public_sku
   monitoring_public_version   = var.monitoring_public_version
   monitoring_srv_ip           = local.monitoring_ip
-  public_key_location         = var.public_key_location
-  private_key_location        = var.private_key_location
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
   bastion_private_key         = local.bastion_private_key
@@ -223,8 +217,6 @@ module "iscsi_server" {
   iscsi_public_offer     = var.iscsi_public_offer
   iscsi_public_sku       = var.iscsi_public_sku
   iscsi_public_version   = var.iscsi_public_version
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
   bastion_private_key    = local.bastion_private_key

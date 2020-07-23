@@ -46,6 +46,8 @@ module "common_variables" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
@@ -70,8 +72,6 @@ module "drbd_node" {
   sbd_enabled            = var.drbd_cluster_sbd_enabled
   sbd_storage_type       = var.sbd_storage_type
   iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   cluster_ssh_pub        = var.cluster_ssh_pub
   cluster_ssh_key        = var.cluster_ssh_key
   on_destroy_dependencies = [
@@ -94,8 +94,6 @@ module "netweaver_node" {
   sbd_enabled               = var.netweaver_cluster_sbd_enabled
   sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
-  public_key_location       = var.public_key_location
-  private_key_location      = var.private_key_location
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_product_id      = var.netweaver_product_id
@@ -145,8 +143,6 @@ module "hana_node" {
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
   scenario_type              = var.scenario_type
-  public_key_location        = var.public_key_location
-  private_key_location       = var.private_key_location
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
   hwcct                      = var.hwcct
@@ -162,8 +158,6 @@ module "monitoring" {
   compute_zones          = data.google_compute_zones.available.names
   network_subnet_name    = local.subnet_name
   sles4sap_boot_image    = var.sles4sap_boot_image
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   monitoring_srv_ip      = local.monitoring_srv_ip
   hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
@@ -184,8 +178,6 @@ module "iscsi_server" {
   host_ips                = [local.iscsi_srv_ip]
   lun_count               = var.iscsi_lun_count
   iscsi_disk_size         = var.iscsi_disk_size
-  public_key_location     = var.public_key_location
-  private_key_location    = var.private_key_location
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

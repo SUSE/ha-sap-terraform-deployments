@@ -6,6 +6,8 @@ output "configuration" {
     reg_additional_modules = var.reg_additional_modules
     ha_sap_deployment_repo = var.ha_sap_deployment_repo
     additional_packages    = var.additional_packages
+    public_key_location    = var.public_key_location
+    private_key_location   = var.private_key_location
     provisioner            = var.provisioner
     background             = var.background
     monitoring_enabled     = var.monitoring_enabled

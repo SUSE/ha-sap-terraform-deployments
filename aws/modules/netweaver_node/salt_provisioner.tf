@@ -31,7 +31,6 @@ aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
 network_domain: ${var.network_domain}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
@@ -68,7 +67,7 @@ module "netweaver_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.netweaver.*.public_ip
   background           = var.common_variables["background"]
 }

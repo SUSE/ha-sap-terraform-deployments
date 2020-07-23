@@ -17,11 +17,6 @@ variable "netweaver_count" {
   default     = 4
 }
 
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)

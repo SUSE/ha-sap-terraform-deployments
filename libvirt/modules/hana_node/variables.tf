@@ -22,11 +22,6 @@ variable "hana_count" {
   default     = 2
 }
 
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
 variable "hana_disk_size" {
   description = "hana partition disk size"
   default     = "68719476736" # 64GB

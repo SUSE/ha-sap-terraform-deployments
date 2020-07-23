@@ -41,7 +41,7 @@ module "iscsi_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
   instance_ids         = null_resource.iscsi_provisioner.*.id
   user                 = var.admin_user
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   bastion_host         = var.bastion_host
   bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses
