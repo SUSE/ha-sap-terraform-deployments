@@ -33,6 +33,13 @@ promtail_config:
     - template: jinja
     - source: salt://cluster_node/templates/promtail.yaml.j2
 
+loki_systemd_journal_member:
+  group.present:
+    - name: systemd-journal
+    - addusers: loki
+    - require:
+      - pkg: loki
+
 promtail_service:
   service.running:
     - name: promtail
@@ -41,3 +48,4 @@ promtail_service:
     - require:
       - pkg: loki
       - file: promtail_config
+      - group: loki_systemd_journal_member
