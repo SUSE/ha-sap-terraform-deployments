@@ -18,7 +18,7 @@ activate_node_exporter_systemd_collector:
     - name: /etc/sysconfig/prometheus-node_exporter
     - makedirs: True
     - contents: |
-        ARGS="--collector.systemd"
+        ARGS="--collector.systemd --no-collector.mdadm"
 
 loki:
   pkg.installed:
