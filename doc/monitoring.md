@@ -78,3 +78,10 @@ In order to enable this, you'll need to activate the custom hook handler via pil
 The handler is just a simple shell script that will create a temporary file in `/var/run/drbd/splitbrain` when a split-brain is detected; `ha_cluster_exporter` will check for files in this directory and will expose dedicated Prometheus metrics accordingly.
 
 After the split-brain is fixed, the temporary files must be removed manually: as long as these files exist, the exporter will continue reporting the split-brain occurrence.
+
+
+### Logging
+
+When monitoring is enabled, centralized logging will be provisioned via Loki, a log aggregator.
+
+You can browse the systemd journal of all the nodes in the Grafana Explorer, by selecting the `Loki` datasource.
