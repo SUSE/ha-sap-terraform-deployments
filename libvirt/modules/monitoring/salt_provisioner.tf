@@ -13,7 +13,7 @@ resource "null_resource" "monitoring_provisioner" {
   provisioner "file" {
     content     = <<EOF
 provider: libvirt
-role: monitoring
+role: monitoring_srv
 ${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-${var.name}
 hostname: ${terraform.workspace}-${var.name}

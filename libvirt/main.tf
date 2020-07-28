@@ -48,6 +48,7 @@ module "common_variables" {
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
+  monitoring_srv_ip      = var.monitoring_enabled ? module.monitoring.output_data.private_address : ""
   qa_mode                = var.qa_mode
 }
 

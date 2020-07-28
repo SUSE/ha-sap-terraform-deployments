@@ -16,7 +16,7 @@ resource "null_resource" "monitoring_provisioner" {
     content = <<EOF
 provider: aws
 region: ${var.aws_region}
-role: monitoring
+role: monitoring_srv
 name_prefix: monitoring
 hostname: monitoring
 timezone: ${var.timezone}
