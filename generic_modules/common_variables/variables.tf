@@ -55,9 +55,15 @@ variable "background" {
 }
 
 variable "monitoring_enabled" {
-  description = "Enable the host to be monitored by exporters, e.g node_exporter"
+  description = "Enable centralized monitoring via Prometheus/Grafana/Loki"
   type        = bool
   default     = false
+}
+
+variable "monitoring_srv_ip" {
+  description = "Monitoring server address"
+  type        = string
+  default     = ""
 }
 
 variable "qa_mode" {

@@ -8,14 +8,14 @@ prometheus:
 prometheus_alerts:
   file.managed:
     - name:  /etc/prometheus/rules.yml
-    - source: salt://monitoring/prometheus/rules.yml
+    - source: salt://monitoring_srv/prometheus/rules.yml
     - require:
       - pkg: prometheus
 
 prometheus_configuration:
   file.managed:
     - name:  /etc/prometheus/prometheus.yml
-    - source: salt://monitoring/prometheus/prometheus.yml.j2
+    - source: salt://monitoring_srv/prometheus/prometheus.yml.j2
     - template: jinja
     - require:
       - pkg: prometheus

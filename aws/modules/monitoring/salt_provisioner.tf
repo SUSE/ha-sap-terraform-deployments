@@ -14,7 +14,7 @@ resource "null_resource" "monitoring_provisioner" {
 
   provisioner "file" {
     content = <<EOF
-role: monitoring
+role: monitoring_srv
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}
 name_prefix: monitoring

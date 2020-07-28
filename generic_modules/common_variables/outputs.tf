@@ -11,6 +11,7 @@ output "configuration" {
     provisioner            = var.provisioner
     background             = var.background
     monitoring_enabled     = var.monitoring_enabled
+    monitoring_srv_ip      = var.monitoring_srv_ip
     qa_mode                = var.qa_mode
     grains_output          = <<EOF
 provider: ${var.provider_type}
@@ -20,6 +21,7 @@ reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_addi
 ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 monitoring_enabled: ${var.monitoring_enabled}
+monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
 EOF
   }
