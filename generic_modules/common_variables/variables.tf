@@ -1,3 +1,8 @@
+variable "provider_type" {
+  description = "Used provider for the deployment"
+  type        = string
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -24,6 +29,18 @@ variable "additional_packages" {
   description = "extra packages which should be installed"
   type        = list
   default     = []
+}
+
+variable "public_key_location" {
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
+  default     = ""
+}
+
+variable "private_key_location" {
+  description = "Path to a SSH private key used to connect to the created machines"
+  type        = string
+  default     = ""
 }
 
 variable "provisioner" {

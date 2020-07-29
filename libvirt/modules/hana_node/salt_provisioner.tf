@@ -16,14 +16,13 @@ resource "null_resource" "hana_node_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: libvirt
 role: hana_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${var.name}
 hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
+authorized_keys: [${trimspace(file(var.common_variables["public_key_location"]))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 scenario_type: ${var.scenario_type}

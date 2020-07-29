@@ -40,11 +40,13 @@ locals {
 
 module "common_variables" {
   source                 = "../generic_modules/common_variables"
+  provider_type          = "libvirt"
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
+  public_key_location    = var.public_key_location
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled

@@ -40,44 +40,54 @@ locals {
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
 }
 
-module "drbd_node" {
-  source                 = "./modules/drbd_node"
-  az_region              = var.az_region
-  drbd_count             = var.drbd_enabled == true ? 2 : 0
-  vm_size                = var.drbd_vm_size
-  drbd_image_uri         = var.drbd_image_uri
-  drbd_public_publisher  = var.drbd_public_publisher
-  drbd_public_offer      = var.drbd_public_offer
-  drbd_public_sku        = var.drbd_public_sku
-  drbd_public_version    = var.drbd_public_version
-  resource_group_name    = local.resource_group_name
-  network_subnet_id      = local.subnet_id
-  sec_group_id           = azurerm_network_security_group.mysecgroup.id
-  storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
-  bastion_enabled        = var.bastion_enabled
-  bastion_host           = module.bastion.public_ip
-  bastion_private_key    = local.bastion_private_key
-  cluster_ssh_pub        = var.cluster_ssh_pub
-  cluster_ssh_key        = var.cluster_ssh_key
-  admin_user             = var.admin_user
-  host_ips               = local.drbd_ips
-  sbd_enabled            = var.drbd_cluster_sbd_enabled
-  sbd_storage_type       = var.sbd_storage_type
-  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
+module "common_variables" {
+  source                 = "../generic_modules/common_variables"
+  provider_type          = "azure"
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
+  additional_packages    = var.additional_packages
+  public_key_location    = var.public_key_location
+  private_key_location   = var.private_key_location
   provisioner            = var.provisioner
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  drbd_cluster_vip       = local.drbd_cluster_vip
+  monitoring_srv_ip      = var.monitoring_enabled ? local.monitoring_ip : ""
+  qa_mode                = var.qa_mode
+}
+
+module "drbd_node" {
+  source                = "./modules/drbd_node"
+  common_variables      = module.common_variables.configuration
+  az_region             = var.az_region
+  drbd_count            = var.drbd_enabled == true ? 2 : 0
+  vm_size               = var.drbd_vm_size
+  drbd_image_uri        = var.drbd_image_uri
+  drbd_public_publisher = var.drbd_public_publisher
+  drbd_public_offer     = var.drbd_public_offer
+  drbd_public_sku       = var.drbd_public_sku
+  drbd_public_version   = var.drbd_public_version
+  resource_group_name   = local.resource_group_name
+  network_subnet_id     = local.subnet_id
+  sec_group_id          = azurerm_network_security_group.mysecgroup.id
+  storage_account       = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  bastion_enabled       = var.bastion_enabled
+  bastion_host          = module.bastion.public_ip
+  bastion_private_key   = local.bastion_private_key
+  cluster_ssh_pub       = var.cluster_ssh_pub
+  cluster_ssh_key       = var.cluster_ssh_key
+  admin_user            = var.admin_user
+  host_ips              = local.drbd_ips
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  sbd_storage_type      = var.sbd_storage_type
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  drbd_cluster_vip      = local.drbd_cluster_vip
 }
 
 module "netweaver_node" {
   source                      = "./modules/netweaver_node"
+  common_variables            = module.common_variables.configuration
   az_region                   = var.az_region
   xscs_server_count           = var.netweaver_enabled ? local.netweaver_xscs_server_count : 0
   app_server_count            = var.netweaver_enabled ? var.netweaver_app_server_count : 0
@@ -97,8 +107,6 @@ module "netweaver_node" {
   network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  public_key_location         = var.public_key_location
-  private_key_location        = var.private_key_location
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
   bastion_private_key         = local.bastion_private_key
@@ -124,17 +132,11 @@ module "netweaver_node" {
   ha_enabled                  = var.netweaver_ha_enabled
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
   hana_ip                     = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
-  reg_code                    = var.reg_code
-  reg_email                   = var.reg_email
-  reg_additional_modules      = var.reg_additional_modules
-  ha_sap_deployment_repo      = var.ha_sap_deployment_repo
-  provisioner                 = var.provisioner
-  background                  = var.background
-  monitoring_enabled          = var.monitoring_enabled
 }
 
 module "hana_node" {
   source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
   az_region                     = var.az_region
   hana_count                    = var.hana_count
   hana_instance_number          = var.hana_instance_number
@@ -161,8 +163,6 @@ module "hana_node" {
   hana_fstype                   = var.hana_fstype
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
-  public_key_location           = var.public_key_location
-  private_key_location          = var.private_key_location
   bastion_enabled               = var.bastion_enabled
   bastion_host                  = module.bastion.public_ip
   bastion_private_key           = local.bastion_private_key
@@ -175,20 +175,13 @@ module "hana_node" {
   sbd_enabled                   = var.hana_cluster_sbd_enabled
   sbd_storage_type              = var.sbd_storage_type
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
-  reg_code                      = var.reg_code
-  reg_email                     = var.reg_email
-  reg_additional_modules        = var.reg_additional_modules
-  additional_packages           = var.additional_packages
-  ha_sap_deployment_repo        = var.ha_sap_deployment_repo
-  provisioner                   = var.provisioner
-  background                    = var.background
-  monitoring_enabled            = var.monitoring_enabled
   hwcct                         = var.hwcct
-  qa_mode                       = var.qa_mode
 }
 
 module "monitoring" {
   source                      = "./modules/monitoring"
+  common_variables            = module.common_variables.configuration
+  monitoring_enabled          = var.monitoring_enabled
   az_region                   = var.az_region
   vm_size                     = var.monitoring_vm_size
   resource_group_name         = local.resource_group_name
@@ -201,20 +194,10 @@ module "monitoring" {
   monitoring_public_sku       = var.monitoring_public_sku
   monitoring_public_version   = var.monitoring_public_version
   monitoring_srv_ip           = local.monitoring_ip
-  public_key_location         = var.public_key_location
-  private_key_location        = var.private_key_location
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
   bastion_private_key         = local.bastion_private_key
   admin_user                  = var.admin_user
-  reg_code                    = var.reg_code
-  reg_email                   = var.reg_email
-  reg_additional_modules      = var.reg_additional_modules
-  additional_packages         = var.additional_packages
-  ha_sap_deployment_repo      = var.ha_sap_deployment_repo
-  provisioner                 = var.provisioner
-  background                  = var.background
-  monitoring_enabled          = var.monitoring_enabled
   hana_targets                = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets                = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets           = var.netweaver_enabled ? local.netweaver_virtual_ips : []
@@ -222,6 +205,7 @@ module "monitoring" {
 
 module "iscsi_server" {
   source                 = "./modules/iscsi_server"
+  common_variables       = module.common_variables.configuration
   iscsi_count            = local.iscsi_enabled ? 1 : 0
   az_region              = var.az_region
   vm_size                = var.iscsi_vm_size
@@ -234,8 +218,6 @@ module "iscsi_server" {
   iscsi_public_offer     = var.iscsi_public_offer
   iscsi_public_sku       = var.iscsi_public_sku
   iscsi_public_version   = var.iscsi_public_version
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
   bastion_private_key    = local.bastion_private_key
@@ -243,12 +225,4 @@ module "iscsi_server" {
   lun_count              = var.iscsi_lun_count
   iscsi_disk_size        = var.iscsi_disk_size
   admin_user             = var.admin_user
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  additional_packages    = var.additional_packages
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  qa_mode                = var.qa_mode
 }

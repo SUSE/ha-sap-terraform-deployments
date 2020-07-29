@@ -1,5 +1,5 @@
 resource "null_resource" "drbd_provisioner" {
-  count = var.provisioner == "salt" ? var.drbd_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
 
   triggers = {
     drbd_id = join(",", aws_instance.drbd.*.id)
@@ -9,7 +9,7 @@ resource "null_resource" "drbd_provisioner" {
     host        = element(aws_instance.drbd.*.public_ip, count.index)
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {
@@ -19,9 +19,9 @@ resource "null_resource" "drbd_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-provider: aws
-region: ${var.aws_region}
 role: drbd_node
+${var.common_variables["grains_output"]}
+region: ${var.aws_region}
 name_prefix: ${var.name}
 aws_cluster_profile: Cluster
 aws_instance_tag: ${terraform.workspace}-cluster
@@ -41,14 +41,6 @@ sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules)))}}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
-additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitoring_enabled: ${var.monitoring_enabled}
-qa_mode: ${var.qa_mode}
 partitions:
   1:
     start: 0%
@@ -60,10 +52,10 @@ EOF
 
 module "drbd_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.drbd_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
   instance_ids         = null_resource.drbd_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.drbd.*.public_ip
-  background           = var.background
+  background           = var.common_variables["background"]
 }

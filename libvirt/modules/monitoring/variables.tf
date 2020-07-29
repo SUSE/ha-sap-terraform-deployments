@@ -44,11 +44,6 @@ variable "vcpu" {
   default     = 1
 }
 
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string

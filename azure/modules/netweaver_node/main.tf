@@ -297,7 +297,7 @@ resource "azurerm_virtual_machine" "netweaver" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_location)
+      key_data = file(var.common_variables["public_key_location"])
     }
   }
 
@@ -316,7 +316,7 @@ module "netweaver_on_destroy" {
   node_count           = local.vm_count
   instance_ids         = azurerm_virtual_machine.netweaver.*.id
   user                 = var.admin_user
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   bastion_host         = var.bastion_host
   bastion_private_key  = var.bastion_private_key
   public_ips           = local.provisioning_addresses

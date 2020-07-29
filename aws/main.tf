@@ -39,41 +39,47 @@ locals {
   iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || var.drbd_enabled && var.drbd_cluster_sbd_enabled == true || local.netweaver_count > 2 && var.netweaver_cluster_sbd_enabled == true) ? true : false
 }
 
-module "drbd_node" {
-  source                 = "./modules/drbd_node"
-  drbd_count             = var.drbd_enabled == true ? 2 : 0
-  instance_type          = var.drbd_instancetype
-  aws_region             = var.aws_region
-  availability_zones     = data.aws_availability_zones.available.names
-  os_image               = var.drbd_os_image
-  os_owner               = var.drbd_os_owner
-  vpc_id                 = local.vpc_id
-  subnet_address_range   = local.drbd_subnet_address_range
-  key_name               = aws_key_pair.key-pair.key_name
-  security_group_id      = local.security_group_id
-  route_table_id         = aws_route_table.route-table.id
-  aws_credentials        = var.aws_credentials
-  aws_access_key_id      = var.aws_access_key_id
-  aws_secret_access_key  = var.aws_secret_access_key
-  host_ips               = local.drbd_ips
-  sbd_enabled            = var.drbd_cluster_sbd_enabled
-  drbd_cluster_vip       = local.drbd_cluster_vip
-  drbd_data_disk_size    = var.drbd_data_disk_size
-  drbd_data_disk_type    = var.drbd_data_disk_type
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
-  cluster_ssh_pub        = var.cluster_ssh_pub
-  cluster_ssh_key        = var.cluster_ssh_key
-  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
+module "common_variables" {
+  source                 = "../generic_modules/common_variables"
+  provider_type          = "aws"
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
-  additional_packages    = var.additional_packages
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  monitoring_enabled     = var.monitoring_enabled
+  additional_packages    = var.additional_packages
+  private_key_location   = var.private_key_location
   provisioner            = var.provisioner
   background             = var.background
+  monitoring_enabled     = var.monitoring_enabled
+  monitoring_srv_ip      = var.monitoring_enabled ? local.monitoring_ip : ""
   qa_mode                = var.qa_mode
+}
+
+module "drbd_node" {
+  source                = "./modules/drbd_node"
+  common_variables      = module.common_variables.configuration
+  drbd_count            = var.drbd_enabled == true ? 2 : 0
+  instance_type         = var.drbd_instancetype
+  aws_region            = var.aws_region
+  availability_zones    = data.aws_availability_zones.available.names
+  os_image              = var.drbd_os_image
+  os_owner              = var.drbd_os_owner
+  vpc_id                = local.vpc_id
+  subnet_address_range  = local.drbd_subnet_address_range
+  key_name              = aws_key_pair.key-pair.key_name
+  security_group_id     = local.security_group_id
+  route_table_id        = aws_route_table.route-table.id
+  aws_credentials       = var.aws_credentials
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+  host_ips              = local.drbd_ips
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  drbd_cluster_vip      = local.drbd_cluster_vip
+  drbd_data_disk_size   = var.drbd_data_disk_size
+  drbd_data_disk_type   = var.drbd_data_disk_type
+  cluster_ssh_pub       = var.cluster_ssh_pub
+  cluster_ssh_key       = var.cluster_ssh_key
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -82,28 +88,20 @@ module "drbd_node" {
 }
 
 module "iscsi_server" {
-  source                 = "./modules/iscsi_server"
-  iscsi_count            = local.iscsi_enabled == true ? 1 : 0
-  aws_region             = var.aws_region
-  availability_zones     = data.aws_availability_zones.available.names
-  subnet_ids             = aws_subnet.infra-subnet.*.id
-  os_image               = var.iscsi_os_image
-  os_owner               = var.iscsi_os_owner
-  instance_type          = var.iscsi_instancetype
-  key_name               = aws_key_pair.key-pair.key_name
-  security_group_id      = local.security_group_id
-  private_key_location   = var.private_key_location
-  host_ips               = [local.iscsi_ip]
-  lun_count              = var.iscsi_lun_count
-  iscsi_disk_size        = var.iscsi_disk_size
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  additional_packages    = var.additional_packages
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  qa_mode                = var.qa_mode
+  source             = "./modules/iscsi_server"
+  common_variables   = module.common_variables.configuration
+  iscsi_count        = local.iscsi_enabled == true ? 1 : 0
+  aws_region         = var.aws_region
+  availability_zones = data.aws_availability_zones.available.names
+  subnet_ids         = aws_subnet.infra-subnet.*.id
+  os_image           = var.iscsi_os_image
+  os_owner           = var.iscsi_os_owner
+  instance_type      = var.iscsi_instancetype
+  key_name           = aws_key_pair.key-pair.key_name
+  security_group_id  = local.security_group_id
+  host_ips           = [local.iscsi_ip]
+  lun_count          = var.iscsi_lun_count
+  iscsi_disk_size    = var.iscsi_disk_size
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,
@@ -114,6 +112,7 @@ module "iscsi_server" {
 
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
+  common_variables          = module.common_variables.configuration
   netweaver_count           = local.netweaver_count
   instance_type             = var.netweaver_instancetype
   name                      = "netweaver"
@@ -144,21 +143,12 @@ module "netweaver_node" {
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
-  public_key_location       = var.public_key_location
-  private_key_location      = var.private_key_location
   ha_enabled                = var.netweaver_ha_enabled
   sbd_enabled               = var.netweaver_cluster_sbd_enabled
   sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
-  reg_code                  = var.reg_code
-  reg_email                 = var.reg_email
-  reg_additional_modules    = var.reg_additional_modules
-  ha_sap_deployment_repo    = var.ha_sap_deployment_repo
-  provisioner               = var.provisioner
-  background                = var.background
-  monitoring_enabled        = var.monitoring_enabled
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -168,6 +158,7 @@ module "netweaver_node" {
 
 module "hana_node" {
   source                     = "./modules/hana_node"
+  common_variables           = module.common_variables.configuration
   hana_count                 = var.hana_count
   instance_type              = var.hana_instancetype
   name                       = var.name
@@ -196,22 +187,12 @@ module "hana_node" {
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  private_key_location       = var.private_key_location
   sbd_enabled                = var.hana_cluster_sbd_enabled
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
-  reg_code                   = var.reg_code
-  reg_email                  = var.reg_email
-  reg_additional_modules     = var.reg_additional_modules
-  additional_packages        = var.additional_packages
-  ha_sap_deployment_repo     = var.ha_sap_deployment_repo
   hwcct                      = var.hwcct
-  qa_mode                    = var.qa_mode
-  provisioner                = var.provisioner
-  background                 = var.background
-  monitoring_enabled         = var.monitoring_enabled
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -220,29 +201,22 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source                 = "./modules/monitoring"
-  instance_type          = var.monitor_instancetype
-  key_name               = aws_key_pair.key-pair.key_name
-  security_group_id      = local.security_group_id
-  monitoring_srv_ip      = local.monitoring_ip
-  private_key_location   = var.private_key_location
-  aws_region             = var.aws_region
-  availability_zones     = data.aws_availability_zones.available.names
-  os_image               = var.monitoring_os_image
-  os_owner               = var.monitoring_os_owner
-  subnet_ids             = aws_subnet.infra-subnet.*.id
-  timezone               = var.timezone
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  additional_packages    = var.additional_packages
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  provisioner            = var.provisioner
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
-  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  source             = "./modules/monitoring"
+  common_variables   = module.common_variables.configuration
+  monitoring_enabled = var.monitoring_enabled
+  instance_type      = var.monitor_instancetype
+  key_name           = aws_key_pair.key-pair.key_name
+  security_group_id  = local.security_group_id
+  monitoring_srv_ip  = local.monitoring_ip
+  aws_region         = var.aws_region
+  availability_zones = data.aws_availability_zones.available.names
+  os_image           = var.monitoring_os_image
+  os_owner           = var.monitoring_os_owner
+  subnet_ids         = aws_subnet.infra-subnet.*.id
+  timezone           = var.timezone
+  hana_targets       = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  drbd_targets       = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets  = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

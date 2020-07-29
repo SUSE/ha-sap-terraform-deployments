@@ -41,6 +41,12 @@ variable "volume_name" {
   default     = ""
 }
 
+variable "public_key_location" {
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
+
 # Deployment variables
 #
 variable "reg_code" {
