@@ -1,6 +1,6 @@
 output "configuration" {
   value = {
-    provider_type           = var.provider_type
+    provider_type          = var.provider_type
     reg_code               = var.reg_code
     reg_email              = var.reg_email
     reg_additional_modules = var.reg_additional_modules

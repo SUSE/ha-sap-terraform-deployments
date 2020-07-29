@@ -58,31 +58,31 @@ module "common_variables" {
 }
 
 module "drbd_node" {
-  source                 = "./modules/drbd_node"
-  common_variables       = module.common_variables.configuration
-  az_region              = var.az_region
-  drbd_count             = var.drbd_enabled == true ? 2 : 0
-  vm_size                = var.drbd_vm_size
-  drbd_image_uri         = var.drbd_image_uri
-  drbd_public_publisher  = var.drbd_public_publisher
-  drbd_public_offer      = var.drbd_public_offer
-  drbd_public_sku        = var.drbd_public_sku
-  drbd_public_version    = var.drbd_public_version
-  resource_group_name    = local.resource_group_name
-  network_subnet_id      = local.subnet_id
-  sec_group_id           = azurerm_network_security_group.mysecgroup.id
-  storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  bastion_enabled        = var.bastion_enabled
-  bastion_host           = module.bastion.public_ip
-  bastion_private_key    = local.bastion_private_key
-  cluster_ssh_pub        = var.cluster_ssh_pub
-  cluster_ssh_key        = var.cluster_ssh_key
-  admin_user             = var.admin_user
-  host_ips               = local.drbd_ips
-  sbd_enabled            = var.drbd_cluster_sbd_enabled
-  sbd_storage_type       = var.sbd_storage_type
-  iscsi_srv_ip           = join("", module.iscsi_server.iscsisrv_ip)
-  drbd_cluster_vip       = local.drbd_cluster_vip
+  source                = "./modules/drbd_node"
+  common_variables      = module.common_variables.configuration
+  az_region             = var.az_region
+  drbd_count            = var.drbd_enabled == true ? 2 : 0
+  vm_size               = var.drbd_vm_size
+  drbd_image_uri        = var.drbd_image_uri
+  drbd_public_publisher = var.drbd_public_publisher
+  drbd_public_offer     = var.drbd_public_offer
+  drbd_public_sku       = var.drbd_public_sku
+  drbd_public_version   = var.drbd_public_version
+  resource_group_name   = local.resource_group_name
+  network_subnet_id     = local.subnet_id
+  sec_group_id          = azurerm_network_security_group.mysecgroup.id
+  storage_account       = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  bastion_enabled       = var.bastion_enabled
+  bastion_host          = module.bastion.public_ip
+  bastion_private_key   = local.bastion_private_key
+  cluster_ssh_pub       = var.cluster_ssh_pub
+  cluster_ssh_key       = var.cluster_ssh_key
+  admin_user            = var.admin_user
+  host_ips              = local.drbd_ips
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  sbd_storage_type      = var.sbd_storage_type
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  drbd_cluster_vip      = local.drbd_cluster_vip
 }
 
 module "netweaver_node" {

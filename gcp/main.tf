@@ -56,25 +56,25 @@ module "common_variables" {
 }
 
 module "drbd_node" {
-  source                 = "./modules/drbd_node"
-  common_variables       = module.common_variables.configuration
-  drbd_count             = var.drbd_enabled == true ? 2 : 0
-  machine_type           = var.drbd_machine_type
-  compute_zones          = data.google_compute_zones.available.names
-  network_name           = local.vpc_name
-  network_subnet_name    = local.subnet_name
-  drbd_image             = var.drbd_image
-  drbd_data_disk_size    = var.drbd_data_disk_size
-  drbd_data_disk_type    = var.drbd_data_disk_type
-  drbd_cluster_vip       = local.drbd_cluster_vip
-  gcp_credentials_file   = var.gcp_credentials_file
-  network_domain         = "tf.local"
-  host_ips               = local.drbd_ips
-  sbd_enabled            = var.drbd_cluster_sbd_enabled
-  sbd_storage_type       = var.sbd_storage_type
-  iscsi_srv_ip           = module.iscsi_server.iscsisrv_ip
-  cluster_ssh_pub        = var.cluster_ssh_pub
-  cluster_ssh_key        = var.cluster_ssh_key
+  source               = "./modules/drbd_node"
+  common_variables     = module.common_variables.configuration
+  drbd_count           = var.drbd_enabled == true ? 2 : 0
+  machine_type         = var.drbd_machine_type
+  compute_zones        = data.google_compute_zones.available.names
+  network_name         = local.vpc_name
+  network_subnet_name  = local.subnet_name
+  drbd_image           = var.drbd_image
+  drbd_data_disk_size  = var.drbd_data_disk_size
+  drbd_data_disk_type  = var.drbd_data_disk_type
+  drbd_cluster_vip     = local.drbd_cluster_vip
+  gcp_credentials_file = var.gcp_credentials_file
+  network_domain       = "tf.local"
+  host_ips             = local.drbd_ips
+  sbd_enabled          = var.drbd_cluster_sbd_enabled
+  sbd_storage_type     = var.sbd_storage_type
+  iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
+  cluster_ssh_pub      = var.cluster_ssh_pub
+  cluster_ssh_key      = var.cluster_ssh_key
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -153,16 +153,16 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source                 = "./modules/monitoring"
-  common_variables       = module.common_variables.configuration
-  monitoring_enabled     = var.monitoring_enabled
-  compute_zones          = data.google_compute_zones.available.names
-  network_subnet_name    = local.subnet_name
-  sles4sap_boot_image    = var.sles4sap_boot_image
-  monitoring_srv_ip      = local.monitoring_srv_ip
-  hana_targets           = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets           = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets      = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  source              = "./modules/monitoring"
+  common_variables    = module.common_variables.configuration
+  monitoring_enabled  = var.monitoring_enabled
+  compute_zones       = data.google_compute_zones.available.names
+  network_subnet_name = local.subnet_name
+  sles4sap_boot_image = var.sles4sap_boot_image
+  monitoring_srv_ip   = local.monitoring_srv_ip
+  hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
+  netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
