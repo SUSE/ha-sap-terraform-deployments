@@ -9,7 +9,7 @@ resource "null_resource" "iscsi_provisioner" {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
 
     bastion_host        = var.bastion_host
     bastion_user        = var.admin_user

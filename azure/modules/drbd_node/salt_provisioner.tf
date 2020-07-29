@@ -9,7 +9,7 @@ resource "null_resource" "drbd_provisioner" {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
 
     bastion_host        = var.bastion_host
     bastion_user        = var.admin_user
@@ -23,7 +23,6 @@ ${var.common_variables["grains_output"]}
 name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}

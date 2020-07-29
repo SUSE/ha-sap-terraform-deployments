@@ -16,7 +16,7 @@ resource "null_resource" "netweaver_provisioner" {
     )
     type        = "ssh"
     user        = "root"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {
@@ -31,7 +31,6 @@ ${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-netweaver
 hostname: ${terraform.workspace}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}

@@ -9,7 +9,7 @@ resource "null_resource" "monitoring_provisioner" {
     host        = aws_instance.monitoring.0.public_ip
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {

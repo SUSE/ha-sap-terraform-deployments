@@ -9,7 +9,7 @@ resource "null_resource" "monitoring_provisioner" {
     host        = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
     type        = "ssh"
     user        = "root"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {

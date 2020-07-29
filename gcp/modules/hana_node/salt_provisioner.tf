@@ -16,7 +16,7 @@ resource "null_resource" "hana_node_provisioner" {
     )
     type        = "ssh"
     user        = "root"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {

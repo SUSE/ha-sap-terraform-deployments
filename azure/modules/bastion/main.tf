@@ -115,7 +115,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      key_data = file(var.public_key_location)
     }
   }
 

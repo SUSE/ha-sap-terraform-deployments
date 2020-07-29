@@ -9,7 +9,7 @@ resource "null_resource" "monitoring_provisioner" {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
 
     bastion_host        = var.bastion_host
     bastion_user        = var.admin_user
@@ -23,7 +23,6 @@ ${var.common_variables["grains_output"]}
 name_prefix: vmmonitoring
 hostname: vmmonitoring
 timezone: ${var.timezone}
-authorized_keys: [${trimspace(file(var.public_key_location))},${trimspace(file(var.public_key_location))}]
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${var.bastion_enabled ? data.azurerm_network_interface.monitoring.0.private_ip_address : data.azurerm_public_ip.monitoring.0.ip_address}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
