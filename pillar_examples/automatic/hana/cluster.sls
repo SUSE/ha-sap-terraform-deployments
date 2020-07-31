@@ -15,7 +15,7 @@ cluster:
   join_timeout: 180
   {% if grains['sbd_enabled'] %}
   sbd:
-    device: {{ grains['sbd_disk_device'] }}
+    device: {{ grains['sbd_disk_device']|default('') }}
     {% if grains['provider'] == 'azure' %}
     configure_resource:
       params:
