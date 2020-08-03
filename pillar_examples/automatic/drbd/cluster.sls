@@ -12,7 +12,7 @@ cluster:
   join_timeout: 180
   {% if grains['sbd_enabled'] %}
   sbd:
-    device: {{ grains['sbd_disk_device'] }}
+    device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
     module: softdog
     device: /dev/watchdog
