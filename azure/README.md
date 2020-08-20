@@ -15,11 +15,11 @@ Now, the created file must be configured to define the deployment.
 
 **Note:** Find some help in the IP addresses configuration in [IP auto generation](../doc/ip_autogeneration.md#Azure)
 
-2) **Generate private and public keys for the cluster nodes with:**
+2) **Generate private and public keys for the cluster nodes without specifying the passphrase:**
 
 ```
 mkdir ../salt/hana_node/files/sshkeys
-ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 The key files must be named as you define them in the `terraform.tfvars` file
 
