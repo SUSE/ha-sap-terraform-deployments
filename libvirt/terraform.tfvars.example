@@ -169,3 +169,7 @@ ha_sap_deployment_repo = ""
 
 # Enable all some pre deployment steps (disabled by default)
 #pre_deployment = true
+
+# AD server for user management
+
+# ad_server =  192.168.XXX.Y+7"

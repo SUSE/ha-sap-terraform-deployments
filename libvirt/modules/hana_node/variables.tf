@@ -17,6 +17,15 @@ variable "network_domain" {
   default     = "tf.local"
 }
 
+# active directory server
+
+variable "ad_server" {
+  description = "IP adress of active directory server"
+  type        = string
+  default     = ""
+}
+
+
 variable "hana_count" {
   description = "number of hosts like this one"
   default     = 2

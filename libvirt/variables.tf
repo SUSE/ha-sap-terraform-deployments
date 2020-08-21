@@ -47,6 +47,15 @@ variable "public_key_location" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+# active directory server
+
+variable "ad_server" {
+  description = "IP adress of active directory server"
+  type        = string
+  default     = ""
+}
+
+
 # Deployment variables
 #
 variable "reg_code" {

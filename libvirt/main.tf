@@ -76,6 +76,7 @@ module "hana_node" {
   source                     = "./modules/hana_node"
   common_variables           = module.common_variables.configuration
   name                       = "hana"
+  ad_server                  = var.ad_server
   source_image               = var.hana_source_image
   volume_name                = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
   hana_count                 = var.hana_count
