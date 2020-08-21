@@ -33,7 +33,7 @@
 
 **Note:** Find some help in the IP addresses configuration in [IP auto generation](../doc/ip_autogeneration.md#Libvirt)
 
-3) **[Adapt saltstack pillars](../pillar_examples/)**
+3) **[Adapt saltstack pillars manually](../pillar_examples/)** or set the `pre_deployment` variable to automatically copy the example pillar files.
 
 4) Deploy with:
 

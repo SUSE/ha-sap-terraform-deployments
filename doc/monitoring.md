@@ -19,10 +19,9 @@ This configuration will create an additional VM with the chosen provider and ins
 
 The public IP address of the monitoring instance will be made available in the final Terraform output. Dashboards can be then accessed by specifying the default HTTP ports for each services:
 ```
-Grafana:    http://<monitoring_public_ip>:9090/
-Prometheus: http://<monitoring_public_ip>:3000/
+Grafana:    http://<monitoring_public_ip>:3000/
+Prometheus: http://<monitoring_public_ip>:9090/
 ```
-You can log in with default `admin` user/password for Grafana.
 
 ### Prometheus metric exporters
 

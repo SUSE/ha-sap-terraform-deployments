@@ -2,7 +2,7 @@
 
 In order to facilitate the configuration of the project, the IP addresses of the machines can be auto generated, based on the used network address range. To use the auto generation, just don't use any of the variables of the project that are used to set the address to the machines (e.g. `hana_ips`, `hana_cluster_vip`, `netweaver_ips`, etc)
 
-Note: If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
+**Note:** If you are specifying the IP addresses manually, make sure these are valid IP addresses. They should not be currently in use by existing instances. In case of shared account usage in cloud providers, it is recommended to set unique addresses with each deployment to avoid using same addresses.
 
 ## AWS
 
