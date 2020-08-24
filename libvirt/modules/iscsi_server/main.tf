@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12"
-}
-
 resource "libvirt_volume" "iscsi_image_disk" {
   count            = var.iscsi_count
   name             = format("%s-iscsi-disk-%s", terraform.workspace, count.index + 1)

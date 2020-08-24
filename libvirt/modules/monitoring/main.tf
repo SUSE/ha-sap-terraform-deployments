@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12"
-}
-
 resource "libvirt_volume" "monitoring_image_disk" {
   count            = var.monitoring_enabled == true ? 1 : 0
   name             = format("%s-monitoring-disk", terraform.workspace)
