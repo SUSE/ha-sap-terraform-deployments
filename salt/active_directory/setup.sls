@@ -13,7 +13,7 @@ adapt_dns_to_ad:
   file.replace:
     - name: '/etc/sysconfig/network/config'
     - pattern: "NETCONFIG_DNS_STATIC_SERVERS=.*"
-    - repl: "NETCONFIG_DNS_STATIC_SERVERS={{ grains.get('ad_server') }}"
+    - repl:  {{ NETCONFIG_DNS_STATIC_SERVERS={{ grains.get('ad_server') }} | regex_escape }}
     - require:
       - install_sssd_packages
 
@@ -21,16 +21,22 @@ wickedd:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
+    - require: 
+      - adapt_dns_to_ad
 
 wicked:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
+    - require:
+      - adapt_dns_to_ad
 
 wickedd-nanny:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
+    - require:
+      - adapt_dns_to_ad
 
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
 join_domain:
