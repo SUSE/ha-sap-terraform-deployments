@@ -9,6 +9,28 @@ install_sssd_packages:
       - samba-client
       - tcsh
 
+adapt_dns_to_ad:
+  file.replace:
+    - name: '/etc/sysconfig/network/config'
+    - pattern: "NETCONFIG_DNS_STATIC_SERVERS=.*"
+    - repl: "NETCONFIG_DNS_STATIC_SERVERS={{ grains.get('ad_server') }}"
+    - require:
+      - install_sssd_packages
+
+wickedd:
+  service.running:
+    - watch:
+      - file : /etc/sysconfig/network/config
+
+wicked:
+  service.running:
+    - watch:
+      - file : /etc/sysconfig/network/config
+
+wickedd-nanny:
+  service.running:
+    - watch:
+      - file : /etc/sysconfig/network/config
 
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
 join_domain:
@@ -31,7 +53,7 @@ add_sssd_passwd_nsswitch:
   file.replace:
     - name: '/etc/nsswitch.conf'
     - pattern: "^passwd:.*"
-    - repl: "passwd: compat sssd"
+    - repl: "passwd: compat sss"
     - require:
       - join_domain
 
@@ -40,7 +62,7 @@ add_sssd_group_nsswitch:
   file.replace:
     - name: '/etc/nsswitch.conf'
     - pattern: "^group:.*"
-    - repl: "group: compat sssd"
+    - repl: "group: compat sss"
     - require:
       - join_domain
 
@@ -49,16 +71,18 @@ add_sssd_shadow_nsswitch:
   file.replace:
     - name: '/etc/nsswitch.conf'
     - pattern: "^shadow:.*"
-    - repl: "shadow: compat sssd"
+    - repl: "shadow: compat sss"
     - require:
       - join_domain
 
 # caching
-disable_qualified_names:
+
+# we need this to cleanup
+allow_pam_caching_oneday_cleanup:
   file.replace:
     - name: '/etc/sssd/sssd.conf'
-    - pattern: "disable_qualified_names.*"
-    - repl: "disable_qualified_names = False"
+    - pattern: "offline_credentials_expiration =.*"
+    - repl: ''
     - require:
       - join_domain
 
@@ -77,5 +101,15 @@ sssd_service:
     - enable: True
     - require:
       - pkg: install_sssd_packages
+      - file: allow_pam_caching_oneday
     - watch:
       - file: /etc/sssd/sssd.conf
+
+disable_qualified_names:
+  file.replace:
+    - name: '/etc/sssd/sssd.conf'
+    - pattern: "use_fully_qualified_names =.*"
+    - repl: "use_fully_qualified_names = False"
+    - require:
+      - join_domain
+
