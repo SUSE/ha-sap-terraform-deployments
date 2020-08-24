@@ -173,3 +173,6 @@ ha_sap_deployment_repo = ""
 # AD server for user management
 
 # ad_server =  192.168.XXX.Y+7"
+
+# AD server admin password for joining domain
+# ad_adm_pwd = "foobar"

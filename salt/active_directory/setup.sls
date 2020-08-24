@@ -13,7 +13,7 @@ install_sssd_packages:
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
 join_domain:
   cmd.run:
-    - name: echo {{ grains.get('ad_password')}} | realm join {{ grains.get('ad_server')}}  --automatic-id-mapping=no
+    - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server') }}  --automatic-id-mapping=no
     # TODO improve this to make something more reliable
     - check_cmd:
       - ls /etc/sssd/sssd.conf
@@ -23,7 +23,7 @@ join_domain:
 # TODO: this should be removed once https://github.com/freedesktop/realmd/pull/1 is merged and pkg builded
 add_sssd_pam:
   cmd.run:
-    - name: pam-config --add --sss 
+    - name: pam-config --add --sss
     - require:
       - join_domain
 

@@ -25,6 +25,11 @@ variable "ad_server" {
   default     = ""
 }
 
+variable "ad_adm_pwd" {
+  description = "password for admin of domain"
+  type        = string
+  default     = ""
+}
 
 variable "hana_count" {
   description = "number of hosts like this one"
