@@ -15,6 +15,7 @@ ___
 ## Major features
 
 - HA Clusters and HANA deployment
+- [Active Directory integration](doc/active_directory.md)
 - [Monitoring of cluster](doc/monitoring.md)
 - [Netweaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)

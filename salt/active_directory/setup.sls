@@ -15,7 +15,7 @@ adapt_dns_to_ad:
     - pattern: "NETCONFIG_DNS_STATIC_SERVERS=.*"
     - repl: NETCONFIG_DNS_STATIC_SERVERS="{{ grains.get('ad_server') }}"
     - require:
-      - file: install_sssd_packages
+      - pkg: install_sssd_packages
 
 wickedd:
   service.running:
@@ -55,7 +55,7 @@ add_sssd_pam:
   cmd.run:
     - name: pam-config --add --sss
     - require:
-      - file: join_domain
+      - cmd: join_domain
 
 add_sssd_passwd_nsswitch:
   file.replace:
@@ -63,7 +63,7 @@ add_sssd_passwd_nsswitch:
     - pattern: "^passwd:.*"
     - repl: "passwd: compat sss"
     - require:
-      - file: join_domain
+      - cmd: join_domain
 
 
 add_sssd_group_nsswitch:
@@ -72,7 +72,7 @@ add_sssd_group_nsswitch:
     - pattern: "^group:.*"
     - repl: "group: compat sss"
     - require:
-      - file: join_domain
+      - cmd: join_domain
 
 
 add_sssd_shadow_nsswitch:
@@ -81,7 +81,7 @@ add_sssd_shadow_nsswitch:
     - pattern: "^shadow:.*"
     - repl: "shadow: compat sss"
     - require:
-      - file: join_domain
+      - cmd: join_domain
 
 # caching
 
@@ -92,7 +92,7 @@ allow_pam_caching_oneday_cleanup:
     - pattern: "offline_credentials_expiration =.*"
     - repl: ''
     - require:
-      - file: join_domain
+      - cmd: join_domain
 
 # TODO this is not idempotent since it add always 1
 allow_pam_caching_oneday:
@@ -101,7 +101,7 @@ allow_pam_caching_oneday:
     - pattern: {{ '[pam]' | regex_escape }}
     - repl: '\g<0>\noffline_credentials_expiration = 1'
     - require:
-      - file: join_domain
+      - cmd: join_domain
       - file: allow_pam_caching_oneday_cleanup
 
 sssd_service:
@@ -120,6 +120,5 @@ disable_qualified_names:
     - pattern: "use_fully_qualified_names =.*"
     - repl: "use_fully_qualified_names = False"
     - require:
-      - file: join_domain
-
+      - cmd: join_domain
 
