@@ -31,6 +31,12 @@ variable "ad_adm_pwd" {
   default     = ""
 }
 
+variable "ad_server_domain" {
+  description = "domain we want to join with AD"
+  type        = string
+  default     = ""
+}
+
 variable "hana_count" {
   description = "number of hosts like this one"
   default     = 2

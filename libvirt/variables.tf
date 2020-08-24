@@ -47,7 +47,7 @@ variable "public_key_location" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-# active directory server
+# active directory server variables
 
 variable "ad_server" {
   description = "IP adress of active directory server"
@@ -57,6 +57,12 @@ variable "ad_server" {
  
 variable "ad_adm_pwd" {
   description = "password for admin of domain"
+  type        = string
+  default     = ""
+}
+
+variable "ad_server_domain" {
+  description = "name of the AD domain we want to join"
   type        = string
   default     = ""
 }

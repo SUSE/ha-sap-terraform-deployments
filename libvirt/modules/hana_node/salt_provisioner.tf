@@ -21,6 +21,7 @@ ${var.common_variables["grains_output"]}
 name_prefix: ${var.name}
 ad_server: ${var.ad_server}
 ad_adm_pwd: ${var.ad_adm_pwd}
+ad_server_domain: ${var.ad_server_domain}
 hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
