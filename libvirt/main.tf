@@ -78,6 +78,7 @@ module "hana_node" {
   name                       = "hana"
   ad_server                  = var.ad_server
   ad_adm_pwd                 = var.ad_adm_pwd
+  ad_server_domain           = var.ad_server_domain
   source_image               = var.hana_source_image
   volume_name                = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
   hana_count                 = var.hana_count
