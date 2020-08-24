@@ -57,6 +57,13 @@ add_sssd_pam:
     - require:
       - cmd: join_domain
 
+# this is needed so that the AD user have a home directory wiht the right permission.
+# e.g without this Hawk will fail
+add_homedir_with_permission_pam:
+    - name: pam-config --add --mkhomedir --mkhomedir-umask=0077 --mkhomedir-skel=/etc/skel/
+    - require:
+      - cmd: join_domain
+
 add_sssd_passwd_nsswitch:
   file.replace:
     - name: '/etc/nsswitch.conf'
