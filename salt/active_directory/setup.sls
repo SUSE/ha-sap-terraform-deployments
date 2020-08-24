@@ -13,47 +13,49 @@ adapt_dns_to_ad:
   file.replace:
     - name: '/etc/sysconfig/network/config'
     - pattern: "NETCONFIG_DNS_STATIC_SERVERS=.*"
-    - repl:  {{ NETCONFIG_DNS_STATIC_SERVERS={{ grains.get('ad_server') }} | regex_escape }}
+    - repl: NETCONFIG_DNS_STATIC_SERVERS="{{ grains.get('ad_server') }}"
     - require:
-      - install_sssd_packages
+      - file: install_sssd_packages
 
 wickedd:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
     - require: 
-      - adapt_dns_to_ad
+      - file: adapt_dns_to_ad
 
 wicked:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
     - require:
-      - adapt_dns_to_ad
+      - file: adapt_dns_to_ad
 
 wickedd-nanny:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
     - require:
-      - adapt_dns_to_ad
+      - file: adapt_dns_to_ad
 
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
+# remove/adapt once the realmd package is rebuilded with fix upstream
+
 join_domain:
   cmd.run:
-    - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server') }}  --automatic-id-mapping=no
+    - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server_domain') }}  --automatic-id-mapping=no
     # TODO improve this to make something more reliable
     - check_cmd:
       - ls /etc/sssd/sssd.conf
     - require:
-      - install_sssd_packages
+      - pkg: install_sssd_packages
 
 # TODO: this should be removed once https://github.com/freedesktop/realmd/pull/1 is merged and pkg builded
 add_sssd_pam:
   cmd.run:
     - name: pam-config --add --sss
     - require:
-      - join_domain
+      - file: join_domain
 
 add_sssd_passwd_nsswitch:
   file.replace:
@@ -61,7 +63,7 @@ add_sssd_passwd_nsswitch:
     - pattern: "^passwd:.*"
     - repl: "passwd: compat sss"
     - require:
-      - join_domain
+      - file: join_domain
 
 
 add_sssd_group_nsswitch:
@@ -70,7 +72,7 @@ add_sssd_group_nsswitch:
     - pattern: "^group:.*"
     - repl: "group: compat sss"
     - require:
-      - join_domain
+      - file: join_domain
 
 
 add_sssd_shadow_nsswitch:
@@ -79,7 +81,7 @@ add_sssd_shadow_nsswitch:
     - pattern: "^shadow:.*"
     - repl: "shadow: compat sss"
     - require:
-      - join_domain
+      - file: join_domain
 
 # caching
 
@@ -90,7 +92,7 @@ allow_pam_caching_oneday_cleanup:
     - pattern: "offline_credentials_expiration =.*"
     - repl: ''
     - require:
-      - join_domain
+      - file: join_domain
 
 # TODO this is not idempotent since it add always 1
 allow_pam_caching_oneday:
@@ -99,7 +101,8 @@ allow_pam_caching_oneday:
     - pattern: {{ '[pam]' | regex_escape }}
     - repl: '\g<0>\noffline_credentials_expiration = 1'
     - require:
-      - join_domain
+      - file: join_domain
+      - file: allow_pam_caching_oneday_cleanup
 
 sssd_service:
   service.running:
@@ -117,5 +120,6 @@ disable_qualified_names:
     - pattern: "use_fully_qualified_names =.*"
     - repl: "use_fully_qualified_names = False"
     - require:
-      - join_domain
+      - file: join_domain
+
 
