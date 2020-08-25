@@ -12,7 +12,7 @@ cluster:
   interface: eth0
   unicast: True
   {% endif %}
-  join_timeout: 180
+  join_timeout: 500
   {% if grains['sbd_enabled'] %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
