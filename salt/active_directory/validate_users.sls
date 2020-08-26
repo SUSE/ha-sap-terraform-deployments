@@ -21,9 +21,9 @@ sidadm_login_ls:
   cmd.run:
     - name: su -lc 'ls -l' {{ node.sid }}adm
 
-sidam_has_csh_shell:
+sidam_has_sh_shell:
   cmd.run:
-    - name: su -lc 'env' {{ node.sid }}adm | grep SHELL=/bin/csh
+    - name: su -lc 'env' {{ node.sid }}adm | grep SHELL=/bin/sh
 
 # The sidadm user should have a UID greater than 999.
 sidadm_uid_check:

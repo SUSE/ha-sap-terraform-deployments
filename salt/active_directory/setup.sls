@@ -24,20 +24,6 @@ wickedd:
     - require: 
       - file: adapt_dns_to_ad
 
-wicked:
-  service.running:
-    - watch:
-      - file : /etc/sysconfig/network/config
-    - require:
-      - file: adapt_dns_to_ad
-
-wickedd-nanny:
-  service.running:
-    - watch:
-      - file : /etc/sysconfig/network/config
-    - require:
-      - file: adapt_dns_to_ad
-
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
 # remove/adapt once the realmd package is rebuilded with fix upstream
 
