@@ -54,7 +54,7 @@ variable "ad_server" {
   type        = string
   default     = ""
 }
- 
+
 variable "ad_adm_pwd" {
   description = "password for admin of domain"
   type        = string
