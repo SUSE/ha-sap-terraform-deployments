@@ -24,6 +24,9 @@ scenario_type: ${var.scenario_type}
 name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
+ad_server: ${var.ad_server}
+ad_adm_pwd: ${var.ad_adm_pwd}
+ad_server_domain: ${var.ad_server_domain}
 network_domain: "tf.local"
 hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}

@@ -707,3 +707,22 @@ variable "pre_deployment" {
   type        = bool
   default     = false
 }
+
+# active directory server variables
+variable "ad_server" {
+  description = "IP adress of active directory server"
+  type        = string
+  default     = ""
+}
+
+variable "ad_adm_pwd" {
+  description = "password for admin of domain"
+  type        = string
+  default     = ""
+}
+
+variable "ad_server_domain" {
+  description = "name of the AD domain we want to join"
+  type        = string
+  default     = ""
+}

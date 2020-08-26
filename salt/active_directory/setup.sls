@@ -21,7 +21,7 @@ wickedd:
   service.running:
     - watch:
       - file : /etc/sysconfig/network/config
-    - require: 
+    - require:
       - file: adapt_dns_to_ad
 
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1

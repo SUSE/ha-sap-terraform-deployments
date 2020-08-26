@@ -225,3 +225,21 @@ variable "hana_data_disks_configuration" {
     paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
   EOF
 }
+
+variable "ad_server" {
+  description = "IP adress of active directory server"
+  type        = string
+  default     = ""
+}
+
+variable "ad_adm_pwd" {
+  description = "password for admin of domain"
+  type        = string
+  default     = ""
+}
+
+variable "ad_server_domain" {
+  description = "domain we want to join with AD"
+  type        = string
+  default     = ""
+}

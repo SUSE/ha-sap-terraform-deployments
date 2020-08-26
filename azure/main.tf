@@ -139,6 +139,9 @@ module "hana_node" {
   source                        = "./modules/hana_node"
   common_variables              = module.common_variables.configuration
   az_region                     = var.az_region
+  ad_server                     = var.ad_server
+  ad_adm_pwd                    = var.ad_adm_pwd
+  ad_server_domain              = var.ad_server_domain
   hana_count                    = var.hana_count
   hana_instance_number          = var.hana_instance_number
   vm_size                       = var.hana_vm_size

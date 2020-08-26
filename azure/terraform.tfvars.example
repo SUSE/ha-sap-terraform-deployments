@@ -258,3 +258,15 @@ ha_sap_deployment_repo = ""
 
 # Enable all some pre deployment steps (disabled by default)
 #pre_deployment = true
+#
+# Active Directory variables
+
+# AD server IP
+# ad_server =  192.168.XXX.Y+7"
+
+# AD server admin password for joining domain
+# ad_adm_pwd = "foobar"
+#
+
+# AD domain we need to join
+# ad_server_domain = "foo.test"
