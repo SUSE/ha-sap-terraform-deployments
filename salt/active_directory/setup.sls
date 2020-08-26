@@ -17,6 +17,19 @@ adapt_dns_to_ad:
     - require:
       - pkg: install_sssd_packages
 
+wicked:
+  service.running:
+    - watch:
+      - file : /etc/sysconfig/network/config
+    - require:
+      - file: adapt_dns_to_ad
+wickedd-nanny:
+  service.running:
+    - watch:
+      - file : /etc/sysconfig/network/config
+    - require:
+      - file: adapt_dns_to_ad
+
 wickedd:
   service.running:
     - watch:
@@ -26,7 +39,6 @@ wickedd:
 
 # todo: this will fail because minor bug see https://github.com/freedesktop/realmd/pull/1
 # remove/adapt once the realmd package is rebuilded with fix upstream
-
 join_domain:
   cmd.run:
     - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server_domain') }}  --automatic-id-mapping=no
@@ -78,7 +90,6 @@ add_sssd_shadow_nsswitch:
       - cmd: join_domain
 
 # caching
-
 # we need this to cleanup
 allow_pam_caching_oneday_cleanup:
   file.replace:
@@ -88,7 +99,6 @@ allow_pam_caching_oneday_cleanup:
     - require:
       - cmd: join_domain
 
-# TODO this is not idempotent since it add always 1
 allow_pam_caching_oneday:
   file.replace:
     - name: '/etc/sssd/sssd.conf'
@@ -115,4 +125,3 @@ disable_qualified_names:
     - repl: "use_fully_qualified_names = False"
     - require:
       - cmd: join_domain
-

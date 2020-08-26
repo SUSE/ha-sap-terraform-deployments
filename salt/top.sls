@@ -26,7 +26,7 @@ predeployment:
     - default
     - cluster_node
     - hana_node
-   {% if grains.get('ad_server', False)% }
+   {% if grains.get('ad_server', False) %}
     - active_directory
    {% endif %}
 
