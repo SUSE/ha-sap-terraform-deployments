@@ -10,6 +10,15 @@ lsscsi:
       attempts: 3
       interval: 15
 
+{% if grains['osrelease_info'][0] > 15 or (grains['osrelease_info'][0] == 15 and grains['osrelease_info']|length > 1 and grains['osrelease_info'][1] >= 2) %}
+# We cannot use service.running as this systemd unit will stop after being executed
+# It is used only to create the initiatorname.iscsi file
+start_iscsi_init:
+  module.run:
+    - service.start:
+      - name: iscsi-init
+{% endif %}
+
 /etc/iscsi/initiatorname.iscsi:
   file.replace:
     - pattern: "^InitiatorName=.*"
