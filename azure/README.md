@@ -60,11 +60,18 @@ terraform plan
 terraform apply
 ```
 
-Connect using `ssh` as the user set as your `admin_user` parameter, for example:
+### Bastion
 
+By default, the bastion machine is enabled in Azure (it can be disabled), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with: ```ssh {admin_user}@{bastion_ip} -i {private_key_location}```
+
+To log to hana and others instances, use:
 ```
-ssh admin_user@18.196.143.128 -i private_key_location
+ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 ```
+
+To disable the bastion use:
+
+```bastion_enabled = false```
 
 Destroy the created infrastructure with:
 
