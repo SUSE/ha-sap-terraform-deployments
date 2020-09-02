@@ -15,8 +15,13 @@ In order to enable it, you will need to set the set `monitoring_enabled` Terrafo
 
 This configuration will create an additional VM with the chosen provider and install all the required packages in the monitored nodes.
 
-The address of the Grafana dashboard will be made available in the final Terraform output.
+### Accessing the Dashboards
 
+The public IP address of the monitoring instance will be made available in the final Terraform output. Dashboards can be then accessed by specifying the default HTTP ports for each services:
+```
+Grafana:    http://<monitoring_public_ip>:3000/
+Prometheus: http://<monitoring_public_ip>:9090/
+```
 
 ### Prometheus metric exporters
 
