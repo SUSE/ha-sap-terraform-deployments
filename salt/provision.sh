@@ -62,8 +62,13 @@ repeat_command () {
 }
 
 bootstrap_salt () {
-    mv /tmp/salt /srv || true
-    mv /tmp/pillar /srv || true
+    # handle case where something exists already in /srv/salt
+    mkdir -p /srv/salt
+    cp -R /tmp/salt/* /srv/salt || true
+    rm -rf /tmp/salt
+    mkdir -p /srv/pillar
+    cp -R /tmp/pillar/* /srv/pillar || true
+    rm -rf /tmp/pillar
 
     # Check if qa_mode is enabled
     [[ "$(get_grain qa_mode /tmp/grains)" == "true" ]] && qa_mode=1
