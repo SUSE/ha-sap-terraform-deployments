@@ -62,11 +62,11 @@ terraform apply
 
 ### Bastion
 
-By default, the bastion machine is enabled in Azure (it can be disabled), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with: ```ssh {admin_user}@BASTION_IP -i {private_key_location}```
+By default, the bastion machine is enabled in Azure (it can be disabled), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with: ```ssh {admin_user}@{bastion_ip} -i {private_key_location}```
 
 To log to hana and others instances, use:
 ```
-ssh -o ProxyCommand="ssh -W %h:%p ADMIN_USER@BASTION_IP -i /home/YOUR_USER/.ssh/id_rsa_cloud -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ADMIN_USER@BASTION_IP -i /home/YOUR_USER/.ssh/id_rsa_cloud -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 ```
 
 To disable the bastion use:
