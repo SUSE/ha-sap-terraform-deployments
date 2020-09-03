@@ -36,6 +36,9 @@ predeployment:
     - default
     - cluster_node
     - netweaver_node
+   {% if grains.get('ad_server', False) %}
+    - active_directory
+   {% endif %}
 
   'role:drbd_node':
     - match: grain
