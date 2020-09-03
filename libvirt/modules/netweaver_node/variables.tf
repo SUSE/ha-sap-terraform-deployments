@@ -201,3 +201,23 @@ variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
 }
+
+# active directory server
+
+variable "ad_server" {
+  description = "IP adress of active directory server"
+  type        = string
+  default     = ""
+}
+
+variable "ad_adm_pwd" {
+  description = "password for admin of domain"
+  type        = string
+  default     = ""
+}
+
+variable "ad_server_domain" {
+  description = "domain we want to join with AD"
+  type        = string
+  default     = ""
+}

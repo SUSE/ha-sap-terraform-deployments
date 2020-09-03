@@ -56,23 +56,19 @@ variable "ad_server" {
 }
 
 variable "ad_adm_pwd" {
-  description = "password for admin of domain"
+  description = "Password for admin of domain"
   type        = string
   default     = ""
 }
 
 variable "ad_server_domain" {
-  description = "name of the AD domain we want to join"
+  description = "Name of the AD domain we want to join"
   type        = string
   default     = ""
 }
 
-
-
-
-
 # Deployment variables
-#
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""

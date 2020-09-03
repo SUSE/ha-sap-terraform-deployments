@@ -28,6 +28,9 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 hana_ip: ${var.hana_ip}
 ha_enabled: ${var.ha_enabled}
+ad_server: ${var.ad_server}
+ad_adm_pwd: ${var.ad_adm_pwd}
+ad_server_domain: ${var.ad_server_domain}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_inst_folder: ${var.netweaver_inst_folder}

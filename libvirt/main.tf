@@ -154,6 +154,9 @@ module "netweaver_node" {
   common_variables          = module.common_variables.configuration
   netweaver_count           = local.netweaver_count
   name                      = "netweaver"
+  ad_server                 = var.ad_server
+  ad_adm_pwd                = var.ad_adm_pwd
+  ad_server_domain          = var.ad_server_domain
   source_image              = var.netweaver_source_image
   volume_name               = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
   vcpu                      = var.netweaver_node_vcpu
