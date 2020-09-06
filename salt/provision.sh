@@ -16,6 +16,18 @@ get_grain () {
     fi
 }
 
+log_ok () {
+  NODE=`hostname`
+  TIMESTAMP=`date -u`
+  GREEN='\033[0;32m'
+  RED='\033[0;31m'
+  NC='\033[0m' # No Color
+  printf "${GREEN}$TIMESTAMP::$NODE [INFO]  $1 ${NC}\n"
+}
+
+
+
+
 salt_output_colored () {
     if [[ "$(get_grain qa_mode)" == "true" ]]; then
         echo "--no-color"
@@ -95,42 +107,46 @@ bootstrap_salt () {
     which salt-call || exit 1
     # Move salt grains to salt folder
     mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
+    log_ok "bootstrapped salt"
 }
 
 os_setup () {
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local \
-        --log-level=info \
+        --log-level=error \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
         state.apply os_setup || exit 1
+    log_ok "os setup done"
 }
 
 predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
-        --log-level=info \
+        --log-level=error \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
         state.highstate saltenv=predeployment || exit 1
+   log_ok "predeployment done"
 }
 
 deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
-            --log-level=info \
+            --log-level=error \
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
             state.highstate saltenv=base || exit 1
+        log_ok "deployment done"
     fi
 }
 
@@ -148,7 +164,9 @@ run_tests () {
             --retcode-passthrough \
             $(salt_output_colored) \
             state.apply qa_mode || exit 1
+	log_ok "tested done"
     fi
+    
 }
 
 print_help () {
