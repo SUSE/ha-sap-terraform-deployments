@@ -20,13 +20,18 @@ log_ok () {
   NODE=`hostname`
   TIMESTAMP=`date -u`
   GREEN='\033[0;32m'
-  RED='\033[0;31m'
   NC='\033[0m' # No Color
-  printf "${GREEN}$TIMESTAMP::$NODE [INFO]  $1 ${NC}\n"
+  printf "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}\n"
 }
 
-
-
+log_error () {
+  NODE=`hostname`
+  TIMESTAMP=`date -u`
+  RED='\033[0;31m'
+  NC='\033[0m' # No Color
+  printf "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}\n"
+  exit 1
+}
 
 salt_output_colored () {
     if [[ "$(get_grain qa_mode)" == "true" ]]; then
@@ -51,8 +56,7 @@ install_salt_minion () {
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
         SUSEConnect -p sle-module-basesystem/$VERSION_ID/x86_64
       else
-        echo "SLE Product version not supported by this script. Please, use version 12 or higher."
-        exit 1
+	log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
     fi
 
@@ -104,7 +108,7 @@ bootstrap_salt () {
     fi
 
     # Recheck if salt-call is installed. If it's not available stop execution
-    which salt-call || exit 1
+    which salt-call || log_error "salt call isn't installed"
     # Move salt grains to salt folder
     mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
     log_ok "bootstrapped salt"
@@ -119,7 +123,7 @@ os_setup () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.apply os_setup || exit 1
+	state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
 
@@ -132,8 +136,8 @@ predeploy () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.highstate saltenv=predeployment || exit 1
-   log_ok "predeployment done"
+        state.highstate saltenv=predeployment || log_error "predeployment failed"
+    log_ok "predeployment done"
 }
 
 deploy () {
@@ -145,7 +149,7 @@ deploy () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.highstate saltenv=base || exit 1
+            state.highstate saltenv=base || log_error "deployment failed"
         log_ok "deployment done"
     fi
 }
@@ -163,8 +167,8 @@ run_tests () {
             --log-file-level=info \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.apply qa_mode || exit 1
-	log_ok "tested done"
+            state.apply qa_mode || log_error "tests failed"
+	log_ok "tests failed"
     fi
     
 }
