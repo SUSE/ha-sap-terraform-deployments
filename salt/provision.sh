@@ -222,7 +222,7 @@ done
 
 if [[ -n $log_to_file ]]; then
     argument_number=$((argument_number - 1))
-    exec 1>> $log_to_file
+    2>&1 | tee $log_to_file
 fi
 
 if [ $argument_number -eq 0 ]; then
