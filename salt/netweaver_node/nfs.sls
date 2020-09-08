@@ -21,6 +21,7 @@ netcat-openbsd:
 wait_until_nfs_is_ready:
   cmd.run:
     - name: until nc -zvw5 {{ nfs_server_ip }} 2049;do sleep 30;done
+    - output_loglevel: quiet
     - timeout: 1200
     - require:
       - pkg: netcat-openbsd

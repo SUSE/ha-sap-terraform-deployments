@@ -62,6 +62,7 @@ iscsid:
 wait_disk_id_available:
   cmd.run:
     - name: until [ "$(lsscsi -i | grep "LIO-ORG" | awk "{{ sbd_disk_id_pattern }}{print \$NF }")" != "-" ];do sleep 3;done
+    - output_loglevel: quiet
     - timeout: 120
     - require:
       - lsscsi
