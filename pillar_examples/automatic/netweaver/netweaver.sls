@@ -24,9 +24,13 @@ netweaver:
     {%- endfor %}
     {%- endif %}
 
+{% if not grains.get('ad_server', False) %}
   sidadm_user:
     uid: 2001
     gid: 2002
+{% endif %}
+
+
   sid_adm_password: SuSE1234
   sap_adm_password: SuSE1234
   master_password: SuSE1234
