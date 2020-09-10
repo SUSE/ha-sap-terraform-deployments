@@ -7,6 +7,7 @@ configure_file_roots:
   file.append:
     - name: /etc/salt/minion
     - text: |
+        failhard: True
         file_roots:
           base:
             - /srv/salt
