@@ -1,3 +1,8 @@
+{% if grains.get('ad_server', False) %}
+{%- set userid = salt['cmd.shell']('id prdadm -u') %}
+{%- set groupid = salt['cmd.shell']('id prdadm -u') %}
+{%- endif %}
+
 hana:
   {% if grains.get('qa_mode') %}
   install_packages: false
@@ -32,6 +37,10 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+        {% if grains.get('ad_server', False) %}
+        userid:   {{ userid }}
+        groupid:  {{ groupid }}
+        {% endif %}
       {%- if grains.get('ha_enabled') %}
       primary:
         name: PRIMARY_SITE_NAME
@@ -72,6 +81,10 @@ hana:
         {% endif %}
         system_user_password: YourPassword1234
         sapadm_password: YourPassword1234
+        {% if grains.get('ad_server', False) %}
+        userid:  {{ userid }}
+        groupid: {{ groupid }}
+        {% endif %}
       {%- if grains.get('ha_enabled') %}
       secondary:
         name: SECONDARY_SITE_NAME
