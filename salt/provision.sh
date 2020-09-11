@@ -116,7 +116,6 @@ bootstrap_salt () {
 
 os_setup () {
     LOG_FILE=$1
-
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local \
@@ -125,7 +124,7 @@ os_setup () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.apply os_setup | tee $LOG_FILE || log_error "os setup failed"
+        state.apply os_setup | tee -a $LOG_FILE || log_error "os setup failed"
     log_ok "os setup done"
 }
 
@@ -139,7 +138,7 @@ predeploy () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.highstate saltenv=predeployment | tee $LOG_FILE || log_error "predeployment failed"
+        state.highstate saltenv=predeployment | tee -a $LOG_FILE || log_error "predeployment failed"
     log_ok "predeployment done"
 }
 
@@ -153,7 +152,7 @@ deploy () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.highstate saltenv=base | tee $LOG_FILE || log_error "deployment failed"
+            state.highstate saltenv=base | tee -a $LOG_FILE || log_error "deployment failed"
         log_ok "deployment done"
     fi
 }
@@ -172,7 +171,7 @@ run_tests () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.apply qa_mode  | tee $LOG_FILE || log_error "tests failed"
+            state.apply qa_mode  | tee -a $LOG_FILE || log_error "tests failed"
         log_ok "tests failed"
     fi
 }
