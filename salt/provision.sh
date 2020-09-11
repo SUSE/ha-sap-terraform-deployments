@@ -17,20 +17,20 @@ get_grain () {
 }
 
 log_ok () {
-  NODE=`hostname`
-  TIMESTAMP=`date -u`
-  GREEN='\033[0;32m'
-  NC='\033[0m' # No Color
-  printf "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}\n"
+    NODE=`hostname`
+    TIMESTAMP=`date -u`
+    GREEN='\033[0;32m'
+    NC='\033[0m' # No Color
+    printf "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}\n"
 }
 
 log_error () {
-  NODE=`hostname`
-  TIMESTAMP=`date -u`
-  RED='\033[0;31m'
-  NC='\033[0m' # No Color
-  printf "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}\n"
-  exit 1
+    NODE=`hostname`
+    TIMESTAMP=`date -u`
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    printf "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}\n"
+    exit 1
 }
 
 salt_output_colored () {
@@ -56,7 +56,7 @@ install_salt_minion () {
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
         SUSEConnect -p sle-module-basesystem/$VERSION_ID/x86_64
       else
-	log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
+        log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
     fi
 
@@ -71,10 +71,10 @@ install_salt_minion () {
 }
 
 repeat_command () {
-  cmd=$1
-  timeout=${2:-120}
-  interval=${3:-15}
-  timeout $timeout bash -c "until $cmd;do sleep $interval;done"
+    cmd=$1
+    timeout=${2:-120}
+    interval=${3:-15}
+    timeout $timeout bash -c "until $cmd;do sleep $interval;done"
 }
 
 bootstrap_salt () {
@@ -118,12 +118,12 @@ os_setup () {
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local \
-        --log-level=error \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-	state.apply os_setup || log_error "os setup failed"
+        state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
 
@@ -131,7 +131,7 @@ predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
-        --log-level=error \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
@@ -144,7 +144,7 @@ deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
-            --log-level=error \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
@@ -162,15 +162,14 @@ run_tests () {
         export HOST=$(hostname)
         # Execute qa state file
         salt-call --local \
-            --log-level=info \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-qa.log \
-            --log-file-level=info \
+            --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
             state.apply qa_mode || log_error "tests failed"
-	log_ok "tests failed"
+        log_ok "tests failed"
     fi
-    
 }
 
 print_help () {

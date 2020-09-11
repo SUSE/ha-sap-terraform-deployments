@@ -48,6 +48,7 @@ module "common_variables" {
   additional_packages    = var.additional_packages
   public_key_location    = var.public_key_location
   provisioner            = var.provisioner
+  provisioning_log_level = var.provisioning_log_level
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
   monitoring_srv_ip      = var.monitoring_enabled ? module.monitoring.output_data.private_address : ""
