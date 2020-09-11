@@ -131,6 +131,12 @@ variable "provisioner" {
   default     = "salt"
 }
 
+variable "provisioning_log_level" {
+  description = "Provisioning process log level. For salt: https://docs.saltstack.com/en/latest/ref/configuration/logging/index.html"
+  type        = string
+  default     = "error"
+}
+
 variable "background" {
   description = "Run the provisioner execution in background if set to true finishing terraform execution"
   type        = bool
