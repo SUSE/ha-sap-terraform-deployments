@@ -115,6 +115,8 @@ bootstrap_salt () {
 }
 
 os_setup () {
+    LOG_FILE=$1
+
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local \
@@ -123,11 +125,12 @@ os_setup () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.apply os_setup || log_error "os setup failed"
+        state.apply os_setup | tee $LOG_FILE || log_error "os setup failed"
     log_ok "os setup done"
 }
 
 predeploy () {
+    LOG_FILE=$1
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
@@ -136,11 +139,12 @@ predeploy () {
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.highstate saltenv=predeployment || log_error "predeployment failed"
+        state.highstate saltenv=predeployment | tee $LOG_FILE || log_error "predeployment failed"
     log_ok "predeployment done"
 }
 
 deploy () {
+    LOG_FILE=$1
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
@@ -149,12 +153,13 @@ deploy () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.highstate saltenv=base || log_error "deployment failed"
+            state.highstate saltenv=base | tee $LOG_FILE || log_error "deployment failed"
         log_ok "deployment done"
     fi
 }
 
 run_tests () {
+    LOG_FILE=$1
     [[ "$(get_grain qa_mode)" == "true" ]] && qa_mode=1
     if [[ ${qa_mode} && $(get_grain role) == hana_node ]]; then
         # We need to export HOST with the new hostname set by Salt
@@ -167,7 +172,7 @@ run_tests () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.apply qa_mode || log_error "tests failed"
+            state.apply qa_mode  | tee $LOG_FILE || log_error "tests failed"
         log_ok "tests failed"
     fi
 }
@@ -225,20 +230,20 @@ done
 
 if [[ -n $log_to_file ]]; then
     argument_number=$((argument_number - 1))
-    2>&1 | tee $log_to_file
 fi
 
+
 if [ $argument_number -eq 0 ]; then
-    bootstrap_salt
-    os_setup
-    predeploy
-    deploy
-    run_tests
+    bootstrap_salt $log_to_file
+    os_setup $log_to_file
+    predeploy $log_to_file
+    deploy $log_to_file
+    run_tests $log_to_file
 else
-    [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
-    [[ -n $excute_os_setup ]] && os_setup
-    [[ -n $excute_predeploy ]] && predeploy
-    [[ -n $excute_deploy ]] && deploy
-    [[ -n $excute_run_tests ]] && run_tests
+    [[ -n $excute_bootstrap_salt ]] && bootstrap_salt $log_to_file
+    [[ -n $excute_os_setup ]] && os_setup $log_to_file
+    [[ -n $excute_predeploy ]] && predeploy $log_to_file
+    [[ -n $excute_deploy ]] && deploy $log_to_file 
+    [[ -n $excute_run_tests ]] && run_tests $log_to_file
 fi
 exit 0
