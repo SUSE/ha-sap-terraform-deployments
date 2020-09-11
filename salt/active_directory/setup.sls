@@ -28,7 +28,7 @@ update_network_configuration:
 # remove/adapt once the realmd package is rebuilded with fix upstream
 join_domain:
   cmd.run:
-    - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server_domain') }}  --automatic-id-mapping=no
+    - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server_domain') }}
     # TODO improve this to make something more reliable
     - check_cmd:
       - ls /etc/sssd/sssd.conf
