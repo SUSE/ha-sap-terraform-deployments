@@ -14,8 +14,7 @@ hacluster_group_haclient:
 # hana user:
 # https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.04/en-US/3c831ee47beb4499972774f4a080d1d3.html
 {% set hana = salt['pillar.get']('hana') %}
-{% set host = grains['host'] %}
-{% for node in hana.nodes if node.host == host %}
+{% for node in hana.nodes %}
 
 sidadm_login_ls:
   cmd.run:
