@@ -8,6 +8,7 @@ sidadm_login_ls:
   cmd.run:
     - name: su -lc 'ls -l' {{ node.sid }}adm
 
+# this state will add grains, which are used by hana/netweaver installer during install
 # sed before remove the grains so call it is idempotent
 add_sidadm_grains:
   cmd.run:
