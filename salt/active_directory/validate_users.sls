@@ -23,7 +23,8 @@ sidadm_login_ls:
 
 sidam_has_sh_shell:
   cmd.run:
-    - name: su -lc 'env' {{ node.sid }}adm | grep SHELL=/bin/sh
+    - name: su -lc 'env' {{ node.sid }}adm | grep SHELL=/bin/sh ] || grep SHELL=/bin/bash
+
 
 # The sidadm user should have a UID greater than 999.
 sidadm_uid_check:
@@ -40,6 +41,6 @@ sidadm_uid_check:
 # The primary group of the user must be sapsys. The default GID of the sapsys group is 79.
 sidadm_gid_check:
   cmd.run:
-    - name: su -lc 'id' {{ node.sid }}adm | grep "gid=79(sapsys)"
+    - name: su -lc 'id' {{ node.sid }}adm | grep "sapsys"
 
 {% endfor %}
