@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -xeo pipefail
 # Script to provision the machines using salt. It provides different stages to install and
 # configure salt and run different salt executions. Find more information in print_help method
 # or running `sh provision.sh -h`
@@ -225,7 +225,8 @@ done
 
 if [[ -n $log_to_file ]]; then
     argument_number=$((argument_number - 1))
-    2>&1 | tee $log_to_file
+    # Find the logic of the next command in: https://unix.stackexchange.com/questions/145651/using-exec-and-tee-to-redirect-logs-to-stdout-and-a-log-file-in-the-same-time
+    exec > >(tee -a $log_to_file)
 fi
 
 if [ $argument_number -eq 0 ]; then
