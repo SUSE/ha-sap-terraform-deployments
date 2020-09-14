@@ -9,7 +9,10 @@ sidadm_login_ls:
     - name: su -lc 'ls -l' {{ node.sid }}adm
 
 # this state will add grains, which are used by hana/netweaver installer during install
-# sed before remove the grains so call it is idempotent
+# sed before remove the grains so call it is idempotent#
+#
+
+# NOTE: we can't use normal saltstack call like grain.set etc,  because we need to retrieve id dinamically and use {{ node.sid }} inside.
 add_sidadm_grains:
   cmd.run:
     - name: |
