@@ -105,6 +105,14 @@ sssd_service:
     - watch:
       - file: /etc/sssd/sssd.conf
 
+change_home_directory:
+  file.replace:
+    - name: '/etc/sssd/sssd.conf'
+    - pattern: "fallback_homedir =.*"
+    - repl: "fallback_homedir = /home/%u"
+    - require:
+      - cmd: join_domain
+
 disable_qualified_names:
   file.replace:
     - name: '/etc/sssd/sssd.conf'
