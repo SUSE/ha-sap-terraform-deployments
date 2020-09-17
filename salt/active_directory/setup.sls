@@ -109,7 +109,7 @@ change_home_directory:
   file.replace:
     - name: '/etc/sssd/sssd.conf'
     - pattern: "fallback_homedir =.*"
-    - repl: "fallback_homedir = /home/%u"
+    - repl: "override_homedir = /home/%u"
     - require:
       - cmd: join_domain
 
