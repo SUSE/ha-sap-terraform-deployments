@@ -29,18 +29,8 @@ update_network_configuration:
 join_domain:
   cmd.run:
     - name: echo {{ grains.get('ad_adm_pwd') }} | realm join {{ grains.get('ad_server_domain') }}
-    # TODO improve this to make something more reliable
-    - check_cmd:
-      - ls /etc/sssd/sssd.conf
     - require:
       - pkg: install_sssd_packages
-
-# TODO: this should be removed once https://github.com/freedesktop/realmd/pull/1 is merged and pkg builded
-add_sssd_pam:
-  cmd.run:
-    - name: pam-config --add --sss
-    - require:
-      - cmd: join_domain
 
 # this is needed so that the AD user have a home directory wiht the right permission.
 # e.g without this Hawk will fail
