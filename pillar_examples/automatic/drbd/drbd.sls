@@ -30,7 +30,7 @@ drbd:
 
 
   ## Configures some "common" parameters of /etc/drbd.d/global_common.conf
-  #common:
+  common:
   #  # This section is used to fine tune the behaviour of the resource object
   #  options:
   #    # Optional: Cluster partition requires quorum to modify the replicated data set.
@@ -50,7 +50,7 @@ drbd:
   #    after_sb_2pri: "disconnect"
 
   #  # Define handlers (executables) that are started by the DRBD system in response to certain events.
-  handlers:
+    handlers:
   #    # Optional: This handler is called in case the node needs to fence the peer's disk
   #    fence_peer: "/usr/lib/drbd/crm-fence-peer.9.sh"
   #    # Optional: This handler is called in case the node needs to unfence the peer's disk
@@ -60,7 +60,7 @@ drbd:
   #    # Optional: This handler is called after a resync operation finished on the node.
   #    after_resync_target: "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh"
   #    # Optional: DRBD detected a split brain situation but remains unresolved. This handler should alert someone.
-       split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
+      split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
   resource:
     - name: "sapdata"
       device: "/dev/drbd1"
