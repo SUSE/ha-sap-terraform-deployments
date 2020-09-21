@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -8,41 +12,6 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-// repo and pkgs
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-// hana
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-
 variable "network_domain" {
   description = "hostname's network domain"
   default     = "tf.local"
@@ -51,11 +20,6 @@ variable "network_domain" {
 variable "hana_count" {
   description = "number of hosts like this one"
   default     = 2
-}
-
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "hana_disk_size" {
@@ -75,23 +39,35 @@ variable "host_ips" {
 }
 
 variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  description = "IP address used to configure the hana cluster floating IP"
   type        = string
 }
 
-variable "shared_storage_type" {
-  description = "used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
   type        = string
-  default     = "iscsi"
+  default     = ""
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
+  type        = string
+  default     = "shared-disk"
 }
 
 variable "sbd_disk_id" {
-  description = "SBD disk volume id"
+  description = "SBD disk volume id. Only used if sbd_storage_type is shared-disk"
   type        = string
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+  description = "iscsi server address. Only used if sbd_storage_type is iscsi"
   type        = string
   default     = ""
 }
@@ -118,32 +94,27 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
+}
+
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
 }
 
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
 }
 
 // Provider-specific variables
@@ -200,21 +171,7 @@ variable "bridge" {
   default     = ""
 }
 
-// monitoring
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
-}
-
 // QA mode variables
-
-variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
-  type        = bool
-  default     = false
-}
 
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"

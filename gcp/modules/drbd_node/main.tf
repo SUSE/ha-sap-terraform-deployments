@@ -58,7 +58,7 @@ resource "google_compute_instance" "drbd" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.public_key_location)}"
+    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
   }
 
   service_account {
@@ -71,7 +71,7 @@ module "drbd_on_destroy" {
   node_count           = var.drbd_count
   instance_ids         = google_compute_instance.drbd.*.id
   user                 = "root"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

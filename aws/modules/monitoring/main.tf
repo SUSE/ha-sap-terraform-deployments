@@ -7,7 +7,7 @@ module "get_os_image" {
 resource "aws_instance" "monitoring" {
   count                       = var.monitoring_enabled == true ? 1 : 0
   ami                         = module.get_os_image.image_id
-  instance_type               = var.monitor_instancetype == "" ? var.min_instancetype : var.monitor_instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(var.subnet_ids, 0)
@@ -41,7 +41,7 @@ module "monitoring_on_destroy" {
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = aws_instance.monitoring.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.monitoring.*.public_ip
   dependencies         = var.on_destroy_dependencies
 }

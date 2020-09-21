@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -10,14 +14,8 @@ variable "drbd_count" {
   default     = 2
 }
 
-variable "drbd_instancetype" {
+variable "instance_type" {
   description = "The instance type of drbd node"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region"
   type        = string
   default     = "t2.micro"
 }
@@ -75,6 +73,12 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
 variable "drbd_cluster_vip" {
   description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
   type        = string
@@ -97,14 +101,6 @@ variable "network_domain" {
   default = "tf.local"
 }
 
-variable "public_key_location" {
-  type = string
-}
-
-variable "private_key_location" {
-  type = string
-}
-
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string
@@ -118,61 +114,6 @@ variable "cluster_ssh_key" {
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
-}
-
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
 }
 
 variable "on_destroy_dependencies" {

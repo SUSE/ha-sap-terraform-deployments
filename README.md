@@ -20,7 +20,8 @@ ___
 - [DRBD](doc/drbd.md)
 - [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
-- [ISCSI](doc/iscsi.md)
+- [SBD](doc/sbd.md)
+- [IP addresses auto generation](doc/ip_autogeneration.md)
 
 ## Templates
 

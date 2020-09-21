@@ -1,9 +1,13 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "hana_count" {
   type    = string
   default = "2"
 }
 
-variable "instancetype" {
+variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
 }
@@ -12,11 +16,6 @@ variable "name" {
   description = "prefix of the machines names"
   type        = string
   default     = "hana"
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
 }
 
 variable "scenario_type" {
@@ -103,21 +102,16 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
 }
 
 variable "hana_fstype" {
@@ -132,8 +126,28 @@ variable "hana_cluster_vip" {
   default     = "192.168.1.10"
 }
 
-variable "private_key_location" {
-  type = string
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
+}
+
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
@@ -156,58 +170,8 @@ variable "reg_code" {
   default     = ""
 }
 
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
-}
-
-variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
   default     = false
 }

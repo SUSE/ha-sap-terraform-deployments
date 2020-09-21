@@ -1,4 +1,9 @@
+locals {
+  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 # Network resources: subnets, routes, etc
+
 resource "aws_subnet" "netweaver-subnet" {
   count             = min(var.netweaver_count, 2) # Create 2 subnets max
   vpc_id            = var.vpc_id
@@ -17,14 +22,14 @@ resource "aws_route_table_association" "netweaver-subnet-route-association" {
 }
 
 resource "aws_route" "ascs-cluster-vip" {
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 0)}/32"
   instance_id            = aws_instance.netweaver.0.id
 }
 
 resource "aws_route" "ers-cluster-vip" {
-  count                  = var.netweaver_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 1)}/32"
   instance_id            = aws_instance.netweaver.1.id
@@ -55,7 +60,7 @@ module "get_os_image" {
 resource "aws_instance" "netweaver" {
   count                       = var.netweaver_count
   ami                         = module.get_os_image.image_id
-  instance_type               = var.instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.netweaver-subnet.*.id, count.index % 2) # %2 is used because there are not more than 2 subnets
@@ -93,7 +98,7 @@ module "netweaver_on_destroy" {
   node_count           = var.netweaver_count
   instance_ids         = aws_instance.netweaver.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.netweaver.*.public_ip
   dependencies = concat(
     [aws_route_table_association.netweaver-subnet-route-association],

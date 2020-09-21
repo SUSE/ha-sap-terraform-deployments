@@ -1,6 +1,6 @@
 {% if grains['os_family'] == 'Suse' %}
-{% if not grains.get('qa_mode') or '_node' not in grains.get('role') %}
-{% if grains['reg_code'] %}
+
+{% if grains['reg_code'] and (not grains.get('qa_mode') or '_node' not in grains.get('role')) %}
 {% set reg_code = grains['reg_code'] %}
 {% set arch = grains['osarch'] %}
 register_system:
@@ -23,7 +23,6 @@ default_sle_module_adv_systems_management_registration:
         attempts: 3
         interval: 15
 
-{%- if grains['provider'] in ['gcp', 'aws', 'azure'] %}
 default_sle_module_public_cloud_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/12/{{ arch }} -r $reg_code
@@ -32,8 +31,6 @@ default_sle_module_public_cloud_registration:
     - retry:
         attempts: 3
         interval: 15
-
-{% endif %}
 
 {% elif grains['osmajorrelease'] == 15 and grains['provider'] in ['gcp', 'aws', 'azure'] %}
 default_sle_module_public_cloud_registration:
@@ -61,5 +58,26 @@ default_sle_module_public_cloud_registration:
 {% endif %}
 
 {% endif %}
-{% endif %}
+
+# Workaround for the 'Script died unexpectedly' error bsc#1158664
+# If it is a PAYG image, it will force a new registration before refreshing.
+# Also the pure refresh will not be executed as salt will still report failure.
+# See: https://github.com/saltstack/salt/issues/16291
+workaround_payg_cleanup:
+  cmd.run:
+    - name: |
+        rm -f /etc/SUSEConnect &&
+        rm -f /etc/zypp/{repos,services,credentials}.d/* &&
+        rm -f /usr/lib/zypp/plugins/services/* &&
+        sed -i '/^# Added by SMT reg/,+1d' /etc/hosts
+    - onlyif: 'test -e /usr/sbin/registercloudguest'
+
+workaround_payg_new_register:
+  cmd.run:
+    - name: /usr/sbin/registercloudguest --force-new
+    - retry:
+        attempts: 3
+        interval: 15
+    - onlyif: 'test -e /usr/sbin/registercloudguest'
+
 {% endif %}

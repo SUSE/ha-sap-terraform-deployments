@@ -41,6 +41,12 @@ variable "volume_name" {
   default     = ""
 }
 
+variable "public_key_location" {
+  description = "Path to a SSH public key used to connect to the created machines"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
+
 # Deployment variables
 #
 variable "reg_code" {
@@ -67,24 +73,31 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
-# Repository url used to install HA/SAP deployment packages"
+# Repository url used to install development versions of HA/SAP deployment packages
 # The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR SLE VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
+  description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
+  default     = ""
 }
 
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
+variable "additional_packages" {
+  description = "extra packages which should be installed"
+  type        = list
+  default     = []
 }
 
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
+}
+
+variable "provisioning_log_level" {
+  description = "Provisioning process log level. For salt: https://docs.saltstack.com/en/latest/ref/configuration/logging/index.html"
+  type        = string
+  default     = "error"
 }
 
 variable "background" {
@@ -161,14 +174,14 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_media' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
 }
@@ -180,7 +193,31 @@ variable "hana_fstype" {
 }
 
 variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  description = "IP address used to configure the hana cluster floating IP"
+  type        = string
+  default     = ""
+}
+
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "hana_active_active" {
+  description = "Enable an Active/Active HANA system replication setup"
+  type        = bool
+  default     = false
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
   type        = string
   default     = ""
 }
@@ -190,9 +227,16 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
-#
-# iSCSI server related variables
-#
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
+  type        = string
+  default     = "shared-disk"
+}
+
 variable "iscsi_vcpu" {
   description = "Number of CPUs for the iSCSI server"
   type        = number
@@ -205,16 +249,15 @@ variable "iscsi_memory" {
   default     = 4096
 }
 
-variable "shared_storage_type" {
-  description = "Used shared storage type for fencing (sbd). Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
-}
-
 variable "sbd_disk_size" {
-  description = "Disk size (in bytes) for the SBD disk"
+  description = "Disk size (in bytes) for the SBD disk. It's used to create the ISCSI server disk too"
   type        = number
   default     = 10737418240
+}
+
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
 variable "iscsi_source_image" {
@@ -233,12 +276,6 @@ variable "iscsi_srv_ip" {
   description = "iSCSI server address (only used if shared_storage_type is iscsi)"
   type        = string
   default     = ""
-}
-
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  type        = number
-  default     = 0
 }
 
 #
@@ -331,6 +368,12 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = true
+}
+
 variable "netweaver_nfs_share" {
   description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
   type        = string
@@ -344,9 +387,21 @@ variable "netweaver_product_id" {
 }
 
 variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `netweaver_inst_folder`"
   type        = string
   default     = ""
+}
+
+variable "netweaver_inst_folder" {
+  description = "Folder where SAP Netweaver installation files are mounted"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
+variable "netweaver_extract_dir" {
+  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
+  type        = string
+  default     = "/sapmedia/NW"
 }
 
 variable "netweaver_swpm_folder" {
@@ -367,12 +422,6 @@ variable "netweaver_swpm_sar" {
   default     = ""
 }
 
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
-}
-
 variable "netweaver_sapexe_folder" {
   description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
   type        = string
@@ -383,6 +432,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 #
@@ -406,11 +461,6 @@ variable "drbd_volume_name" {
   default     = ""
 }
 
-variable "drbd_count" {
-  description = "Number of drbd machines to create the cluster"
-  default     = 2
-}
-
 variable "drbd_node_vcpu" {
   description = "Number of CPUs for the DRBD machines"
   type        = number
@@ -429,12 +479,6 @@ variable "drbd_disk_size" {
   default     = 10737418240
 }
 
-variable "drbd_shared_disk_size" {
-  description = "Shared disk size (in bytes) for the DRBD machines"
-  type        = number
-  default     = 104857600
-}
-
 variable "drbd_ips" {
   description = "IP addresses of the drbd nodes"
   type        = list(string)
@@ -447,10 +491,10 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_shared_storage_type" {
-  description = "Used shared storage type for fencing (sbd) for drbd cluster. Available options: iscsi, shared-disk."
-  type        = string
-  default     = "iscsi"
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = true
 }
 
 #

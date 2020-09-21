@@ -61,19 +61,19 @@ output "netweaver_public_name" {
 # iSCSI server
 
 output "iscsisrv_ip" {
-  value = module.iscsi_server.iscsisrv_ip
+  value = join("", module.iscsi_server.iscsisrv_ip)
 }
 
 output "iscsisrv_public_ip" {
-  value = module.iscsi_server.iscsisrv_public_ip
+  value = join("", module.iscsi_server.iscsisrv_public_ip)
 }
 
 output "iscsisrv_name" {
-  value = module.iscsi_server.iscsisrv_name
+  value = join("", module.iscsi_server.iscsisrv_name)
 }
 
 output "iscsisrv_public_name" {
-  value = module.iscsi_server.iscsisrv_public_name
+  value = join("", module.iscsi_server.iscsisrv_public_name)
 }
 
 # DRBD

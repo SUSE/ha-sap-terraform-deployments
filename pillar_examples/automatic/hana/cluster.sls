@@ -1,9 +1,4 @@
-{% import_yaml "/root/salt/hana_node/files/pillar/hana.sls" as hana %}
-{% if not grains.get('sbd_disk_device') %}
-{% set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{% else %}
-{% set sbd_disk_device = grains['sbd_disk_device'] %}
-{% endif %}
+{% import_yaml "/srv/pillar/hana/hana.sls" as hana %}
 
 cluster:
   {% if grains.get('qa_mode') %}
@@ -17,12 +12,23 @@ cluster:
   interface: eth0
   unicast: True
   {% endif %}
-  join_timeout: 180
+  join_timeout: 500
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device']|default('') }}
+    {% if grains['provider'] == 'azure' %}
+    configure_resource:
+      params:
+        pcmk_delay_max: 15
+      op:
+        monitor:
+          timeout: 15
+          interval: 15
+    {% endif %}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:
@@ -41,11 +47,14 @@ cluster:
       max_messages: 20
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
-  {% if grains['init_type']|default('all') != 'skip-hana' %}
   configure:
-    method: update
+    properties:
+      stonith-enabled: true
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     template:
-      source: /usr/share/salt-formulas/states/hana/templates/scale_up_resources.j2
+      source: salt://hana/templates/scale_up_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
@@ -54,11 +63,15 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {% elif grains['provider'] == 'gcp' %}
-        route_table: {{ grains['route_table'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
+        route_name: {{ grains['route_name'] }}
+        route_name_secondary: {{ grains['route_name_secondary'] }}
         {% endif %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
         virtual_ip_mask: 24
+        {% if grains['hana_cluster_vip_secondary'] %}
+        virtual_ip_secondary: {{ grains['hana_cluster_vip_secondary'] }}
+        {% endif %}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}
@@ -71,4 +84,3 @@ cluster:
           instance: {{ hana.hana.nodes[2].instance }}
           remote_host : {{ hana.hana.nodes[0].host }}
         {% endif %}
-  {% endif %}

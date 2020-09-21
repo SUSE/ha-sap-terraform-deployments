@@ -1,6 +1,6 @@
-# the following 2 vars are aquired via ENV 
-# qemu_uri            = 
-# source_image        = 
+# the following 2 vars are aquired via ENV
+# qemu_uri            =
+# source_image        =
 
 hana_inst_media     = "10.162.32.134:/sapdata/sap_inst_media/51053787"
 iprange             = "192.168.25.0/24"
@@ -11,7 +11,7 @@ storage_pool = "terraform"
 pre_deployment = true
 
 # For iscsi, it will deploy a new machine hosting an iscsi service
-shared_storage_type = "iscsi"
+sbd_storage_type = "iscsi"
 ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:/ha-clustering:/sap-deployments:/devel"
 
 monitoring_enabled = true
@@ -37,8 +37,3 @@ netweaver_additional_dvds = ["51050829_3", "51053787"]
 
 # Enable the DRBD cluster for nfs
 drbd_enabled = true
-
-# IP of DRBD cluster
-drbd_shared_storage_type = "iscsi"
-
-devel_mode = false

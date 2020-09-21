@@ -1,3 +1,6 @@
+# Region where to deploy the configuration
+az_region = "westeurope"
+
 # Use an already existing resource group
 #resource_group_name = "my-resource-group"
 
@@ -17,17 +20,9 @@
 #vnet_address_range = ""
 #subnet_address_range = ""
 
+# HANA configuration (this example shows the demo option values.Find more options in the README file)
 # VM size to use for the cluster nodes
-hana_vm_size = "Standard_M32ls"
-
-# Disk type for HANA
-hana_data_disk_type = "StandardSSD_LRS"
-
-# Disk size for HANA
-hana_data_disk_size = "60"
-
-# Caching used for HANA disk
-hana_data_disk_caching = "ReadWrite"
+#hana_vm_size = "Standard_E4s_v3"
 
 # Number of nodes in the cluster
 hana_count = "2"
@@ -35,11 +30,20 @@ hana_count = "2"
 # Instance number for the HANA database. 00 by default.
 hana_instance_number = "00"
 
-# Region where to deploy the configuration
-az_region = "westeurope"
+# Network options
+#hana_enable_accelerated_networking = false
 
-# Variable to control what is deployed in the nodes. Can be all, skip-hana or skip-cluster
-init_type = "all"
+# Disk configuration
+#hana_data_disks_configuration = {
+#  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+#  disks_size       = "512,512,512,512,64,1024"
+#  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+#  writeaccelerator = "false,false,false,false,false,false"
+#  luns             = "0,1,2#3#4#5"
+#  names            = "datalog#shared#usrsap#backup"
+#  lv_sizes         = "70,100#100#100#100"
+#  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
 
 # SLES4SAP image information
 # If custom uris are enabled public information will be omitted
@@ -99,40 +103,49 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/yo
 # Or you can combine the `hana_inst_master with` `hana_platform_folder` variable.
 #hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/hana/installation/master
 # Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point.
-# This will have preference over hdbserver sar archive installation media
+# This will have preference over hana archive installation media
 #hana_platform_folder = "51053381"
 
-# Or specify the path to the sapcar executable & HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point
-# The sar archive will be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
-# Make sure to use the latest/compatible version of sapcar executable, otherwise file may be extracted incorrectly
+# Or specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_media' mounting point
+# For multipart RAR archives, you only need to provide the first part EXE file name.
+# If using hana sar archive, please also provide the compatible version of sapcar executable to extract the sar archive
+# HANA installation archives be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
+hana_archive_file = "IMDB_SERVER.SAR"
 hana_sapcar_exe = "SAPCAR"
-hdbserver_sar = "IMDB_SERVER.SAR"
 hana_extract_dir = "/sapmedia/HDBSERVER"
 
-# Device used by node where HANA will be installed
-hana_disk_device = "/dev/sdc"
-
-# Device used by the iSCSI server to provide LUNs
-iscsidev = "/dev/sdc"
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
 # IP address of the iSCSI server. If it's not set the address will be auto generated from the provided vnet address range
 #iscsi_srv_ip = "10.74.1.14"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
+#iscsi_disk_size = 10
 
 # Path to a custom ssh public key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_pub = "salt://hana_node/files/sshkeys/cluster.id_rsa.pub"
+cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
 
 # Path to a custom ssh private key to upload to the nodes
 # Used for cluster communication for example
-cluster_ssh_key = "salt://hana_node/files/sshkeys/cluster.id_rsa"
+cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
+
+# Enable system replication and HA cluster
+#hana_ha_enabled = true
 
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
 #hana_cluster_vip = "10.74.1.13"
 
-# Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
-#drbd_ips = ["10.74.1.21", "10.74.1.22"]
-#drbd_cluster_vip = "10.74.1.23"
+# Enable SBD for the hana cluster
+#hana_cluster_sbd_enabled = true
+
+# Enable Active/Active HANA setup (read-only access in the secondary instance)
+#hana_active_active = true
 
 # Repository url used to install HA/SAP deployment packages"
 # The latest RPM packages can be found at:
@@ -175,12 +188,43 @@ ha_sap_deployment_repo = ""
 # Enable drbd cluster
 #drbd_enabled = true
 
+# Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
+#drbd_ips = ["10.74.1.21", "10.74.1.22"]
+#drbd_cluster_vip = "10.74.1.23"
+
+# Enable SBD for the drbd cluster
+#drbd_cluster_sbd_enabled = true
+
 # Netweaver variables
 
 #netweaver_enabled = true
 # If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+
+# Enabling this option will create a ASCS/ERS HA available cluster
+#netweaver_ha_enabled = true
+# Application servers number. The 1st one will be a PAS instance, and the rest AAS servers
+#netweaver_app_server_count = 2
+
+# VM sizes
+#netweaver_xscs_vm_size = Standard_D2s_v3
+#netweaver_app_vm_size = Standard_D2s_v3
+
+# Set the Netweaver product id for HA (this is just an example)
+#netweaver_product_id = NW750.HDB.ABAPHA
+# Fon non HA
+#netweaver_product_id = NW750.HDB.ABAP
+
+# Enable SBD for the netweaver cluster
+#netweaver_cluster_sbd_enabled = true
+
+# This storage account must contain the next software (select the version you want to install of course)
+#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
+#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
+#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
+#Sapexe folder files:
+#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
 
 #netweaver_storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 #netweaver_storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
@@ -189,13 +233,12 @@ ha_sap_deployment_repo = ""
 # SAP SWPM installation folder, relative to the netweaver_storage_account mounting point
 #netweaver_swpm_folder     =  "your_swpm"
 # Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_storage_account mounting point
-# The sar archive will be extracted to path specified at netweaver_swpm_extract_dir (optional, by default /sapmedia/NW/SWPM)
+# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia/NW/SWPM)
 #netweaver_sapcar_exe = "your_sapcar_exe_file_path"
 #netweaver_swpm_sar = "your_swpm_sar_file_path"
-#netweaver_swpm_extract_dir = "location_to_extract_swpm_sar_absolute_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_storage_account mounting point
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
-# Additional folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
+# Additional media archives or folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
 
 # QA variables

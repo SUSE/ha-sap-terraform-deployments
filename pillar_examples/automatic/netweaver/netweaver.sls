@@ -1,5 +1,3 @@
-{%- set iprange = '.'.join(grains['host_ips'][0].split('.')[0:-1]) %}
-
 {%- if grains['provider'] == 'libvirt' %}
 {%- set virtual_host_interface = 'eth1' %}
 {%- else %}
@@ -12,11 +10,20 @@
 {%- endif %}
 
 netweaver:
+  {%- set app_start_index = 2 if grains['ha_enabled'] else 1 %}
+  {%- set app_server_count = grains['app_server_count']|default(2) %}
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sapha1as
+    {%- if grains['ha_enabled'] %}
     {{ grains['virtual_host_ips'][1] }}: sapha1er
-    {{ grains['virtual_host_ips'][2] }}: sapha1pas
-    {{ grains['virtual_host_ips'][3] }}: sapha1aas
+    {%- endif %}
+    {%- if app_server_count > 0 %}
+    {{ grains['virtual_host_ips'][app_start_index] }}: sapha1pas
+    {%- for index in range(app_server_count-1) %}
+    {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sapha1aas{{ loop.index }}
+    {%- endfor %}
+    {%- endif %}
+
   sidadm_user:
     uid: 2001
     gid: 2002
@@ -25,20 +32,20 @@ netweaver:
   master_password: SuSE1234
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
   {%- if grains.get('netweaver_swpm_folder', False) %}
-  swpm_folder: /sapmedia/NW/{{ grains['netweaver_swpm_folder'] }}
+  swpm_folder: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_folder'] }}
   {%- endif %}
   {%- if grains.get('netweaver_sapcar_exe', False) and grains.get('netweaver_swpm_sar', False) %}
-  sapcar_exe_file: /sapmedia/NW/{{ grains['netweaver_sapcar_exe'] }}
-  swpm_sar_file: /sapmedia/NW/{{ grains['netweaver_swpm_sar'] }}
+  sapcar_exe_file: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_sapcar_exe'] }}
+  swpm_sar_file: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_sar'] }}
   {%- endif %}
-  {%- if grains.get('netweaver_swpm_extract_dir', False) %}
-  swpm_extract_dir: {{ grains['netweaver_swpm_extract_dir'] }}
+  {%- if grains.get('netweaver_extract_dir', False) %}
+  nw_extract_dir: {{ grains['netweaver_extract_dir'] }}
   {%- endif %}
-  sapexe_folder: /sapmedia/NW/{{ grains['netweaver_sapexe_folder'] }}
+  sapexe_folder: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_sapexe_folder'] }}
   additional_dvds: {%- if not grains['netweaver_additional_dvds'] %} []
   {%- else %}
     {%- for dvd in grains['netweaver_additional_dvds'] %}
-    - /sapmedia/NW/{{ dvd }}
+    - {{ grains['netweaver_inst_folder'] }}/{{ dvd }}
     {%- endfor %}
   {%- endif %}
 
@@ -63,29 +70,32 @@ netweaver:
   nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
 {%- endif %}
 
+  ha_enabled: {{ grains['ha_enabled'] }}
+
   nodes:
     - host: {{ grains['name_prefix'] }}01
       virtual_host: sapha1as
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: HA1
-      instance: {{ grains['ascs_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['ascs_instance_number']) }}
       root_user: root
       root_password: linux
-      {%- if grains['provider'] == 'libvirt' %}
+      {%- if grains['ha_enabled'] and grains['provider'] == 'libvirt' %}
       shared_disk_dev: /dev/vdb
       init_shared_disk: True
-      {%- else %}
+      {%- elif grains['ha_enabled'] %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS
       {%- endif %}
       sap_instance: ascs
 
+    {% if grains['ha_enabled'] %}
     - host: {{ grains['name_prefix'] }}02
       virtual_host: sapha1er
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: HA1
-      instance: {{ grains['ers_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['ers_instance_number']) }}
       root_user: root
       root_password: linux
       {%- if grains['provider'] == 'libvirt' %}
@@ -94,8 +104,10 @@ netweaver:
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS
       {%- endif %}
       sap_instance: ers
+    {% endif %}
 
-    - host: {{ grains['name_prefix'] }}03
+    {% if app_server_count > 0 %}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sapha1pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
@@ -105,13 +117,13 @@ netweaver:
       root_password: linux
       sap_instance: db
 
-    - host: {{ grains['name_prefix'] }}03
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sapha1pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       ascs_virtual_host: sapha1as
       sid: HA1
-      instance: {{ grains['pas_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['pas_instance_number']) }}
       root_user: root
       root_password: linux
       sap_instance: pas
@@ -119,14 +131,17 @@ netweaver:
       #extra_parameters:
       #  NW_liveCache.useLiveCache: "false"
 
-    - host: {{ grains['name_prefix'] }}04
-      virtual_host: sapha1aas
+    {%- for index in range(app_server_count-1) %}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1+loop.index }}
+      virtual_host: sapha1aas{{ loop.index }}
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: HA1
-      instance: {{ grains['aas_instance_number'] }}
+      instance: {{ '{:0>2}'.format(grains['pas_instance_number']+loop.index) }}
       root_user: root
       root_password: linux
       sap_instance: aas
       # Add for S4/HANA
       #attempts: 500
+    {% endfor %}
+    {% endif %}

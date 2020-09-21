@@ -1,11 +1,15 @@
-variable "monitor_instancetype" {
-  description = "The instance type of monitoring node."
-  type        = string
-  default     = ""
+variable "common_variables" {
+  description = "Output of the common_variables module"
 }
 
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
+variable "monitoring_enabled" {
+  description = "enable the host to be monitored by exporters, e.g node_exporter"
+  type        = bool
+  default     = false
+}
+
+variable "instance_type" {
+  description = "The instance type of monitoring node."
   type        = string
   default     = "t2.micro"
 }
@@ -26,10 +30,6 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "private_key_location" {
-  type = string
-}
-
 variable "aws_region" {
   type = string
 }
@@ -47,49 +47,6 @@ variable "subnet_ids" {
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
-}
-
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
 }
 
 variable "hana_targets" {

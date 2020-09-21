@@ -1,9 +1,3 @@
-{% if not grains.get('sbd_disk_device') %}
-{% set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{% else %}
-{% set sbd_disk_device = grains['sbd_disk_device'] %}
-{% endif %}
-
 cluster:
   install_packages: true
   name: 'drbd_cluster'
@@ -16,11 +10,13 @@ cluster:
   unicast: True
   wait_for_initialization: 20
   join_timeout: 180
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   ntp: pool.ntp.org
   {% if grains['provider'] == 'libvirt' %}
   sshkeys:
@@ -40,7 +36,7 @@ cluster:
   configure:
     method: 'update'
     template:
-      source: /srv/salt/drbd_files/templates/drbd_cluster.j2
+      source: salt://drbd_node/files/templates/drbd_cluster.j2
       parameters:
         {% if grains['provider'] == 'aws' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
@@ -52,5 +48,5 @@ cluster:
         {% elif grains['provider'] == 'gcp' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
-        route_table: {{ grains['route_table'] }}
+        route_name: {{ grains['route_name'] }}
         {% endif %}

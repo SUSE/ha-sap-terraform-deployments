@@ -1,5 +1,10 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "aws_region" {
-  type = string
+  type        = string
+  description = "AWS region where the deployment machines will be created"
 }
 
 variable "availability_zones" {
@@ -9,19 +14,18 @@ variable "availability_zones" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "List of subnet IDs"
+  description = "Subnet ids to attach the machines network interface"
 }
 
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region."
+variable "iscsi_count" {
+  type        = number
+  description = "Number of iscsi machines to deploy"
+}
+
+variable "instance_type" {
   type        = string
-  default     = "t2.micro"
-}
-
-variable "iscsi_instancetype" {
   description = "The instance type of iscsi server node."
-  type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "key_name" {
@@ -34,66 +38,21 @@ variable "security_group_id" {
   description = "Security group id"
 }
 
-variable "private_key_location" {
-  type = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
-}
-
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
-}
-
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  type        = number
+  default     = 3
 }
 
 variable "on_destroy_dependencies" {

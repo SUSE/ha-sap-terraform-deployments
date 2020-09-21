@@ -1,7 +1,12 @@
 # iscsi server network configuration
 
+locals {
+  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.iscsisrv.*.private_ip_address : data.azurerm_public_ip.iscsisrv.*.ip_address
+}
+
 resource "azurerm_network_interface" "iscsisrv" {
-  name                      = "nic-iscsisrv"
+  count                     = var.iscsi_count
+  name                      = "nic-iscsisrv0${count.index + 1}"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
   network_security_group_id = var.sec_group_id
@@ -10,8 +15,8 @@ resource "azurerm_network_interface" "iscsisrv" {
     name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = var.iscsi_srv_ip
-    public_ip_address_id          = azurerm_public_ip.iscsisrv.id
+    private_ip_address            = element(var.host_ips, count.index)
+    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.iscsisrv.*.id, count.index)
   }
 
   tags = {
@@ -20,7 +25,8 @@ resource "azurerm_network_interface" "iscsisrv" {
 }
 
 resource "azurerm_public_ip" "iscsisrv" {
-  name                    = "pip-iscsisrv"
+  count                   = var.bastion_enabled ? 0 : var.iscsi_count
+  name                    = "pip-iscsisrv0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -54,16 +60,17 @@ resource "azurerm_image" "iscsi_srv" {
 # iSCSI server VM
 
 resource "azurerm_virtual_machine" "iscsisrv" {
-  name                             = "vmiscsisrv"
+  count                            = var.iscsi_count
+  name                             = "vmiscsisrv0${count.index + 1}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
-  network_interface_ids            = [azurerm_network_interface.iscsisrv.id]
+  network_interface_ids            = [element(azurerm_network_interface.iscsisrv.*.id, count.index)]
   vm_size                          = var.vm_size
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-iscsisrv-Os"
+    name              = "disk-iscsisrv0${count.index + 1}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -78,10 +85,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_data_disk {
-    name              = "disk-iscsisrv-Data01"
+    name              = "disk-iscsisrv0${count.index + 1}-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
-    disk_size_gb      = "10"
+    disk_size_gb      = var.iscsi_disk_size
     lun               = "0"
     managed_disk_type = "StandardSSD_LRS"
   }
@@ -96,7 +103,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_location)
+      key_data = file(var.common_variables["public_key_location"])
     }
   }
 
@@ -112,10 +119,12 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
 module "iscsi_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = 1
+  node_count           = var.iscsi_count
   instance_ids         = azurerm_virtual_machine.iscsisrv.*.id
   user                 = var.admin_user
-  private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.iscsisrv.*.ip_address
+  private_key_location = var.common_variables["private_key_location"]
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.iscsisrv]
 }

@@ -11,16 +11,21 @@
 
 1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
 
-2) **Generate private and public keys for the cluster nodes with:**
+Now, the created file must be configured to define the deployment.
 
+**Note:** Find some help in the IP addresses configuration in [IP auto generation](../doc/ip_autogeneration.md#GCP)
+
+2) **Generate private and public keys for the cluster nodes without specifying the passphrase:**
+
+Alternatively, you can set the `pre_deployment` variable to automatically create the cluster ssh keys.
 ```
 mkdir ../salt/hana_node/files/sshkeys
-ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 
 The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
 
-3) **[Adapt saltstack pillars](../pillar_examples/)**
+3) **[Adapt saltstack pillars manually](../pillar_examples/)** or set the `pre_deployment` variable to automatically copy the example pillar files.
 
 4) **Configure Terraform access to GCP**
 

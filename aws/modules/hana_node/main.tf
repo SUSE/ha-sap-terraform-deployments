@@ -1,3 +1,9 @@
+
+locals {
+  hana_disk_device = "/dev/xvdd"
+  create_ha_infra  = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 # Network resources: subnets, routes, etc
 
 resource "aws_subnet" "hana-subnet" {
@@ -19,10 +25,17 @@ resource "aws_route_table_association" "hana-subnet-route-association" {
 }
 
 resource "aws_route" "hana-cluster-vip" {
-  count                  = var.hana_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.hana_cluster_vip}/32"
   instance_id            = aws_instance.clusternodes.0.id
+}
+
+resource "aws_route" "hana-cluster-vip-secondary" {
+  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  route_table_id         = var.route_table_id
+  destination_cidr_block = "${var.hana_cluster_vip_secondary}/32"
+  instance_id            = aws_instance.clusternodes.1.id
 }
 
 module "sap_cluster_policies" {
@@ -44,7 +57,7 @@ module "get_os_image" {
 resource "aws_instance" "clusternodes" {
   count                       = var.hana_count
   ami                         = module.get_os_image.image_id
-  instance_type               = var.instancetype
+  instance_type               = var.instance_type
   key_name                    = var.key_name
   associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.hana-subnet.*.id, count.index)
@@ -62,7 +75,7 @@ resource "aws_instance" "clusternodes" {
   ebs_block_device {
     volume_type = var.hana_data_disk_type
     volume_size = "60"
-    device_name = "/dev/xvdd"
+    device_name = local.hana_disk_device
   }
 
   volume_tags = {
@@ -81,7 +94,7 @@ module "hana_on_destroy" {
   node_count           = var.hana_count
   instance_ids         = aws_instance.clusternodes.*.id
   user                 = "ec2-user"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = aws_instance.clusternodes.*.public_ip
   dependencies = concat(
     [aws_route_table_association.hana-subnet-route-association],

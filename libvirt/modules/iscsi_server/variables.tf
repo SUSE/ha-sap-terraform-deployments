@@ -1,63 +1,26 @@
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
-  type        = string
+variable "common_variables" {
+  description = "Output of the common_variables module"
 }
 
-variable "iscsidev" {
-  description = "device iscsi for iscsi server"
-  type        = string
+variable "host_ips" {
+  description = "List of ip addresses to set to the machines"
+  type        = list(string)
 }
 
-variable "iscsi_disks" {
-  description = "number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
 }
 
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map
-  default     = {}
-}
-
-variable "additional_packages" {
-  description = "extra packages to install"
-  default     = []
+variable "iscsi_disk_size" {
+  description = "Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10000000000
 }
 
 variable "iscsi_count" {
   description = "number of hosts like this one"
   default     = 1
-}
-
-variable "grains" {
-  description = "custom grain string to be added to this host's configuration"
-  default     = ""
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
 }
 
 // Provider-specific variables
@@ -112,11 +75,4 @@ variable "bridge" {
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
-}
-
-# Specific QA variables
-variable "qa_mode" {
-  description = "define qa mode (Disable extra packages outside images)"
-  type        = bool
-  default     = false
 }

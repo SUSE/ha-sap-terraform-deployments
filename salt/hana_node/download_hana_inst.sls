@@ -36,26 +36,21 @@ hana_inst_directory:
     - require:
       - cmd: hana_inst_partition
 
-install_rclone:
-  cmd.run:
-    - name: "curl https://rclone.org/install.sh | sudo bash"
 
-configure_rclone:
-  file.append:
-    - name: /root/.rclone.conf
-    - source: /root/salt/hana_node/files/rclone/gcp.conf
+{% from 'macros/download_from_google_storage.sls' import download_from_google_storage with context %}
 
-download_files_from_gcp:
-  cmd.run:
-    - name: "rclone copy remote:{{ grains['sap_hana_deployment_bucket'] }}
-      {{ grains['hana_inst_folder'] }}"
+{{ download_from_google_storage(
+  grains['gcp_credentials_file'],
+  grains['sap_hana_deployment_bucket'],
+  grains['hana_inst_folder']) }}
+
 {% endif %}
 
 {{ grains['hana_inst_folder'] }}:
   file.directory:
     - user: root
     - group: root
-    - dir_mode: "0754"
+    - dir_mode: "0755"
     - file_mode: "0755"
     - recurse:
       - user

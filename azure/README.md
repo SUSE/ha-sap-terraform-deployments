@@ -11,15 +11,20 @@
 
 1) **Rename terraform.tfvars:** `mv terraform.tfvars.example terraform.tfvars`
 
-2) **Generate private and public keys for the cluster nodes with:**
+Now, the created file must be configured to define the deployment.
 
+**Note:** Find some help in the IP addresses configuration in [IP auto generation](../doc/ip_autogeneration.md#Azure)
+
+2) **Generate private and public keys for the cluster nodes without specifying the passphrase:**
+
+Alternatively, you can set the `pre_deployment` variable to automatically create the cluster ssh keys.
 ```
 mkdir ../salt/hana_node/files/sshkeys
-ssh-keygen -t rsa -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
 ```
 The key files must be named as you define them in the `terraform.tfvars` file
 
-3) **[Adapt saltstack pillars](../pillar_examples/)**
+3) **[Adapt saltstack pillars manually](../pillar_examples/)** or set the `pre_deployment` variable to automatically copy the example pillar files.
 
 4) **Configure Terraform Access to Azure**
 
@@ -55,11 +60,18 @@ terraform plan
 terraform apply
 ```
 
-Connect using `ssh` as the user set as your `admin_user` parameter, for example:
+### Bastion
 
+By default, the bastion machine is enabled in Azure (it can be disabled), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with: ```ssh {admin_user}@{bastion_ip} -i {private_key_location}```
+
+To log to hana and others instances, use:
 ```
-ssh admin_user@18.196.143.128 -i private_key_location
+ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 ```
+
+To disable the bastion use:
+
+```bastion_enabled = false```
 
 Destroy the created infrastructure with:
 
@@ -118,6 +130,158 @@ DRBD ips: 10.74.0.20, 10.74.0.21
 DRBD cluster vip: 10.74.0.22
 Netweaver ips: 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33
 Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
+
+## HANA configuration
+
+The database configuration may vary depending on the expected performance. In order to have different options, the virtual machine size, disks, network configuration, etc must be configured differently. Here some predefined options that might help in the configuration.
+
+For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. By default the **demo** option is deployed.
+**Use other values only if you know what you are doing**.
+
+#### Demo
+
+```
+hana_vm_size = "Standard_E4s_v3"
+hana_enable_accelerated_networking = false
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "128,128,128,128,128,128,128"
+  caching          = "None,None,None,None,None,None,None"
+  writeaccelerator = "false,false,false,false,false,false,false"
+  luns             = "0,1#2,3#4#5#6#7"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+}
+```
+
+#### Small
+
+```
+hana_vm_size = "Standard_E64s_v3"
+hana_enable_accelerated_networking = true
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "512,512,512,512,64,1024"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+  writeaccelerator = "false,false,false,false,false,false"
+  luns             = "0,1,2#3#4#5"
+  names            = "datalog#shared#usrsap#backup"
+  lv_sizes         = "70,100#100#100#100"
+  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+}
+```
+
+#### Medium
+
+```
+hana_vm_size = "Standard_M64s"
+hana_enable_accelerated_networking = true
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "512,512,512,512,512,512,1024,64,1024,1024"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
+  writeaccelerator = "false,false,false,false,false,false,false,false,false,false"
+  luns             = "0,1,2,3#4,5#6#7#8,9"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+}
+```
+
+#### Large
+
+```
+hana_vm_size = "Standard_M128s"
+hana_enable_accelerated_networking = true
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "1024,1024,1024,512,512,1024,64,2048,2048"
+  caching          = "ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
+  writeaccelerator = "false,false,false,true,true,false,false,false,false"
+  luns             = "0,1,2#3,4#5#6#7,8"
+  names            = "data#log#shared#usrsap#backup"
+  lv_sizes         = "100#100#100#100#100"
+  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+}
+```
+
+## Netweaver configuration
+
+There are different Netweaver configurations available depending on if the environment is an HA one or not, and the expected performance. Here some guidelines for the different options:
+
+To set a 3-tier deployment (simple Netweaver, without HA) use the next options:
+
+```
+netweaver_enabled = true
+netweaver_ha_enabled = false
+netweaver_cluster_sbd_enabled = false
+drbd_enabled = false
+netweaver_nfs_share = your_nfs_share:/mount_point
+```
+
+For 3-tier HA deployment:
+
+```
+netweaver_enabled = true
+netweaver_ha_enabled = true
+netweaver_cluster_sbd_enabled = true
+drbd_enabled = true
+```
+
+Besides that, we need to define the expected performance setting the vm sizes, networking and disk different options. Here some different options (by default the **demo** option is deployed):
+
+#### Demo
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_D2s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = ""ReadWrite""
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = false
+netweaver_app_server_count = 2
+```
+
+#### Small
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = ""ReadWrite""
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 5
+```
+
+#### Medium
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 5
+```
+
+#### Large
+
+```
+netweaver_xscs_vm_size = "Standard_D2s_v3"
+netweaver_app_vm_size = "Standard_E64s_v3"
+netweaver_data_disk_type = "Premium_LRS"
+netweaver_data_disk_size = 128
+netweaver_data_disk_caching = "ReadWrite"
+netweaver_xscs_accelerated_networking = false
+netweaver_app_accelerated_networking = true
+netweaver_app_server_count = 10
+```
 
 # Advanced usage
 

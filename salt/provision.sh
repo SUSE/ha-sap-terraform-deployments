@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -xeo pipefail
 # Script to provision the machines using salt. It provides different stages to install and
 # configure salt and run different salt executions. Find more information in print_help method
 # or running `sh provision.sh -h`
@@ -14,6 +14,23 @@ get_grain () {
     else
         return 1
     fi
+}
+
+log_ok () {
+    NODE=`hostname`
+    TIMESTAMP=`date -u`
+    GREEN='\033[0;32m'
+    NC='\033[0m' # No Color
+    printf "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}\n"
+}
+
+log_error () {
+    NODE=`hostname`
+    TIMESTAMP=`date -u`
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    printf "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}\n"
+    exit 1
 }
 
 salt_output_colored () {
@@ -39,8 +56,7 @@ install_salt_minion () {
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
         SUSEConnect -p sle-module-basesystem/$VERSION_ID/x86_64
       else
-        echo "SLE Product version not supported by this script. Please, use version 12 or higher."
-        exit 1
+        log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
     fi
 
@@ -55,14 +71,20 @@ install_salt_minion () {
 }
 
 repeat_command () {
-  cmd=$1
-  timeout=${2:-120}
-  interval=${3:-15}
-  timeout $timeout bash -c "until $cmd;do sleep $interval;done"
+    cmd=$1
+    timeout=${2:-120}
+    interval=${3:-15}
+    timeout $timeout bash -c "until $cmd;do sleep $interval;done"
 }
 
 bootstrap_salt () {
-    mv /tmp/salt /root || true
+    # handle case where something exists already in /srv/salt
+    mkdir -p /srv/salt
+    cp -R /tmp/salt/* /srv/salt || true
+    rm -rf /tmp/salt
+    mkdir -p /srv/pillar
+    cp -R /tmp/pillar/* /srv/pillar || true
+    rm -rf /tmp/pillar
 
     # Check if qa_mode is enabled
     [[ "$(get_grain qa_mode /tmp/grains)" == "true" ]] && qa_mode=1
@@ -86,46 +108,49 @@ bootstrap_salt () {
     fi
 
     # Recheck if salt-call is installed. If it's not available stop execution
-    which salt-call || exit 1
+    which salt-call || log_error "salt call isn't installed"
     # Move salt grains to salt folder
     mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
+    log_ok "bootstrapped salt"
 }
 
 os_setup () {
-    # Execute the states within /root/salt/os_setup
+    # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
-    salt-call --local --file-root=/root/salt \
-        --log-level=info \
+    salt-call --local \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.apply os_setup || exit 1
+        state.apply os_setup || log_error "os setup failed"
+    log_ok "os setup done"
 }
 
 predeploy () {
-    # Execute the states defined in /root/salt/top.sls
+    # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
-        --pillar-root=/root/salt/pillar/ \
-        --log-level=info \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
         $(salt_output_colored) \
-        state.highstate saltenv=predeployment || exit 1
+        state.highstate saltenv=predeployment || log_error "predeployment failed"
+    log_ok "predeployment done"
 }
 
 deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
-            --log-level=info \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.highstate saltenv=base || exit 1
+            state.highstate saltenv=base || log_error "deployment failed"
+        log_ok "deployment done"
     fi
 }
 
@@ -136,13 +161,14 @@ run_tests () {
         # Otherwise, hwcct will error out.
         export HOST=$(hostname)
         # Execute qa state file
-        salt-call --local --file-root=/root/salt/ \
-            --log-level=info \
+        salt-call --local \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-qa.log \
-            --log-file-level=info \
+            --log-file-level=debug \
             --retcode-passthrough \
             $(salt_output_colored) \
-            state.apply qa_mode || exit 1
+            state.apply qa_mode || log_error "tests failed"
+        log_ok "tests failed"
     fi
 }
 
@@ -199,7 +225,8 @@ done
 
 if [[ -n $log_to_file ]]; then
     argument_number=$((argument_number - 1))
-    exec 1>> $log_to_file
+    # Find the logic of the next command in: https://unix.stackexchange.com/questions/145651/using-exec-and-tee-to-redirect-logs-to-stdout-and-a-log-file-in-the-same-time
+    exec > >(tee -a $log_to_file)
 fi
 
 if [ $argument_number -eq 0 ]; then

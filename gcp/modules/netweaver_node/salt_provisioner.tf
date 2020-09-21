@@ -1,5 +1,9 @@
+locals {
+  gcp_credentials_dest = "/root/google_credentials.json"
+}
+
 resource "null_resource" "netweaver_provisioner" {
-  count = var.provisioner == "salt" ? var.netweaver_count : 0
+  count = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
 
   triggers = {
     netweaver_id = join(",", google_compute_instance.netweaver.*.id)
@@ -12,48 +16,43 @@ resource "null_resource" "netweaver_provisioner" {
     )
     type        = "ssh"
     user        = "root"
-    private_key = file(var.private_key_location)
+    private_key = file(var.common_variables["private_key_location"])
   }
 
   provisioner "file" {
     source      = var.gcp_credentials_file
-    destination = "/root/google_credentials.json"
+    destination = local.gcp_credentials_dest
   }
 
   provisioner "file" {
     content     = <<EOF
-provider: gcp
 role: netweaver_node
+${var.common_variables["grains_output"]}
 name_prefix: ${terraform.workspace}-netweaver
 hostname: ${terraform.workspace}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}
-additional_packages: []
-reg_code: ${var.reg_code}
-reg_email: ${var.reg_email}
-reg_additional_modules: {${join(", ", formatlist("'%s': '%s'", keys(var.reg_additional_modules), values(var.reg_additional_modules), ), )}}
-authorized_keys: [${trimspace(file(var.public_key_location))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-shared_storage_type: iscsi
-sbd_disk_index: 2
+gcp_credentials_file: ${local.gcp_credentials_dest}
+ha_enabled: ${var.ha_enabled}
+sbd_enabled: ${var.sbd_enabled}
+sbd_storage_type: ${var.sbd_storage_type}
+sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-ha_sap_deployment_repo: ${var.ha_sap_deployment_repo}
-monitoring_enabled: ${var.monitoring_enabled}
-devel_mode: ${var.devel_mode}
-qa_mode: ${var.qa_mode}
 netweaver_software_bucket: ${var.netweaver_software_bucket}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
 netweaver_product_id: ${var.netweaver_product_id}
+netweaver_inst_folder: ${var.netweaver_inst_folder}
+netweaver_extract_dir: ${var.netweaver_extract_dir}
 netweaver_swpm_folder: ${var.netweaver_swpm_folder}
 netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
 netweaver_swpm_sar: ${var.netweaver_swpm_sar}
-netweaver_swpm_extract_dir: ${var.netweaver_swpm_extract_dir}
 netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: ${var.netweaver_nfs_share}
@@ -70,10 +69,10 @@ EOF
 
 module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.provisioner == "salt" ? var.netweaver_count : 0
+  node_count           = var.common_variables["provisioner"] == "salt" ? var.netweaver_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = "root"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
-  background           = var.background
+  background           = var.common_variables["background"]
 }

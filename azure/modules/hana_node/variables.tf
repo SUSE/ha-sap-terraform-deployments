@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "az_region" {
   type    = string
   default = "westeurope"
@@ -82,7 +86,7 @@ variable "hana_public_version" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_M32ls"
+  default = "Standard_E4s_v3"
 }
 
 variable "admin_user" {
@@ -90,12 +94,34 @@ variable "admin_user" {
   default = "azadmin"
 }
 
-variable "public_key_location" {
-  type = string
+variable "bastion_enabled" {
+  description = "Use a bastion machine to create the ssh connections"
+  type        = bool
+  default     = true
 }
 
-variable "private_key_location" {
-  type = string
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
+  type        = string
+  default     = ""
+}
+
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
@@ -113,70 +139,10 @@ variable "cluster_ssh_key" {
   type        = string
 }
 
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "devel_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
   default     = false
-}
-
-variable "qa_mode" {
-  description = "Whether or not to install the HA/SAP packages from the `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
-}
-
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
-  type        = bool
-  default     = false
-}
-
-variable "init_type" {
-  type    = string
-  default = "all"
 }
 
 variable "hana_inst_master" {
@@ -200,21 +166,16 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
-}
-
-variable "hana_disk_device" {
-  description = "device where to install HANA"
-  type        = string
 }
 
 variable "hana_fstype" {
@@ -223,21 +184,44 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
-variable "hana_data_disk_type" {
-  type    = string
-  default = "Standard_LRS"
-}
-
-variable "hana_data_disk_size" {
-  type    = string
-  default = "60"
-}
-
-variable "hana_data_disk_caching" {
-  type = string
-}
-
 variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster"
   type        = string
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
+}
+
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "hana_data_disks_configuration" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+    disks_size       = "128,128,128,128,128,128,128"
+    caching          = "None,None,None,None,None,None,None"
+    writeaccelerator = "false,false,false,false,false,false,false"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups splitted by "#" must match in all of the entries
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup)
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5)
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
+  EOF
 }

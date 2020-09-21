@@ -1,5 +1,9 @@
 # HANA deployment in GCP
 
+locals {
+  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+}
+
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
 resource "google_compute_disk" "data" {
   count = var.hana_count
@@ -28,11 +32,22 @@ resource "google_compute_disk" "hana-software" {
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "hana-route" {
   name                   = "${terraform.workspace}-hana-route"
-  count                  = var.hana_count > 0 ? 1 : 0
+  count                  = local.create_ha_infra
   dest_range             = "${var.hana_cluster_vip}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)
+  priority               = 1000
+}
+
+# Route for Active/Active setup
+resource "google_compute_route" "hana-route-secondary" {
+  name                   = "${terraform.workspace}-hana-route-secondary"
+  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  dest_range             = "${var.hana_cluster_vip_secondary}/32"
+  network                = var.network_name
+  next_hop_instance      = google_compute_instance.clusternodes.1.name
+  next_hop_instance_zone = element(var.compute_zones, 1)
   priority               = 1000
 }
 
@@ -86,7 +101,7 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.public_key_location)}"
+    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
   }
 
   service_account {
@@ -99,7 +114,7 @@ module "hana_on_destroy" {
   node_count           = var.hana_count
   instance_ids         = google_compute_instance.clusternodes.*.id
   user                 = "root"
-  private_key_location = var.private_key_location
+  private_key_location = var.common_variables["private_key_location"]
   public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

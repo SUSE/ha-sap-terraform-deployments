@@ -116,24 +116,25 @@ variable "additional_packages" {
   default     = []
 }
 
-# Repository url used to install HA/SAP deployment packages"
+# Repository url used to install development versions of HA/SAP deployment packages
 # The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR SLE VERSION}
 # Contains the salt formulas rpm packages.
 variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages. If SLE version is not set, the deployment will automatically detect the current OS version"
+  description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-}
-
-variable "devel_mode" {
-  description = "Increase ha_sap_deployment_repo repository priority to get the packages from this repository instead of SLE official channels"
-  type        = bool
-  default     = false
+  default     = ""
 }
 
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"
+}
+
+variable "provisioning_log_level" {
+  description = "Provisioning process log level. For salt: https://docs.saltstack.com/en/latest/ref/configuration/logging/index.html"
+  type        = string
+  default     = "error"
 }
 
 variable "background" {
@@ -162,22 +163,10 @@ variable "hana_os_owner" {
   default     = "amazon"
 }
 
-variable "instancetype" {
+variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
   default     = "r3.8xlarge"
-}
-
-variable "min_instancetype" {
-  description = "The minimum cost/capacity instance type, different per region"
-  type        = string
-  default     = "t2.micro"
-}
-
-variable "init_type" {
-  description = "Type of deployment. Options: all-> Install HANA and HA; skip-hana-> Skip HANA installation; skip-cluster-> Skip HA cluster installation"
-  type        = string
-  default     = "all"
 }
 
 variable "hana_subnet_address_range" {
@@ -215,14 +204,14 @@ variable "hana_sapcar_exe" {
   default     = ""
 }
 
-variable "hdbserver_sar" {
-  description = "Path to the HANA database server installation sar archive, relative to the 'hana_inst_master' mounting point"
+variable "hana_archive_file" {
+  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted. Use this parameter if the hana media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA sar archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
   default     = "/sapmedia/HANA"
 }
@@ -233,11 +222,6 @@ variable "hana_data_disk_type" {
   default     = "gp2"
 }
 
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-}
-
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string
@@ -246,6 +230,30 @@ variable "hana_fstype" {
 
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
+}
+
+variable "hana_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the hana HA cluster"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+  default     = true
+}
+
+variable "hana_active_active" {
+  description = "Enable an Active/Active HANA system replication setup"
+  type        = bool
+  default     = false
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
   type        = string
   default     = ""
 }
@@ -278,7 +286,7 @@ variable "drbd_os_owner" {
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "drbd_cluster_vip" {
@@ -311,7 +319,24 @@ variable "drbd_data_disk_type" {
   default     = "gp2"
 }
 
-# Iscsi server related variables
+variable "drbd_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the drbd HA cluster"
+  type        = bool
+  default     = false
+}
+
+# SBD related variables
+# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# All the clusters will use the same mechanism
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi"
+  type        = string
+  default     = "iscsi"
+}
+
+# If iscsi is selected as sbd_storage_type
+# Use the next variables for advanced configuration
 
 variable "iscsi_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
@@ -328,12 +353,7 @@ variable "iscsi_os_owner" {
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = ""
-}
-
-variable "iscsidev" {
-  description = "Disk device where iscsi partitions are created"
-  type        = string
+  default     = "t2.micro"
 }
 
 variable "iscsi_srv_ip" {
@@ -342,9 +362,15 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "iscsi_disks" {
-  description = "Number of partitions attach to iscsi server. 0 means `all`."
-  default     = 0
+variable "iscsi_lun_count" {
+  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
+  default     = 3
+}
+
+variable "iscsi_disk_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 10
 }
 
 # Monitoring related variables
@@ -364,7 +390,7 @@ variable "monitoring_os_owner" {
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = ""
+  default     = "t2.micro"
 }
 
 variable "monitoring_srv_ip" {
@@ -435,10 +461,28 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
+variable "netweaver_cluster_sbd_enabled" {
+  description = "Enable sbd usage in the netweaver HA cluster"
+  type        = bool
+  default     = false
+}
+
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string
   default     = "NW750.HDB.ABAPHA"
+}
+
+variable "netweaver_inst_folder" {
+  description = "Folder where SAP Netweaver installation files are mounted"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
+variable "netweaver_extract_dir" {
+  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
+  type        = string
+  default     = "/sapmedia/NW"
 }
 
 variable "netweaver_swpm_folder" {
@@ -459,12 +503,6 @@ variable "netweaver_swpm_sar" {
   default     = ""
 }
 
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
-}
-
 variable "netweaver_sapexe_folder" {
   description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
   type        = string
@@ -475,6 +513,12 @@ variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
   type        = list
   default     = []
+}
+
+variable "netweaver_ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
+  type        = bool
+  default     = true
 }
 
 # Specific QA variables

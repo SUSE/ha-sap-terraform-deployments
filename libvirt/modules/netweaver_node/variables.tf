@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
@@ -8,41 +12,9 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-// repo and pkgs
-variable "reg_code" {
-  description = "If informed, register the product using SUSEConnect"
-  default     = ""
-}
-
-variable "reg_email" {
-  description = "Email used for the registration"
-  default     = ""
-}
-
-variable "reg_additional_modules" {
-  description = "Map of the modules to be registered. Module name = Regcode, when needed."
-  type        = map(string)
-  default     = {}
-}
-
-variable "ha_sap_deployment_repo" {
-  description = "Repository url used to install HA/SAP deployment packages"
-  type        = string
-}
-
-variable "additional_packages" {
-  description = "extra packages which should be installed"
-  default     = []
-}
-
 variable "netweaver_count" {
   description = "number of hosts like this one"
   default     = 4
-}
-
-variable "public_key_location" {
-  description = "path of pub ssh key you want to use to access VMs"
-  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "host_ips" {
@@ -55,9 +27,27 @@ variable "virtual_host_ips" {
   type        = list(string)
 }
 
-variable "shared_disk_id" {
-  description = "ASCS and ERS shared disk volume id"
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
   type        = string
+  default     = "shared-disk"
+}
+
+variable "shared_disk_id" {
+  description = "Disk used by SBD and, ASCS/ERS"
+  type        = string
+}
+
+variable "iscsi_srv_ip" {
+  description = "iscsi server address. Only used if sbd_storage_type is iscsi"
+  type        = string
+  default     = ""
 }
 
 variable "hana_ip" {
@@ -72,8 +62,20 @@ variable "netweaver_product_id" {
 }
 
 variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `/sapmedia/NW`"
+  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `netweaver_inst_folder`"
   type        = string
+}
+
+variable "netweaver_inst_folder" {
+  description = "Folder where SAP Netweaver installation files are mounted"
+  type        = string
+  default     = "/sapmedia/NW"
+}
+
+variable "netweaver_extract_dir" {
+  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
+  type        = string
+  default     = "/sapmedia/NW"
 }
 
 variable "netweaver_swpm_folder" {
@@ -92,12 +94,6 @@ variable "netweaver_swpm_sar" {
   description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
   type        = string
   default     = ""
-}
-
-variable "netweaver_swpm_extract_dir" {
-  description = "Extraction path for Netweaver software SWPM folder, if SWPM sar file is provided"
-  type        = string
-  default     = "/sapmedia/NW/SWPM"
 }
 
 variable "netweaver_sapexe_folder" {
@@ -141,23 +137,10 @@ variable "aas_instance_number" {
   default     = "02"
 }
 
-variable "provisioner" {
-  description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
-  default     = "salt"
-}
-
-variable "background" {
-  description = "Run the provisioner execution in background if set to true finishing terraform execution"
+variable "ha_enabled" {
+  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
   type        = bool
-  default     = false
-}
-
-// monitoring
-
-variable "monitoring_enabled" {
-  description = "enable the host to be monitored by exporters, e.g node_exporter"
-  type        = bool
-  default     = false
+  default     = true
 }
 
 // Provider-specific variables
@@ -217,10 +200,4 @@ variable "bridge" {
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
-}
-
-variable "devel_mode" {
-  description = "Whether or not to give preference to packages from `ha_sap_deployment_repo`"
-  type        = bool
-  default     = false
 }

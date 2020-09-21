@@ -13,5 +13,5 @@ Below is the expected behavior:
 
 <br>
 
-**`hwcct`**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /var/log/provisioning.log. 
+**`hwcct`**: If set to true, it executes HANA Hardware Configuration Check Tool to bench filesystems. It's a very long test (about 2 hours), results will be both in /root/hwcct_out and in the global log file /var/log/salt-result.log. 
 By default, `hwcct` is set to false. Variable **`qa_mode` must be set to true**.

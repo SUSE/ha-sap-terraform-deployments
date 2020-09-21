@@ -1,0 +1,4 @@
+include:
+  - .prometheus
+  - .grafana
+  - .loki

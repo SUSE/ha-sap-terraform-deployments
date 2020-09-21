@@ -1,0 +1,55 @@
+# Sample config for Prometheus.
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 5s
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+
+rule_files:
+    - /etc/prometheus/rules.yml
+
+scrape_configs:
+  # we use job_name to group exporters for each cluster
+
+  {% if grains.get('hana_targets', [])|length > 0 %}
+  - job_name: hana
+    # The HANA scrapping follows a different scrapping time to reduce the execution load into the database
+    # This time was based on users feedback, but should be set accordingly with your environment needs.
+    scrape_interval: 30s
+    scrape_timeout: 30s
+    static_configs:
+      - targets:
+        {%- for ip in grains['hana_targets'][0:2] %}
+        - "{{ ip }}:9100" # node_exporter
+        - "{{ ip }}:9664" # ha_cluster_exporter
+        {%- endfor %}
+        - "{{ grains['hana_targets'][-1] }}:9668" # hanadb_exporter
+  {%- endif %}
+
+  {%- if grains.get('drbd_targets', [])|length > 0 %}
+  - job_name: drbd
+    static_configs:
+      - targets:
+        {%- for ip in grains['drbd_targets'] %}
+        - "{{ ip }}:9100" # node_exporter
+        - "{{ ip }}:9664" # ha_cluster_exporter
+        {%- endfor %}
+  {%- endif %}
+
+  {%- if grains.get('netweaver_targets', [])|length > 0 %}
+  - job_name: netweaver
+    static_configs:
+      - targets:
+        {%- for ip in grains['netweaver_targets'] %}
+        - "{{ ip }}:9100" # node_exporter
+        - "{{ ip }}:9680" # sap_host_exporter
+        {%- endfor %}
+        {%- for ip in grains['netweaver_targets'][0:2] %}
+        - "{{ ip }}:9664" # ha_cluster_exporter
+        {%- endfor %}
+  {%- endif %}

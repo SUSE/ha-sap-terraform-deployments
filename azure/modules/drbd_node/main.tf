@@ -2,6 +2,10 @@
 # official documentation: https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs
 # disclaimer: only supports a single NW installation
 
+locals {
+  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.drbd.*.private_ip_address : data.azurerm_public_ip.drbd.*.ip_address
+}
+
 resource "azurerm_availability_set" "drbd-availability-set" {
   count                       = var.drbd_count > 0 ? 1 : 0
   name                        = "avset-drbd"
@@ -109,7 +113,7 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
 # drbd network configuration
 
 resource "azurerm_public_ip" "drbd" {
-  count                   = var.drbd_count
+  count                   = var.bastion_enabled ? 0 : var.drbd_count
   name                    = "pip-drbd0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -133,7 +137,7 @@ resource "azurerm_network_interface" "drbd" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = element(azurerm_public_ip.drbd.*.id, count.index)
+    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.drbd.*.id, count.index)
   }
 
   tags = {
@@ -208,7 +212,7 @@ resource "azurerm_virtual_machine" "drbd" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_location)
+      key_data = file(var.common_variables["public_key_location"])
     }
   }
 
@@ -227,7 +231,9 @@ module "drbd_on_destroy" {
   node_count           = var.drbd_count
   instance_ids         = azurerm_virtual_machine.drbd.*.id
   user                 = var.admin_user
-  private_key_location = var.private_key_location
-  public_ips           = data.azurerm_public_ip.drbd.*.ip_address
+  private_key_location = var.common_variables["private_key_location"]
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.bastion_private_key
+  public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.drbd]
 }

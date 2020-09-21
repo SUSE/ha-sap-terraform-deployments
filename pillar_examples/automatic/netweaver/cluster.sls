@@ -1,9 +1,4 @@
-{%- import_yaml "/root/salt/netweaver_node/files/pillar/netweaver.sls" as netweaver %}
-{%- if not grains.get('sbd_disk_device') %}
-{%- set sbd_disk_device = salt['cmd.run']('lsscsi | grep "LIO-ORG" | awk "{ if (NR=='~grains['sbd_disk_index']~') print \$NF }"', python_shell=true) %}
-{%- else %}
-{%- set sbd_disk_device = grains['sbd_disk_device'] %}
-{%- endif %}
+{%- import_yaml "/srv/pillar/netweaver/netweaver.sls" as netweaver %}
 
 cluster:
   install_packages: true
@@ -15,11 +10,13 @@ cluster:
   interface: eth0
   unicast: True
   {%- endif %}
+  {% if grains['sbd_enabled'] %}
+  sbd:
+    device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
     module: softdog
     device: /dev/watchdog
-  sbd:
-    device: {{ sbd_disk_device }}
+  {% endif %}
   join_timeout: 180
   wait_for_initialization: 20
   ntp: pool.ntp.org
@@ -41,7 +38,7 @@ cluster:
   configure:
     method: update
     template:
-      source: /usr/share/salt-formulas/states/netweaver/templates/cluster_resources.j2
+      source: salt://netweaver/templates/cluster_resources.j2
       parameters:
         sid: {{ netweaver.netweaver.nodes[0].sid }}
         ascs_instance: {{ grains['ascs_instance_number'] }}
