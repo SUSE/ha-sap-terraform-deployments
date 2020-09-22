@@ -92,27 +92,44 @@ public_key_location = "/path/to/your/public/ssh/key"
 # Private SSH Key location
 private_key_location = "/path/to/your/private/ssh/key"
 
+# The next variables define how the HANA installation software is obtained.
+# The installation software must be located in a Azure storage account
+
 # Azure storage account name
 storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
-
 # Azure storage account secret key (key1 or key2)
 storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 
-# Azure storage account path where HANA installation master is located
-hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/hana/installation/master/51053381"
-# Or you can combine the `hana_inst_master with` `hana_platform_folder` variable.
-#hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/path/to/your/hana/installation/master
+# 'hana_inst_master' is a Azure Storage account share where HANA installation files (extracted or not) are stored
+# `hana_inst_master` must be used always! It is used as the reference path to the other variables
+
+# Local folder where HANA installation master will be mounted
+#hana_inst_folder = "/sapmedia/HANA"
+
+# To configure the usage there are multiple options:
+# 1. Use an already extracted HANA Platform folder structure.
+# The last numbered folder is the HANA Platform folder with the extracted files with
+# something like `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::XXXXXX` in the LABEL.ASC file
+hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sap_inst_media/51053381"
+
+# 2. Combine the `hana_inst_master` with `hana_platform_folder` variable.
+#hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sap_inst_media"
 # Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point.
 # This will have preference over hana archive installation media
 #hana_platform_folder = "51053381"
 
-# Or specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_media' mounting point
+# 3. Specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_master' mounting point
 # For multipart RAR archives, you only need to provide the first part EXE file name.
-# If using hana sar archive, please also provide the compatible version of sapcar executable to extract the sar archive
+#hana_archive_file = "51053381_part1.exe"
+
+# 4. If using HANA SAR archive, please also provide the compatible version of sapcar executable to extract the SAR archive
 # HANA installation archives be extracted to path specified at hana_extract_dir (optional, by default /sapmedia/HANA)
-hana_archive_file = "IMDB_SERVER.SAR"
-hana_sapcar_exe = "SAPCAR"
-hana_extract_dir = "/sapmedia/HDBSERVER"
+#hana_archive_file = "IMDB_SERVER.SAR"
+#hana_sapcar_exe = "SAPCAR"
+
+# For option 3 and 4, HANA installation archives are extracted to the path specified
+# at hana_extract_dir (optional, by default /sapmedia/HANA)
+#hana_extract_dir = "/sapmedia/HDBSERVER"
 
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
