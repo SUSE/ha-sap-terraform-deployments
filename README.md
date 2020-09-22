@@ -14,6 +14,8 @@ ___
 
 ## Major features
 
+For details, examples about features, read the `terraform.tfvars.example` of each provider.
+
 - HA Clusters and HANA deployment
 - [Monitoring of cluster](doc/monitoring.md)
 - [Netweaver](doc/netweaver.md)
