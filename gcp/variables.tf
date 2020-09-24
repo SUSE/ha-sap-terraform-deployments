@@ -182,7 +182,7 @@ variable "hana_archive_file" {
 variable "hana_extract_dir" {
   description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
 variable "hana_data_disk_type" {

@@ -128,8 +128,8 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #hana_sapcar_exe = "SAPCAR"
 
 # For option 3 and 4, HANA installation archives are extracted to the path specified
-# at hana_extract_dir (optional, by default /sapmedia/HANA)
-#hana_extract_dir = "/sapmedia/HDBSERVER"
+# at hana_extract_dir (optional, by default /sapmedia_extract/HANA). This folder cannot be the same as `hana_inst_folder`!
+#hana_extract_dir = "/sapmedia_extract/HANA"
 
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option

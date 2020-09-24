@@ -84,8 +84,8 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #hana_sapcar_exe = "SAPCAR"
 
 # For option 3 and 4, HANA installation archives are extracted to the path specified
-# at hana_extract_dir (optional, by default /sapmedia/HANA)
-#hana_extract_dir = "/sapmedia/HDBSERVER"
+# at hana_extract_dir (optional, by default /sapmedia_extract/HANA). This folder cannot be the same as `hana_inst_folder`!
+#hana_extract_dir = "/sapmedia_extract/HANA"
 
 
 # Device used by node where HANA will be installed
