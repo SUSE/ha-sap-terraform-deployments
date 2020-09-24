@@ -274,7 +274,7 @@ variable "hana_archive_file" {
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
   default     = "/sapmedia_extract/HANA"
 }
