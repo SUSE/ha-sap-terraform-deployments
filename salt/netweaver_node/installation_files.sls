@@ -49,7 +49,7 @@ mount_swpm:
 {{ download_from_google_storage(
   grains['gcp_credentials_file'],
   grains['netweaver_software_bucket'],
-  sapcd) }}
+  grains['netweaver_inst_folder']) }}
 
 {% elif grains['provider'] == 'aws' %}
 
