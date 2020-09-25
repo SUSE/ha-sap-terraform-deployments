@@ -141,7 +141,7 @@ variable "machine_type" {
 variable "sles4sap_boot_image" {
   description = "The image used to create the hana machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
 }
 
 variable "hana_ips" {
@@ -278,7 +278,7 @@ variable "sbd_storage_type" {
 variable "iscsi_server_boot_image" {
   description = "The image used to create the iscsi machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
 }
 
 variable "machine_type_iscsi_server" {
@@ -321,7 +321,7 @@ variable "drbd_machine_type" {
 variable "drbd_image" {
   description = "The image used to create the drbd machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
 }
 
 variable "drbd_data_disk_size" {
@@ -371,7 +371,7 @@ variable "netweaver_machine_type" {
 variable "netweaver_image" {
   description = "The image used to create the netweaver machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
 }
 
 variable "netweaver_software_bucket" {

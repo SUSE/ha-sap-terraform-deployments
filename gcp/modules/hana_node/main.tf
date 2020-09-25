@@ -76,7 +76,7 @@ resource "google_compute_instance" "clusternodes" {
 
   boot_disk {
     initialize_params {
-      image = var.sles4sap_boot_image
+      image = var.os_image
     }
 
     auto_delete = true

@@ -64,7 +64,7 @@ module "drbd_node" {
   compute_zones        = data.google_compute_zones.available.names
   network_name         = local.vpc_name
   network_subnet_name  = local.subnet_name
-  drbd_image           = var.drbd_image
+  os_image             = var.drbd_image
   drbd_data_disk_size  = var.drbd_data_disk_size
   drbd_data_disk_type  = var.drbd_data_disk_type
   drbd_cluster_vip     = local.drbd_cluster_vip
@@ -89,7 +89,7 @@ module "netweaver_node" {
   compute_zones             = data.google_compute_zones.available.names
   network_name              = local.vpc_name
   network_subnet_name       = local.subnet_name
-  netweaver_image           = var.netweaver_image
+  os_image                  = var.netweaver_image
   gcp_credentials_file      = var.gcp_credentials_file
   network_domain            = "tf.local"
   host_ips                  = local.netweaver_ips
@@ -124,7 +124,7 @@ module "hana_node" {
   compute_zones              = data.google_compute_zones.available.names
   network_name               = local.vpc_name
   network_subnet_name        = local.subnet_name
-  sles4sap_boot_image        = var.sles4sap_boot_image
+  os_image                   = var.sles4sap_boot_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips
   sbd_enabled                = var.hana_cluster_sbd_enabled
@@ -159,7 +159,7 @@ module "monitoring" {
   monitoring_enabled  = var.monitoring_enabled
   compute_zones       = data.google_compute_zones.available.names
   network_subnet_name = local.subnet_name
-  sles4sap_boot_image = var.sles4sap_boot_image
+  os_image            = var.sles4sap_boot_image
   monitoring_srv_ip   = local.monitoring_srv_ip
   hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
@@ -176,7 +176,7 @@ module "iscsi_server" {
   machine_type            = var.machine_type_iscsi_server
   compute_zones           = data.google_compute_zones.available.names
   network_subnet_name     = local.subnet_name
-  iscsi_server_boot_image = var.iscsi_server_boot_image
+  os_image                = var.iscsi_server_boot_image
   host_ips                = [local.iscsi_srv_ip]
   lun_count               = var.iscsi_lun_count
   iscsi_disk_size         = var.iscsi_disk_size

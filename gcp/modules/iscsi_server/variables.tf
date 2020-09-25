@@ -17,9 +17,9 @@ variable "network_subnet_name" {
   type        = string
 }
 
-variable "iscsi_server_boot_image" {
-  type    = string
-  default = "suse-byos-cloud/sles-15-sap-byos"
+variable "os_image" {
+  description = "Image used to create the machine"
+  type        = string
 }
 
 variable "iscsi_count" {

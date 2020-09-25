@@ -27,10 +27,9 @@ variable "netweaver_count" {
   default = "2"
 }
 
-variable "netweaver_image" {
-  description = "image of the netweaver nodes"
+variable "os_image" {
+  description = "Image used to create the machine"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "gcp_credentials_file" {
