@@ -11,7 +11,7 @@ variable "monitoring_enabled" {
 variable "instance_type" {
   description = "The instance type of monitoring node."
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "key_name" {

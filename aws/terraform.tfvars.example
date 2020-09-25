@@ -17,28 +17,9 @@ aws_region = "eu-central-1"
 # Or to use already existing vpc address ranges
 #vpc_address_range = ""
 
-# Instance type to use for the hana cluster nodes
-hana_instancetype = "r3.8xlarge"
-
-# Disk type for HANA
-hana_data_disk_type = "gp2"
-
-# Number of nodes in the cluster
-hana_count = "2"
-
-# SSH Public key location to configure access to the remote instances
-public_key_location = "/path/to/your/public/ssh/key"
-
-# Private SSH Key location
-private_key_location = "/path/to/your/private/ssh/key"
-
-# Custom AMI for nodes
-#hana_os_image = "ami-xxxxxxxxxxxxxxxxx"
-# Or use a pattern to find the image
-#hana_os_image = "suse-sles-sap-15-sp1-byos"
-
-# Custom owner for private AMI
-#hana_os_owner = "self"
+#################################
+# General configuration variables
+#################################
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -47,8 +28,94 @@ aws_secret_access_key = my-secret-access-key
 # aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
 aws_credentials = "~/.aws/credentials"
 
+# If BYOS images are used in the deployment, SCC registration code is required
+# By default, all the images are PAYG, so these next parameters are not needed
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+
+# To add additional modules from SCC. None of them is needed by default
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
+
+# SSH Public key location to configure access to the remote instances
+public_key_location = "/path/to/your/public/ssh/key"
+
+# Private SSH Key location
+private_key_location = "/path/to/your/private/ssh/key"
+
+# Path to a custom ssh public key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
+
+# Path to a custom ssh private key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
+
+##########################
+# Other deployment options
+##########################
+
+# Repository url used to install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
+#ha_sap_deployment_repo = ""
+
+# Provisioning log level (error by default)
+#provisioning_log_level = "info"
+
+# Enable all some pre deployment steps (disabled by default)
+pre_deployment = true
+
+# To disable the provisioning process
+#provisioner = ""
+
+# Run provisioner execution in background
+#background = true
+
+# QA variables
+
+# Define if the deployment is using for testing purpose
+# Disable all extra packages that do not come from the image
+# Except salt-minion (for the moment) and salt formulas
+# true or false (default)
+#qa_mode = false
+
+# Execute HANA Hardware Configuration Check Tool to bench filesystems
+# qa_mode must be set to true for executing hwcct
+# true or false (default)
+#hwcct = false
+
+#########################
+# HANA machines variables
+#########################
+
+# Instance type to use for the hana cluster nodes
+#hana_instancetype = "r3.8xlarge"
+
+# Disk type for HANA
+#hana_data_disk_type = "gp2"
+
+# Number of nodes in the cluster
+#hana_count = "2"
+
+# HANA machines image. By default, PAYG images are used
+# BYOS example with sles4sap 15 sp1 (this value is a pattern, it will select the latest version that matches this name)
+#hana_os_image = "suse-sles-sap-15-sp1-byos"
+# Or use a specific ami image
+#hana_os_image = "ami-xxxxxxxxxxxx"
+# Custom owner for private AMI
+#hana_os_owner = "amazon"
+
 # Hostname, without the domain part
-name = "hana"
+#name = "hana"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
@@ -87,9 +154,8 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # at hana_extract_dir (optional, by default /sapmedia_extract/HANA). This folder cannot be the same as `hana_inst_folder`!
 #hana_extract_dir = "/sapmedia_extract/HANA"
 
-
 # Device used by node where HANA will be installed
-hana_disk_device = "/dev/xvdd"
+#hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
@@ -100,7 +166,16 @@ hana_disk_device = "/dev/xvdd"
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
 
+# Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
+#hana_ips = ["10.0.0.5", "10.0.1.6"]
+
+# Cost optimized scenario
+#scenario_type: "cost-optimized"
+
+#######################
 # SBD related variables
+#######################
+
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
@@ -109,6 +184,10 @@ hana_disk_device = "/dev/xvdd"
 #iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
 #iscsi_os_owner = "self"
 
+# iSCSI server image. By default, PAYG image is used. The usage is the same than the HANA images
+#iscsi_os_image = "suse-sles-sap-15-sp1-byos"
+#iscsi_os_owner = "amazon"
+
 # iSCSI server address. It should be in same iprange as hana_ips
 #iscsi_srv_ip = "10.0.0.254"
 # Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
@@ -116,72 +195,23 @@ hana_disk_device = "/dev/xvdd"
 # Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
 #iscsi_disk_size = 10
 
-# Path to a custom ssh public key to upload to the nodes
-# Used for cluster communication for example
-cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
-
-# Path to a custom ssh private key to upload to the nodes
-# Used for cluster communication for example
-cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
-
-# Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
-#hana_ips = ["10.0.0.5", "10.0.1.6"]
-
-# Repository url used to install HA/SAP deployment packages"
-# The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
-# Contains the salt formulas rpm packages.
-# To auto detect the SLE version
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
-# Specific SLE version used in all the created machines
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-ha_sap_deployment_repo = ""
-
-# Optional SUSE Customer Center Registration parameters
-#reg_code = "<<REG_CODE>>"
-#reg_email = "<<your email>>"
-
-# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
-#reg_additional_modules = {
-#    "sle-module-adv-systems-management/12/x86_64" = ""
-#    "sle-module-containers/12/x86_64" = ""
-#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-#}
-
-# Cost optimized scenario
-#scenario_type: "cost-optimized"
-
-# To disable the provisioning process
-#provisioner = ""
-
-# Run provisioner execution in background
-#background = true
-
-# Monitoring variables
+##############################
+# Monitoring related variables
+##############################
 
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
-#monitoring_os_image = "ami-xxxxxxxxxxxxxxxxx"
-#monitoring_os_owner = "self"
+# Monitoring server image. By default, PAYG image is used. The usage is the same than the HANA images
+#monitoring_os_image = "suse-sles-sap-15-sp1-byos"
+#monitoring_os_owner = "amazon"
 
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
 #monitoring_srv_ip = "10.0.0.253"
 
-# QA variables
-
-# Define if the deployment is using for testing purpose
-# Disable all extra packages that do not come from the image
-# Except salt-minion (for the moment) and salt formulas
-# true or false (default)
-#qa_mode = false
-
-# Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
-# true or false (default)
-#hwcct = false
-
-# drbd related variables
+########################
+# DRBD related variables
+########################
 
 # netweaver will use AWS efs for nfs share by default, unless drbd is enabled
 # Enable drbd cluster
@@ -189,8 +219,9 @@ ha_sap_deployment_repo = ""
 
 #drbd_instancetype = "t2.micro"
 
-#drbd_os_image = "ami-xxxxxxxxxxxxxxxxx"
-#drbd_os_owner = "self"
+# DRBD machines image. By default, PAYG image is used. The usage is the same than the HANA images
+#drbd_os_image = "suse-sles-sap-15-sp1-byos"
+#drbd_os_owner = "amazon"
 
 #drbd_data_disk_size = 15
 
@@ -200,17 +231,21 @@ ha_sap_deployment_repo = ""
 #drbd_ips = ["10.0.5.20", "10.0.6.21"]
 #drbd_cluster_vip = "192.168.1.20"
 
-# Netweaver variables
+#############################
+# Netweaver related variables
+#############################
 
 #netweaver_enabled = true
 #netweaver_instancetype = "r3.8xlarge"
-#netweaver_os_image = "ami-xxxxxxxxxxxxxxxxx"
-#netweaver_os_owner = "self"
+
+# Netweaver machines image. By default, PAYG image is used. The usage is the same than the HANA images
+#netweaver_os_image = "suse-sles-sap-15-sp1-byos"
+#netweaver_os_owner = "amazon"
+
 #AWS efs performance mode used by netweaver nfs share, if efs storage is used
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
-
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
 # Set to false to only create a ASCS and PAS instances
@@ -243,8 +278,3 @@ ha_sap_deployment_repo = ""
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
 # Additional media archives or folders (added in start_dir.cd), relative to the netweaver_s3_bucket folder
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
-
-# Pre deployment
-
-# Enable all some pre deployment steps (disabled by default)
-#pre_deployment = true
