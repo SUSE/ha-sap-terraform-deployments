@@ -59,7 +59,7 @@ resource "google_compute_instance" "netweaver" {
 
   boot_disk {
     initialize_params {
-      image = var.netweaver_image
+      image = var.os_image
     }
 
     auto_delete = true

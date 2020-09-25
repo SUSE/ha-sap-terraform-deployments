@@ -28,10 +28,9 @@ variable "drbd_count" {
   default     = "2"
 }
 
-variable "drbd_image" {
-  description = "image of the drbd nodes"
+variable "os_image" {
+  description = "Image used to create the machine"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "drbd_data_disk_size" {
