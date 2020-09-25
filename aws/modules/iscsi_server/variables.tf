@@ -25,7 +25,7 @@ variable "iscsi_count" {
 variable "instance_type" {
   type        = string
   description = "The instance type of iscsi server node."
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "key_name" {
