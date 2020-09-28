@@ -35,9 +35,15 @@ locals {
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_count, local.netweaver_ip_start + (local.netweaver_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
-
   # Check if iscsi server has to be created
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+
+  # Obtain machines os_image value
+  hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
+  iscsi_os_image      = var.iscsi_os_image != "" ? var.iscsi_os_image : var.os_image
+  monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
+  drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
+  netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
 }
 
 module "common_variables" {
@@ -65,7 +71,7 @@ module "drbd_node" {
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   vm_size               = var.drbd_vm_size
   drbd_image_uri        = var.drbd_image_uri
-  os_image              = var.drbd_os_image
+  os_image              = local.drbd_os_image
   resource_group_name   = local.resource_group_name
   network_subnet_id     = local.subnet_id
   sec_group_id          = azurerm_network_security_group.mysecgroup.id
@@ -97,7 +103,7 @@ module "netweaver_node" {
   data_disk_size              = var.netweaver_data_disk_size
   data_disk_type              = var.netweaver_data_disk_type
   netweaver_image_uri         = var.netweaver_image_uri
-  os_image                    = var.netweaver_os_image
+  os_image                    = local.netweaver_os_image
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
@@ -162,7 +168,7 @@ module "hana_node" {
   bastion_host                  = module.bastion.public_ip
   bastion_private_key           = local.bastion_private_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
-  os_image                      = var.hana_os_image
+  os_image                      = local.hana_os_image
   admin_user                    = var.admin_user
   sbd_enabled                   = var.hana_cluster_sbd_enabled
   sbd_storage_type              = var.sbd_storage_type
@@ -181,7 +187,7 @@ module "monitoring" {
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   monitoring_uri              = var.monitoring_uri
-  os_image                    = var.monitoring_os_image
+  os_image                    = local.monitoring_os_image
   monitoring_srv_ip           = local.monitoring_ip
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
@@ -203,7 +209,7 @@ module "iscsi_server" {
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   iscsi_srv_uri          = var.iscsi_srv_uri
-  os_image               = var.iscsi_os_image
+  os_image               = local.iscsi_os_image
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
   bastion_private_key    = local.bastion_private_key

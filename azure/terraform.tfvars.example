@@ -39,6 +39,12 @@ admin_user = "cloudadmin"
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
+# Default os_image. This value is not used to create the machines if the specific values are set (e.g.: hana_os_image)
+# Run the next command to get the possible options and use the 4th column value (version can be changed by `latest`)
+# az vm image list --output table --publisher SUSE --all
+# BYOS example with sles4sap 15 sp2 (this value is a pattern, it will select the latest version that matches this name)
+#os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
+
 # SSH Public key to configure access to the remote instances
 public_key_location = "/path/to/your/public/ssh/key"
 
@@ -128,8 +134,6 @@ pre_deployment = true
 #sles4sap_uri = "/path/to/your/image"
 
 # Public OS images
-# Run the next command to get the possible options and use the 4th column value (version can be changed by `latest`)
-# az vm image list --output table --publisher SUSE --all
 # BYOS example
 # hana_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
