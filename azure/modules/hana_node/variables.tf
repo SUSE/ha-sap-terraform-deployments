@@ -68,20 +68,9 @@ variable "sles4sap_uri" {
   default = ""
 }
 
-variable "hana_public_publisher" {
-  type = string
-}
-
-variable "hana_public_offer" {
-  type = string
-}
-
-variable "hana_public_sku" {
-  type = string
-}
-
-variable "hana_public_version" {
-  type = string
+variable "os_image" {
+  description = "sles4sap image used to create the this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "vm_size" {
