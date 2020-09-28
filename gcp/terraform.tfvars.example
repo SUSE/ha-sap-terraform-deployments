@@ -37,6 +37,13 @@ region = "europe-west1"
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
+# Default os_image. This value is not used if the specific values are set (e.g.: hana_os_image)
+# If `gcloud` utility is available in your local machine, the next command shows some of the available options
+# gcloud compute images list --standard-images --filter=sles
+# Combine the project and name values. The version part can be ignored to get the latest version
+# BYOS images are usually available using `suse-byos-cloud` and addind `byos` sufix to the nanem
+#os_image = "suse-byos-cloud/sles-15-sp1-sap-byos"
+
 # SSH public key file
 public_key_location = "/path/to/your/public/ssh/key"
 

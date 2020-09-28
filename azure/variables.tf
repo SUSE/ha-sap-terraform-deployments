@@ -87,6 +87,12 @@ variable "name" {
   default     = "hana"
 }
 
+variable "os_image" {
+  description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -171,7 +177,7 @@ variable "hana_count" {
 variable "hana_os_image" {
   description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = ""
 }
 
 variable "sles4sap_uri" {
@@ -324,7 +330,7 @@ variable "sbd_storage_type" {
 variable "iscsi_os_image" {
   description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = ""
 }
 
 variable "iscsi_srv_uri" {
@@ -373,7 +379,7 @@ variable "monitoring_vm_size" {
 variable "monitoring_os_image" {
   description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = ""
 }
 
 variable "monitoring_uri" {
@@ -411,7 +417,7 @@ variable "drbd_ips" {
 variable "drbd_os_image" {
   description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = ""
 }
 
 variable "drbd_image_uri" {
@@ -449,7 +455,7 @@ variable "netweaver_app_server_count" {
 variable "netweaver_os_image" {
   description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = ""
 }
 
 variable "netweaver_image_uri" {

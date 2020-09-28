@@ -36,6 +36,13 @@ locals {
 
   # Check if iscsi server has to be created
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+
+  # Obtain machines os_image value
+  hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
+  iscsi_os_image      = var.iscsi_os_image != "" ? var.iscsi_os_image : var.os_image
+  monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
+  drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
+  netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
 }
 
 module "common_variables" {
@@ -64,7 +71,7 @@ module "drbd_node" {
   compute_zones        = data.google_compute_zones.available.names
   network_name         = local.vpc_name
   network_subnet_name  = local.subnet_name
-  os_image             = var.drbd_image
+  os_image             = local.drbd_os_image
   drbd_data_disk_size  = var.drbd_data_disk_size
   drbd_data_disk_type  = var.drbd_data_disk_type
   drbd_cluster_vip     = local.drbd_cluster_vip
@@ -89,7 +96,7 @@ module "netweaver_node" {
   compute_zones             = data.google_compute_zones.available.names
   network_name              = local.vpc_name
   network_subnet_name       = local.subnet_name
-  os_image                  = var.netweaver_image
+  os_image                  = local.netweaver_os_image
   gcp_credentials_file      = var.gcp_credentials_file
   network_domain            = "tf.local"
   host_ips                  = local.netweaver_ips
@@ -124,7 +131,7 @@ module "hana_node" {
   compute_zones              = data.google_compute_zones.available.names
   network_name               = local.vpc_name
   network_subnet_name        = local.subnet_name
-  os_image                   = var.sles4sap_boot_image
+  os_image                   = local.hana_os_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips
   sbd_enabled                = var.hana_cluster_sbd_enabled
@@ -159,7 +166,7 @@ module "monitoring" {
   monitoring_enabled  = var.monitoring_enabled
   compute_zones       = data.google_compute_zones.available.names
   network_subnet_name = local.subnet_name
-  os_image            = var.sles4sap_boot_image
+  os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_srv_ip
   hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
@@ -170,16 +177,16 @@ module "monitoring" {
 }
 
 module "iscsi_server" {
-  source                  = "./modules/iscsi_server"
-  common_variables        = module.common_variables.configuration
-  iscsi_count             = local.iscsi_enabled == true ? 1 : 0
-  machine_type            = var.machine_type_iscsi_server
-  compute_zones           = data.google_compute_zones.available.names
-  network_subnet_name     = local.subnet_name
-  os_image                = var.iscsi_server_boot_image
-  host_ips                = [local.iscsi_srv_ip]
-  lun_count               = var.iscsi_lun_count
-  iscsi_disk_size         = var.iscsi_disk_size
+  source              = "./modules/iscsi_server"
+  common_variables    = module.common_variables.configuration
+  iscsi_count         = local.iscsi_enabled == true ? 1 : 0
+  machine_type        = var.machine_type_iscsi_server
+  compute_zones       = data.google_compute_zones.available.names
+  network_subnet_name = local.subnet_name
+  os_image            = local.iscsi_os_image
+  host_ips            = [local.iscsi_srv_ip]
+  lun_count           = var.iscsi_lun_count
+  iscsi_disk_size     = var.iscsi_disk_size
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

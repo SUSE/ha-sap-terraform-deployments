@@ -37,6 +37,18 @@ locals {
 
   # Check if iscsi server has to be created
   iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || var.drbd_enabled && var.drbd_cluster_sbd_enabled == true || local.netweaver_count > 2 && var.netweaver_cluster_sbd_enabled == true) ? true : false
+
+  # Obtain machines os_image and os_owner values
+  hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
+  hana_os_owner       = var.hana_os_owner != "" ? var.hana_os_owner : var.os_owner
+  iscsi_os_image      = var.iscsi_os_image != "" ? var.iscsi_os_image : var.os_image
+  iscsi_os_owner      = var.iscsi_os_owner != "" ? var.iscsi_os_owner : var.os_owner
+  monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
+  monitoring_os_owner = var.monitoring_os_owner != "" ? var.monitoring_os_owner : var.os_owner
+  drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
+  drbd_os_owner       = var.drbd_os_owner != "" ? var.drbd_os_owner : var.os_owner
+  netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
+  netweaver_os_owner  = var.netweaver_os_owner != "" ? var.netweaver_os_owner : var.os_owner
 }
 
 module "common_variables" {
@@ -63,8 +75,8 @@ module "drbd_node" {
   instance_type         = var.drbd_instancetype
   aws_region            = var.aws_region
   availability_zones    = data.aws_availability_zones.available.names
-  os_image              = var.drbd_os_image
-  os_owner              = var.drbd_os_owner
+  os_image              = local.drbd_os_image
+  os_owner              = local.drbd_os_owner
   vpc_id                = local.vpc_id
   subnet_address_range  = local.drbd_subnet_address_range
   key_name              = aws_key_pair.key-pair.key_name
@@ -95,8 +107,8 @@ module "iscsi_server" {
   aws_region         = var.aws_region
   availability_zones = data.aws_availability_zones.available.names
   subnet_ids         = aws_subnet.infra-subnet.*.id
-  os_image           = var.iscsi_os_image
-  os_owner           = var.iscsi_os_owner
+  os_image           = local.iscsi_os_image
+  os_owner           = local.iscsi_os_owner
   instance_type      = var.iscsi_instancetype
   key_name           = aws_key_pair.key-pair.key_name
   security_group_id  = local.security_group_id
@@ -119,8 +131,8 @@ module "netweaver_node" {
   name                      = "netweaver"
   aws_region                = var.aws_region
   availability_zones        = data.aws_availability_zones.available.names
-  os_image                  = var.netweaver_os_image
-  os_owner                  = var.netweaver_os_owner
+  os_image                  = local.netweaver_os_image
+  os_owner                  = local.netweaver_os_owner
   vpc_id                    = local.vpc_id
   subnet_address_range      = local.netweaver_subnet_address_range
   key_name                  = aws_key_pair.key-pair.key_name
@@ -166,8 +178,8 @@ module "hana_node" {
   scenario_type              = var.scenario_type
   aws_region                 = var.aws_region
   availability_zones         = data.aws_availability_zones.available.names
-  os_image                   = var.hana_os_image
-  os_owner                   = var.hana_os_owner
+  os_image                   = local.hana_os_image
+  os_owner                   = local.hana_os_owner
   vpc_id                     = local.vpc_id
   subnet_address_range       = local.hana_subnet_address_range
   key_name                   = aws_key_pair.key-pair.key_name
@@ -211,8 +223,8 @@ module "monitoring" {
   monitoring_srv_ip  = local.monitoring_ip
   aws_region         = var.aws_region
   availability_zones = data.aws_availability_zones.available.names
-  os_image           = var.monitoring_os_image
-  os_owner           = var.monitoring_os_owner
+  os_image           = local.monitoring_os_image
+  os_owner           = local.monitoring_os_owner
   subnet_ids         = aws_subnet.infra-subnet.*.id
   timezone           = var.timezone
   hana_targets       = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
