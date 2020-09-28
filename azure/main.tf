@@ -65,10 +65,7 @@ module "drbd_node" {
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   vm_size               = var.drbd_vm_size
   drbd_image_uri        = var.drbd_image_uri
-  drbd_public_publisher = var.drbd_public_publisher
-  drbd_public_offer     = var.drbd_public_offer
-  drbd_public_sku       = var.drbd_public_sku
-  drbd_public_version   = var.drbd_public_version
+  os_image              = var.drbd_os_image
   resource_group_name   = local.resource_group_name
   network_subnet_id     = local.subnet_id
   sec_group_id          = azurerm_network_security_group.mysecgroup.id
@@ -100,10 +97,7 @@ module "netweaver_node" {
   data_disk_size              = var.netweaver_data_disk_size
   data_disk_type              = var.netweaver_data_disk_type
   netweaver_image_uri         = var.netweaver_image_uri
-  netweaver_public_publisher  = var.netweaver_public_publisher
-  netweaver_public_offer      = var.netweaver_public_offer
-  netweaver_public_sku        = var.netweaver_public_sku
-  netweaver_public_version    = var.netweaver_public_version
+  os_image                    = var.netweaver_os_image
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
@@ -168,10 +162,7 @@ module "hana_node" {
   bastion_host                  = module.bastion.public_ip
   bastion_private_key           = local.bastion_private_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
-  hana_public_publisher         = var.hana_public_publisher
-  hana_public_offer             = var.hana_public_offer
-  hana_public_sku               = var.hana_public_sku
-  hana_public_version           = var.hana_public_version
+  os_image                      = var.hana_os_image
   admin_user                    = var.admin_user
   sbd_enabled                   = var.hana_cluster_sbd_enabled
   sbd_storage_type              = var.sbd_storage_type
@@ -190,10 +181,7 @@ module "monitoring" {
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   monitoring_uri              = var.monitoring_uri
-  monitoring_public_publisher = var.monitoring_public_publisher
-  monitoring_public_offer     = var.monitoring_public_offer
-  monitoring_public_sku       = var.monitoring_public_sku
-  monitoring_public_version   = var.monitoring_public_version
+  os_image                    = var.monitoring_os_image
   monitoring_srv_ip           = local.monitoring_ip
   bastion_enabled             = var.bastion_enabled
   bastion_host                = module.bastion.public_ip
@@ -215,10 +203,7 @@ module "iscsi_server" {
   sec_group_id           = azurerm_network_security_group.mysecgroup.id
   storage_account        = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   iscsi_srv_uri          = var.iscsi_srv_uri
-  iscsi_public_publisher = var.iscsi_public_publisher
-  iscsi_public_offer     = var.iscsi_public_offer
-  iscsi_public_sku       = var.iscsi_public_sku
-  iscsi_public_version   = var.iscsi_public_version
+  os_image               = var.iscsi_os_image
   bastion_enabled        = var.bastion_enabled
   bastion_host           = module.bastion.public_ip
   bastion_private_key    = local.bastion_private_key
