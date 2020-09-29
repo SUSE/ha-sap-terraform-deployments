@@ -28,7 +28,7 @@ aws_secret_access_key = my-secret-access-key
 # aws-cli credentials file. Located on ~/.aws/credentials on Linux, MacOS or Unix or at C:\Users\USERNAME\.aws\credentials on Windows
 aws_credentials = "~/.aws/credentials"
 
-# If BYOS images are used in the deployment, SCC registration code is required
+# If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
@@ -40,7 +40,7 @@ aws_credentials = "~/.aws/credentials"
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
-# Default os_image and os_owner. These values are not used if the specific values are not set (e.g.: hana_os_image)
+# Default os_image and os_owner. These values are not used if the specific values are set (e.g.: hana_os_image)
 # BYOS example with sles4sap 15 sp1 (this value is a pattern, it will select the latest version that matches this name)
 #os_image = "suse-sles-sap-15-sp1-byos"
 #os_owner = "amazon"
@@ -76,7 +76,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"
 
-# Enable all some pre deployment steps (disabled by default)
+# Enable pre deployment steps (disabled by default)
 pre_deployment = true
 
 # To disable the provisioning process
@@ -87,7 +87,7 @@ pre_deployment = true
 
 # QA variables
 
-# Define if the deployment is using for testing purpose
+# Define if the deployment is used for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
@@ -181,15 +181,11 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # SBD related variables
 #######################
 
-# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
-# iSCSI OS image
-#iscsi_os_image = "ami-xxxxxxxxxxxxxxxxx"
-#iscsi_os_owner = "self"
-
-# iSCSI server image. By default, PAYG image is used. The usage is the same than the HANA images
+# iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
 #iscsi_os_image = "suse-sles-sap-15-sp1-byos"
 #iscsi_os_owner = "amazon"
 
@@ -207,7 +203,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
-# Monitoring server image. By default, PAYG image is used. The usage is the same than the HANA images
+# Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
 #monitoring_os_image = "suse-sles-sap-15-sp1-byos"
 #monitoring_os_owner = "amazon"
 
@@ -224,7 +220,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 #drbd_instancetype = "t2.micro"
 
-# DRBD machines image. By default, PAYG image is used. The usage is the same than the HANA images
+# DRBD machines image. By default, PAYG image is used. The usage is the same as the HANA images
 #drbd_os_image = "suse-sles-sap-15-sp1-byos"
 #drbd_os_owner = "amazon"
 

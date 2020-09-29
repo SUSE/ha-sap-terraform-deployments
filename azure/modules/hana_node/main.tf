@@ -202,7 +202,7 @@ resource "azurerm_image" "sles4sap" {
 
 # hana instances
 
-module "os_image" {
+module "os_image_reference" {
   source   = "../../modules/os_image_reference"
   os_image = var.os_image
 }
@@ -235,10 +235,10 @@ resource "azurerm_virtual_machine" "hana" {
 
   storage_image_reference {
     id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
-    publisher = var.sles4sap_uri != "" ? "" : module.os_image.publisher
-    offer     = var.sles4sap_uri != "" ? "" : module.os_image.offer
-    sku       = var.sles4sap_uri != "" ? "" : module.os_image.sku
-    version   = var.sles4sap_uri != "" ? "" : module.os_image.version
+    publisher = var.sles4sap_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.sles4sap_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.sles4sap_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.sles4sap_uri != "" ? "" : module.os_image_reference.version
   }
 
   dynamic "storage_data_disk" {

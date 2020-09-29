@@ -167,7 +167,7 @@ resource "azurerm_image" "drbd-image" {
 
 # drbd instances
 
-module "os_image" {
+module "os_image_reference" {
   source   = "../../modules/os_image_reference"
   os_image = var.os_image
 }
@@ -192,10 +192,10 @@ resource "azurerm_virtual_machine" "drbd" {
 
   storage_image_reference {
     id        = var.drbd_image_uri != "" ? join(",", azurerm_image.drbd-image.*.id) : ""
-    publisher = var.drbd_image_uri != "" ? "" : module.os_image.publisher
-    offer     = var.drbd_image_uri != "" ? "" : module.os_image.offer
-    sku       = var.drbd_image_uri != "" ? "" : module.os_image.sku
-    version   = var.drbd_image_uri != "" ? "" : module.os_image.version
+    publisher = var.drbd_image_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.drbd_image_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.drbd_image_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.drbd_image_uri != "" ? "" : module.os_image_reference.version
   }
 
   storage_data_disk {

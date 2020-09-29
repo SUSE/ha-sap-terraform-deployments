@@ -59,7 +59,7 @@ resource "azurerm_image" "monitoring" {
 
 # monitoring VM
 
-module "os_image" {
+module "os_image_reference" {
   source   = "../../modules/os_image_reference"
   os_image = var.os_image
 }
@@ -83,10 +83,10 @@ resource "azurerm_virtual_machine" "monitoring" {
 
   storage_image_reference {
     id        = var.monitoring_uri != "" ? azurerm_image.monitoring.0.id : ""
-    publisher = var.monitoring_uri != "" ? "" : module.os_image.publisher
-    offer     = var.monitoring_uri != "" ? "" : module.os_image.offer
-    sku       = var.monitoring_uri != "" ? "" : module.os_image.sku
-    version   = var.monitoring_uri != "" ? "" : module.os_image.version
+    publisher = var.monitoring_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.monitoring_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.monitoring_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.monitoring_uri != "" ? "" : module.os_image_reference.version
   }
 
   storage_data_disk {

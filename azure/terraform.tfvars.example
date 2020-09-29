@@ -27,7 +27,7 @@ az_region = "westeurope"
 # Admin user for the created machines
 admin_user = "cloudadmin"
 
-# If BYOS images are used in the deployment, SCC registration code is required
+# If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
@@ -39,7 +39,7 @@ admin_user = "cloudadmin"
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
-# Default os_image. This value is not used to create the machines if the specific values are set (e.g.: hana_os_image)
+# Default os_image. This value is not used if the specific values are set (e.g.: hana_os_image)
 # Run the next command to get the possible options and use the 4th column value (version can be changed by `latest`)
 # az vm image list --output table --publisher SUSE --all
 # BYOS example with sles4sap 15 sp2 (this value is a pattern, it will select the latest version that matches this name)
@@ -76,7 +76,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"
 
-# Enable all some pre deployment steps (disabled by default)
+# Enable pre deployment steps (disabled by default)
 pre_deployment = true
 
 # To disable the provisioning process
@@ -87,7 +87,7 @@ pre_deployment = true
 
 # QA variables
 
-# Define if the deployment is using for testing purpose
+# Define if the deployment is used for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
@@ -196,7 +196,7 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # SBD related variables
 #######################
 
-# In order to enable SBD, an ISCSI server is needed as right now is the unique option
+# In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 

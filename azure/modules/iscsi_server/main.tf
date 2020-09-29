@@ -59,7 +59,7 @@ resource "azurerm_image" "iscsi_srv" {
 
 # iSCSI server VM
 
-module "os_image" {
+module "os_image_reference" {
   source   = "../../modules/os_image_reference"
   os_image = var.os_image
 }
@@ -83,10 +83,10 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   storage_image_reference {
     id        = var.iscsi_srv_uri != "" ? join(",", azurerm_image.iscsi_srv.*.id) : ""
-    publisher = var.iscsi_srv_uri != "" ? "" : module.os_image.publisher
-    offer     = var.iscsi_srv_uri != "" ? "" : module.os_image.offer
-    sku       = var.iscsi_srv_uri != "" ? "" : module.os_image.sku
-    version   = var.iscsi_srv_uri != "" ? "" : module.os_image.version
+    publisher = var.iscsi_srv_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.iscsi_srv_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.iscsi_srv_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.iscsi_srv_uri != "" ? "" : module.os_image_reference.version
   }
 
   storage_data_disk {
