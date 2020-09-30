@@ -45,6 +45,7 @@ iscsi:
 iscsi_discovery:
   cmd.run:
     - name: until iscsiadm -m discovery -t st -p "{{ grains['iscsi_srv_ip'] }}:3260" -l -o new;do sleep 10;done
+    - unless: iscsiadm -m session
     - output_loglevel: quiet
     - hide_output: True
     - timeout: 2400
