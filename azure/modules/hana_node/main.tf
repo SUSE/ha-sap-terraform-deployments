@@ -202,6 +202,11 @@ resource "azurerm_image" "sles4sap" {
 
 # hana instances
 
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
+}
+
 locals {
   disks_number           = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_size             = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
@@ -230,10 +235,10 @@ resource "azurerm_virtual_machine" "hana" {
 
   storage_image_reference {
     id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
-    publisher = var.sles4sap_uri != "" ? "" : var.hana_public_publisher
-    offer     = var.sles4sap_uri != "" ? "" : var.hana_public_offer
-    sku       = var.sles4sap_uri != "" ? "" : var.hana_public_sku
-    version   = var.sles4sap_uri != "" ? "" : var.hana_public_version
+    publisher = var.sles4sap_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.sles4sap_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.sles4sap_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.sles4sap_uri != "" ? "" : module.os_image_reference.version
   }
 
   dynamic "storage_data_disk" {
