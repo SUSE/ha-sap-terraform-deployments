@@ -368,6 +368,12 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
@@ -495,6 +501,12 @@ variable "drbd_cluster_sbd_enabled" {
   description = "Enable sbd usage in the drbd HA cluster"
   type        = bool
   default     = true
+}
+
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 #

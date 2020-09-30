@@ -157,6 +157,10 @@ ha_sap_deployment_repo = ""
 # IP addresses of the machines hosting Netweaver instances
 #netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 #netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+
+# Netweaver system identifier
+#netweaver_sid = "HA1"
+
 # Enable SBD for the netweaver cluster
 #netweaver_cluster_sbd_enabled = true
 
@@ -168,6 +172,10 @@ ha_sap_deployment_repo = ""
 
 # Enable SBD for the drbd cluster
 #drbd_cluster_sbd_enabled = true
+
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 

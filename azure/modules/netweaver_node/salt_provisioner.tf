@@ -35,6 +35,7 @@ sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+netweaver_sid: ${var.netweaver_sid}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}

@@ -113,6 +113,12 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "ascs_instance_number" {
   description = "ASCS instance number"
   type        = string

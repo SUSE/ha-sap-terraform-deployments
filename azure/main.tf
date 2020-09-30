@@ -86,6 +86,8 @@ module "drbd_node" {
   sbd_enabled         = var.drbd_cluster_sbd_enabled
   sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
+  nfs_mounting_point  = var.drbd_nfs_mounting_point
+  nfs_export_name     = var.netweaver_sid
   drbd_cluster_vip    = local.drbd_cluster_vip
 }
 
@@ -114,6 +116,7 @@ module "netweaver_node" {
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   admin_user                  = var.admin_user
+  netweaver_sid               = var.netweaver_sid
   netweaver_product_id        = var.netweaver_product_id
   netweaver_inst_folder       = var.netweaver_inst_folder
   netweaver_extract_dir       = var.netweaver_extract_dir
@@ -122,7 +125,7 @@ module "netweaver_node" {
   netweaver_swpm_sar          = var.netweaver_swpm_sar
   netweaver_sapexe_folder     = var.netweaver_sapexe_folder
   netweaver_additional_dvds   = var.netweaver_additional_dvds
-  netweaver_nfs_share         = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : var.netweaver_nfs_share
+  netweaver_nfs_share         = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   storage_account_name        = var.netweaver_storage_account_name
   storage_account_key         = var.netweaver_storage_account_key
   storage_account_path        = var.netweaver_storage_account

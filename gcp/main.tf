@@ -83,6 +83,8 @@ module "drbd_node" {
   iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
   cluster_ssh_key      = var.cluster_ssh_key
+  nfs_mounting_point   = var.drbd_nfs_mounting_point
+  nfs_export_name      = var.netweaver_sid
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -105,6 +107,7 @@ module "netweaver_node" {
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_software_bucket = var.netweaver_software_bucket
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -114,7 +117,7 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = "${local.drbd_cluster_vip}:/HA1"
+  netweaver_nfs_share       = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   ha_enabled                = var.netweaver_ha_enabled
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   virtual_host_ips          = local.netweaver_virtual_ips

@@ -232,6 +232,10 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #drbd_ips = ["10.0.5.20", "10.0.6.21"]
 #drbd_cluster_vip = "192.168.1.20"
 
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# If DRBD is used, it will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
+
 #############################
 # Netweaver related variables
 #############################
@@ -247,6 +251,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #netweaver_efs_performance_mode = "generalPurpose"
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
+
+# Netweaver system identifier
+#netweaver_sid = "HA1"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
 # Set to false to only create a ASCS and PAS instances

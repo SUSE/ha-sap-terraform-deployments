@@ -93,6 +93,8 @@ module "drbd_node" {
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_export_name       = var.netweaver_sid
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -144,6 +146,7 @@ module "netweaver_node" {
   aws_access_key_id         = var.aws_access_key_id
   aws_secret_access_key     = var.aws_secret_access_key
   s3_bucket                 = var.netweaver_s3_bucket
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_folder     = var.netweaver_inst_folder
   netweaver_extract_dir     = var.netweaver_extract_dir
@@ -152,7 +155,7 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
+  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
