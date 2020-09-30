@@ -21,7 +21,7 @@ resource "null_resource" "iscsi_provisioner" {
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}
-iscsidev: /dev/sdc
+iscsidev: /dev/disk/azure/scsi1/lun0
 ${yamlencode(
   {partitions: {for index in range(var.lun_count) :
     tonumber(index+1) => {

@@ -27,7 +27,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-drbd_disk_device: /dev/sdc
+drbd_disk_device: /dev/disk/azure/scsi1/lun0
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
