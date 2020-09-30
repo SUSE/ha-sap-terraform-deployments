@@ -87,6 +87,12 @@ variable "name" {
   default     = "hana"
 }
 
+variable "os_image" {
+  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp2:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -168,28 +174,10 @@ variable "hana_count" {
   default     = "2"
 }
 
-variable "hana_public_publisher" {
-  description = "Public image publisher name used to create the hana machines"
+variable "hana_os_image" {
+  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "hana_public_offer" {
-  description = "Public image offer name used to create the hana machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "hana_public_sku" {
-  description = "Public image sku used to create the hana machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "hana_public_version" {
-  description = "Public image version used to create the hana machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "sles4sap_uri" {
@@ -339,28 +327,10 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_public_publisher" {
-  description = "Public image publisher name used to create the iscsi machines"
+variable "iscsi_os_image" {
+  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "iscsi_public_offer" {
-  description = "Public image offer name used to create the iscsi machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "iscsi_public_sku" {
-  description = "Public image sku used to create the iscsi machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "iscsi_public_version" {
-  description = "Public image version used to create the iscsi machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "iscsi_srv_uri" {
@@ -406,28 +376,10 @@ variable "monitoring_vm_size" {
   default     = "Standard_D2s_v3"
 }
 
-variable "monitoring_public_publisher" {
-  description = "Public image publisher name used to create the monitoring machines"
+variable "monitoring_os_image" {
+  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "monitoring_public_offer" {
-  description = "Public image offer name used to create the monitoring machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "monitoring_public_sku" {
-  description = "Public image sku used to create the monitoring machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "monitoring_public_version" {
-  description = "Public image version used to create the monitoring machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "monitoring_uri" {
@@ -462,28 +414,10 @@ variable "drbd_ips" {
   default     = []
 }
 
-variable "drbd_public_publisher" {
-  description = "Public image publisher name used to create the drbd machines"
+variable "drbd_os_image" {
+  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "drbd_public_offer" {
-  description = "Public image offer name used to create the drbd machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "drbd_public_sku" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "drbd_public_version" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "drbd_image_uri" {
@@ -518,28 +452,10 @@ variable "netweaver_app_server_count" {
   default     = 2
 }
 
-variable "netweaver_public_publisher" {
-  description = "Public image publisher name used to create the netweaver machines"
+variable "netweaver_os_image" {
+  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  description = "Public image offer name used to create the netweaver machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "netweaver_public_sku" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "netweaver_public_version" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "netweaver_image_uri" {

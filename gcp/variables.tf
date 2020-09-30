@@ -51,6 +51,12 @@ variable "private_key_location" {
 
 # Deployment variables
 
+variable "os_image" {
+  description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -138,10 +144,10 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
-variable "sles4sap_boot_image" {
+variable "hana_os_image" {
   description = "The image used to create the hana machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "hana_ips" {
@@ -256,6 +262,13 @@ variable "monitoring_srv_ip" {
   type        = string
   default     = ""
 }
+
+variable "monitoring_os_image" {
+  description = "The image used to create the monitoring machines"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -275,10 +288,10 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_server_boot_image" {
+variable "iscsi_os_image" {
   description = "The image used to create the iscsi machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "machine_type_iscsi_server" {
@@ -318,10 +331,10 @@ variable "drbd_machine_type" {
   default     = "n1-standard-4"
 }
 
-variable "drbd_image" {
+variable "drbd_os_image" {
   description = "The image used to create the drbd machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "drbd_data_disk_size" {
@@ -368,10 +381,10 @@ variable "netweaver_machine_type" {
   default     = "n1-highmem-8"
 }
 
-variable "netweaver_image" {
+variable "netweaver_os_image" {
   description = "The image used to create the netweaver machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "netweaver_software_bucket" {

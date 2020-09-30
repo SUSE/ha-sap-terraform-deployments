@@ -20,15 +20,98 @@ az_region = "westeurope"
 #vnet_address_range = ""
 #subnet_address_range = ""
 
-# HANA configuration (this example shows the demo option values.Find more options in the README file)
+#################################
+# General configuration variables
+#################################
+
+# Admin user for the created machines
+admin_user = "cloudadmin"
+
+# If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
+# By default, all the images are PAYG, so these next parameters are not needed
+#reg_code = "<<REG_CODE>>"
+#reg_email = "<<your email>>"
+
+# To add additional modules from SCC. None of them is needed by default
+#reg_additional_modules = {
+#    "sle-module-adv-systems-management/12/x86_64" = ""
+#    "sle-module-containers/12/x86_64" = ""
+#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
+#}
+
+# Default os_image. This value is not used if the specific values are set (e.g.: hana_os_image)
+# Run the next command to get the possible options and use the 4th column value (version can be changed by `latest`)
+# az vm image list --output table --publisher SUSE --all
+# BYOS example with sles4sap 15 sp2 (this value is a pattern, it will select the latest version that matches this name)
+#os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
+
+# SSH Public key to configure access to the remote instances
+public_key_location = "/path/to/your/public/ssh/key"
+
+# Private SSH Key location
+private_key_location = "/path/to/your/private/ssh/key"
+
+# Path to a custom ssh public key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
+
+# Path to a custom ssh private key to upload to the nodes
+# Used for cluster communication for example
+cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
+
+##########################
+# Other deployment options
+##########################
+
+# Repository url used to install HA/SAP deployment packages"
+# The latest RPM packages can be found at:
+# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
+# Contains the salt formulas rpm packages.
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
+# Specific SLE version used in all the created machines
+#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
+#ha_sap_deployment_repo = ""
+
+# Provisioning log level (error by default)
+#provisioning_log_level = "info"
+
+# Enable pre deployment steps (disabled by default)
+pre_deployment = true
+
+# To disable the provisioning process
+#provisioner = ""
+
+# Run provisioner execution in background
+#background = true
+
+# QA variables
+
+# Define if the deployment is used for testing purpose
+# Disable all extra packages that do not come from the image
+# Except salt-minion (for the moment) and salt formulas
+# true or false (default)
+#qa_mode = false
+
+# Execute HANA Hardware Configuration Check Tool to bench filesystems
+# qa_mode must be set to true for executing hwcct
+# true or false (default)
+#hwcct = false
+
+#########################
+# HANA machines variables
+# This example shows the demo option values.Find more options in the README file
+#########################
+
+# HANA configuration ()
 # VM size to use for the cluster nodes
 #hana_vm_size = "Standard_E4s_v3"
 
 # Number of nodes in the cluster
-hana_count = "2"
+#hana_count = "2"
 
 # Instance number for the HANA database. 00 by default.
-hana_instance_number = "00"
+#hana_instance_number = "00"
 
 # Network options
 #hana_enable_accelerated_networking = false
@@ -50,47 +133,9 @@ hana_instance_number = "00"
 # Custom sles4sap image
 #sles4sap_uri = "/path/to/your/image"
 
-# Custom iscsi server image
-#iscsi_srv_uri = "/path/to/your/iscsi/image"
-
-# Custom monitoring server image
-#monitoring_uri = "/path/to/your/monitoring/image"
-
-# Custom drbd nodes image
-#drbd_image_uri = "/path/to/your/monitoring/image"
-
-# Public sles4sap image
-hana_public_publisher = "SUSE"
-hana_public_offer     = "SLES-SAP-BYOS"
-hana_public_sku       = "12-sp4"
-hana_public_version   = "latest"
-
-# Public iscsi server image
-iscsi_public_publisher = "SUSE"
-iscsi_public_offer     = "SLES-SAP-BYOS"
-iscsi_public_sku       = "15"
-iscsi_public_version   = "latest"
-
-# Public monitoring server image
-monitoring_public_publisher = "SUSE"
-monitoring_public_offer     = "SLES-SAP-BYOS"
-monitoring_public_sku       = "15"
-monitoring_public_version   = "latest"
-
-# Public drbd nodes image
-drbd_public_publisher = "SUSE"
-drbd_public_offer     = "SLES-SAP-BYOS"
-drbd_public_sku       = "15"
-drbd_public_version   = "latest"
-
-# Admin user
-admin_user = "YOUR_USERNAME_HERE"
-
-# SSH Public key to configure access to the remote instances
-public_key_location = "/path/to/your/public/ssh/key"
-
-# Private SSH Key location
-private_key_location = "/path/to/your/private/ssh/key"
+# Public OS images
+# BYOS example
+# hana_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a Azure storage account
@@ -131,26 +176,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # at hana_extract_dir (optional, by default /sapmedia_extract/HANA). This folder cannot be the same as `hana_inst_folder`!
 #hana_extract_dir = "/sapmedia_extract/HANA"
 
-# SBD related variables
-# In order to enable SBD, an ISCSI server is needed as right now is the unique option
-# All the clusters will use the same mechanism
-# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
-
-# IP address of the iSCSI server. If it's not set the address will be auto generated from the provided vnet address range
-#iscsi_srv_ip = "10.74.1.14"
-# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
-#iscsi_lun_count = 3
-# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
-#iscsi_disk_size = 10
-
-# Path to a custom ssh public key to upload to the nodes
-# Used for cluster communication for example
-cluster_ssh_pub = "salt://sshkeys/cluster.id_rsa.pub"
-
-# Path to a custom ssh private key to upload to the nodes
-# Used for cluster communication for example
-cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
-
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
 
@@ -164,43 +189,55 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
 
-# Repository url used to install HA/SAP deployment packages"
-# The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
-# Contains the salt formulas rpm packages.
-# To auto detect the SLE version
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
-# Specific SLE version used in all the created machines
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-ha_sap_deployment_repo = ""
-
-# Optional SUSE Customer Center Registration parameters
-#reg_code = "<<REG_CODE>>"
-#reg_email = "<<your email>>"
-
-# For any sle12 version the additional module sle-module-adv-systems-management/12/x86_64 is mandatory if reg_code is provided
-#reg_additional_modules = {
-#    "sle-module-adv-systems-management/12/x86_64" = ""
-#    "sle-module-containers/12/x86_64" = ""
-#    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
-#}
-
 # Cost optimized scenario
 #scenario_type: "cost-optimized"
 
-# To disable the provisioning process
-#provisioner = ""
+#######################
+# SBD related variables
+#######################
 
-# Run provisioner execution in background
-#background = true
+# In order to enable SBD, an ISCSI server is needed as right now is the only option
+# All the clusters will use the same mechanism
+# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
-# Monitoring variables
+# Custom iscsi server image
+#iscsi_srv_uri = "/path/to/your/iscsi/image"
+
+# Public image usage for iSCSI. BYOS example
+#iscsi_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
+
+# IP address of the iSCSI server. If it's not set the address will be auto generated from the provided vnet address range
+#iscsi_srv_ip = "10.74.1.14"
+# Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
+#iscsi_lun_count = 3
+# Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
+#iscsi_disk_size = 10
+
+##############################
+# Monitoring related variables
+##############################
+
+# Custom monitoring server image
+#monitoring_uri = "/path/to/your/monitoring/image"
+
+# Public image usage for the monitoring server. BYOS example
+#monitoring_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
 # IP address of the machine where Prometheus and Grafana are running. If it's not set the address will be auto generated from the provided vnet address range
 #monitoring_srv_ip = "10.74.1.13"
+
+########################
+# DRBD related variables
+########################
+
+# Custom drbd nodes image
+#drbd_image_uri = "/path/to/your/monitoring/image"
+
+# Public image usage for the DRBD machines. BYOS example
+#drbd_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
 # Enable drbd cluster
 #drbd_enabled = true
@@ -212,9 +249,18 @@ ha_sap_deployment_repo = ""
 # Enable SBD for the drbd cluster
 #drbd_cluster_sbd_enabled = true
 
-# Netweaver variables
+#############################
+# Netweaver related variables
+#############################
 
 #netweaver_enabled = true
+
+# Custom drbd nodes image
+#netweaver_image_uri = "/path/to/your/monitoring/image"
+
+# Public image usage for the Netweaver machines. BYOS example
+#netweaver_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
+
 # If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
@@ -257,21 +303,3 @@ ha_sap_deployment_repo = ""
 #netweaver_sapexe_folder   =  "kernel_nw75_sar"
 # Additional media archives or folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
-
-# QA variables
-
-# Define if the deployment is using for testing purpose
-# Disable all extra packages that do not come from the image
-# Except salt-minion (for the moment) and salt formulas
-# true or false (default)
-#qa_mode = false
-
-# Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
-# true or false (default)
-#hwcct = false
-
-# Pre deployment
-
-# Enable all some pre deployment steps (disabled by default)
-#pre_deployment = true

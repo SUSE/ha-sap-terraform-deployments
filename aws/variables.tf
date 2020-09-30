@@ -70,6 +70,18 @@ variable "name" {
   type        = string
 }
 
+variable "os_image" {
+  description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "suse-sles-sap-15-sp2"
+}
+
+variable "os_owner" {
+  description = "Default OS image owner. For BYOS images the owner usually is 'amazon'"
+  type        = string
+  default     = "679593333241"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -154,13 +166,13 @@ variable "hana_count" {
 variable "hana_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "hana_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "hana_instancetype" {
@@ -274,19 +286,19 @@ variable "drbd_enabled" {
 variable "drbd_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "drbd_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "drbd_cluster_vip" {
@@ -341,19 +353,19 @@ variable "sbd_storage_type" {
 variable "iscsi_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "iscsi_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "iscsi_srv_ip" {
@@ -378,19 +390,19 @@ variable "iscsi_disk_size" {
 variable "monitoring_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "monitoring_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "monitoring_srv_ip" {
@@ -416,13 +428,13 @@ variable "netweaver_enabled" {
 variable "netweaver_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "netweaver_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "netweaver_instancetype" {

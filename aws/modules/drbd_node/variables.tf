@@ -17,7 +17,7 @@ variable "drbd_count" {
 variable "instance_type" {
   description = "The instance type of drbd node"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "aws_region" {

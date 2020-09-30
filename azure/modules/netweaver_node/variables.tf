@@ -202,24 +202,9 @@ variable "netweaver_image_uri" {
   default = ""
 }
 
-variable "netweaver_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "netweaver_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "netweaver_public_version" {
-  type    = string
-  default = "latest"
+variable "os_image" {
+  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "hana_ip" {
