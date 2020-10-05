@@ -438,6 +438,12 @@ variable "drbd_cluster_sbd_enabled" {
   default     = true
 }
 
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
@@ -546,6 +552,12 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "netweaver_product_id" {

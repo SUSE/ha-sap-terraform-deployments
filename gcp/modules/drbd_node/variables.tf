@@ -92,6 +92,16 @@ variable "cluster_ssh_key" {
   type        = string
 }
 
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+}
+
+variable "nfs_export_name" {
+  description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
+  type        = string
+}
+
 variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any

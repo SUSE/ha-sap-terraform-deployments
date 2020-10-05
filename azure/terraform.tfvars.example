@@ -249,6 +249,10 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Enable SBD for the drbd cluster
 #drbd_cluster_sbd_enabled = true
 
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
+
 #############################
 # Netweaver related variables
 #############################
@@ -264,6 +268,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+
+# Netweaver system identifier
+#netweaver_sid = "HA1"
 
 # Enabling this option will create a ASCS/ERS HA available cluster
 #netweaver_ha_enabled = true
