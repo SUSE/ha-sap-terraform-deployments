@@ -261,6 +261,11 @@ resource "azurerm_virtual_machine_data_disk_attachment" "app_server_disk" {
 
 # netweaver instances
 
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
+}
+
 resource "azurerm_virtual_machine" "netweaver" {
   count                            = local.vm_count
   name                             = "vmnetweaver0${count.index + 1}"
@@ -281,10 +286,10 @@ resource "azurerm_virtual_machine" "netweaver" {
 
   storage_image_reference {
     id        = var.netweaver_image_uri != "" ? join(",", azurerm_image.netweaver-image.*.id) : ""
-    publisher = var.netweaver_image_uri != "" ? "" : var.netweaver_public_publisher
-    offer     = var.netweaver_image_uri != "" ? "" : var.netweaver_public_offer
-    sku       = var.netweaver_image_uri != "" ? "" : var.netweaver_public_sku
-    version   = var.netweaver_image_uri != "" ? "" : var.netweaver_public_version
+    publisher = var.netweaver_image_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.netweaver_image_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.netweaver_image_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.netweaver_image_uri != "" ? "" : module.os_image_reference.version
   }
 
   os_profile {

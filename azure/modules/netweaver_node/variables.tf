@@ -87,6 +87,12 @@ variable "data_disk_caching" {
   default = "ReadWrite"
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
@@ -202,24 +208,9 @@ variable "netweaver_image_uri" {
   default = ""
 }
 
-variable "netweaver_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "netweaver_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "netweaver_public_version" {
-  type    = string
-  default = "latest"
+variable "os_image" {
+  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "hana_ip" {

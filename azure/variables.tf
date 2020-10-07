@@ -42,7 +42,7 @@ variable "admin_user" {
 }
 
 variable "storage_account_name" {
-  description = "Azure storage account name"
+  description = "Azure storage account name where HANA insallation software is available"
   type        = string
 }
 
@@ -85,6 +85,12 @@ variable "name" {
   description = "hostname, without the domain part"
   type        = string
   default     = "hana"
+}
+
+variable "os_image" {
+  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp2:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
 }
 
 variable "timezone" {
@@ -168,28 +174,10 @@ variable "hana_count" {
   default     = "2"
 }
 
-variable "hana_public_publisher" {
-  description = "Public image publisher name used to create the hana machines"
+variable "hana_os_image" {
+  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "hana_public_offer" {
-  description = "Public image offer name used to create the hana machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "hana_public_sku" {
-  description = "Public image sku used to create the hana machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "hana_public_version" {
-  description = "Public image version used to create the hana machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "sles4sap_uri" {
@@ -262,21 +250,21 @@ variable "hana_platform_folder" {
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
 variable "hana_fstype" {
@@ -339,28 +327,10 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_public_publisher" {
-  description = "Public image publisher name used to create the iscsi machines"
+variable "iscsi_os_image" {
+  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "iscsi_public_offer" {
-  description = "Public image offer name used to create the iscsi machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "iscsi_public_sku" {
-  description = "Public image sku used to create the iscsi machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "iscsi_public_version" {
-  description = "Public image version used to create the iscsi machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "iscsi_srv_uri" {
@@ -406,28 +376,10 @@ variable "monitoring_vm_size" {
   default     = "Standard_D2s_v3"
 }
 
-variable "monitoring_public_publisher" {
-  description = "Public image publisher name used to create the monitoring machines"
+variable "monitoring_os_image" {
+  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "monitoring_public_offer" {
-  description = "Public image offer name used to create the monitoring machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "monitoring_public_sku" {
-  description = "Public image sku used to create the monitoring machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "monitoring_public_version" {
-  description = "Public image version used to create the monitoring machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "monitoring_uri" {
@@ -462,28 +414,10 @@ variable "drbd_ips" {
   default     = []
 }
 
-variable "drbd_public_publisher" {
-  description = "Public image publisher name used to create the drbd machines"
+variable "drbd_os_image" {
+  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "drbd_public_offer" {
-  description = "Public image offer name used to create the drbd machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "drbd_public_sku" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "drbd_public_version" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "drbd_image_uri" {
@@ -504,6 +438,12 @@ variable "drbd_cluster_sbd_enabled" {
   default     = true
 }
 
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
@@ -518,28 +458,10 @@ variable "netweaver_app_server_count" {
   default     = 2
 }
 
-variable "netweaver_public_publisher" {
-  description = "Public image publisher name used to create the netweaver machines"
+variable "netweaver_os_image" {
+  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  description = "Public image offer name used to create the netweaver machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "netweaver_public_sku" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "netweaver_public_version" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "netweaver_image_uri" {
@@ -630,6 +552,12 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "netweaver_product_id" {

@@ -27,10 +27,9 @@ variable "netweaver_count" {
   default = "2"
 }
 
-variable "netweaver_image" {
-  description = "image of the netweaver nodes"
+variable "os_image" {
+  description = "Image used to create the machine"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "gcp_credentials_file" {
@@ -86,6 +85,12 @@ variable "cluster_ssh_key" {
 variable "netweaver_software_bucket" {
   description = "gcp bucket where netweaver software is available"
   type        = string
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "ascs_instance_number" {

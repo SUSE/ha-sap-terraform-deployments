@@ -125,6 +125,8 @@ module "drbd_node" {
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
+  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_export_name       = var.netweaver_sid
 }
 
 module "monitoring" {
@@ -166,6 +168,7 @@ module "netweaver_node" {
   shared_disk_id            = module.netweaver_shared_disk.id
   iscsi_srv_ip              = module.iscsi_server.output_data.private_addresses.0
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_media      = var.netweaver_inst_media
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -175,6 +178,6 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : var.netweaver_nfs_share
+  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   ha_enabled                = var.netweaver_ha_enabled
 }

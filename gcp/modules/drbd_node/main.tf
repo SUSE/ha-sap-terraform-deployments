@@ -45,7 +45,7 @@ resource "google_compute_instance" "drbd" {
 
   boot_disk {
     initialize_params {
-      image = var.drbd_image
+      image = var.os_image
     }
 
     auto_delete = true

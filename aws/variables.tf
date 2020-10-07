@@ -70,6 +70,18 @@ variable "name" {
   type        = string
 }
 
+variable "os_image" {
+  description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "suse-sles-sap-15-sp2"
+}
+
+variable "os_owner" {
+  description = "Default OS image owner. For BYOS images the owner usually is 'amazon'"
+  type        = string
+  default     = "679593333241"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -154,13 +166,13 @@ variable "hana_count" {
 variable "hana_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "hana_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "hana_instancetype" {
@@ -199,21 +211,21 @@ variable "hana_platform_folder" {
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
 variable "hana_data_disk_type" {
@@ -274,19 +286,19 @@ variable "drbd_enabled" {
 variable "drbd_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "drbd_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "drbd_cluster_vip" {
@@ -325,6 +337,12 @@ variable "drbd_cluster_sbd_enabled" {
   default     = false
 }
 
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
@@ -341,19 +359,19 @@ variable "sbd_storage_type" {
 variable "iscsi_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "iscsi_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "iscsi_srv_ip" {
@@ -378,19 +396,19 @@ variable "iscsi_disk_size" {
 variable "monitoring_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "monitoring_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "monitoring_srv_ip" {
@@ -416,13 +434,13 @@ variable "netweaver_enabled" {
 variable "netweaver_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
-  default     = "suse-sles-sap-15-sp1-byos"
+  default     = ""
 }
 
 variable "netweaver_os_owner" {
-  description = "OS image owner"
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
   type        = string
-  default     = "amazon"
+  default     = ""
 }
 
 variable "netweaver_instancetype" {
@@ -465,6 +483,12 @@ variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
   default     = false
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "netweaver_product_id" {

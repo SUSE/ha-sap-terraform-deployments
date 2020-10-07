@@ -41,6 +41,8 @@ sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+nfs_mounting_point: ${var.nfs_mounting_point}
+nfs_export_name: ${var.nfs_export_name}
 partitions:
   1:
     start: 0%

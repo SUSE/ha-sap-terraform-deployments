@@ -8,19 +8,21 @@
 {%- else %}
 {%- set virtual_host_mask = 24 %}
 {%- endif %}
+{%- set sid_lower = grains['netweaver_sid'].lower() %}
+{%- set sid_upper = grains['netweaver_sid'].upper() %}
 
 netweaver:
   {%- set app_start_index = 2 if grains['ha_enabled'] else 1 %}
   {%- set app_server_count = grains['app_server_count']|default(2) %}
   virtual_addresses:
-    {{ grains['virtual_host_ips'][0] }}: sapha1as
+    {{ grains['virtual_host_ips'][0] }}: sap{{ sid_lower }}as
     {%- if grains['ha_enabled'] %}
-    {{ grains['virtual_host_ips'][1] }}: sapha1er
+    {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}er
     {%- endif %}
     {%- if app_server_count > 0 %}
-    {{ grains['virtual_host_ips'][app_start_index] }}: sapha1pas
+    {{ grains['virtual_host_ips'][app_start_index] }}: sap{{ sid_lower }}pas
     {%- for index in range(app_server_count-1) %}
-    {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sapha1aas{{ loop.index }}
+    {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sap{{ sid_lower }}aas{{ loop.index }}
     {%- endfor %}
     {%- endif %}
 
@@ -74,10 +76,10 @@ netweaver:
 
   nodes:
     - host: {{ grains['name_prefix'] }}01
-      virtual_host: sapha1as
+      virtual_host: sap{{ sid_lower }}as
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
+      sid: {{ sid_upper }}
       instance: {{ '{:0>2}'.format(grains['ascs_instance_number']) }}
       root_user: root
       root_password: linux
@@ -91,10 +93,10 @@ netweaver:
 
     {% if grains['ha_enabled'] %}
     - host: {{ grains['name_prefix'] }}02
-      virtual_host: sapha1er
+      virtual_host: sap{{ sid_lower }}er
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
+      sid: {{ sid_upper }}
       instance: {{ '{:0>2}'.format(grains['ers_instance_number']) }}
       root_user: root
       root_password: linux
@@ -108,21 +110,21 @@ netweaver:
 
     {% if app_server_count > 0 %}
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
-      virtual_host: sapha1pas
+      virtual_host: sap{{ sid_lower }}pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
+      sid: {{ sid_upper }}
       instance: '00' # Not used
       root_user: root
       root_password: linux
       sap_instance: db
 
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
-      virtual_host: sapha1pas
+      virtual_host: sap{{ sid_lower }}pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
-      ascs_virtual_host: sapha1as
-      sid: HA1
+      ascs_virtual_host: sap{{ sid_lower }}as
+      sid: {{ sid_upper }}
       instance: {{ '{:0>2}'.format(grains['pas_instance_number']) }}
       root_user: root
       root_password: linux
@@ -133,10 +135,10 @@ netweaver:
 
     {%- for index in range(app_server_count-1) %}
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1+loop.index }}
-      virtual_host: sapha1aas{{ loop.index }}
+      virtual_host: sap{{ sid_lower }}aas{{ loop.index }}
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
-      sid: HA1
+      sid: {{ sid_upper }}
       instance: {{ '{:0>2}'.format(grains['pas_instance_number']+loop.index) }}
       root_user: root
       root_password: linux

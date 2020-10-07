@@ -169,21 +169,21 @@ variable "hana_platform_folder" {
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
 variable "hana_fstype" {
@@ -368,6 +368,12 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
@@ -495,6 +501,12 @@ variable "drbd_cluster_sbd_enabled" {
   description = "Enable sbd usage in the drbd HA cluster"
   type        = bool
   default     = true
+}
+
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 #

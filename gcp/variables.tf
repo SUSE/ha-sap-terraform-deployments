@@ -51,6 +51,12 @@ variable "private_key_location" {
 
 # Deployment variables
 
+variable "os_image" {
+  description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "suse-sap-cloud/sles-15-sp2-sap"
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -138,10 +144,10 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
-variable "sles4sap_boot_image" {
+variable "hana_os_image" {
   description = "The image used to create the hana machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "hana_ips" {
@@ -162,27 +168,27 @@ variable "hana_inst_folder" {
 }
 
 variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the hana_inst_folder"
+  description = "Path to the hana platform media, relative to the 'sap_hana_deployment_bucket' mounting point"
   type        = string
   default     = ""
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the hana_inst_folder"
+  description = "Path to the sapcar executable, relative to the 'sap_hana_deployment_bucket' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'sap_hana_deployment_bucket' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
 variable "hana_data_disk_type" {
@@ -256,6 +262,13 @@ variable "monitoring_srv_ip" {
   type        = string
   default     = ""
 }
+
+variable "monitoring_os_image" {
+  description = "The image used to create the monitoring machines"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -275,10 +288,10 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_server_boot_image" {
+variable "iscsi_os_image" {
   description = "The image used to create the iscsi machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "machine_type_iscsi_server" {
@@ -318,10 +331,10 @@ variable "drbd_machine_type" {
   default     = "n1-standard-4"
 }
 
-variable "drbd_image" {
+variable "drbd_os_image" {
   description = "The image used to create the drbd machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "drbd_data_disk_size" {
@@ -354,6 +367,12 @@ variable "drbd_cluster_sbd_enabled" {
   default     = false
 }
 
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
 # Netweaver related variables
 
 variable "netweaver_enabled" {
@@ -368,10 +387,10 @@ variable "netweaver_machine_type" {
   default     = "n1-highmem-8"
 }
 
-variable "netweaver_image" {
+variable "netweaver_os_image" {
   description = "The image used to create the netweaver machines"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sp1-sap-byos"
+  default     = ""
 }
 
 variable "netweaver_software_bucket" {
@@ -396,6 +415,12 @@ variable "netweaver_cluster_sbd_enabled" {
   description = "Enable sbd usage in the netweaver HA cluster"
   type        = bool
   default     = false
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "netweaver_product_id" {

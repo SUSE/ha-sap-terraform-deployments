@@ -32,6 +32,8 @@ sbd_enabled: ${var.sbd_enabled}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+nfs_mounting_point: ${var.nfs_mounting_point}
+nfs_export_name: ${var.nfs_export_name}
 vpc_network_name: ${var.network_name}
 route_name: ${google_compute_route.drbd-route[0].name}
 partitions:
