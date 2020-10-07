@@ -31,7 +31,7 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 ha_enabled: ${var.ha_enabled}
 app_server_count: ${var.app_server_count}
 additional_lun: ${count.index < var.xscs_server_count ? "" : local.additional_lun_number}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}

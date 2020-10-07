@@ -1,7 +1,8 @@
-{% set data = pillar.cluster.configure.template.parameters %}
-{% set cloud_provider = grains['cloud_provider'] %}
-{% set drbd = salt['pillar.get']('drbd', default={}, merge=True) %}
-{% set nfsid = 1 %}
+{%- set data = pillar.cluster.configure.template.parameters %}
+{%- set cloud_provider = grains['cloud_provider'] %}
+{%- set drbd = salt['pillar.get']('drbd', default={}, merge=True) %}
+{%- set nfsid = 1 %}
+{%- set native_fencing = data.native_fencing|default(True) %}
 
 #
 # defaults and production DRBD
@@ -53,9 +54,11 @@ primitive rsc_socat_{{ res.name }}_nfs azure-lb \
 {%- endif %}
 
 {%- elif cloud_provider == "google-cloud-platform" %}
+{%- if native_fencing %}
 primitive rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} stonith:fence_gce \
   params plug={{ grains['gcp_instance_name'] }} pcmk_host_map="{{ grains['host'] }}:{{ grains['gcp_instance_name'] }}" \
   meta target-role=Started
+{%- endif %}
 
 primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
   params ip={{ data.virtual_ip }} vpc_network={{ data.vpc_network_name }} route_name={{ data.route_name }} \
@@ -65,6 +68,7 @@ primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
 
 {%- elif cloud_provider == "amazon-web-services" %}
 
+{%- if native_fencing %}
 property $id="cib-bootstrap-options" \
     stonith-enabled="true" \
     stonith-action="off" \
@@ -76,6 +80,7 @@ primitive rsc_aws_stonith_{{ res.name }}_nfs stonith:external/ec2 \
     op stop interval=0 timeout=180 \
     op monitor interval=120 timeout=60 \
     meta target-role=Started
+{%- endif %}
 
 primitive vip_{{ res.name }}_nfs ocf:suse:aws-vpc-move-ip \
     params ip={{ data.virtual_ip }} routing_table={{ data.route_table }} \

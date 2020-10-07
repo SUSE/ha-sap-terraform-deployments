@@ -35,7 +35,7 @@ resource "libvirt_network" "isolated_network" {
 # Create shared disks for sbd
 module "hana_sbd_disk" {
   source            = "./modules/shared_disk"
-  shared_disk_count = var.hana_count > 1 && var.sbd_storage_type == "shared-disk" && var.hana_cluster_sbd_enabled == true ? 1 : 0
+  shared_disk_count = var.hana_count > 1 && var.sbd_storage_type == "shared-disk" && var.hana_cluster_fencing_mechanism == "sbd" ? 1 : 0
   name              = "sbd"
   pool              = var.storage_pool
   shared_disk_size  = var.sbd_disk_size
@@ -43,7 +43,7 @@ module "hana_sbd_disk" {
 
 module "drbd_sbd_disk" {
   source            = "./modules/shared_disk"
-  shared_disk_count = var.drbd_enabled && var.sbd_storage_type == "shared-disk" && var.drbd_cluster_sbd_enabled == true ? 1 : 0
+  shared_disk_count = var.drbd_enabled && var.sbd_storage_type == "shared-disk" && var.drbd_cluster_fencing_mechanism == "sbd" ? 1 : 0
   name              = "drbd-sbd"
   pool              = var.storage_pool
   shared_disk_size  = var.sbd_disk_size

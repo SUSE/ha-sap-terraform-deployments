@@ -246,10 +246,10 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
-variable "hana_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the hana HA cluster"
-  type        = bool
-  default     = false
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "hana_ha_enabled" {
@@ -331,10 +331,10 @@ variable "drbd_data_disk_type" {
   default     = "gp2"
 }
 
-variable "drbd_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the drbd HA cluster"
-  type        = bool
-  default     = false
+variable "drbd_cluster_fencing_mechanism" {
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "drbd_nfs_mounting_point" {
@@ -479,10 +479,10 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the netweaver HA cluster"
-  type        = bool
-  default     = false
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "netweaver_sid" {

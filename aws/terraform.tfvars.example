@@ -165,8 +165,8 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
 
-# Enable SBD for the hana cluster
-#hana_cluster_sbd_enabled = true
+# Select HANA cluster fencing mechanism. 'native' by default
+#hana_cluster_fencing_mechanism = "sbd"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
@@ -183,7 +183,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
-# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+# In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
 #iscsi_os_image = "suse-sles-sap-15-sp1-byos"
@@ -232,6 +232,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #drbd_ips = ["10.0.5.20", "10.0.6.21"]
 #drbd_cluster_vip = "192.168.1.20"
 
+# Select DRBD cluster fencing mechanism. 'native' by default
+#drbd_cluster_fencing_mechanism = "sbd"
+
 # NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
 # If DRBD is used, it will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
 #drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
@@ -264,8 +267,8 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Fon non HA
 #netweaver_product_id = NW750.HDB.ABAP
 
-# Enable SBD for the netweaver cluster
-#netweaver_cluster_sbd_enabled = true
+# Select Netweaver cluster fencing mechanism. 'native' by default
+#netweaver_cluster_fencing_mechanism = "sbd"
 
 # Netweaver installation required folders
 # This S3 bucket must contain the next software (select the version you want to install of course)

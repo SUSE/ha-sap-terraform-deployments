@@ -35,7 +35,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.iprange, ip_index + local.netweaver_count)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (local.netweaver_count > 1 && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 || var.drbd_enabled || local.netweaver_count > 1) && local.use_sbd ? true : false
 }
 
 module "common_variables" {
@@ -97,7 +98,7 @@ module "hana_node" {
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  sbd_enabled                = var.hana_cluster_sbd_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
   sbd_storage_type           = var.sbd_storage_type
   sbd_disk_id                = module.hana_sbd_disk.id
   iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
@@ -118,7 +119,7 @@ module "drbd_node" {
   host_ips              = local.drbd_ips
   drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_disk_size        = var.drbd_disk_size
-  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
   sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.drbd_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
@@ -163,7 +164,7 @@ module "netweaver_node" {
   isolated_network_name     = local.internal_network_name
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
-  sbd_enabled               = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
   shared_disk_id            = module.netweaver_shared_disk.id
   iscsi_srv_ip              = module.iscsi_server.output_data.private_addresses.0
