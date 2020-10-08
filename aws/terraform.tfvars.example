@@ -166,6 +166,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #hana_cluster_vip = "192.168.1.10"
 
 # Select HANA cluster fencing mechanism. 'native' by default
+# Find more information in `doc/fencing.md` documentation page
 #hana_cluster_fencing_mechanism = "sbd"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)

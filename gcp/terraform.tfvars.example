@@ -131,6 +131,7 @@ pre_deployment = true
 #hana_ha_enabled = true
 
 # Select HANA cluster fencing mechanism. 'native' by default
+# Find more information in `doc/fencing.md` documentation page
 #hana_cluster_fencing_mechanism = "sbd"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
