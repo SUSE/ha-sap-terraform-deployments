@@ -36,7 +36,7 @@ locals {
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 || var.drbd_enabled || local.netweaver_count > 1) && local.use_sbd ? true : false
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 }
 
 module "common_variables" {
