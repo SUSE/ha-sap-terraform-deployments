@@ -32,7 +32,7 @@ hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 drbd_disk_device: /dev/xvdd
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 route_table: ${var.route_table_id}

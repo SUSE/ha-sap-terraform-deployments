@@ -35,7 +35,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 
   # Obtain machines os_image value
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
@@ -78,7 +79,7 @@ module "drbd_node" {
   gcp_credentials_file = var.gcp_credentials_file
   network_domain       = "tf.local"
   host_ips             = local.drbd_ips
-  sbd_enabled          = var.drbd_cluster_sbd_enabled
+  fencing_mechanism    = var.drbd_cluster_fencing_mechanism
   sbd_storage_type     = var.sbd_storage_type
   iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
@@ -102,7 +103,7 @@ module "netweaver_node" {
   gcp_credentials_file      = var.gcp_credentials_file
   network_domain            = "tf.local"
   host_ips                  = local.netweaver_ips
-  sbd_enabled               = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
@@ -137,7 +138,7 @@ module "hana_node" {
   os_image                   = local.hana_os_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips
-  sbd_enabled                = var.hana_cluster_sbd_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   sap_hana_deployment_bucket = var.sap_hana_deployment_bucket

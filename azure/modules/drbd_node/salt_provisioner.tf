@@ -29,7 +29,7 @@ cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 drbd_disk_device: /dev/sdc
 drbd_cluster_vip: ${var.drbd_cluster_vip}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}

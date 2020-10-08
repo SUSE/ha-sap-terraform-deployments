@@ -36,7 +36,7 @@ hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.h
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 ha_enabled: ${var.ha_enabled}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}

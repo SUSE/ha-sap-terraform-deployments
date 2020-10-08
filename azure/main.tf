@@ -36,7 +36,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_count, local.netweaver_ip_start + (local.netweaver_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 
   # Obtain machines os_image value
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
@@ -83,7 +84,7 @@ module "drbd_node" {
   cluster_ssh_key     = var.cluster_ssh_key
   admin_user          = var.admin_user
   host_ips            = local.drbd_ips
-  sbd_enabled         = var.drbd_cluster_sbd_enabled
+  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
   sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
@@ -131,7 +132,7 @@ module "netweaver_node" {
   storage_account_path        = var.netweaver_storage_account
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
-  sbd_enabled                 = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type            = var.sbd_storage_type
   ha_enabled                  = var.netweaver_ha_enabled
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
@@ -173,7 +174,7 @@ module "hana_node" {
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
   admin_user                    = var.admin_user
-  sbd_enabled                   = var.hana_cluster_sbd_enabled
+  fencing_mechanism             = var.hana_cluster_fencing_mechanism
   sbd_storage_type              = var.sbd_storage_type
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
   hwcct                         = var.hwcct

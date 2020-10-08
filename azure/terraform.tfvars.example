@@ -183,9 +183,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
 #hana_cluster_vip = "10.74.1.13"
 
-# Enable SBD for the hana cluster
-#hana_cluster_sbd_enabled = true
-
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
 
@@ -198,7 +195,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
-# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
 
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
@@ -246,8 +242,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #drbd_ips = ["10.74.1.21", "10.74.1.22"]
 #drbd_cluster_vip = "10.74.1.23"
 
-# Enable SBD for the drbd cluster
-#drbd_cluster_sbd_enabled = true
 
 # NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
 # It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
@@ -285,9 +279,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_product_id = NW750.HDB.ABAPHA
 # Fon non HA
 #netweaver_product_id = NW750.HDB.ABAP
-
-# Enable SBD for the netweaver cluster
-#netweaver_cluster_sbd_enabled = true
 
 # This storage account must contain the next software (select the version you want to install of course)
 #SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
