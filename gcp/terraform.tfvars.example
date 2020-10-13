@@ -250,13 +250,13 @@ sap_hana_deployment_bucket = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
 #netweaver_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
 
-# Set the Netweaver product id. The 'HA' sufix means that the installation will use have ASCS/ERS cluster
-# Options for SWPM version 1:
+# Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
+# Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
 # - NW750.HDB.ABAP
 # - NW750.HDB.ABAPHA
 # - S4HANA1709.CORE.HDB.ABAP
 # - S4HANA1709.CORE.HDB.ABAPHA
-# Options for SWPM version 2
+# Below are the supported SAP Netweaver product ids if using SWPM version 2.0:
 # - S4HANA1809.CORE.HDB.ABAP
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP

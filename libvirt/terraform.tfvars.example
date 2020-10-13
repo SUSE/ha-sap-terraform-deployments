@@ -164,7 +164,7 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
 
 # NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
-# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+# DRBD cluster will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netweaver_sid} (e.g.: )192.168.1.20:/HA1
 #drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
 #############################
@@ -178,13 +178,13 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # Set to false to only create a ASCS and PAS instances
 #netweaver_ha_enabled = true
 
-# Set the Netweaver product id. The 'HA' sufix means that the installation will use have ASCS/ERS cluster
-# Options for SWPM version 1:
+# Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
+# Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
 # - NW750.HDB.ABAP
 # - NW750.HDB.ABAPHA
 # - S4HANA1709.CORE.HDB.ABAP
 # - S4HANA1709.CORE.HDB.ABAPHA
-# Options for SWPM version 2
+# Below are the supported SAP Netweaver product ids if using SWPM version 2.0:
 # - S4HANA1809.CORE.HDB.ABAP
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP

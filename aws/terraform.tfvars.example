@@ -266,13 +266,13 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Select Netweaver cluster fencing mechanism. 'native' by default
 #netweaver_cluster_fencing_mechanism = "sbd"
 
-# Set the Netweaver product id. The 'HA' sufix means that the installation will use have ASCS/ERS cluster
-# Options for SWPM version 1:
+# Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
+# Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
 # - NW750.HDB.ABAP
 # - NW750.HDB.ABAPHA
 # - S4HANA1709.CORE.HDB.ABAP
 # - S4HANA1709.CORE.HDB.ABAPHA
-# Options for SWPM version 2
+# Below are the supported SAP Netweaver product ids if using SWPM version 2.0:
 # - S4HANA1809.CORE.HDB.ABAP
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP
