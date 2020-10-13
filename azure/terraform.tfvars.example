@@ -186,6 +186,20 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
 
+# HANA instance configuration
+# Find some references about the variables in:
+# https://help.sap.com/doc/e9702d76c3284623b02de196c0e79e49/2.0.05/en-US/SAP_HANA_Server_Installation_Guide_en.pdf
+# HANA instance system identifier. It's composed by 3 characters string
+#hana_sid = "prd"
+# HANA instance number. It's composed by 2 integers string
+#hana_instance_number = "00"
+# HANA instance master password
+#hana_master_password = "YourPassword1234"
+# HANA primary site name. Only used if system replication or HA capabilities are enabled
+#hana_primary_site = "Site1"
+# HANA secondary site name. Only used if system replication or HA capabilities are enabled
+#hana_secondary_site = "Site2"
+
 # Cost optimized scenario
 #scenario_type: "cost-optimized"
 
@@ -253,6 +267,12 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 #netweaver_enabled = true
 
+# Netweaver APP server count (PAS and AAS)
+# Set to 0 to install the PAS instance in the same instance than the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
+# Set to 1 to only enable 1 PAS instance in an additional machine`
+# Set to 2 or higher to deploy additional AAS instances in new machines
+#netweaver_app_server_count = 2
+
 # Custom drbd nodes image
 #netweaver_image_uri = "/path/to/your/monitoring/image"
 
@@ -263,13 +283,20 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
 
-# Netweaver system identifier
-#netweaver_sid = "HA1"
+# Netweaver installation configuration
+# Netweaver system identifier. It's composed by 3 characters string
+#netweaver_sid = "ha1"
+# Netweaver ASCS instance number. It's composed by 2 integers string
+#netweaver_ascs_instance_number = "00"
+# Netweaver ERS instance number. It's composed by 2 integers string
+#netweaver_ers_instance_number = "10"
+# Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed by 2 integers string
+#netweaver_pas_instance_number = "01"
+# Netweaver master password. It must have 8 characters at least combining upper and lower case characters and number. It cannot start with special characters.
+#netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster
 #netweaver_ha_enabled = true
-# Application servers number. The 1st one will be a PAS instance, and the rest AAS servers
-#netweaver_app_server_count = 2
 
 # VM sizes
 #netweaver_xscs_vm_size = Standard_D2s_v3
