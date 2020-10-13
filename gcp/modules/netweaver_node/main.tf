@@ -2,11 +2,12 @@
 # official documentation: https://cloud.google.com/solutions/sap/docs/netweaver-ha-planning-guide
 
 locals {
-  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+  vm_count        = var.xscs_server_count + var.app_server_count
+  create_ha_infra = local.vm_count > 1 && var.ha_enabled ? 1 : 0
 }
 
 resource "google_compute_disk" "netweaver-software" {
-  count = var.netweaver_count
+  count = local.vm_count
   name  = "${terraform.workspace}-nw-installation-sw-${count.index}"
   type  = "pd-standard"
   size  = 60
@@ -37,7 +38,7 @@ resource "google_compute_route" "nw-ers-route" {
 resource "google_compute_instance" "netweaver" {
   machine_type = var.machine_type
   name         = "${terraform.workspace}-netweaver0${count.index + 1}"
-  count        = var.netweaver_count
+  count        = local.vm_count
   zone         = element(var.compute_zones, count.index)
 
   can_ip_forward = true
@@ -82,7 +83,7 @@ resource "google_compute_instance" "netweaver" {
 
 module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = var.netweaver_count
+  node_count           = local.vm_count
   instance_ids         = google_compute_instance.netweaver.*.id
   user                 = "root"
   private_key_location = var.common_variables["private_key_location"]

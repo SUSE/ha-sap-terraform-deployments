@@ -29,10 +29,13 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
 
+  netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
+  netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
+  netweaver_vitual_ips_count  = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
+
   netweaver_ip_start    = 30
-  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_vitual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -94,7 +97,8 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
-  netweaver_count           = local.netweaver_count
+  xscs_server_count         = local.netweaver_xscs_server_count
+  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   machine_type              = var.netweaver_machine_type
   compute_zones             = data.google_compute_zones.available.names
   network_name              = local.vpc_name
@@ -109,6 +113,10 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_sid             = var.netweaver_sid
+  ascs_instance_number      = var.netweaver_ascs_instance_number
+  ers_instance_number       = var.netweaver_ers_instance_number
+  pas_instance_number       = var.netweaver_pas_instance_number
+  netweaver_master_password = var.netweaver_master_password
   netweaver_product_id      = var.netweaver_product_id
   netweaver_software_bucket = var.netweaver_software_bucket
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -121,6 +129,9 @@ module "netweaver_node" {
   netweaver_nfs_share       = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   ha_enabled                = var.netweaver_ha_enabled
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  hana_sid                  = var.hana_sid
+  hana_instance_number      = var.hana_instance_number
+  hana_master_password      = var.hana_master_password
   virtual_host_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp

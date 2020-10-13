@@ -22,9 +22,14 @@ variable "network_subnet_name" {
   type        = string
 }
 
-variable "netweaver_count" {
-  type    = string
-  default = "2"
+variable "xscs_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "app_server_count" {
+  type    = number
+  default = 2
 }
 
 variable "os_image" {
@@ -108,12 +113,6 @@ variable "pas_instance_number" {
   description = "PAS instance number"
   type        = string
   default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
 }
 
 variable "netweaver_product_id" {

@@ -221,6 +221,53 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
+}
+
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
@@ -381,6 +428,12 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS server (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  type        = number
+  default     = 2
+}
+
 variable "netweaver_machine_type" {
   description = "The instance type of the netweaver nodes"
   type        = string
@@ -411,16 +464,39 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_fencing_mechanism" {
-  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
-  type        = string
-  default     = "native"
-}
-
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string
   default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "netweaver_product_id" {
