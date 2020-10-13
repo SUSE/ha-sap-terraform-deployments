@@ -20,9 +20,9 @@ hana:
   ha_enabled: {{ grains['ha_enabled'] }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
-      sid: prd
-      instance: "00"
-      password: YourPassword1234
+      sid: {{ grains['hana_sid'].lower() }}
+      instance: "{{ grains['hana_instance_number'] }}"
+      password: {{ grains['hana_master_password'] }}
       install:
         root_user: root
         {% if grains['provider'] == 'libvirt' %}
@@ -30,33 +30,33 @@ hana:
         {% else %}
         root_password: ''
         {% endif %}
-        system_user_password: YourPassword1234
-        sapadm_password: YourPassword1234
+        system_user_password: {{ grains['hana_master_password'] }}
+        sapadm_password: {{ grains['hana_master_password'] }}
       {%- if grains.get('ha_enabled') %}
       primary:
-        name: PRIMARY_SITE_NAME
+        name: {{ grains['hana_primary_site'] }}
         backup:
           key_name: backupkey
           database: SYSTEMDB
           file: backup
         userkey:
           key_name: backupkey
-          environment: {{ grains['name_prefix'] }}01:30013
+          environment: {{ grains['name_prefix'] }}01:3{{ '{:0>2}'.format(grains['hana_instance_number']) }}13
           user_name: SYSTEM
-          user_password: YourPassword1234
+          user_password: {{ grains['hana_master_password'] }}
           database: SYSTEMDB
       {% endif %}
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
         exposition_port: 9668
         user: SYSTEM
-        password: YourPassword1234
+        password: {{ grains['hana_master_password'] }}
       {% endif %}
 
     - host: {{ grains['name_prefix'] }}02
-      sid: prd
-      instance: "00"
-      password: YourPassword1234
+      sid: {{ grains['hana_sid'].lower() }}
+      instance: "{{ grains['hana_instance_number'] }}"
+      password: {{ grains['hana_master_password'] }}
       {% if grains['scenario_type'] == 'cost-optimized' %}
       scenario_type: 'cost-optimized'
       cost_optimized_parameters:
@@ -70,13 +70,13 @@ hana:
         {% else %}
         root_password: ''
         {% endif %}
-        system_user_password: YourPassword1234
-        sapadm_password: YourPassword1234
+        system_user_password: {{ grains['hana_master_password'] }}
+        sapadm_password: {{ grains['hana_master_password'] }}
       {%- if grains.get('ha_enabled') %}
       secondary:
-        name: SECONDARY_SITE_NAME
+        name: {{ grains['hana_secondary_site'] }}
         remote_host: {{ grains['name_prefix'] }}01
-        remote_instance: "00"
+        remote_instance: "{{ grains['hana_instance_number'] }}"
         replication_mode: sync
         {% if grains['hana_cluster_vip_secondary'] != '' %}
         operation_mode: logreplay_readaccess
@@ -87,9 +87,9 @@ hana:
       {% endif %}
     {% if grains['scenario_type'] == 'cost-optimized' %}
     - host: {{ grains['name_prefix'] }}02
-      sid: qas
-      instance: "01"
-      password: YourPassword1234
+      sid: {{ grains['hana_cost_optimized_sid'].lower() }}
+      instance: "{{ grains['hana_cost_optimized_instance_number'] }}"
+      password: {{ grains['hana_cost_optimized_master_password'] }}
       scenario_type: 'cost-optimized'
       cost_optimized_parameters:
         global_allocation_limit: '28600'
@@ -101,12 +101,12 @@ hana:
         {% else %}
         root_password: ''
         {% endif %}
-        system_user_password: YourPassword1234
-        sapadm_password: YourPassword1234
+        system_user_password: {{ grains['hana_cost_optimized_master_password'] }}
+        sapadm_password: {{ grains['hana_cost_optimized_master_password'] }}
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
         exposition_port: 9669
         user: SYSTEM
-        password: YourPassword1234
+        password: {{ grains['hana_cost_optimized_master_password'] }}
       {% endif %}
     {% endif %}
