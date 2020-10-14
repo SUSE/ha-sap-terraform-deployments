@@ -494,7 +494,7 @@ variable "netweaver_enabled" {
 }
 
 variable "netweaver_app_server_count" {
-  description = "Number of PAS/AAS server (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
   type        = number
   default     = 2
 }
