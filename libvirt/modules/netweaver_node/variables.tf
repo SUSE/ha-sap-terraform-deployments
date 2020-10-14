@@ -27,10 +27,9 @@ variable "virtual_host_ips" {
   type        = list(string)
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd"
+  type        = string
 }
 
 variable "sbd_storage_type" {
@@ -111,6 +110,12 @@ variable "netweaver_additional_dvds" {
 variable "netweaver_nfs_share" {
   description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
   type        = string
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "ascs_instance_number" {

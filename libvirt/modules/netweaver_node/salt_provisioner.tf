@@ -28,6 +28,7 @@ virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 hana_ip: ${var.hana_ip}
 ha_enabled: ${var.ha_enabled}
+netweaver_sid: ${var.netweaver_sid}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_media: ${var.netweaver_inst_media}
 netweaver_inst_folder: ${var.netweaver_inst_folder}
@@ -42,7 +43,7 @@ ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
 aas_instance_number: ${var.aas_instance_number}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
 sbd_lun_index: 1

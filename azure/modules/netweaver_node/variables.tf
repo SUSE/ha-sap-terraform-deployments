@@ -87,6 +87,12 @@ variable "data_disk_caching" {
   default = "ReadWrite"
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
@@ -218,10 +224,9 @@ variable "ha_enabled" {
   default     = true
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd"
+  type        = string
 }
 
 variable "sbd_storage_type" {

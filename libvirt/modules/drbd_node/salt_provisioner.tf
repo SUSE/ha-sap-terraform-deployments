@@ -27,11 +27,13 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 drbd_disk_device: /dev/vdb
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+nfs_mounting_point: ${var.nfs_mounting_point}
+nfs_export_name: ${var.nfs_export_name}
 partitions:
   1:
     start: 0%

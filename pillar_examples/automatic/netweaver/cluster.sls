@@ -10,7 +10,7 @@ cluster:
   interface: eth0
   unicast: True
   {%- endif %}
-  {% if grains['sbd_enabled'] %}
+  {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
@@ -36,6 +36,11 @@ cluster:
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
+    properties:
+      stonith-enabled: true
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     method: update
     template:
       source: salt://netweaver/templates/cluster_resources.j2
@@ -67,3 +72,4 @@ cluster:
         ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
+        native_fencing: {{ grains['fencing_mechanism'] == 'native' }}

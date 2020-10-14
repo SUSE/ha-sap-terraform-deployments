@@ -83,10 +83,9 @@ variable "bastion_private_key" {
   default     = ""
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd"
+  type        = string
 }
 
 variable "sbd_storage_type" {
@@ -112,5 +111,15 @@ variable "cluster_ssh_key" {
 
 variable "drbd_cluster_vip" {
   description = "Virtual ip for the drbd cluster"
+  type        = string
+}
+
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+}
+
+variable "nfs_export_name" {
+  description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
   type        = string
 }

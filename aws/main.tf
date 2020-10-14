@@ -36,7 +36,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(var.virtual_address_range, ip_index)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || var.drbd_enabled && var.drbd_cluster_sbd_enabled == true || local.netweaver_count > 2 && var.netweaver_cluster_sbd_enabled == true) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 
   # Obtain machines os_image and os_owner values
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
@@ -86,13 +87,15 @@ module "drbd_node" {
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   host_ips              = local.drbd_ips
-  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
   drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_data_disk_size   = var.drbd_data_disk_size
   drbd_data_disk_type   = var.drbd_data_disk_type
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_export_name       = var.netweaver_sid
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
@@ -144,6 +147,7 @@ module "netweaver_node" {
   aws_access_key_id         = var.aws_access_key_id
   aws_secret_access_key     = var.aws_secret_access_key
   s3_bucket                 = var.netweaver_s3_bucket
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_folder     = var.netweaver_inst_folder
   netweaver_extract_dir     = var.netweaver_extract_dir
@@ -152,12 +156,12 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
+  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
   ha_enabled                = var.netweaver_ha_enabled
-  sbd_enabled               = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub           = var.cluster_ssh_pub
@@ -200,7 +204,7 @@ module "hana_node" {
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  sbd_enabled                = var.hana_cluster_sbd_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub            = var.cluster_ssh_pub

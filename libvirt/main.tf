@@ -35,7 +35,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.iprange, ip_index + local.netweaver_count)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && (var.hana_count > 1 && var.hana_cluster_sbd_enabled == true || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (local.netweaver_count > 1 && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 }
 
 module "common_variables" {
@@ -97,7 +98,7 @@ module "hana_node" {
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  sbd_enabled                = var.hana_cluster_sbd_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
   sbd_storage_type           = var.sbd_storage_type
   sbd_disk_id                = module.hana_sbd_disk.id
   iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
@@ -118,13 +119,15 @@ module "drbd_node" {
   host_ips              = local.drbd_ips
   drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_disk_size        = var.drbd_disk_size
-  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
   sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.drbd_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
+  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_export_name       = var.netweaver_sid
 }
 
 module "monitoring" {
@@ -161,11 +164,12 @@ module "netweaver_node" {
   isolated_network_name     = local.internal_network_name
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
-  sbd_enabled               = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
   shared_disk_id            = module.netweaver_shared_disk.id
   iscsi_srv_ip              = module.iscsi_server.output_data.private_addresses.0
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_media      = var.netweaver_inst_media
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -175,6 +179,6 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/HA1" : var.netweaver_nfs_share
+  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   ha_enabled                = var.netweaver_ha_enabled
 }

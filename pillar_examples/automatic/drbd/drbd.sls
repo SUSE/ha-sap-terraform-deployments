@@ -67,7 +67,7 @@ drbd:
       disk: {{ drbd_disk_device }}1
 
       file_system: "xfs"
-      mount_point: "/mnt/sapdata/HA1"
+      mount_point: "{{ grains['nfs_mounting_point'] }}/{{ grains['nfs_export_name'] }}"
       virtual_ip: {{ grains['drbd_cluster_vip'] }}
 
       nodes:

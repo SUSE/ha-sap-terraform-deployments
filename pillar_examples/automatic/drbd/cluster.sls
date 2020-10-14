@@ -10,7 +10,7 @@ cluster:
   unicast: True
   wait_for_initialization: 20
   join_timeout: 180
-  {% if grains['sbd_enabled'] %}
+  {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
@@ -34,6 +34,11 @@ cluster:
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
+    properties:
+      stonith-enabled: true
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     method: 'update'
     template:
       source: salt://drbd_node/files/templates/drbd_cluster.j2
@@ -50,3 +55,4 @@ cluster:
         vpc_network_name: {{ grains['vpc_network_name'] }}
         route_name: {{ grains['route_name'] }}
         {% endif %}
+        native_fencing: {{ grains['fencing_mechanism'] == 'native' }}

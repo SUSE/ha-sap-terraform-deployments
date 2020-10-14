@@ -32,7 +32,7 @@ hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 drbd_disk_device: /dev/xvdd
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 route_table: ${var.route_table_id}
@@ -41,6 +41,8 @@ sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+nfs_mounting_point: ${var.nfs_mounting_point}
+nfs_export_name: ${var.nfs_export_name}
 partitions:
   1:
     start: 0%

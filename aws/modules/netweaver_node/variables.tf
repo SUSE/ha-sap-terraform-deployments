@@ -156,6 +156,12 @@ variable "virtual_host_ips" {
   default     = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
 }
 
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
 variable "ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
@@ -186,10 +192,9 @@ variable "ha_enabled" {
   default     = true
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = false
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
+  type        = string
 }
 
 variable "sbd_storage_type" {

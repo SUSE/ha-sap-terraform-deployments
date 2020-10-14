@@ -35,7 +35,8 @@ locals {
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 
   # Check if iscsi server has to be created
-  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_cluster_sbd_enabled == true) || (var.drbd_enabled && var.drbd_cluster_sbd_enabled == true) || (var.netweaver_enabled && var.netweaver_cluster_sbd_enabled == true)) ? true : false
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 
   # Obtain machines os_image value
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
@@ -78,11 +79,13 @@ module "drbd_node" {
   gcp_credentials_file = var.gcp_credentials_file
   network_domain       = "tf.local"
   host_ips             = local.drbd_ips
-  sbd_enabled          = var.drbd_cluster_sbd_enabled
+  fencing_mechanism    = var.drbd_cluster_fencing_mechanism
   sbd_storage_type     = var.sbd_storage_type
   iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
   cluster_ssh_key      = var.cluster_ssh_key
+  nfs_mounting_point   = var.drbd_nfs_mounting_point
+  nfs_export_name      = var.netweaver_sid
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]
@@ -100,11 +103,12 @@ module "netweaver_node" {
   gcp_credentials_file      = var.gcp_credentials_file
   network_domain            = "tf.local"
   host_ips                  = local.netweaver_ips
-  sbd_enabled               = var.netweaver_cluster_sbd_enabled
+  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
+  netweaver_sid             = var.netweaver_sid
   netweaver_product_id      = var.netweaver_product_id
   netweaver_software_bucket = var.netweaver_software_bucket
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -114,7 +118,7 @@ module "netweaver_node" {
   netweaver_swpm_sar        = var.netweaver_swpm_sar
   netweaver_sapexe_folder   = var.netweaver_sapexe_folder
   netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = "${local.drbd_cluster_vip}:/HA1"
+  netweaver_nfs_share       = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   ha_enabled                = var.netweaver_ha_enabled
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   virtual_host_ips          = local.netweaver_virtual_ips
@@ -134,7 +138,7 @@ module "hana_node" {
   os_image                   = local.hana_os_image
   gcp_credentials_file       = var.gcp_credentials_file
   host_ips                   = local.hana_ips
-  sbd_enabled                = var.hana_cluster_sbd_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
   sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
   sap_hana_deployment_bucket = var.sap_hana_deployment_bucket

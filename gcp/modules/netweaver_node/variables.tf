@@ -53,10 +53,9 @@ variable "ha_enabled" {
   default     = true
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = false
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
+  type        = string
 }
 
 variable "sbd_storage_type" {
@@ -85,6 +84,12 @@ variable "cluster_ssh_key" {
 variable "netweaver_software_bucket" {
   description = "gcp bucket where netweaver software is available"
   type        = string
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "ascs_instance_number" {

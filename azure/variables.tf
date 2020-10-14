@@ -285,10 +285,10 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
-variable "hana_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the hana HA cluster"
-  type        = bool
-  default     = true
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "hana_ha_enabled" {
@@ -432,10 +432,16 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the drbd HA cluster"
-  type        = bool
-  default     = true
+variable "drbd_cluster_fencing_mechanism" {
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
+}
+
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 # Netweaver related variables
@@ -518,10 +524,10 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the netweaver HA cluster"
-  type        = bool
-  default     = true
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "netweaver_nfs_share" {
@@ -546,6 +552,12 @@ variable "netweaver_storage_account" {
   description = "Azure storage account path"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
 }
 
 variable "netweaver_product_id" {

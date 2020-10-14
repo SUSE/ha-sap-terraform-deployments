@@ -59,8 +59,8 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
 
-# Enable SBD for the hana cluster
-#hana_cluster_sbd_enabled = true
+# Select SBD as fencing mechanism for the HANA cluster
+#hana_cluster_fencing_mechanism = "sbd"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
@@ -68,7 +68,7 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
-# In order to enable the iscsi machine creation sbd_enabled must be set to true for any of the clusters
+# In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
 #sbd_storage_type = "iscsi"
 #iscsi_srv_ip = "192.168.XXX.Y+6"
@@ -157,8 +157,12 @@ ha_sap_deployment_repo = ""
 # IP addresses of the machines hosting Netweaver instances
 #netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
 #netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
-# Enable SBD for the netweaver cluster
-#netweaver_cluster_sbd_enabled = true
+
+# Netweaver system identifier
+#netweaver_sid = "HA1"
+
+# Select SBD as fencing mechanism for the Netweaver cluster
+#netweaver_cluster_fencing_mechanism = "sbd"
 
 # Enable the DRBD cluster for nfs
 #drbd_enabled = true
@@ -166,8 +170,12 @@ ha_sap_deployment_repo = ""
 # IP of DRBD cluster
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
 
-# Enable SBD for the drbd cluster
-#drbd_cluster_sbd_enabled = true
+# Select SBD as fencing mechanism for the DRBD cluster
+#drbd_cluster_fencing_mechanism = "sbd"
+
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
 # libvirt storage pool, select the libvirt storage pool where the volume will stored
 
