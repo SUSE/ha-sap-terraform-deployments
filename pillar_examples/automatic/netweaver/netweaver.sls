@@ -23,9 +23,11 @@ netweaver:
   {%- endif %}
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sap{{ sid_lower }}as
-    {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}pas
     {%- if grains['ha_enabled'] %}
-    {{ grains['virtual_host_ips'][2] }}: sap{{ sid_lower }}er
+    {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}er
+    {{ grains['virtual_host_ips'][2] }}: sap{{ sid_lower }}pas
+    {%- else %}
+    {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}pas
     {%- endif %}
     {%- for index in range(app_server_count-1) %}
     {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sap{{ sid_lower }}aas{{ loop.index }}

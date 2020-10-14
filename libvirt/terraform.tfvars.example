@@ -64,7 +64,7 @@ hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com/doc/e9702d76c3284623b02de196c0e79e49/2.0.05/en-US/SAP_HANA_Server_Installation_Guide_en.pdf
-# HANA instance system identifier. It's composed by 3 characters string. 
+# HANA instance system identifier. It's composed by 3 characters string.
 #hana_sid = "prd"
 # HANA instance number. It's composed by 2 integers string
 #hana_instance_number = "00"

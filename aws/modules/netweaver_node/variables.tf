@@ -200,6 +200,11 @@ variable "pas_instance_number" {
   default     = "01"
 }
 
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
 variable "ha_enabled" {
   description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
   type        = bool

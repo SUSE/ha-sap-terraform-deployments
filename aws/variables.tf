@@ -229,13 +229,20 @@ variable "hana_extract_dir" {
 }
 
 variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
+  description = "Disk type of the disks used to store HANA database content"
   type        = string
   default     = "gp2"
 }
 
+variable "hana_data_disk_size" {
+  description = "Disk size in GB for the disk used to store HANA database content"
+  type        = number
+  default     = 60
+}
+
+
 variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
+  description = "Filesystem type used by the disk where HANA is installed"
   type        = string
   default     = "xfs"
 }

@@ -151,6 +151,10 @@ module "netweaver_node" {
   aws_secret_access_key     = var.aws_secret_access_key
   s3_bucket                 = var.netweaver_s3_bucket
   netweaver_sid             = var.netweaver_sid
+  ascs_instance_number      = var.netweaver_ascs_instance_number
+  ers_instance_number       = var.netweaver_ers_instance_number
+  pas_instance_number       = var.netweaver_pas_instance_number
+  netweaver_master_password = var.netweaver_master_password
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_folder     = var.netweaver_inst_folder
   netweaver_extract_dir     = var.netweaver_extract_dir
