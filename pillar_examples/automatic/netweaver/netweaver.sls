@@ -10,6 +10,8 @@
 {%- endif %}
 {%- set sid_lower = grains['netweaver_sid'].lower() %}
 {%- set sid_upper = grains['netweaver_sid'].upper() %}
+{%- set hana_sid_upper = grains['hana_sid'].upper() %}
+{%- set hana_instance_number = '{:0>2}'.format(grains['hana_instance_number']) %}
 {%- set product_id_header = grains['netweaver_product_id'].split(".")[0] %}
 
 netweaver:
@@ -67,8 +69,8 @@ netweaver:
 
   hana:
     host: {{ grains['hana_ip'] }}
-    sid: {{ grains['hana_sid'].upper() }}
-    instance: {{ '{:0>2}'.format(grains['hana_instance_number']) }}
+    sid: {{ hana_sid_upper }}
+    instance: {{ hana_instance_number }}
     password: {{ grains['hana_master_password'] }}
 
   schema:
@@ -132,10 +134,10 @@ netweaver:
       sap_instance: db
       {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
       extra_parameters:
-        NW_Recovery_Install_HDB.extractLocation: /usr/sap/{{ grains['hana_sid'].upper() }}/HDB{{ '{:0>2}'.format(grains['hana_instance_number']) }}/backup/data/DB_{{ grains['hana_sid'].upper() }}
+        NW_Recovery_Install_HDB.extractLocation: /usr/sap/{{ hana_sid_upper }}/HDB{{ hana_instance_number }}/backup/data/DB_{{ hana_sid_upper }}
         NW_Recovery_Install_HDB.sidAdmName: {{ grains['hana_sid'].lower() }}adm
         NW_Recovery_Install_HDB.sidAdmPassword: {{ grains['hana_master_password'] }}
-        NW_Recovery_Install_HDB.extractParallelJobs: 5 # By default, the value matches the number of extract files. The value is reduced, otherwise it uses to much memory on the DB machine making the extraction file
+        NW_Recovery_Install_HDB.extractParallelJobs: 5 # By default, the value matches the number of extract files. Decreased to avoid high memory usage
         NW_HDB_DBClient.clientPathStrategy: LOCAL
         HDB_Software_Dialogs.useMediaCD: "false"
       {%- endif %}
