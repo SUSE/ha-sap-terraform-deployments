@@ -60,7 +60,7 @@ netweaver_additional_dvds = ["51050829_part1.exe", "IMDB_CLIENT20_005_111-800020
 
 ### SWPM version 2.0
 
-To install S4HANA 1809 and beyond based on SWPM version 2, the next files are required. **This version, requires to have all of the files in the same folder (except the SWPM archive, that can be stored elsewhere), so create a folder in the storage (`download_basket` for example), and upload all of the required files there.**
+To install S4HANA 1809 and beyond based on SWPM version 2, the next files are required. **This version requires to have all of the files in the same folder (except the SWPM archive, that can be stored elsewhere), so create a folder in the storage (`download_basket` for example) and upload all of the required files there.**
 
 1. `SWPM` archive. This usually comes compressed as a `.SAR` file, so the `SAPCAR` utility is required too. It will contain a `LABEL.ASC` such as `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*`.
 
@@ -112,10 +112,8 @@ After downloading the described options, the files must be stored in the corresp
 
 ## Disclaimer
 
-Listed here the things that the project **don't do**:
+Here are the things that the project **doesn't do** for you:
 
 - The project doesn't download and structure the SAP installation software. This must be done by the user
-- The project doesn't check for compatibilities between the SAP software and tools (HANA database version with S/4HANA version, for example)
-- The project doesn't check if the files are properly upload or structured. If they are not, the project will be executed and it will fail, sometimes being really difficult to find the root cause.
-
-In order to avoid these issues, running a manual installation the first time with the selected binaries is recommended.
+- The project doesn't check for compatibility between the SAP software and tools (HANA database version with S/4HANA version, for example)
+- The project doesn't check if the files are properly uploaded or structured. If they are not, the project will be executed and it will fail, sometimes being really difficult to find the root cause.
