@@ -121,6 +121,11 @@ variable "hana_data_disk_type" {
   default = "gp2"
 }
 
+variable "hana_data_disk_size" {
+  description = "Disk size in GB for the disk used to store HANA database content"
+  type        = number
+}
+
 variable "hana_inst_master" {
   type = string
 }

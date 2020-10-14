@@ -19,6 +19,11 @@ iprange = "192.168.XXX.Y/24"
 # hana_source_image = "url-to-your-sles4sap-image"
 # hana_volume_name   = "SLES4SAP-15_SP0"
 
+# Disk size for HANA database content in bytes
+#hana_node_disk_size  = 68719476736 # 64GB
+# For S/4HANA set a big disk size
+#hana_node_disk_size  = 375809638400 # 350GB
+
 
 # The next variables define how the HANA installation software is obtained.
 # 'hana_inst_media' is a NFS share where HANA installation files (extracted or not) are stored

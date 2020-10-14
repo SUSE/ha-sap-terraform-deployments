@@ -115,14 +115,16 @@ pre_deployment = true
 # Disk type for HANA
 #hana_data_disk_type = "pd-ssd"
 
-# Disk size for HANA in GB
-#hana_data_disk_size = "834"
+# Disk size for HANA database content in GB
+#hana_data_disk_size  = 64 # 64GB
+# For S/4HANA set a big disk size
+#hana_data_disk_size  = 350 # 350GB
 
 # Disk type for HANA backup
 #hana_backup_disk_type = "pd-standard"
 
 # Disk size for HANA backup in GB
-#hana_backup_disk_size = "416"
+#hana_backup_disk_size = "64"
 
 # HANA cluster vip
 #hana_cluster_vip = "10.0.1.200"

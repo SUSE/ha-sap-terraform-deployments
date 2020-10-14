@@ -208,6 +208,7 @@ module "hana_node" {
   hana_primary_site                   = var.hana_primary_site
   hana_secondary_site                 = var.hana_secondary_site
   hana_data_disk_type                 = var.hana_data_disk_type
+  hana_data_disk_size                 = var.hana_data_disk_size
   hana_inst_master                    = var.hana_inst_master
   hana_inst_folder                    = var.hana_inst_folder
   hana_platform_folder                = var.hana_platform_folder
