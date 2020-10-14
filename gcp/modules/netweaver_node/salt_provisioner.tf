@@ -46,8 +46,8 @@ netweaver_software_bucket: ${var.netweaver_software_bucket}
 netweaver_sid: ${var.netweaver_sid}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
+pas_instance_number: ${var.pas_instance_number}
 netweaver_master_password: ${var.netweaver_master_password}
-aas_instance_number: ${var.aas_instance_number}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_folder: ${var.netweaver_inst_folder}
 netweaver_extract_dir: ${var.netweaver_extract_dir}

@@ -178,6 +178,21 @@ variable "hana_ip" {
   type        = string
 }
 
+variable "hana_sid" {
+  description = "System identifier of the HANA system (e.g.: HA1 or PRD)"
+  type        = string
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
 variable "virtual_host_ips" {
   description = "virtual ip addresses to set to the nodes"
   type        = list(string)
