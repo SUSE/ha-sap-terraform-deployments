@@ -1,0 +1,101 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "Hello world"
+  save: "Save"
+  required: "Required"
+  terraform_files: "terraform scripts and log"
+  non_active_session: "Duplicate session!"
+  session_reset: "The active session has been reset."
+  password_show: "Show password"
+  password_hide: "Hide password"
+  autoscroll: "Autoscroll"
+
+  #password key is used to check whether a form field should be of type
+  # "password" rather than "text"
+  password_key: "password"
+
+  plan: "Plan"
+  apply: "Apply"
+  running: "Running..."
+  action:
+    reset_session: "Reset session"
+
+  sidebar:
+    welcome: "Welcome"
+    sources: "Edit sources"
+    cluster: "Size cluster"
+    variables: "Variables"
+    plan: "Plan"
+    download_plan: "Download plan"
+    deploy: "Deploy"
+    wrapup: "Next steps"
+    download: "Download"
+    simple: "Start setup"
+
+  flash:
+    export_failure: "One or more sources or variables failed to export!"
+    unauthorized: "Sorry, you can't do that, yet."
+    terraform_is_running: "You cannot make any changes while terraform is running."
+
+  tooltips:
+    prior_step: "Go back without saving changes"
+    next_step: "Save your changes, then go to the next step"
+    save: "Save your changes and review"
+    start_action: "Use your saved data to trigger the next action"
+    run: "Execute the terraform action"
+    download_plan: "Get the current plan"
+
+  page_title:
+    plan: "Plan your deployment"
+    deploy: "Deploy your cluster"
+    wrapup: "Next steps after deployment"
+
+  page_subtitle:
+    workspace_info: |
+      Set a workspace for your terraform deployment. The workspace might be used to generate different deployments and populate the created the resources with the used workspace name.
+      In this particular case, the workspace is used to generate the Azure resource group name as **rg-ha-sap-${terraform.workspace}**.
+    plan_info: |
+      In this step you can generate an execution plan. The execution plan shows what _terraform_ will do when you call deploy. This lets you avoid any surprises when _terraform_ deploys.
+    deploy_info: |
+      In this step you can apply your plan. This may take some time. The `terraform` log will display below as it is generated.
+    wrapup_info: |
+      Your application has been deployed, here's how to use it.
+      [Download](/download) your results and follow the instructions below.
+
+  content:
+    explain_duplicate_session: |
+      Someone is already logged into this application, but this application is only intended for one user at a time.
+
+      Please switch back to the active session if possible. If not, you may reset the active session.
+    label_active_session_ip: |
+      Active session IP address: `%{ip}`
