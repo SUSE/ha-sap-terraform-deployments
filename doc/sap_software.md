@@ -5,6 +5,14 @@ The software can be downloaded from https://launchpad.support.sap.com/#/software
 
 Find here a guideline to know how to configure your storage.
 
+## Requirements
+
+Here are the things that the user must implement/have before using the project. **They are not executed by the project**:
+
+- Download and structure the SAP installation software in the correct storage option for each provider.
+- Check the compatibility between the SAP software and tools (HANA database version with S/4HANA version, and SWPM version with desired Netweaver/S4HANA version, for example).
+- Check if the files are properly uploaded or structured. If they are not, the project execution fails, sometimes being really difficult to find the root cause.
+
 ## SAP HANA
 
 To install the SAP HANA database, the HANA installation software must be available. This software is available in different formats.
@@ -110,11 +118,3 @@ After downloading the described options, the files must be stored in the corresp
 - Azure - Storage account
 - GCP - GCP storage
 - Libvirt - NFS share
-
-## Disclaimer
-
-Here are the things that the project **doesn't do** for you:
-
-- The project doesn't download and structure the SAP installation software. This must be done by the user
-- The project doesn't check for compatibility between the SAP software and tools (HANA database version with S/4HANA version, for example)
-- The project doesn't check if the files are properly uploaded or structured. If they are not, the project will be executed and it will fail, sometimes being really difficult to find the root cause.
