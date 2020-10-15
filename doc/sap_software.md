@@ -2,6 +2,7 @@
 
 In order to use the project some preliminary steps are required. One of them is to prepare the SAP installation software. This depends on the desired landscape.
 The software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter
+
 Find here a guideline to know how to configure your storage.
 
 ## SAP HANA
