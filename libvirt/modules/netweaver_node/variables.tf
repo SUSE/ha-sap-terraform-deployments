@@ -74,7 +74,7 @@ variable "netweaver_inst_folder" {
 variable "netweaver_extract_dir" {
   description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
   type        = string
-  default     = "/sapmedia/NW"
+  default     = "/sapmedia_extract/NW"
 }
 
 variable "netweaver_swpm_folder" {

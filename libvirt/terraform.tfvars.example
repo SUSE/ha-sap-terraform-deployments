@@ -143,7 +143,7 @@ ha_sap_deployment_repo = ""
 # SAP SWPM installation folder, relative to the netweaver_inst_media mounting point
 #netweaver_swpm_folder     =  "your_swpm"
 # Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_inst_media mounting point
-# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia/NW/SWPM)
+# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia_extract/NW/SWPM)
 #netweaver_sapcar_exe = "your_sapcar_exe_file_path"
 #netweaver_swpm_sar = "your_swpm_sar_file_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_inst_media mounting point
