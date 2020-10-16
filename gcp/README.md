@@ -119,3 +119,8 @@ Create a bootable image
 ```
 gcloud compute images create OS-Image-File-for-SLES4SAP-for-GCP --source-uri gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
 ```
+
+View available SLES images using the gcloud utility
+```
+gcloud compute images list --standard-images --filter=sles
+```
