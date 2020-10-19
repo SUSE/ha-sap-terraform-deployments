@@ -1,0 +1,117 @@
+@import "framework";
+
+.instance-type-selector {
+    //background-color: $panel-default-heading-bg;
+
+    .instance-types {
+        border-right: 1px solid $table-border-color;
+
+        .form-group {
+          margin-bottom: 0;
+        }
+    }
+
+    label.instance-type {
+
+        input[type="radio"] {
+            display: none;
+
+            &:checked + .instance-type-box {
+                background-color: $success;
+                color: $white;
+                box-shadow: none;
+            }
+        }
+
+        .instance-type-box {
+            display: inline-block;
+            overflow: hidden;
+            width: 148px;
+            height: 148px;
+
+            border: 1px solid $table-border-color;
+            border-radius: 5px;
+            box-shadow: 1px 1px 6px 1px $table-border-color;
+
+            background: $white;
+            color: $success;
+
+            cursor: pointer;
+
+            margin: 10px;
+            padding: 10px;
+
+            font-size: 14pt;
+            text-align: center;
+            font-weight: normal;
+            word-wrap: break-word;
+
+            &.double {
+                width: 316px;
+            }
+        }
+
+        .definition {
+            display: none;
+        }
+    }
+
+    .instance-type-description {
+        h1, h2, h3, h4, h5, h6 {
+            color: #3d4042;
+        }
+    }
+}
+
+.cluster-size-selector {
+    //background-color: $panel-default-heading-bg;
+    min-height: 113px;
+
+    // https://github.com/seiyria/bootstrap-slider/issues/689#issuecomment-302959898
+    .slider.slider-horizontal:hover, .slider.slider-vertical:hover { .tooltip.tooltip-main { opacity: 1 !important; } }
+
+    .slider {
+        &.slider-horizontal {
+            width: 100% !important;
+        }
+
+        .slider-handle {
+            background: $primary;
+            border: 1px solid $primary;
+            box-shadow: none;
+        }
+
+        .slider-track {
+            background: $table-bg;
+            border: 1px solid $table-border-color;
+        }
+
+        .slider-track-low, .slider-track-high {
+            background: $table-bg;
+        }
+
+        .slider-selection {
+            background: $primary; //#337ab7;
+        }
+
+        .slider-tick {
+            background: $table-bg;
+            border: 1px solid $table-border-color;
+            box-shadow: none;
+
+            &.in-selection {
+                background: $primary; //#337ab7;
+                border: 1px solid $primary; //#337ab7;
+            }
+        }
+    }
+
+    label {
+        display: block;
+
+        &.h3 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+}

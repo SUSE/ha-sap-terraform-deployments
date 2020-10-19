@@ -1,0 +1,45 @@
+// value is a 'list' type; like an array
+- list = value
+%div.form-group{ class: "list_#{key}"}
+  %label{ for: "variables[#{key}]" }
+    = key.titleize
+    = required if @variables.required?(key)
+  - list.each do |list_value|
+    %div.input-group.mb-2
+      %input.form-control{ type: 'text', name: "variables[#{key}][]", value: list_value, required: true }
+      %div.input-group-append
+        %button.btn.btn-outline-danger.remove{ type: 'button', data: { toggle: 'tooltip' }, title: 'Remove' }
+          %i.eos-icons.md-18 remove
+  %div.input-group.mb-2{ id: "#{key}_new_form" }
+    %input.form-control{ type: 'text', id: "#{key}_new_value", placeholder: 'value' }
+    %div.input-group-append
+      %button.btn.btn-outline-primary{ id: "#{key}_add_list", type: 'button', data: { toggle: 'tooltip' }, title: 'Add' }
+        %i.eos-icons.md-18 add
+  = formatted_description(description)
+  %div{id: "#{key}_template", style: 'display: none;' }
+    %div.input-group.mb-2
+      %input.form-control{ type: 'text', name: "variables[#{key}][]", value: '{{list_value}}' }
+      %div.input-group-append
+        %button.btn.btn-outline-danger.remove{ type: 'button', data: { toggle: 'tooltip' }, title: 'Remove' }
+          %i.eos-icons.md-18 remove
+
+- content_for :page_javascript do
+  :javascript
+    $(function(){
+      // Template for new entries
+      var template = $("##{key}_template").html();
+      $("##{key}_template").remove()
+      // Add new entries
+      $("##{key}_add_list").click(function(event){
+        var new_value = $("##{key}_new_value");
+        var form = $("##{key}_new_form");
+        var new_entry = template.replace(/{{list_value}}/g, new_value.val());
+        form.before(new_entry);
+        new_value.val('');
+      });
+      $(".input-group##{key}_new_form input[type='text']").on("keydown", function(event) {
+        if (event.key == "Enter") {
+          $("##{key}_add_list").click();
+        }
+      });
+    });

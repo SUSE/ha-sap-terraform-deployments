@@ -1,0 +1,6 @@
+%div.form-group{ class: key }
+  %label{ for: "variables[#{key}]" }
+    = key.titleize
+    = required if @variables.required?(key)
+  %input.form-control{ type: 'number', name: "variables[#{key}]", value: value, required: @variables.required?(key) }
+  = formatted_description(description)

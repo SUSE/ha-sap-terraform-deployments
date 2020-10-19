@@ -1,0 +1,35 @@
+%div#flash.alert.alert-danger.alert-dismissable.fade.show{style: 'display: none;'}
+  %span#error_message
+  %button.close{ type: 'button' }
+    %i.eos-icons close
+%div.card
+  %h3.card-header= t('page_title.deploy')
+  %div.card-body
+    %p= markdown(t('page_subtitle.deploy_info'))
+    %hr
+    %div.float-right
+      %label.form-check-label
+        = check_box('deploy_log', 'autoscroll', class: 'form-check-input', checked: true)
+        = t('autoscroll')
+    %p.clearfix
+    %hr
+    %pre.pre-scrollable
+      = render 'output'
+%p.clearfix
+  %div.float-left.btn-group.steps-container
+    = link_to deploy_path, class: "btn btn-danger disabled", id: "destroy", title: t('tooltips.run'), data: { method: :delete, toggle: 'tooltip', disable_with: t('running') } do
+      %i.eos-icons.md-18 cloud_off
+      = t('rollback')
+  %div.float-right.btn-group.steps-container
+    = link_to plan_path, class: "btn btn-secondary", title: t('tooltips.prior_step'), data: { toggle: 'tooltip' } do
+      %i.eos-icons.md-18 fast_rewind
+      = t('sidebar.plan')
+    = link_to deploy_path, class: "btn btn-primary", id: "submit-deploy", title: t('tooltips.run'), data: { method: :put, remote: true, toggle: 'tooltip', disable_with: t('running') } do
+      %i.eos-icons.md-18 cloud_upload
+      = t('apply')
+    = link_to wrapup_path, class: "btn btn-warning #{'disabled' unless can(wrapup_path)}", data: { toggle: 'tooltip' } do
+      = t('sidebar.wrapup')
+      %i.eos-icons.md-18 fast_forward
+%p.clearfix
+- content_for :page_javascript do
+  = javascript_include_tag 'deploys', defer: true

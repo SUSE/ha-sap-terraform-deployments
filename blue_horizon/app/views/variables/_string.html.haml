@@ -1,0 +1,20 @@
+- fieldtype = string_input_type(description)
+%div.form-group{ class: key }
+  %label{ for: "variables[#{key}]" }
+    = key.titleize
+    = required if @variables.required?(key)
+  %div.input-group
+    - if fieldtype == 'select'
+      - @options = get_select_options(description)
+      %select.form-control{ name: "variables[#{key}]" }
+        - @options.each do |option|
+          %option{value: option, selected: value == option}= option
+    - else
+      %input.form-control{ type: fieldtype, name: "variables[#{key}]", value: value, required: @variables.required?(key) }
+    - if fieldtype == 'password'
+      %div.input-group-append
+        %button.btn.btn-outline-warning.peek{ id: "peek_#{key}", type: 'button', data: { toggle: 'tooltip' }, title: t(:password_show) }
+          %i.eos-icons.md-18 visibility
+        %button.btn.btn-outline-warning.unpeek{ id: "unpeek_#{key}",type: 'button', data: { toggle: 'tooltip' }, title: t(:password_hide), style: "display: none;"}
+          %i.eos-icons.md-18 visibility_off
+  = formatted_description(description)

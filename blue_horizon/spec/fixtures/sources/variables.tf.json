@@ -1,0 +1,19 @@
+{
+    "variable": {
+        "name": {
+            "type": "string",
+            "description": "Who should terraform greet?",
+            "default": "World"
+        },
+        "instance_count": {
+            "type": "number",
+            "description": "The number of worker nodes in your cluster.",
+            "default": 3
+        },
+        "instance_type": {
+            "type": "string",
+            "description": "The type of instance used for the provisioned workers.",
+            "default": "Standard_DS3_v2"
+        }
+    }
+}

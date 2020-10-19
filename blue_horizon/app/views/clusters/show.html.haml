@@ -1,0 +1,21 @@
+= form_for(@cluster, url: cluster_path , method: :put) do |form|
+  = form.hidden_field :cloud_framework
+  - if @variable_keys.include?('instance_type')
+    = render "instance_type_panel",
+      form: form,
+      list_url: instance_types_doc_url_for(@cluster.cloud_framework)
+    %p.clearfix
+  - if @variable_keys.include?('instance_count')
+    = render "cluster_size_panel", form: form
+    %p.clearfix
+  %div.float-right.btn-group.steps-container
+    = link_to welcome_path, class: "btn btn-secondary", title: t('tooltips.prior_step'), data: { toggle: 'tooltip' } do
+      %i.eos-icons.md-18 fast_rewind
+      = t('sidebar.welcome')
+    %button.btn.btn-primary#submit-cluster{ type: 'submit', title: t('tooltips.next_step'), data: { toggle: 'tooltip' } }
+      = t('sidebar.variables')
+      %i.eos-icons.md-18 fast_forward
+%p.clearfix
+
+- content_for :page_javascript do
+  = javascript_include_tag 'cluster', defer: true

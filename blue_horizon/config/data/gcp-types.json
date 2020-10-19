@@ -1,0 +1,52 @@
+{
+    "categories": {
+        "Standard": {
+            "name": "Standard",
+            "description": "Standard machine types are suitable for tasks that have a balance of CPU and memory needs. Standard machine types have 3.75 GB of RAM per virtual CPU, implemented as a single hardware hyper-thread on an Intel Xeon processor.",
+            "features": []
+        },
+        "High-memory": {
+            "name": "High-memory",
+            "description": "High-memory machine types are ideal for tasks that require more memory relative to virtual CPUs. High-memory machine types have 6.50GB of RAM per virtual CPU, implemented as a single hardware hyper-thread on an Intel Xeon processor.",
+            "features": []
+        }
+    },
+    "instance_types": {
+        "n1-standard-4": {
+            "sort_value": "00",
+            "name": "n1-standard-4",
+            "category": "Standard",
+            "vcpu_count": 4,
+            "ram_bytes": 15000000000,
+            "ram_si_units": true,
+            "details": {}
+        },
+        "n1-standard-8": {
+            "sort_value": "01",
+            "name": "n1-standard-8",
+            "category": "Standard",
+            "vcpu_count": 8,
+            "ram_bytes": 30000000000,
+            "ram_si_units": true,
+            "details": {}
+        },
+        "n1-highmem-4": {
+            "sort_value": "10",
+            "name": "n1-highmem-4",
+            "category": "High-memory",
+            "vcpu_count": 4,
+            "ram_bytes": 26000000000,
+            "ram_si_units": true,
+            "details": {}
+        },
+        "n1-highmem-8": {
+            "sort_value": "11",
+            "name": "n1-highmem-8",
+            "category": "High-memory",
+            "vcpu_count": 8,
+            "ram_bytes": 52000000000,
+            "ram_si_units": true,
+            "details": {}
+        }
+    }
+}

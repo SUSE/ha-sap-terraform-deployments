@@ -1,0 +1,50 @@
+%div.card
+  %div.card-body.instance-type-selector
+    %div.row
+      %div.col-md-8.instance-types
+        %div.form-group
+          - @instance_types.each do |instance_type|
+            %label.instance-type
+              = form.radio_button :instance_type, instance_type.key
+              %div.instance-type-box
+                = instance_type.category.name
+                %br
+                %small= instance_type.name
+              %div.definition
+                %h3= instance_type.category.name
+                %h4= instance_type.name
+                %p= markdown(instance_type.category.description)
+                %p
+                  - instance_type.category.features.each do |feature|
+                    %span.label.label-default= markdown(feature)
+                %dl
+                  - if instance_type.vcpu_count
+                    %dt vCPUs
+                    %dd.vcpu-count{ data: { vcpus: instance_type.vcpu_count } }
+                      = pluralize(instance_type.vcpu_count, 'core')
+                  - if instance_type.ram_bytes
+                    %dt RAM
+                    %dd.ram-size{ data: { bytes: instance_type.ram_bytes, si: instance_type.ram_si_units } }
+                  - instance_type.details.each do |key, value|
+                    %dt= key
+                    %dd= markdown(value)
+          - if Rails.configuration.x.allow_custom_instance_type
+            %label.instance-type
+              = form.radio_button :instance_type, 'CUSTOM'
+              %div.instance-type-box.double
+                Other types&hellip;
+                %br
+                %br
+                %small= form.text_field :instance_type_custom, class: "form-control", style: "display: none;"
+              %div.definition
+                %p
+                  You may specify a preferred instance type with a minimum of
+                  are 2 vCPUs and 8GB of RAM; 4 vCPUs are recommended.
+
+      %div.col-md-4.instance-type-description
+  - if Rails.configuration.x.show_instance_type_tip
+    %div.card-footer
+      = tip_icon
+      Not sure which type of instance to use? Check the
+      = link_to "Instance Types", list_url , target: :_blank, rel: 'noopener noreferrer'
+      list.

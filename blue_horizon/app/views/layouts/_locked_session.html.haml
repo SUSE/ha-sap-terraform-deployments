@@ -1,0 +1,20 @@
+%div.modal#locked-session{ data: { backdrop: 'static' } }
+  %div.modal-dialog
+    %div.modal-content
+      %div.modal-header
+        %h3.modal-title= t('non_active_session')
+      %div.modal-body
+        = markdown(t('content.explain_duplicate_session'))
+        = markdown(t('content.label_active_session_ip', ip: ip_address))
+
+      %div.modal-footer
+        = link_to reset_session_path, method: :put, class: 'btn btn-danger' do
+          %i.eos-icons.md-18 delete_forever
+          = t('action.reset_session')
+
+= content_for :page_javascript do
+  :javascript
+    $(function(){
+      $('#locked-session').modal('show');
+    });
+

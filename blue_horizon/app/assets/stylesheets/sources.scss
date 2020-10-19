@@ -1,0 +1,14 @@
+// Place all the styles related to the Sources controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+form.edit_source {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  min-height: calc(100vh - 100px);
+}
+
+div.alert + form.edit_source {
+  min-height: calc(100vh - 166px); //may want to move this calculation to a shared variable later
+}

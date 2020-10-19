@@ -1,0 +1,18 @@
+= form_for @source do |f|
+  = render 'tabs', sources: @sources
+  - if @source.errors.any?
+    %div.form-group.p-2
+      #error_explanation
+        %h2= "#{pluralize(@source.errors.count, "error")} prohibited this source from being saved:"
+        %ul
+          - @source.errors.full_messages.each do |message|
+            %li= message
+  %div.form-group.p-2
+    = f.label :filename
+    = required
+    = f.text_field :filename, class: 'form-control', required: true
+  %div#actions.btn-toolbar.d-flex.flex-row.justify-content-end.w-100
+    %div.btn-group.ml-2
+      %button#submit-source{type: 'submit', class: 'btn btn-primary'}
+        %i.eos-icons.md-18 save
+        Save

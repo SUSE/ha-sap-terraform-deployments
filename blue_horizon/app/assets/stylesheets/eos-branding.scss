@@ -1,0 +1,106 @@
+/* Primary colors variables
+   ========================================================================== */
+/* brand color - green */
+$eos-bc-green-100: #E0F7F0; //rgb(224, 247, 240)
+$eos-bc-green-200: #B3ECD9; //rgb(179, 236, 217)
+$eos-bc-green-300: #4DD3A7; //rgb(77, 211, 167);
+$eos-bc-green-400: #26C994; //rgb(38, 201, 148);
+$eos-bc-green-500: #00C081; //rgb(0, 192, 129);
+$eos-bc-green-600: #00BA79; //rgb(0, 186, 121);
+$eos-bc-green-700: #00B26E; //rgb(0, 178, 110);
+$eos-bc-green-800: #00AA64; //rgb(0, 170, 100);
+$eos-bc-green-900: #009C51; //rgb(0, 156, 81);
+
+/* brand color - blue */
+$eos-bc-blue-100: #B6C0C6; //rgb(182, 192, 198);
+$eos-bc-blue-200: #8696A0; //rgb(134, 150, 160);
+$eos-bc-blue-300: #566B79; //rgb(86, 107, 121);
+$eos-bc-blue-400: #314C5D; //rgb(49, 76, 93);
+$eos-bc-blue-500: #0D2C40; //rgb(13, 44, 64);
+$eos-bc-blue-600: #0B273A; //rgb(11, 39, 58);
+$eos-bc-blue-700: #092132; //rgb(9, 33, 50);
+$eos-bc-blue-800: #071B2A; //rgb(7, 27, 42);
+$eos-bc-blue-900: #03101C; //rgb(3, 16, 28);
+
+/* brand color - orange */
+$eos-bc-orange-100: #FDCEB3; //rgb(253, 206, 179);
+$eos-bc-orange-200: #FBAE81; //rgb(251, 174, 129);
+$eos-bc-orange-300: #F98D4F; //rgb(249, 141, 79);
+$eos-bc-orange-400: #F87429; //rgb(248, 116, 41);
+$eos-bc-orange-500: #F75C03; //rgb(247, 92, 3);
+$eos-bc-orange-600: #F65403; //rgb(246, 84, 3);
+$eos-bc-orange-700: #F54A02; //rgb(245, 74, 2);
+$eos-bc-orange-800: #F34102; //rgb(243, 65, 2);
+$eos-bc-orange-900: #F13001; //rgb(241, 48, 1);
+
+/* brand color - cerulean */
+$eos-bc-cerulean-100: #B3E8F6; //rgb(179, 232, 246);
+$eos-bc-cerulean-200: #80D9F1; //rgb(128, 217, 241);
+$eos-bc-cerulean-300: #4DC9EB; //rgb(77, 201, 235);
+$eos-bc-cerulean-400: #26BEE6; //rgb(38, 190, 230);
+$eos-bc-cerulean-500: #00B2E2; //rgb(0, 178, 226);
+$eos-bc-cerulean-600: #00ABDF; //rgb(0, 171, 223);
+$eos-bc-cerulean-700: #00A2DA; //rgb(0, 162, 218);
+$eos-bc-cerulean-800: #0099D6; //rgb(0, 153, 214);
+$eos-bc-cerulean-900: #008ACF; //rgb(0, 138, 207);
+
+/* brand color - violet */
+$eos-bc-violet-100: #DAB9D9; //rgb(218, 185, 217);
+$eos-bc-violet-200: #C28BC0; //rgb(194, 139, 192);
+$eos-bc-violet-300: #A95DA7; //rgb(169, 93, 167);
+$eos-bc-violet-400: #963A94; //rgb(150, 58, 148);
+$eos-bc-violet-500: #841781; //rgb(132, 23, 129);
+$eos-bc-violet-600: #7C1479; //rgb(124, 20, 121);
+$eos-bc-violet-700: #71116E; //rgb(113, 17, 110);
+$eos-bc-violet-800: #670D64; //rgb(103, 13, 100);
+$eos-bc-violet-900: #540751; //rgb(84, 7, 81);
+
+/* brand color - red */
+$eos-bc-red-100: #F5C2C7; //rgb(245, 194, 199);
+$eos-bc-red-200: #EE9AA2; //rgb(238, 154, 162);
+$eos-bc-red-300: #E7727D; //rgb(231, 114, 125);
+$eos-bc-red-400: #E15361; //rgb(225, 83, 97);
+$eos-bc-red-500: #DC3545; //rgb(220, 53, 69);
+$eos-bc-red-600: #D8303E; //rgb(216, 48, 62);
+$eos-bc-red-700: #D32836; //rgb(211, 40, 54);
+$eos-bc-red-800: #CE222E; //rgb(206, 34, 46);
+$eos-bc-red-900: #C5161F; //rgb(197, 22, 31);
+
+/* brand color - yellow */
+$eos-bc-yellow-100: #FFECB5; //rgb(255, 236, 181);
+$eos-bc-yellow-200: #FFE083; //rgb(255, 224, 131);
+$eos-bc-yellow-300: #FFD451; //rgb(255, 212, 81);
+$eos-bc-yellow-400: #FFCA2C; //rgb(255, 202, 44);
+$eos-bc-yellow-500: #FFC107; //rgb(255, 193, 7);
+$eos-bc-yellow-600: #FFBB06; //rgb(255, 187, 6);
+$eos-bc-yellow-700: #FFB305; //rgb(255, 179, 5);
+$eos-bc-yellow-800: #FFAB04; //rgb(255, 171, 4);
+$eos-bc-yellow-900: #FF9E02; //rgb(255, 158, 2);
+
+/* brand color - gray */
+$eos-bc-gray-50: #edeff0; //rgb(237, 239, 240);
+$eos-bc-gray-100: #E0DFDF; //rgb(224, 223, 223);
+$eos-bc-gray-200: #CBCACA; //rgb(203, 202, 202);
+$eos-bc-gray-300: #B6B4B4; //rgb(182, 180, 180);
+$eos-bc-gray-400: #A6A4A4; //rgb(166, 164, 164);
+$eos-bc-gray-500: #969494; //rgb(150, 148, 148);
+$eos-bc-gray-600: #8E8C8C; //rgb(142, 140, 140);
+$eos-bc-gray-700: #838181; //rgb(131, 129, 129);
+$eos-bc-gray-800: #797777; //rgb(121, 119, 119);
+$eos-bc-gray-900: #686565; //rgb(104, 101, 101);
+$eos-bc-gray-1000: #141823; //rgb(20, 24, 35);
+
+/* brand color - neutral */
+$eos-bc-white: #ffffff; //rgb(255, 255, 255);
+
+/* size variables */
+$eos-md-18: 18px;
+$eos-md-24: 24px;
+$eos-md-36: 36px;
+$eos-md-48: 48px;
+
+/* Rules for sizing the icon. */
+.md-18 { font-size: $eos-md-18; }
+.md-24 { font-size: $eos-md-24; }
+.md-36 { font-size: $eos-md-36; }
+.md-48 { font-size: $eos-md-48; }

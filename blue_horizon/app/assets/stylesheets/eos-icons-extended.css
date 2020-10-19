@@ -1,0 +1,501 @@
+/*
+Generated with grunt-webfont
+Created by EOS Design System - EOS icons
+Visit our Design System: https://gitlab.com/SUSE-UIUX/eos/
+Visit our Iconic font repo: https://gitlab.com/SUSE-UIUX/eos-icons
+*/
+
+
+@font-face {
+  font-family: "eos-icons-extended";
+  src: url("../fonts/eos-icons-extended.eot?bab5da3f155fe8636d0fcadd78fa74a3");
+  src: url("../fonts/eos-icons-extended.eot?bab5da3f155fe8636d0fcadd78fa74a3#iefix") format("embedded-opentype"),
+		url("../fonts/eos-icons-extended.woff2?bab5da3f155fe8636d0fcadd78fa74a3") format("woff2"),
+		url("../fonts/eos-icons-extended.woff?bab5da3f155fe8636d0fcadd78fa74a3") format("woff"),
+		url("../fonts/eos-icons-extended.ttf?bab5da3f155fe8636d0fcadd78fa74a3") format("truetype"),
+		url("../fonts/eos-icons-extended.svg?bab5da3f155fe8636d0fcadd78fa74a3#eos-icons-extended") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.eos-icons {
+  font-family: "eos-icons-extended";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* Loading animated icon variables
+   ========================================================================== */
+/* Installing animated icon variables
+   ========================================================================== */
+/* Loading icon
+   ========================================================================== */
+/**
+* Use it in HTML as
+* <div class='icon-loading md-18'></div>
+* add md-18, md-24, md-36 or md-48 class for sizes
+*/
+.eos-icon-loading {
+  animation: icon-loading-animate 1s infinite linear;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  border-top-color: #686565;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 1em;
+  margin: 0 auto;
+  width: 1em; }
+
+@keyframes icon-loading-animate {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(359deg); } }
+
+/* Installing icon
+   ========================================================================== */
+/**
+*  Use it in HTML as
+*  <div class='icon-installing md-18'></div>
+*  add md-18, md-24, md-36 or md-48 class for sizes
+*
+*  the default icon size is 24px. Divided by 3 squares: 8px minus 2px padding between blocks = 6px
+*/
+/* Variables */
+/**
+ * This mixin generates keyframes for each or the icon's rows with squares
+ * $icon-size - generates custom keyframes (@keyframes installing_animation_bottom_md-18...)
+ * $icon-padding - each $icon-size has its own padding..
+ * $icon-padding-negative - and its corresponding negative padding
+ * $icon-installing-bg - global color var
+*/
+/* Shared */
+.eos-icon-installing {
+  display: inline-block;
+  position: relative; }
+  .eos-icon-installing:before, .eos-icon-installing:after {
+    background: rgba(104, 101, 101, 0);
+    content: '';
+    display: block;
+    left: 0;
+    position: absolute; }
+  .eos-icon-installing.md-24 {
+    animation: installing_animation_middle_md-24 3s ease-in-out infinite;
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0;
+    height: 6px;
+    margin: 9px;
+    width: 6px; }
+
+@keyframes installing_animation_middle_md-24 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  30% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  35% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  40% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  45% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -8px 0, rgba(104, 101, 101, 0.25) 8px 0; }
+  50% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.5) 8px 0; }
+  55% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.75) 8px 0; }
+  60% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; } }
+    .eos-icon-installing.md-24:before, .eos-icon-installing.md-24:after {
+      box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0;
+      height: 6px;
+      width: 6px; }
+    .eos-icon-installing.md-24:after {
+      animation: installing_animation_bottom_md-24 3s ease-in-out infinite;
+      top: 8px; }
+
+@keyframes installing_animation_bottom_md-24 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0), rgba(104, 101, 101, 0); }
+  5% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25), rgba(104, 101, 101, 0); }
+  10% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  15% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -8px 0, rgba(104, 101, 101, 0.25) 8px 0; }
+  20% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.5) 8px 0; }
+  25% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.75) 8px 0; }
+  30% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; } }
+    .eos-icon-installing.md-24:before {
+      animation: installing_animation_upper_md-24 3s ease-in-out infinite;
+      top: -8px; }
+
+@keyframes installing_animation_upper_md-24 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  60% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  65% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  70% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -8px 0, rgba(104, 101, 101, 0) 8px 0; }
+  75% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -8px 0, rgba(104, 101, 101, 0.25) 8px 0; }
+  80% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.5) 8px 0; }
+  85% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, rgba(104, 101, 101, 0.75) 8px 0; }
+  90% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -8px 0, #686565 8px 0; } }
+  .eos-icon-installing.md-18 {
+    animation: installing_animation_middle_md-18 3s ease-in-out infinite;
+    box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0;
+    height: 4px;
+    margin: 7px;
+    width: 4px; }
+
+@keyframes installing_animation_middle_md-18 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  30% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  35% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  40% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  45% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -6px 0, rgba(104, 101, 101, 0.25) 6px 0; }
+  50% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.5) 6px 0; }
+  55% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.75) 6px 0; }
+  60% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; } }
+    .eos-icon-installing.md-18:before, .eos-icon-installing.md-18:after {
+      box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0;
+      height: 4px;
+      width: 4px; }
+    .eos-icon-installing.md-18:before {
+      animation: installing_animation_upper_md-18 3s ease-in-out infinite;
+      top: -6px; }
+
+@keyframes installing_animation_upper_md-18 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  60% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  65% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  70% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  75% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -6px 0, rgba(104, 101, 101, 0.25) 6px 0; }
+  80% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.5) 6px 0; }
+  85% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.75) 6px 0; }
+  90% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; } }
+    .eos-icon-installing.md-18:after {
+      animation: installing_animation_bottom_md-18 3s ease-in-out infinite;
+      top: 6px; }
+
+@keyframes installing_animation_bottom_md-18 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0), rgba(104, 101, 101, 0); }
+  5% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25), rgba(104, 101, 101, 0); }
+  10% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -6px 0, rgba(104, 101, 101, 0) 6px 0; }
+  15% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -6px 0, rgba(104, 101, 101, 0.25) 6px 0; }
+  20% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.5) 6px 0; }
+  25% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, rgba(104, 101, 101, 0.75) 6px 0; }
+  30% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -6px 0, #686565 6px 0; } }
+  .eos-icon-installing.md-36 {
+    animation: installing_animation_middle_md-36 3s ease-in-out infinite;
+    box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0;
+    height: 9px;
+    margin: 13px;
+    width: 9px; }
+
+@keyframes installing_animation_middle_md-36 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  30% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  35% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  40% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  45% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -12px 0, rgba(104, 101, 101, 0.25) 12px 0; }
+  50% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.5) 12px 0; }
+  55% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.75) 12px 0; }
+  60% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; } }
+    .eos-icon-installing.md-36:before, .eos-icon-installing.md-36:after {
+      box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0;
+      height: 9px;
+      width: 9px; }
+    .eos-icon-installing.md-36:before {
+      animation: installing_animation_upper_md-36 3s ease-in-out infinite;
+      top: -12px; }
+
+@keyframes installing_animation_upper_md-36 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  60% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  65% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  70% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  75% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -12px 0, rgba(104, 101, 101, 0.25) 12px 0; }
+  80% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.5) 12px 0; }
+  85% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.75) 12px 0; }
+  90% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; } }
+    .eos-icon-installing.md-36:after {
+      animation: installing_animation_bottom_md-36 3s ease-in-out infinite;
+      top: 12px; }
+
+@keyframes installing_animation_bottom_md-36 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0), rgba(104, 101, 101, 0); }
+  5% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25), rgba(104, 101, 101, 0); }
+  10% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -12px 0, rgba(104, 101, 101, 0) 12px 0; }
+  15% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -12px 0, rgba(104, 101, 101, 0.25) 12px 0; }
+  20% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.5) 12px 0; }
+  25% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, rgba(104, 101, 101, 0.75) 12px 0; }
+  30% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -12px 0, #686565 12px 0; } }
+  .eos-icon-installing.md-48 {
+    animation: installing_animation_middle_md-48 3s ease-in-out infinite;
+    height: 12px;
+    margin: 18px;
+    width: 12px; }
+
+@keyframes installing_animation_middle_md-48 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  30% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  35% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  40% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  45% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -16px 0, rgba(104, 101, 101, 0.25) 16px 0; }
+  50% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.5) 16px 0; }
+  55% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.75) 16px 0; }
+  60% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; } }
+    .eos-icon-installing.md-48:before, .eos-icon-installing.md-48:after {
+      box-shadow: rgba(104, 101, 101, 0) -16px 0, rgba(104, 101, 101, 0) 16px 0;
+      height: 12px;
+      width: 12px; }
+    .eos-icon-installing.md-48:before {
+      animation: installing_animation_upper_md-48 3s ease-in-out infinite;
+      top: -16px; }
+
+@keyframes installing_animation_upper_md-48 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  60% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  65% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  70% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  75% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -16px 0, rgba(104, 101, 101, 0.25) 16px 0; }
+  80% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.5) 16px 0; }
+  85% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.75) 16px 0; }
+  90% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; } }
+    .eos-icon-installing.md-48:after {
+      animation: installing_animation_bottom_md-48 3s ease-in-out infinite;
+      top: 16px; }
+
+@keyframes installing_animation_bottom_md-48 {
+  0% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0), rgba(104, 101, 101, 0); }
+  5% {
+    background: rgba(104, 101, 101, 0);
+    box-shadow: rgba(104, 101, 101, 0.25), rgba(104, 101, 101, 0); }
+  10% {
+    background: rgba(104, 101, 101, 0.25);
+    box-shadow: rgba(104, 101, 101, 0.5) -16px 0, rgba(104, 101, 101, 0) 16px 0; }
+  15% {
+    background: rgba(104, 101, 101, 0.5);
+    box-shadow: rgba(104, 101, 101, 0.75) -16px 0, rgba(104, 101, 101, 0.25) 16px 0; }
+  20% {
+    background: rgba(104, 101, 101, 0.75);
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.5) 16px 0; }
+  25% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, rgba(104, 101, 101, 0.75) 16px 0; }
+  30% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; }
+  100% {
+    background: #686565;
+    box-shadow: #686565 -16px 0, #686565 16px 0; } }

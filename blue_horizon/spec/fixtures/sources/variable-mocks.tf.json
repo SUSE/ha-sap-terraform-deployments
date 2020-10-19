@@ -1,0 +1,38 @@
+{
+    "variable": {
+        "test_string": {
+            "default": ""
+        },
+        "are_you_sure": {
+            "type": "bool"
+        },
+        "test_list": {
+            "type": "list",
+            "description": "This is optional."
+        },
+        "test_map": {
+            "type": "map",
+            "description": "(Optional)"
+        },
+        "empty_number": {
+            "type": "number"
+        },
+        "test_description": {
+            "description": "test desc"
+        },
+        "test_password": {
+            "description": "Password is optional"
+        },
+        "test_options": {
+            "description": "Multi Options=[\"option1\", \"option2\"]"
+        },
+        "test_description_comment": {
+            "description": "Some things <!-- are best left unsaid -->",
+            "default": "be quiet"
+        },
+        "region": {
+            "type": "string",
+            "description": "Cloud region where this is running. (Optional)"
+        }
+    }
+}

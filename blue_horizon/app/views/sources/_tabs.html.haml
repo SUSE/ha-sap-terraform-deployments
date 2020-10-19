@@ -1,0 +1,20 @@
+%ul.nav.nav-tabs
+  - sources.each do |source|
+    %li.nav
+      = active_link_to source.filename, edit_source_path(source), class: 'nav-link'
+  = active_link_to new_source_path, class: 'nav-link' do
+    %i.eos-icons.md-18 add
+    New Source
+  = active_link_to validate_terra_sources_path, class: 'nav-link', style: 'margin-left:auto; margin-right: 0;' do
+    %i.eos-icons.md-18 playlist_add_check
+    Check Sources
+
+%p.clearfix
+- if @source.nil?
+  %div.float-right.btn-group.steps-container
+    = link_to welcome_path, class: "btn btn-secondary", title: t('tooltips.prior_step'), data: { toggle: 'tooltip' } do
+      %i.eos-icons.md-18 fast_rewind
+      = t('sidebar.welcome')
+    = link_to plan_path, class: "btn btn-warning",  title: t('tooltips.next_step'), data: { toggle: 'tooltip' } do
+      = t('sidebar.plan')
+      %i.eos-icons.md-18 fast_forward

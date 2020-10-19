@@ -1,0 +1,20 @@
+= form_for(@variables, url: variables_path, method: :put) do |form|
+  - @variables.by_groups.each do |group, grouped_vars|
+    %div.card
+      %h3.card-header= t("variable_groups.#{group}")
+      %div.card-body.variables{ class: "variable_group_#{group}" }
+        - grouped_vars.each do |key, value|
+          - next if @excluded.include?(key)
+          = render(@variables.type(key), key: key, value: value, description: @variables.description(key))
+    %p.clearfix
+  %div.float-right.btn-group.steps-container
+    = link_to cluster_path, class: "btn btn-secondary", title: t('tooltips.prior_step'), data: { toggle: 'tooltip' } do
+      %i.eos-icons.md-18 fast_rewind
+      = t('sidebar.cluster')
+    %button.btn.btn-primary#submit-cluster{ type: 'submit', title: t('tooltips.save'), data: { toggle: 'tooltip' } }
+      %i.eos-icons.md-18 save
+      = t('save')
+    = button_tag variables_path, method: :put, class: "btn btn-warning", title: t('tooltips.start_action'), data: { toggle: 'tooltip' }, id: 'next' do
+      = t('sidebar.plan')
+      %i.eos-icons.md-18 fast_forward
+%p.clearfix

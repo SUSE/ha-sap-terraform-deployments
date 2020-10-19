@@ -1,0 +1,18 @@
+%div.jumbotron.d-flex.flex-row
+  - if custom_image_exists? 'logo'
+    %div.col-4.d-flex.flex-column.justify-content-center.align-items-center
+      =image_tag('logo', class: 'mw-100 mh-100')
+  %div.col.container.d-flex.flex-column
+    %h1= t('title')
+    %p.lead= t('lead')
+    %div
+      %hr
+    %div.m1-auto.d-flex.flex-row.justify-content-around
+      %a.btn.btn-lg.btn-secondary{ href: advanced_path }
+        %i.eos-icons edit
+        = t('sidebar.sources')
+      %a.btn.btn-lg.btn-primary{ href: simple_path }
+        = t('sidebar.simple')
+        %i.eos-icons fast_forward
+= markdown(t('description'), false)
+%p.clearfix

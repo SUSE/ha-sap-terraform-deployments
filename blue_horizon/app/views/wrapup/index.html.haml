@@ -1,0 +1,13 @@
+%div.card
+  %h3.card-header= t('page_title.wrapup')
+  %div.card-body
+    %p= markdown(t('page_subtitle.wrapup_info'))
+    %hr
+    = markdown(t('next_steps'), false)
+
+%p.clearfix
+  %div.float-right.btn-group.steps-container
+    = link_to download_path, class: "btn btn-primary" do
+      %i.eos-icons.md-18= Rails.configuration.x.sidebar_icons[:download]
+      = t('sidebar.download')
+%p.clearfix

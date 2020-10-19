@@ -1,0 +1,32 @@
+!!!
+%html
+  %head
+    %meta{ content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type" }
+    %title= t('short_title')
+    = csrf_meta_tags
+    = stylesheet_link_tag 'application', media: 'all'
+    - if custom_image_exists? 'logo'
+      %link{ rel: "shortcut icon", href: asset_path('logo') }
+    - else
+      %link{ rel: "shortcut icon", href: asset_path('blue-horizon.svg') }
+  %body
+    %div.wrapper
+      %nav#sidebar
+        = render 'layouts/sidebar'
+      %main.flex-shrink-0.container-fluid#content
+        = bootstrap_flash
+        = yield
+      %footer.navbar.navbar-expand-lg.fixed-bottom
+        %div.container-fluid.d-flex.flex-row.justify-content-start
+          %span.navbar-text.small
+            = t('footer')
+          %span.navbar-text.small
+            This tool is
+            %a{ href: 'https://www.gnu.org/philosophy/free-sw.html', target: '_blank', rel: 'noopener noreferrer' } free software
+            released under the&nbsp;
+            %a{ href: Rails.configuration.x.source_link + 'blob/master/LICENSE' , target: '_blank', rel: 'noopener noreferrer' }> GPLv3 license
+            \.
+    - if @active_session_ip
+      = render 'layouts/locked_session', ip_address: @active_session_ip
+    = javascript_include_tag 'application'
+    = yield :page_javascript

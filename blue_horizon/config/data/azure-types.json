@@ -1,0 +1,119 @@
+{
+    "categories": {
+        "General Purpose: D": {
+            "name": "General Purpose: D",
+            "description": "D-series VMs provide 2.4 GHz Intel Xeon® E5-2673 v3 (Haswell) processors, a higher memory-to-vCPU ratio, and a solid-state drive (SSD) for the temporary disk.",
+            "features": [
+                "ACU: 210-250",
+                "Premium Storage"
+            ]
+        },
+        "Compute Optimized: F": {
+            "name": "Compute Optimized: F",
+            "description": "F-series VMs are an excellent choice for workloads that demand faster CPUs but do not need as much memory or temporary storage per vCPU; featuring 2.4 GHz Intel Xeon® E5-2673 v3 (Haswell) processors.",
+            "features": [
+                "ACU: 210 - 250",
+                "Premium Storage"
+            ]
+        },
+        "General Purpose: A": {
+            "name": "General Purpose: A",
+            "description": "The A-series VM size is throttled, based upon the hardware, to offer consistent processor performance for the running instance, regardless of the hardware it is deployed on.",
+            "features": [
+                "ACU: 100"
+            ]
+        }
+    },
+    "instance_types": {
+        "Standard_DS3_v2": {
+            "sort_value": "00",
+            "name": "Standard_DS3_v2",
+            "category": "General Purpose: D",
+            "vcpu_count": 4,
+            "ram_bytes": 15032385536,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "28 GiB SSD",
+                "Max cached/temp storage throughput": "16,000 IOPS / 128 MBps",
+                "Max uncached disk throughput": "12,800 IOPS / 192 MBps",
+                "Max NICs": "4",
+                "Expected network performance": "3000 Mbps"
+            }
+        },
+        "Standard_DS4_v2": {
+            "sort_value": "01",
+            "name": "Standard_DS4_v2",
+            "category": "General Purpose: D",
+            "vcpu_count": 8,
+            "ram_bytes": 30064771072,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "56 GiB SSD",
+                "Max cached storage throughput": "32,000 IOPS / 256 MBps",
+                "Max uncached disk throughput": "25,600 IOPS / 384 MBps",
+                "Max NICs": "8",
+                "Expected network performance": "6000 Mbps"
+            }
+        },
+        "Standard_F4s": {
+            "sort_value": "10",
+            "name": "Standard_F4s",
+            "category": "Compute Optimized: F",
+            "vcpu_count": 4,
+            "ram_bytes": 8589934592,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "16 GiB SSD",
+                "Max cached/temp storage throughput": "16,000 IOPS / 128 MBps",
+                "Max uncached disk throughput": "12,800 IOPS / 192 MBps",
+                "Max NICs": "4",
+                "Expected network performance": "3000 Mbps"
+            }
+        },
+        "Standard_F8s": {
+            "sort_value": "11",
+            "name": "Standard_F8s",
+            "category": "Compute Optimized: F",
+            "vcpu_count": 8,
+            "ram_bytes": 17179869184,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "32 GiB SSD",
+                "Max cached/temp storage throughput": "32,000 IOPS / 256 MBps",
+                "Max uncached disk throughput": "25,600 IOPS / 384 MBps",
+                "Max NICs": "8",
+                "Expected network performance": "6000 Mbps"
+            }
+        },
+        "Standard_A4_v2": {
+            "sort_value": "20",
+            "name": "Standard_A4_v2",
+            "category": "General Purpose: A",
+            "vcpu_count": 4,
+            "ram_bytes": 8589934592,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "40 GiB SSD",
+                "Max temp storage throughput": "4000 IOPS / 80 MBps read / 40 MBps write",
+                "Max data disk throughput": "8x500 IOPS",
+                "Max NICs": "4",
+                "Expected network performance": "1000 Mbps"
+            }
+        },
+        "Standard_A8_v2": {
+            "sort_value": "21",
+            "name": "Standard_A8_v2",
+            "category": "General Purpose: A",
+            "vcpu_count": 8,
+            "ram_bytes": 17179869184,
+            "ram_si_units": false,
+            "details": {
+                "Temp storage": "80 GiB SSD",
+                "Max temp storage throughput": "8000 IOPS / 160 MBps read / 80 MBps write",
+                "Max data disk throughput": "16x500 IOPS",
+                "Max NICs": "8",
+                "Expected network performance": "2000 Mbps"
+            }
+        }
+    }
+}

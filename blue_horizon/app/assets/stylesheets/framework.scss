@@ -1,0 +1,12 @@
+@import "eos-branding";
+$primary:   $eos-bc-green-500;
+$secondary: $eos-bc-gray-500;
+$info:      $eos-bc-cerulean-500;
+$danger:    $eos-bc-red-500;
+$success:   $eos-bc-green-500;
+$warning:   $eos-bc-yellow-500;
+$light:     $eos-bc-gray-100;
+$dark:      $eos-bc-gray-800;
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";

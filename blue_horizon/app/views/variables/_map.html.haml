@@ -1,0 +1,62 @@
+// value is a 'map' type; like a dictionary/hash
+- map = value
+%div.form-group{ class: "map_#{key}"}
+  %label{ for: "variables[#{key}]" }
+    = key.titleize
+    = required if @variables.required?(key)
+  - map.each do |map_key, map_value|
+    %div.input-group.mb-2
+      %div.input-group-prepend
+        %span.input-group-text
+          = map_key
+          \=
+      %input.form-control{ type: 'text', name: "variables[#{key}][#{map_key}]", value: map_value, required: true }
+      %div.input-group-append
+        %button.btn.btn-outline-danger.remove{ type: 'button', data: { toggle: 'tooltip' }, title: 'Remove' }
+          %i.eos-icons.md-18 remove
+  %div.input-group.mb-2{ id: "#{key}_new_form" }
+    %input.form-control{ type: 'text', id: "#{key}_new_key", placeholder: 'key' }
+    %input.form-control{ type: 'text', id: "#{key}_new_value", placeholder: 'value' }
+    %div.input-group-append
+      %button.btn.btn-outline-primary{ id: "#{key}_add_map", type: 'button', data: { toggle: 'tooltip' }, title: 'Add' }
+        %i.eos-icons.md-18 add
+  = formatted_description(description)
+  %div{id: "#{key}_template", style: 'display: none;' }
+    %div.input-group.mb-2
+      %div.input-group-prepend
+        %span.input-group-text
+          {{map_key}} =
+      %input.form-control{ type: 'text', name: "variables[#{key}][{{map_key}}]", value: '{{map_value}}' }
+      %div.input-group-append
+        %button.btn.btn-outline-danger.remove{ type: 'button', data: { toggle: 'tooltip' }, title: 'Remove' }
+          %i.eos-icons.md-18 remove
+
+- content_for :page_javascript do
+  :javascript
+    $(function(){
+      // Template for new entries
+      var template = $("##{key}_template").html();
+      $("##{key}_template").remove()
+      // Add new entries
+      $("##{key}_add_map").click(function(event){
+        var new_key = $("##{key}_new_key");
+        var new_value = $("##{key}_new_value");
+        var form = $("##{key}_new_form");
+        var new_entry = template.replace(/{{map_key}}/g, new_key.val());
+        new_entry = new_entry.replace(/{{map_value}}/g, new_value.val());
+        form.before(new_entry);
+        new_key.val('');
+        new_value.val('');
+        $("##{key}_new_key").focus();
+      });
+      $("##{key}_new_key").on("keydown", function(event) {
+        if (event.key == "Enter") {
+          $("##{key}_new_value").focus();
+        }
+      });
+      $("##{key}_new_value").on("keydown", function(event) {
+        if (event.key == "Enter") {
+          $("##{key}_add_map").click();
+        }
+      });
+    });

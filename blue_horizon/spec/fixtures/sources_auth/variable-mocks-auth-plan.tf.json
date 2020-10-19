@@ -1,0 +1,11 @@
+{
+    "variable": {
+        "are_you_sure": {
+            "type": "bool"
+        },
+        "test_password": {
+	  "type": "string",
+          "description": "required"
+        }
+    }
+}
