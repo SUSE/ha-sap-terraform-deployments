@@ -1,0 +1,29 @@
+# Copy to vendor/locales/[LANGUAGE_KEY].yml
+# Adjust the language key below
+
+en:
+  # Application title - shown on the home page
+  title: "Blue Horizon for SLES4SAP"
+  # Abbreviated title for use in navigation
+  short_title: "BlueHorizon"
+  # Brief tag line shown below the title
+  lead: "Deploy your SAP deployments using SLES4SAP in Azure"
+  # Long-form description of the application
+  # Markdown syntax is accepted - see https://daringfireball.net/projects/markdown/syntax
+  description: "Here the solution you were looking for to deploy your SAP workspaces using SLES4SAP in some few clicks!<br>This tool will create your SAP infrastructure and provision the machines to have an up and running environment in blink of an eye!<br>It just provides a basic set of options that we think are the most used ones.<br>For a more advanced customization you will need to get your hands dirty and play with the source project: https://github.com/SUSE/ha-sap-terraform-deployments"
+  # Long-form description of steps to take after deployment
+  # Markdown syntax is accepted - see https://daringfireball.net/projects/markdown/syntax
+  next_steps: |
+    To destroy the currently created deployment run the following commands in the folder extracted from the downloaded file:
+
+    ```terraform init```
+
+    ```terraform workspace select $used_workspace```
+
+    ```terraform destroy -auto-approve```
+
+    To access the machines the next command can be used:<br>
+    ```terraform output # get the addresses```
+
+    ```ssh -o ProxyCommand="ssh -W %h:%p cloudadmin@{bastion_ip} -i {your_ssh_key} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" cloudadmin@{hana_ip} -i {your_ssh_key} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no```
+  footer: "© 2019-2020 SUSE, all rights reserved."
