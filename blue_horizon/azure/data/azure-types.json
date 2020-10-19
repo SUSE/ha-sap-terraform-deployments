@@ -1,0 +1,53 @@
+{
+    "categories": {
+        "sap_hana": {
+            "name": "SAP HANA database",
+            "description": "Simple or clustered SAP HANA database environment",
+            "features": [
+              "Find more information in [Azure Solution Template](https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html)"
+            ]
+        }
+    },
+    "instance_types": {
+        "demo_sap_hana": {
+            "sort_value": "00",
+            "name": "Demo",
+            "category": "sap_hana",
+            "details": {
+                "Instance type": "E8s_v3",
+                "Premium storage": "7× 128GB",
+                "Accelerated networking": "False"
+            }
+        },
+        "small_sap_hana": {
+            "sort_value": "01",
+            "name": "Small",
+            "category": "sap_hana",
+            "details": {
+                "Instance type": "E32s_v3",
+                "Premium storage": "4× 256GB, 2× 64GB, 1× 1TB",
+                "Accelerated networking": "True"
+            }
+        },
+        "medium_sap_hana": {
+            "sort_value": "02",
+            "name": "Medium",
+            "category": "sap_hana",
+            "details": {
+                "Instance type": "E64s",
+                "Premium storage": "3× 1TB, 6× 512GB, 2× 64GB",
+                "Accelerated networking": "True"
+            }
+        },
+        "large_sap_hana": {
+            "sort_value": "03",
+            "name": "Large",
+            "category": "sap_hana",
+            "details": {
+                "Instance type": "M128s",
+                "Premium storage": "2× 2TB, 4× 1TB, 2× 512GB, 2× 64GB",
+                "Accelerated networking": "True"
+            }
+        }
+    }
+}

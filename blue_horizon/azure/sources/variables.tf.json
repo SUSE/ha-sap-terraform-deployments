@@ -59,13 +59,12 @@
     },
     "deployment_type": {
       "type": "string",
-      "default": "2-tier",
-      "description": "Select the desired deployment type. Options=[\"2-tier\",\"2-tier-HA\"]. More information in: https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html"
+      "default": "HA",
+      "description": "Select between HA (SAP HANA system replication and HA capabilities) or non HA deployment. Options=[\"HA\",\"non HA\"]"
     },
-    "deployment_size": {
+    "instance_type": {
       "type": "string",
-      "default": "demo",
-      "description": "Select the desired deployment size. options=['demo','small','medium','large'].More information in: https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html"
+      "description": "Only used to create the 'Size cluster' page"
     },
     "sles4sap_version": {
       "type": "string",
