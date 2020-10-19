@@ -25,8 +25,9 @@ region = "europe-west1"
 # General configuration variables
 #################################
 
-# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as sufix
+# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
+# The name must be unique among different deployments
 # deployment_name "mydeployment"
 
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below

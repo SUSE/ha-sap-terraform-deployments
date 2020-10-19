@@ -4,7 +4,7 @@ variable "provider_type" {
 }
 
 variable "deployment_name" {
-  description = "Name used to complement some of the infrastructure resources name as sufix. If it is not provided, the terraform workspace string is used"
+  description = "Name used to complement some of the infrastructure resources name as suffix. If it is not provided, the terraform workspace string is used"
   type        = string
   default     = ""
 }
