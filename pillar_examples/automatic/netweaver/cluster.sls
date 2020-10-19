@@ -17,8 +17,14 @@ cluster:
     module: softdog
     device: /dev/watchdog
   {% endif %}
+  wait_for_initialization: 40
+  {%- if grains['app_server_count']|default(2) == 0 %}
+  # join_timeout must be large as the 1st machine where the cluster is started will host
+  # the DB and PAS installation, taking a long time
+  join_timeout: 10000
+  {%- else %}
   join_timeout: 180
-  wait_for_initialization: 20
+  {%- endif %}
   ntp: pool.ntp.org
   {%- if grains['provider'] == 'libvirt' %}
   sshkeys:

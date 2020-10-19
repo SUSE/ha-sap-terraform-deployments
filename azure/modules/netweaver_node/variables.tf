@@ -111,6 +111,11 @@ variable "pas_instance_number" {
   default     = "01"
 }
 
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string
@@ -216,6 +221,21 @@ variable "os_image" {
 variable "hana_ip" {
   type        = string
   description = "Ip address of the hana database"
+}
+
+variable "hana_sid" {
+  description = "System identifier of the HANA system (e.g.: HA1 or PRD)"
+  type        = string
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
 }
 
 variable "ha_enabled" {

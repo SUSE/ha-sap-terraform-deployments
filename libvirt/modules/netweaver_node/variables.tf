@@ -12,9 +12,14 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "netweaver_count" {
-  description = "number of hosts like this one"
-  default     = 4
+variable "xscs_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "app_server_count" {
+  type    = number
+  default = 2
 }
 
 variable "host_ips" {
@@ -52,6 +57,21 @@ variable "iscsi_srv_ip" {
 variable "hana_ip" {
   type        = string
   description = "Ip address of the hana database"
+}
+
+variable "hana_sid" {
+  description = "System identifier of the HANA system (e.g.: HA1 or PRD)"
+  type        = string
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
 }
 
 variable "netweaver_product_id" {
@@ -118,6 +138,11 @@ variable "netweaver_sid" {
   default     = "HA1"
 }
 
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
 variable "ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
@@ -134,12 +159,6 @@ variable "pas_instance_number" {
   description = "PAS instance number"
   type        = string
   default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
 }
 
 variable "ha_enabled" {

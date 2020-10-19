@@ -229,15 +229,69 @@ variable "hana_extract_dir" {
 }
 
 variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
+  description = "Disk type of the disks used to store HANA database content"
   type        = string
   default     = "gp2"
 }
 
+variable "hana_data_disk_size" {
+  description = "Disk size in GB for the disk used to store HANA database content"
+  type        = number
+  default     = 60
+}
+
+
 variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
+  description = "Filesystem type used by the disk where HANA is installed"
   type        = string
   default     = "xfs"
+}
+
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
 }
 
 variable "hana_cluster_vip" {
@@ -431,6 +485,12 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  type        = number
+  default     = 2
+}
+
 variable "netweaver_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
@@ -479,16 +539,39 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_fencing_mechanism" {
-  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
-  type        = string
-  default     = "native"
-}
-
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string
   default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "netweaver_product_id" {
