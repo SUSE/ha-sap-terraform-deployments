@@ -24,6 +24,10 @@ iprange = "192.168.XXX.Y/24"
 # General configuration variables
 #################################
 
+# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as sufix
+# If it is not used, the terraform workspace string is used
+# deployment_name "mydeployment"
+
 # SUSE Customer Center Registration parameters.
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"

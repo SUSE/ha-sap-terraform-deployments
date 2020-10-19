@@ -26,7 +26,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -57,7 +57,7 @@ resource "azurerm_lb" "hana-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -165,7 +165,7 @@ resource "azurerm_network_interface" "hana" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -178,7 +178,7 @@ resource "azurerm_public_ip" "hana" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -196,7 +196,7 @@ resource "azurerm_image" "sles4sap" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -274,7 +274,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 

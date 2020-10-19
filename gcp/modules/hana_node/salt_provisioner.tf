@@ -29,8 +29,8 @@ resource "null_resource" "hana_node_provisioner" {
 role: hana_node
 ${var.common_variables["grains_output"]}
 scenario_type: ${var.scenario_type}
-name_prefix: ${terraform.workspace}-hana
-hostname: ${terraform.workspace}-hana0${count.index + 1}
+name_prefix: ${var.common_variables["deployment_name"]}-hana
+hostname: ${var.common_variables["deployment_name"]}-hana0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 ha_enabled: ${var.ha_enabled}

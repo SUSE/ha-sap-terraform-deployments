@@ -30,6 +30,11 @@ variable "snet_address_range" {
   description = "Subnet address range of the bastion subnet"
 }
 
+variable "deployment_name" {
+  description = "Name used to complement some of the infrastructure resources name as sufix. If it is not provided, the terraform workspace string is used"
+  type        = string
+}
+
 variable "admin_user" {
   description = "Administration user used to create the machines"
   type        = string

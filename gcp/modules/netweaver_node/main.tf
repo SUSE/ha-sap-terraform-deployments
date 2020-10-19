@@ -7,7 +7,7 @@ locals {
 
 resource "google_compute_disk" "netweaver-software" {
   count = var.netweaver_count
-  name  = "${terraform.workspace}-nw-installation-sw-${count.index}"
+  name  = "${var.common_variables["deployment_name"]}-nw-installation-sw-${count.index}"
   type  = "pd-standard"
   size  = 60
   zone  = element(var.compute_zones, count.index)
@@ -15,7 +15,7 @@ resource "google_compute_disk" "netweaver-software" {
 
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "nw-ascs-route" {
-  name                   = "${terraform.workspace}-nw-ascs-route"
+  name                   = "${var.common_variables["deployment_name"]}-nw-ascs-route"
   count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
@@ -25,7 +25,7 @@ resource "google_compute_route" "nw-ascs-route" {
 }
 
 resource "google_compute_route" "nw-ers-route" {
-  name                   = "${terraform.workspace}-nw-ers-route"
+  name                   = "${var.common_variables["deployment_name"]}-nw-ers-route"
   count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 1)}/32"
   network                = var.network_name
@@ -36,7 +36,7 @@ resource "google_compute_route" "nw-ers-route" {
 
 resource "google_compute_instance" "netweaver" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-netweaver0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-netweaver0${count.index + 1}"
   count        = var.netweaver_count
   zone         = element(var.compute_zones, count.index)
 

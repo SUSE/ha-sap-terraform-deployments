@@ -64,7 +64,7 @@ resource "azurerm_network_interface" "bastion" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }
 
@@ -77,7 +77,7 @@ resource "azurerm_public_ip" "bastion" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }
 
@@ -125,6 +125,6 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }

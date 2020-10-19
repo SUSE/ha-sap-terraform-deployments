@@ -21,6 +21,10 @@ aws_region = "eu-central-1"
 # General configuration variables
 #################################
 
+# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as sufix
+# If it is not used, the terraform workspace string is used
+# deployment_name "mydeployment"
+
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
 aws_access_key_id = my-access-key-id

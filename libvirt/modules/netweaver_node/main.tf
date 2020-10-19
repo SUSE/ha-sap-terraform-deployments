@@ -1,13 +1,13 @@
 resource "libvirt_volume" "netweaver_image_disk" {
   count            = var.netweaver_count
-  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
+  name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.netweaver_count

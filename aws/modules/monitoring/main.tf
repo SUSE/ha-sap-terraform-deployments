@@ -27,12 +27,12 @@ resource "aws_instance" "monitoring" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-monitoring"
+    Name = "${var.common_variables["deployment_name"]}-monitoring"
   }
 
   tags = {
-    Name      = "${terraform.workspace} - Monitoring"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]} - Monitoring"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 

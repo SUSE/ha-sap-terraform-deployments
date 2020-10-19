@@ -24,6 +24,10 @@ az_region = "westeurope"
 # General configuration variables
 #################################
 
+# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as sufix
+# If it is not used, the terraform workspace string is used
+# deployment_name "mydeployment"
+
 # Admin user for the created machines
 admin_user = "cloudadmin"
 
