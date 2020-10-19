@@ -99,6 +99,7 @@ locals {
       app_server_count            = 10
     }
   }
+  sles4sap_version = "SLES15SP2"
   sles_version = {
     SLES15 = {
       publisher = "SUSE"
@@ -129,33 +130,36 @@ locals {
 module "bluehorizon" {
   source                             = "git::https://github.com/SUSE/ha-sap-terraform-deployments.git///azure?ref=develop"
   az_region                          = var.azure_region
-  admin_user                         = var.administration_user
-  public_key_location                = var.ssh_public_key_location
-  private_key_location               = var.ssh_private_key_location
+  admin_user                         = "azadmin"
+  authorized_keys                    = ssh_authorized.keys
   cluster_ssh_pub                    = "salt://sshkeys/cluster.id_rsa.pub"
   cluster_ssh_key                    = "salt://sshkeys/cluster.id_rsa"
-  reg_code                           = var.scc_registration_code
-  reg_email                          = var.scc_registration_email
+  reg_code                           = ""
+  reg_email                          = ""
   hana_count                         = var.deployment_type == "2-tier-HA" ? 2 : 1
   os_image                           = local.os_image
   hana_vm_size                       = local.hana_sizes[var.deployment_size]["vm_size"]
   hana_data_disks_configuration      = local.hana_sizes[var.deployment_size]["data_disks_configuration"]
   hana_enable_accelerated_networking = local.hana_sizes[var.deployment_size]["enable_accelerated_networking"]
-  #hana_sid                           = var.system_identifier
-  #hana_instance_number               = var.instance_number
+  hana_sid                           = var.system_identifier
+  hana_instance_number               = var.instance_number
   #hana_master_password               = var.sap_admin_password
-  #hana_primary_site                  = var.primary_site_name
-  #hana_secondary_site                = var.secondary_site_name
+  #hana_primary_site                  = "siteA"
+  #hana_secondary_site                = "siteB"
   hana_cluster_fencing_mechanism     = "sbd"
   hana_ha_enabled                    = var.deployment_type == "2-tier-HA" ? true : false
   hana_inst_master                   = var.hana_installation_software_path
   storage_account_name               = var.storage_account_name
   storage_account_key                = var.storage_account_key
-  monitoring_enabled                 = var.enable_monitoring_solution
+  monitoring_enabled                 = true
   #drbd_enabled                       = var.deployment_type == "3-tier-HA" ? true : false
   #netweaver_enabled                  = var.deployment_type == "2-tier" || var.deployment_type == "2-tie-HA" ? false : true
   pre_deployment                     = true
   provisioning_log_level             = "info"
+}
+
+output "admin_user" {
+  value = module.bluehorizon.admin_user
 }
 
 output "bastion_ip" {
