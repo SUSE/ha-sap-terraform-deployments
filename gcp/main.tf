@@ -56,6 +56,8 @@ module "common_variables" {
   additional_packages    = var.additional_packages
   public_key_location    = var.public_key_location
   private_key_location   = var.private_key_location
+  authorized_keys        = var.authorized_keys
+  authorized_user        = "root"
   provisioner            = var.provisioner
   provisioning_log_level = var.provisioning_log_level
   background             = var.background

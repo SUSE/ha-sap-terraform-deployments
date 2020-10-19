@@ -61,6 +61,8 @@ module "common_variables" {
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
   private_key_location   = var.private_key_location
+  authorized_keys        = var.authorized_keys
+  authorized_user        = "ec2-user"
   provisioner            = var.provisioner
   provisioning_log_level = var.provisioning_log_level
   background             = var.background

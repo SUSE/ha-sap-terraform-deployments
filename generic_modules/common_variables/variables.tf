@@ -43,6 +43,17 @@ variable "private_key_location" {
   default     = ""
 }
 
+variable "authorized_keys" {
+  description = "List of authorized SSH public keys path to access the created machines with the used admin user (root in this case)"
+  type        = list(string)
+  default     = []
+}
+
+variable "authorized_user" {
+  description = "Authorized user for the given authorized_keys"
+  type        = string
+}
+
 variable "provisioner" {
   description = "Used provisioner option. Available options: salt. Let empty to not use any provisioner"
   default     = "salt"

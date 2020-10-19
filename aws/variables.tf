@@ -63,6 +63,12 @@ variable "private_key_location" {
   type        = string
 }
 
+variable "authorized_keys" {
+  description = "List of authorized SSH public keys path to access the created machines with the used admin user (root in this case)"
+  type        = list(string)
+  default     = []
+}
+
 # Deployment variables
 
 variable "name" {
