@@ -68,9 +68,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 # To auto detect the SLE version
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
-# Specific SLE version used in all the created machines
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/"
+# Otherwise use a specific SLE version:
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15/"
 #ha_sap_deployment_repo = ""
 
 # Provisioning log level (error by default)
@@ -298,30 +298,36 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Set to false to only create a ASCS and PAS instances
 #netweaver_ha_enabled = true
 
-# Set the Netweaver product id for HA (this is just an example)
-#netweaver_product_id = NW750.HDB.ABAPHA
-# Fon non HA
-#netweaver_product_id = NW750.HDB.ABAP
-
 # Select Netweaver cluster fencing mechanism. 'native' by default
 #netweaver_cluster_fencing_mechanism = "sbd"
 
-# Netweaver installation required folders
-# This S3 bucket must contain the next software (select the version you want to install of course)
-#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
-#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
-#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
-#Sapexe folder files:
-#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+# Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
+# Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
+# - NW750.HDB.ABAP
+# - NW750.HDB.ABAPHA
+# - S4HANA1709.CORE.HDB.ABAP
+# - S4HANA1709.CORE.HDB.ABAPHA
+# Below are the supported SAP Netweaver product ids if using SWPM version 2.0:
+# - S4HANA1809.CORE.HDB.ABAP
+# - S4HANA1809.CORE.HDB.ABAPHA
+# - S4HANA1909.CORE.HDB.ABAP
+# - S4HANA1909.CORE.HDB.ABAPHA
 
+# Example:
+#netweaver_product_id = "NW750.HDB.ABAPHA"
+
+# Preparing the Netweaver download basket. Check `doc/sap_software.md` for more information
+
+# AWS S3 bucket where all the Netweaver software is available. The next paths are relative to this folder.
 #netweaver_s3_bucket = "s3://path/to/your/netweaver/installation/s3bucket"
+
 # SAP SWPM installation folder, relative to the netweaver_s3_bucket folder
 #netweaver_swpm_folder     =  "your_swpm"
 # Or specify the path to the sapcar executable & SWPM installer sar archive, relative to the netweaver_s3_bucket folder
-# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia/NW/SWPM)
+# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia_extract/NW/SWPM)
 #netweaver_sapcar_exe = "your_sapcar_exe_file_path"
 #netweaver_swpm_sar = "your_swpm_sar_file_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to the netweaver_s3_bucket folder
-#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+#netweaver_sapexe_folder   =  "download_basket"
 # Additional media archives or folders (added in start_dir.cd), relative to the netweaver_s3_bucket folder
 #netweaver_additional_dvds = ["dvd1", "dvd2"]

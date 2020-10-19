@@ -15,6 +15,7 @@ ___
 ## Major features
 
 - HA Clusters and HANA deployment
+- [Preparing SAP software](doc/sap_software.md)
 - [Monitoring of cluster](doc/monitoring.md)
 - [Netweaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)
