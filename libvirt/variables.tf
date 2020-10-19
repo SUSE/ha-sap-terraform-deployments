@@ -48,7 +48,7 @@ variable "public_key_location" {
 }
 
 variable "authorized_keys" {
-  description = "List of authorized SSH public keys path to access the created machines with the used admin user (root in this case)"
+  description = "List of additional authorized SSH public keys paths to access the created machines with the used admin user (root in this case)"
   type        = list(string)
   default     = []
 }
