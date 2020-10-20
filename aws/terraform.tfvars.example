@@ -1,4 +1,7 @@
-# Launch SLES-HAE of SLES4SAP cluster nodes
+#################################
+# ha-sap-terraform-deployments project configuration file
+# Find all the variables in the variables.tf file
+#################################
 
 # Region where to deploy the configuration
 aws_region = "eu-central-1"

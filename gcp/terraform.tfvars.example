@@ -1,3 +1,8 @@
+#################################
+# ha-sap-terraform-deployments project configuration file
+# Find all the variables in the variables.tf file
+#################################
+
 # GCP project id
 project = "my-project"
 
