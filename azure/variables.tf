@@ -7,13 +7,13 @@ variable "az_region" {
 }
 
 variable "resource_group_name" {
-  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{terraform.workspace}}"
+  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
 
 variable "vnet_name" {
-  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{terraform.workspace}}"
+  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
@@ -25,7 +25,7 @@ variable "vnet_address_range" {
 }
 
 variable "subnet_name" {
-  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{terraform.workspace}}"
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
@@ -81,10 +81,10 @@ variable "bastion_private_key_location" {
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
-  default     = "hana"
+  default     = ""
 }
 
 variable "os_image" {
@@ -167,6 +167,12 @@ variable "background" {
 }
 
 # Hana related variables
+
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "hana"
+}
 
 variable "hana_count" {
   description = "Number of hana nodes"

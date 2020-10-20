@@ -16,8 +16,8 @@ resource "null_resource" "monitoring_provisioner" {
     content     = <<EOF
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
-name_prefix: ${terraform.workspace}-monitoring
-hostname: ${terraform.workspace}-monitoring
+name_prefix: ${var.common_variables["deployment_name"]}-monitoring
+hostname: ${var.common_variables["deployment_name"]}-monitoring
 network_domain: "tf.local"
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${google_compute_instance.monitoring[0].network_interface[0].access_config[0].nat_ip}

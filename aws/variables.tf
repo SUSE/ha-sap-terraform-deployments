@@ -65,9 +65,10 @@ variable "private_key_location" {
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
+  default     = ""
 }
 
 variable "os_image" {
@@ -156,6 +157,11 @@ variable "background" {
 }
 
 # Hana related variables
+
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
 
 variable "hana_count" {
   description = "Number of hana nodes"

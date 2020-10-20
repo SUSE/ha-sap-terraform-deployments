@@ -45,6 +45,7 @@ locals {
 module "common_variables" {
   source                 = "../generic_modules/common_variables"
   provider_type          = "libvirt"
+  deployment_name        = local.deployment_name
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
@@ -55,7 +56,7 @@ module "common_variables" {
   provisioning_log_level = var.provisioning_log_level
   background             = var.background
   monitoring_enabled     = var.monitoring_enabled
-  monitoring_srv_ip      = var.monitoring_enabled ? module.monitoring.output_data.private_address : ""
+  monitoring_srv_ip      = var.monitoring_enabled ? local.monitoring_srv_ip : ""
   qa_mode                = var.qa_mode
 }
 

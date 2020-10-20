@@ -21,6 +21,8 @@ data "google_compute_subnetwork" "current-subnet" {
 }
 
 locals {
+  deployment_name = var.deployment_name != "" ? var.deployment_name : terraform.workspace
+
   network_link = var.vpc_name == "" ? google_compute_network.ha_network.0.self_link : format(
   "https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", var.project, var.vpc_name)
   vpc_name             = var.vpc_name == "" ? google_compute_network.ha_network.0.name : var.vpc_name
@@ -31,13 +33,13 @@ locals {
 # Network resources: Network, Subnet
 resource "google_compute_network" "ha_network" {
   count                   = var.vpc_name == "" ? 1 : 0
-  name                    = "${terraform.workspace}-network"
+  name                    = "${local.deployment_name}-network"
   auto_create_subnetworks = "false"
 }
 
 resource "google_compute_subnetwork" "ha_subnet" {
   count         = var.subnet_name == "" ? 1 : 0
-  name          = "${terraform.workspace}-subnet"
+  name          = "${local.deployment_name}-subnet"
   network       = local.network_link
   region        = var.region
   ip_cidr_range = local.subnet_address_range
@@ -45,7 +47,7 @@ resource "google_compute_subnetwork" "ha_subnet" {
 
 # Network firewall rules
 resource "google_compute_firewall" "ha_firewall_allow_internal" {
-  name          = "${terraform.workspace}-fw-internal"
+  name          = "${local.deployment_name}-fw-internal"
   network       = local.vpc_name
   source_ranges = [local.subnet_address_range]
 
@@ -66,7 +68,7 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
   count   = var.create_firewall_rules ? 1 : 0
-  name    = "${terraform.workspace}-fw-icmp"
+  name    = "${local.deployment_name}-fw-icmp"
   network = local.vpc_name
 
   allow {
@@ -76,7 +78,7 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
   count   = var.create_firewall_rules ? 1 : 0
-  name    = "${terraform.workspace}-fw-tcp"
+  name    = "${local.deployment_name}-fw-tcp"
   network = local.vpc_name
 
   allow {

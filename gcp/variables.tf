@@ -51,6 +51,12 @@ variable "private_key_location" {
 
 # Deployment variables
 
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
+  type        = string
+  default     = ""
+}
+
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string

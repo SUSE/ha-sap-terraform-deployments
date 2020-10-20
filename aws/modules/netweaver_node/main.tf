@@ -11,8 +11,8 @@ resource "aws_subnet" "netweaver-subnet" {
   cidr_block        = element(var.subnet_address_range, count.index)
   availability_zone = element(var.availability_zones, count.index)
   tags = {
-    Name      = "${terraform.workspace}-netweaver-subnet-${count.index + 1}"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]}-netweaver-subnet-${count.index + 1}"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -46,6 +46,7 @@ resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
 module "sap_cluster_policies" {
   enabled           = local.vm_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"
+  common_variables  = var.common_variables
   name              = var.name
   aws_region        = var.aws_region
   cluster_instances = slice(aws_instance.netweaver.*.id, 0, min(local.vm_count, 2))
@@ -84,13 +85,13 @@ resource "aws_instance" "netweaver" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
   }
 
   tags = {
-    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace                        = terraform.workspace
-    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Workspace                                            = var.common_variables["deployment_name"]
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 

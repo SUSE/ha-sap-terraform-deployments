@@ -24,7 +24,7 @@ ${var.common_variables["grains_output"]}
 region: ${var.aws_region}
 name_prefix: ${var.name}
 aws_cluster_profile: Cluster
-aws_instance_tag: ${terraform.workspace}-cluster
+aws_instance_tag: ${var.common_variables["deployment_name"]}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
