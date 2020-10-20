@@ -54,7 +54,7 @@ resource "aws_efs_file_system" "netweaver-efs" {
 # AWS key pair
 resource "aws_key_pair" "key-pair" {
   key_name   = "${local.deployment_name} - terraform"
-  public_key = file(var.public_key_location)
+  public_key = module.common_variables.configuration["public_key"]
 }
 
 # AWS availability zones

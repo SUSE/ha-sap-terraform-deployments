@@ -9,11 +9,11 @@ resource "null_resource" "netweaver_provisioner" {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
 
     bastion_host        = var.common_variables["bastion_host"]
     bastion_user        = var.admin_user
-    bastion_private_key = file(var.common_variables["bastion_private_key"])
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -66,7 +66,7 @@ module "netweaver_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
   user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.common_variables["bastion_host"]
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses

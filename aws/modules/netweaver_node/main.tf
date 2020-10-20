@@ -100,7 +100,7 @@ module "netweaver_on_destroy" {
   node_count           = local.vm_count
   instance_ids         = aws_instance.netweaver.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.netweaver.*.public_ip
   dependencies = concat(
     [aws_route_table_association.netweaver-subnet-route-association],

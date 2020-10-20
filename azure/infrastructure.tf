@@ -256,7 +256,7 @@ module "bastion" {
   vnet_name           = local.vnet_name
   admin_user          = var.admin_user
   deployment_name     = local.deployment_name
-  public_key_location = var.bastion_public_key_location != "" ? var.bastion_public_key_location : var.public_key_location
+  public_key          = var.bastion_public_key != "" ? var.bastion_public_key : var.public_key
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   snet_address_range  = cidrsubnet(local.vnet_address_range, 8, 2)
 }

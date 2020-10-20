@@ -109,7 +109,7 @@ resource "azurerm_virtual_machine" "monitoring" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -128,7 +128,7 @@ module "monitoring_on_destroy" {
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = azurerm_virtual_machine.monitoring.*.id
   user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.common_variables["bastion_host"]
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses

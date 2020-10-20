@@ -9,7 +9,7 @@ resource "null_resource" "drbd_provisioner" {
     host        = element(aws_instance.drbd.*.public_ip, count.index)
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
@@ -57,7 +57,7 @@ module "drbd_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
   instance_ids         = null_resource.drbd_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.drbd.*.public_ip
   background           = var.common_variables["background"]
 }

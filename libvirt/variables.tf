@@ -41,16 +41,10 @@ variable "volume_name" {
   default     = ""
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
-  type        = string
-  default     = "~/.ssh/id_rsa.pub"
-}
-
 variable "authorized_keys" {
-  description = "List of additional authorized SSH public keys paths to access the created machines with the used admin user (root in this case)"
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (root in this case)"
   type        = list(string)
-  default     = []
+  default     = ["~/.ssh/id_rsa.pub"]
 }
 
 # Deployment variables

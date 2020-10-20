@@ -58,8 +58,8 @@ module "common_variables" {
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
+  public_key             = var.public_key
+  private_key            = var.private_key
   authorized_keys        = var.authorized_keys
   authorized_user        = "root"
   provisioner            = var.provisioner

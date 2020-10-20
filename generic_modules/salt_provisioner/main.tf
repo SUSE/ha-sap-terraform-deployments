@@ -9,11 +9,11 @@ resource "null_resource" "provision_background" {
     type        = "ssh"
     user        = var.user
     password    = var.password
-    private_key = var.private_key_location != "" ? file(var.private_key_location) : ""
+    private_key = var.private_key != "" ? var.private_key : ""
 
     bastion_host        = var.bastion_host
     bastion_user        = var.user
-    bastion_private_key = var.bastion_private_key != "" ? file(var.bastion_private_key) : ""
+    bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : ""
   }
 
   provisioner "file" {
@@ -45,11 +45,11 @@ resource "null_resource" "provision" {
     type        = "ssh"
     user        = var.user
     password    = var.password
-    private_key = var.private_key_location != "" ? file(var.private_key_location) : ""
+    private_key = var.private_key != "" ? var.private_key : ""
 
     bastion_host        = var.bastion_host
     bastion_user        = var.user
-    bastion_private_key = var.bastion_private_key != "" ? file(var.bastion_private_key) : ""
+    bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : ""
   }
 
   provisioner "file" {

@@ -1,13 +1,15 @@
 locals {
+  public_key      = var.public_key != "" ? (fileexists(var.public_key) ? file(var.public_key) : var.public_key) : ""
+  private_key     = var.private_key != "" ? (fileexists(var.private_key) ? file(var.private_key) : var.private_key) : ""
   authorized_keys = join(", ", formatlist("\"%s\"",
     concat(
-      [trimspace(file(var.public_key_location))],
-      [for key in var.authorized_keys: trimspace(file(key))])
+      [trimspace(local.public_key)],
+      [for key in var.authorized_keys: trimspace(fileexists(key) ? file(key) : key)])
     )
   )
 
-  bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : var.private_key_location
-  bastion_public_key  = var.bastion_public_key != "" ? var.bastion_public_key : var.public_key_location
+  bastion_private_key = var.bastion_private_key != "" ? (fileexists(var.bastion_private_key) ? file(var.bastion_private_key) : var.bastion_private_key) : local.private_key
+  bastion_public_key  = var.bastion_public_key != "" ? (fileexists(var.bastion_public_key) ? file(var.bastion_public_key) : var.bastion_public_key) : local.public_key
 }
 
 output "configuration" {
@@ -19,8 +21,8 @@ output "configuration" {
     reg_additional_modules = var.reg_additional_modules
     ha_sap_deployment_repo = var.ha_sap_deployment_repo
     additional_packages    = var.additional_packages
-    public_key_location    = var.public_key_location
-    private_key_location   = var.private_key_location
+    public_key             = local.public_key
+    private_key            = local.private_key
     authorized_keys        = var.authorized_keys
     bastion_enabled        = var.bastion_enabled
     bastion_host           = var.bastion_host
