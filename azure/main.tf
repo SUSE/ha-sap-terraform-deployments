@@ -29,11 +29,12 @@ locals {
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
 
   netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
-  netweaver_count             = local.netweaver_xscs_server_count + var.netweaver_app_server_count
+  netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
+  netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
 
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_count, local.netweaver_ip_start + (local.netweaver_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_virtual_ips_count, local.netweaver_ip_start + (local.netweaver_virtual_ips_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -97,7 +98,7 @@ module "netweaver_node" {
   source                      = "./modules/netweaver_node"
   common_variables            = module.common_variables.configuration
   az_region                   = var.az_region
-  xscs_server_count           = var.netweaver_enabled ? local.netweaver_xscs_server_count : 0
+  xscs_server_count           = local.netweaver_xscs_server_count
   app_server_count            = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   xscs_vm_size                = var.netweaver_xscs_vm_size
   app_vm_size                 = var.netweaver_app_vm_size
@@ -118,7 +119,15 @@ module "netweaver_node" {
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   admin_user                  = var.admin_user
+  hana_ip                     = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  hana_sid                    = var.hana_sid
+  hana_instance_number        = var.hana_instance_number
+  hana_master_password        = var.hana_master_password
   netweaver_sid               = var.netweaver_sid
+  ascs_instance_number        = var.netweaver_ascs_instance_number
+  ers_instance_number         = var.netweaver_ers_instance_number
+  pas_instance_number         = var.netweaver_pas_instance_number
+  netweaver_master_password   = var.netweaver_master_password
   netweaver_product_id        = var.netweaver_product_id
   netweaver_inst_folder       = var.netweaver_inst_folder
   netweaver_extract_dir       = var.netweaver_extract_dir
@@ -137,48 +146,54 @@ module "netweaver_node" {
   sbd_storage_type            = var.sbd_storage_type
   ha_enabled                  = var.netweaver_ha_enabled
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
-  hana_ip                     = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
 }
 
 module "hana_node" {
-  source                        = "./modules/hana_node"
-  common_variables              = module.common_variables.configuration
-  az_region                     = var.az_region
-  hana_count                    = var.hana_count
-  hana_instance_number          = var.hana_instance_number
-  vm_size                       = var.hana_vm_size
-  host_ips                      = local.hana_ips
-  scenario_type                 = var.scenario_type
-  resource_group_name           = local.resource_group_name
-  network_subnet_id             = local.subnet_id
-  sec_group_id                  = azurerm_network_security_group.mysecgroup.id
-  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  storage_account_name          = var.storage_account_name
-  storage_account_key           = var.storage_account_key
-  enable_accelerated_networking = var.hana_enable_accelerated_networking
-  sles4sap_uri                  = var.sles4sap_uri
-  hana_cluster_vip              = local.hana_cluster_vip
-  hana_cluster_vip_secondary    = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                    = var.hana_ha_enabled
-  hana_inst_master              = var.hana_inst_master
-  hana_inst_folder              = var.hana_inst_folder
-  hana_platform_folder          = var.hana_platform_folder
-  hana_sapcar_exe               = var.hana_sapcar_exe
-  hana_archive_file             = var.hana_archive_file
-  hana_extract_dir              = var.hana_extract_dir
-  hana_fstype                   = var.hana_fstype
-  cluster_ssh_pub               = var.cluster_ssh_pub
-  cluster_ssh_key               = var.cluster_ssh_key
-  bastion_enabled               = var.bastion_enabled
-  bastion_host                  = module.bastion.public_ip
-  bastion_private_key           = local.bastion_private_key
-  hana_data_disks_configuration = var.hana_data_disks_configuration
-  os_image                      = local.hana_os_image
-  admin_user                    = var.admin_user
-  fencing_mechanism             = var.hana_cluster_fencing_mechanism
-  sbd_storage_type              = var.sbd_storage_type
-  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
-  hwcct                         = var.hwcct
+  source                              = "./modules/hana_node"
+  common_variables                    = module.common_variables.configuration
+  az_region                           = var.az_region
+  hana_count                          = var.hana_count
+  vm_size                             = var.hana_vm_size
+  host_ips                            = local.hana_ips
+  hana_sid                            = var.hana_sid
+  hana_instance_number                = var.hana_instance_number
+  hana_cost_optimized_sid             = var.hana_cost_optimized_sid
+  hana_cost_optimized_instance_number = var.hana_cost_optimized_instance_number
+  hana_master_password                = var.hana_master_password
+  hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
+  hana_primary_site                   = var.hana_primary_site
+  hana_secondary_site                 = var.hana_secondary_site
+  scenario_type                       = var.scenario_type
+  resource_group_name                 = local.resource_group_name
+  network_subnet_id                   = local.subnet_id
+  sec_group_id                        = azurerm_network_security_group.mysecgroup.id
+  storage_account                     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account_name                = var.storage_account_name
+  storage_account_key                 = var.storage_account_key
+  enable_accelerated_networking       = var.hana_enable_accelerated_networking
+  sles4sap_uri                        = var.sles4sap_uri
+  hana_cluster_vip                    = local.hana_cluster_vip
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                          = var.hana_ha_enabled
+  hana_inst_master                    = var.hana_inst_master
+  hana_inst_folder                    = var.hana_inst_folder
+  hana_platform_folder                = var.hana_platform_folder
+  hana_sapcar_exe                     = var.hana_sapcar_exe
+  hana_archive_file                   = var.hana_archive_file
+  hana_extract_dir                    = var.hana_extract_dir
+  hana_fstype                         = var.hana_fstype
+  cluster_ssh_pub                     = var.cluster_ssh_pub
+  cluster_ssh_key                     = var.cluster_ssh_key
+  bastion_enabled                     = var.bastion_enabled
+  bastion_host                        = module.bastion.public_ip
+  bastion_private_key                 = local.bastion_private_key
+  hana_data_disks_configuration       = var.hana_data_disks_configuration
+  os_image                            = local.hana_os_image
+  admin_user                          = var.admin_user
+  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
+  iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
+  hwcct                               = var.hwcct
 }
 
 module "monitoring" {

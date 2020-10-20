@@ -27,6 +27,14 @@ aws_instance_tag: ${var.common_variables["deployment_name"]}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
+hana_cost_optimized_instance_number: ${var.hana_cost_optimized_instance_number}
+hana_master_password: ${var.hana_master_password}
+hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
+hana_primary_site: ${var.hana_primary_site}
+hana_secondary_site: ${var.hana_secondary_site}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 route_table: ${var.route_table_id}

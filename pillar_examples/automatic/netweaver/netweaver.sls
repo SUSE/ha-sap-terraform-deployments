@@ -10,35 +10,46 @@
 {%- endif %}
 {%- set sid_lower = grains['netweaver_sid'].lower() %}
 {%- set sid_upper = grains['netweaver_sid'].upper() %}
+{%- set hana_sid_upper = grains['hana_sid'].upper() %}
+{%- set hana_instance_number = '{:0>2}'.format(grains['hana_instance_number']) %}
+{%- set product_id_header = grains['netweaver_product_id'].split(".")[0] %}
 
 netweaver:
-  {%- set app_start_index = 2 if grains['ha_enabled'] else 1 %}
   {%- set app_server_count = grains['app_server_count']|default(2) %}
+  {%- if not grains['ha_enabled'] %}
+  {%- set app_start_index = [app_server_count, 1]|min %}
+  {%- elif app_server_count == 0 %}
+  {%- set app_start_index = 0 %}
+  {%- else %}
+  {%- set app_start_index = 2 %}
+  {%- endif %}
   virtual_addresses:
     {{ grains['virtual_host_ips'][0] }}: sap{{ sid_lower }}as
     {%- if grains['ha_enabled'] %}
     {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}er
+    {{ grains['virtual_host_ips'][2] }}: sap{{ sid_lower }}pas
+    {%- else %}
+    {{ grains['virtual_host_ips'][1] }}: sap{{ sid_lower }}pas
     {%- endif %}
-    {%- if app_server_count > 0 %}
-    {{ grains['virtual_host_ips'][app_start_index] }}: sap{{ sid_lower }}pas
     {%- for index in range(app_server_count-1) %}
     {{ grains['virtual_host_ips'][loop.index+app_start_index] }}: sap{{ sid_lower }}aas{{ loop.index }}
     {%- endfor %}
-    {%- endif %}
 
   sidadm_user:
     uid: 2001
     gid: 2002
-  sid_adm_password: SuSE1234
-  sap_adm_password: SuSE1234
-  master_password: SuSE1234
+  sid_adm_password: {{ grains['netweaver_master_password'] }}
+  sap_adm_password: {{ grains['netweaver_master_password'] }}
+  master_password: {{ grains['netweaver_master_password'] }}
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
   {%- if grains.get('netweaver_swpm_folder', False) %}
   swpm_folder: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_folder'] }}
   {%- endif %}
-  {%- if grains.get('netweaver_sapcar_exe', False) and grains.get('netweaver_swpm_sar', False) %}
-  sapcar_exe_file: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_sapcar_exe'] }}
+  {%- if grains.get('netweaver_swpm_sar', False) %}
   swpm_sar_file: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_sar'] }}
+  {%- endif %}
+  {%- if grains.get('netweaver_sapcar_exe', False) %}
+  sapcar_exe_file: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_sapcar_exe'] }}
   {%- endif %}
   {%- if grains.get('netweaver_extract_dir', False) %}
   nw_extract_dir: {{ grains['netweaver_extract_dir'] }}
@@ -58,19 +69,23 @@ netweaver:
 
   hana:
     host: {{ grains['hana_ip'] }}
-    sid: PRD
-    instance: '00'
-    password: YourPassword1234
+    sid: {{ hana_sid_upper }}
+    instance: {{ hana_instance_number }}
+    password: {{ grains['hana_master_password'] }}
 
   schema:
+    {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
+    name: SAPHANADB # This name is always used for new S/4HANA, so it shouldn't be changed
+    {%- else %}
     name: SAPABAP1
-    password: SuSE1234
+    {%- endif %}
+    password: {{ grains['netweaver_master_password'] }}
 
   product_id: {{ grains['netweaver_product_id'] }}
 
-{%- if grains['provider'] == 'aws' %}
+  {%- if grains['provider'] == 'aws' %}
   nfs_options: rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
-{%- endif %}
+  {%- endif %}
 
   ha_enabled: {{ grains['ha_enabled'] }}
 
@@ -108,16 +123,24 @@ netweaver:
       sap_instance: ers
     {% endif %}
 
-    {% if app_server_count > 0 %}
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sap{{ sid_lower }}pas
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
       sid: {{ sid_upper }}
-      instance: '00' # Not used
+      instance: '99' # It is not used, but set a unique number to avoid conflicts on salt code
       root_user: root
       root_password: linux
       sap_instance: db
+      {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
+      extra_parameters:
+        NW_Recovery_Install_HDB.extractLocation: /usr/sap/{{ hana_sid_upper }}/HDB{{ hana_instance_number }}/backup/data/DB_{{ hana_sid_upper }}
+        NW_Recovery_Install_HDB.sidAdmName: {{ grains['hana_sid'].lower() }}adm
+        NW_Recovery_Install_HDB.sidAdmPassword: {{ grains['hana_master_password'] }}
+        NW_Recovery_Install_HDB.extractParallelJobs: 5 # By default, the value matches the number of extract files. Decreased to avoid high memory usage
+        NW_HDB_DBClient.clientPathStrategy: LOCAL
+        HDB_Software_Dialogs.useMediaCD: "false"
+      {%- endif %}
 
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sap{{ sid_lower }}pas
@@ -129,12 +152,13 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: pas
-      # Add for S4/HANA
-      #extra_parameters:
-      #  NW_liveCache.useLiveCache: "false"
+      {%- if product_id_header in ['S4HANA1709'] %}
+      extra_parameters:
+        NW_liveCache.useLiveCache: "false"
+      {%- endif %}
 
     {%- for index in range(app_server_count-1) %}
-    - host: {{ grains['name_prefix'] }}0{{ app_start_index+1+loop.index }}
+    - host: {{ grains['name_prefix'] }}0{{ app_start_index+loop.index+1 }}
       virtual_host: sap{{ sid_lower }}aas{{ loop.index }}
       virtual_host_interface: {{ virtual_host_interface }}
       virtual_host_mask: {{ virtual_host_mask }}
@@ -143,7 +167,7 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: aas
-      # Add for S4/HANA
-      #attempts: 500
+      {%- if product_id_header in ['S4HANA1709'] %}
+      attempts: 500
+      {%- endif %}
     {% endfor %}
-    {% endif %}

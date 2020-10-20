@@ -46,6 +46,14 @@ hana_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_comp
 hana_backup_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.1.device_name, count.index))}
 hana_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.2.device_name, count.index))}
 hana_fstype: ${var.hana_fstype}
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
+hana_cost_optimized_instance_number: ${var.hana_cost_optimized_instance_number}
+hana_master_password: ${var.hana_master_password}
+hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
+hana_primary_site: ${var.hana_primary_site}
+hana_secondary_site: ${var.hana_secondary_site}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 gcp_credentials_file: ${local.gcp_credentials_dest}
