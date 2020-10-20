@@ -50,7 +50,7 @@ variable "public_key_location" {
 # Deployment variables
 #
 variable "deployment_name" {
-  description = "Name used to complement some of the infrastructure resources name as suffix. If it is not provided, the terraform workspace string is used"
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
   default     = ""
 }
