@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "hana" {
-  count               = var.bastion_enabled ? 0 : var.hana_count
+  count               = local.bastion_enabled ? 0 : var.hana_count
   name                = element(azurerm_public_ip.hana.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.hana.*.resource_group_name, count.index)
 }

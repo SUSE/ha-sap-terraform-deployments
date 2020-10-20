@@ -5,6 +5,9 @@ locals {
       [for key in var.authorized_keys: trimspace(file(key))])
     )
   )
+
+  bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : var.private_key_location
+  bastion_public_key  = var.bastion_public_key != "" ? var.bastion_public_key : var.public_key_location
 }
 
 output "configuration" {
@@ -19,6 +22,10 @@ output "configuration" {
     public_key_location    = var.public_key_location
     private_key_location   = var.private_key_location
     authorized_keys        = var.authorized_keys
+    bastion_enabled        = var.bastion_enabled
+    bastion_host           = var.bastion_host
+    bastion_public_key     = local.bastion_public_key
+    bastion_private_key    = local.bastion_private_key
     authorized_user        = var.authorized_user
     provisioner            = var.provisioner
     provisioning_log_level = var.provisioning_log_level

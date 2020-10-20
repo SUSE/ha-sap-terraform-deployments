@@ -61,6 +61,10 @@ module "common_variables" {
   private_key_location   = var.private_key_location
   authorized_keys        = var.authorized_keys
   authorized_user        = var.admin_user
+  bastion_enabled        = var.bastion_enabled
+  bastion_host           = module.bastion.public_ip
+  bastion_public_key     = var.bastion_public_key_location
+  bastion_private_key    = var.bastion_private_key_location
   provisioner            = var.provisioner
   provisioning_log_level = var.provisioning_log_level
   background             = var.background
@@ -81,9 +85,6 @@ module "drbd_node" {
   network_subnet_id   = local.subnet_id
   sec_group_id        = azurerm_network_security_group.mysecgroup.id
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  bastion_enabled     = var.bastion_enabled
-  bastion_host        = module.bastion.public_ip
-  bastion_private_key = local.bastion_private_key
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   admin_user          = var.admin_user
@@ -115,9 +116,6 @@ module "netweaver_node" {
   network_subnet_id           = local.subnet_id
   sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  bastion_enabled             = var.bastion_enabled
-  bastion_host                = module.bastion.public_ip
-  bastion_private_key         = local.bastion_private_key
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   admin_user                  = var.admin_user
@@ -186,9 +184,6 @@ module "hana_node" {
   hana_fstype                         = var.hana_fstype
   cluster_ssh_pub                     = var.cluster_ssh_pub
   cluster_ssh_key                     = var.cluster_ssh_key
-  bastion_enabled                     = var.bastion_enabled
-  bastion_host                        = module.bastion.public_ip
-  bastion_private_key                 = local.bastion_private_key
   hana_data_disks_configuration       = var.hana_data_disks_configuration
   os_image                            = local.hana_os_image
   admin_user                          = var.admin_user
@@ -211,9 +206,6 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
-  bastion_enabled     = var.bastion_enabled
-  bastion_host        = module.bastion.public_ip
-  bastion_private_key = local.bastion_private_key
   admin_user          = var.admin_user
   hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
@@ -232,9 +224,6 @@ module "iscsi_server" {
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   iscsi_srv_uri       = var.iscsi_srv_uri
   os_image            = local.iscsi_os_image
-  bastion_enabled     = var.bastion_enabled
-  bastion_host        = module.bastion.public_ip
-  bastion_private_key = local.bastion_private_key
   host_ips            = [local.iscsi_ip]
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size

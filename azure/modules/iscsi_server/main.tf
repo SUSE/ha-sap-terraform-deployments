@@ -1,7 +1,8 @@
 # iscsi server network configuration
 
 locals {
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.iscsisrv.*.private_ip_address : data.azurerm_public_ip.iscsisrv.*.ip_address
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.iscsisrv.*.private_ip_address : data.azurerm_public_ip.iscsisrv.*.ip_address
 }
 
 resource "azurerm_network_interface" "iscsisrv" {
@@ -16,7 +17,7 @@ resource "azurerm_network_interface" "iscsisrv" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.iscsisrv.*.id, count.index)
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.iscsisrv.*.id, count.index)
   }
 
   tags = {
@@ -25,7 +26,7 @@ resource "azurerm_network_interface" "iscsisrv" {
 }
 
 resource "azurerm_public_ip" "iscsisrv" {
-  count                   = var.bastion_enabled ? 0 : var.iscsi_count
+  count                   = local.bastion_enabled ? 0 : var.iscsi_count
   name                    = "pip-iscsisrv0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -128,8 +129,8 @@ module "iscsi_on_destroy" {
   instance_ids         = azurerm_virtual_machine.iscsisrv.*.id
   user                 = var.admin_user
   private_key_location = var.common_variables["private_key_location"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_host         = var.common_variables["bastion_host"]
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.iscsisrv]
 }

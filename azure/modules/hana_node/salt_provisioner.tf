@@ -11,9 +11,9 @@ resource "null_resource" "hana_node_provisioner" {
     user        = var.admin_user
     private_key = file(var.common_variables["private_key_location"])
 
-    bastion_host        = var.bastion_host
+    bastion_host        = var.common_variables["bastion_host"]
     bastion_user        = var.admin_user
-    bastion_private_key = file(var.bastion_private_key)
+    bastion_private_key = file(var.common_variables["bastion_private_key"])
   }
 
   provisioner "file" {
@@ -64,8 +64,8 @@ module "hana_provision" {
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = var.admin_user
   private_key_location = var.common_variables["private_key_location"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_host         = var.common_variables["bastion_host"]
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
 }
