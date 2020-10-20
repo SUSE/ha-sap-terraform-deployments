@@ -5,57 +5,23 @@
       "default": "westeurope",
       "description": "Azure region where the deployment machines will be created"
     },
-    "administration_user": {
-      "type": "string",
-      "default": "azadmin",
-      "description": "Administration user used to create the machines"
-    },
-    "ssh_public_key_location": {
-      "type": "string",
-      "description": "file_key: Path to a SSH public key used to connect to the created machines"
-    },
-    "ssh_private_key_location": {
-      "type": "string",
-      "description": "file_key: Path to a SSH private key used to connect to the created machines"
-    },
-    "scc_registration_code": {
-      "type": "string",
-      "default": "",
-      "description": "Password, Optional: If informed, register the product using SUSEConnect. If it's not set PAYG images will be used"
-    },
-    "scc_registration_email": {
-      "type": "string",
-      "default": "",
-      "description": "Optional: Email used in the SUSEConnect registration"
-    },
-    "enable_monitoring_solution": {
-      "type": "bool",
-      "default": false,
-      "description": "Enable prometheus/grafana monitoring solution"
+    "ssh_authorized_keys": {
+      "type": "list",
+      "description": "List of additional authorized SSH public keys paths to access the created machines with the used admin user"
     },
     "system_identifier": {
       "type": "string",
       "default": "prd",
-      "description": "HANA system identifier. Pattern=[\"^[a-zA-Z]{3}$\", \"System identifier must be 3 letters string\"]"
+      "description": "HANA system identifier. System identifier must be 3 letters string]"
     },
     "instance_number": {
       "type": "string",
       "default": "00",
-      "description": "HANA system instance number. Pattern=[\"^[0-9]{2}$\", \"Instance number must be 2 digits string\"]"
+      "description": "HANA system instance number. Instance number must be 2 digits string]"
     },
     "sap_admin_password": {
       "type": "string",
       "description": "SAP administrator password"
-    },
-    "primary_site_name": {
-        "type": "string",
-        "default": "SiteA",
-        "description": "Optional. Primary site name for the case where sytsem replication is enabled"
-    },
-    "secondary_site_name": {
-        "type": "string",
-        "default": "SiteB",
-        "description": "Optional. Secondary site name for the case where sytsem replication is enabled"
     },
     "deployment_type": {
       "type": "string",
@@ -65,11 +31,6 @@
     "instance_type": {
       "type": "string",
       "description": "Only used to create the 'Size cluster' page"
-    },
-    "sles4sap_version": {
-      "type": "string",
-      "default": "SLES15SP2",
-      "description": "Select the sles4sap version for the machines. Options=[\"SLES15\", \"SLES15SP1\", \"SLES15SP2\"]."
     },
     "hana_installation_software_path": {
       "type": "string",
