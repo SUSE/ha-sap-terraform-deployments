@@ -1,10 +1,5 @@
 {
   "variable": {
-    "azure_region": {
-      "type": "string",
-      "default": "westeurope",
-      "description": "Azure region where the deployment machines will be created <!--[group:azure]-->"
-    },
     "ssh_authorized_keys": {
       "type": "list",
       "description": "List of additional authorized SSH public keys paths to access the created machines with the used admin user <!--[group:hana]-->"
@@ -26,7 +21,12 @@
     "deployment_type": {
       "type": "string",
       "default": "2-tier",
-      "description": "Select the desired deployment type. Options=[\"2-tier\",\"2-tier-HA\"]. More information in: https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html <!--[group:azure]-->"
+      "description": "Select the desired deployment type. Options=[\"2-tier\",\"2-tier-HA\"]. More information in: https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html <!--[group:hana]-->"
+    },
+    "azure_region": {
+      "type": "string",
+      "default": "westeurope",
+      "description": "Azure region where the deployment machines will be created <!--[group:azure]-->"
     },
     "deployment_size": {
       "type": "string",
