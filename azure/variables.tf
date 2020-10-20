@@ -61,6 +61,12 @@ variable "private_key_location" {
   type        = string
 }
 
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys paths to access the created machines with the used admin user (admin_user variable in this case)"
+  type        = list(string)
+  default     = []
+}
+
 variable "bastion_enabled" {
   description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
   type        = bool

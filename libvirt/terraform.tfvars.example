@@ -40,6 +40,9 @@ iprange = "192.168.XXX.Y/24"
 #    "sle-ha-geo/12.4/x86_64" = "<<REG_CODE>>"
 #}
 
+# Authorize additional keys optionally (in this case, the private key is not required)
+#authorized_keys = ["/home/myuser/.ssh/id_rsa_second_key.pub", "/home/myuser/.ssh/id_rsa_third_key.pub"]
+
 ##########################
 # Other deployment options
 ##########################

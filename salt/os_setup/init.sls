@@ -1,4 +1,5 @@
 include:
+  - os_setup.auth_keys
   - os_setup.registration
   - os_setup.repos
   - os_setup.minion_configuration

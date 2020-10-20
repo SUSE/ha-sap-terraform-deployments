@@ -47,6 +47,12 @@ variable "public_key_location" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys paths to access the created machines with the used admin user (root in this case)"
+  type        = list(string)
+  default     = []
+}
+
 # Deployment variables
 #
 variable "deployment_name" {
