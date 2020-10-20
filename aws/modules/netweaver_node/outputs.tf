@@ -1,5 +1,5 @@
 data "aws_instance" "netweaver" {
-  count       = var.netweaver_count
+  count       = local.vm_count
   instance_id = element(aws_instance.netweaver.*.id, count.index)
 }
 

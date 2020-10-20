@@ -3,7 +3,7 @@
 locals {
   iscsi_device_name = "/dev/xvdd"
 }
-  
+
 module "get_os_image" {
   source   = "../../modules/get_os_image"
   os_image = var.os_image
@@ -33,12 +33,12 @@ resource "aws_instance" "iscsisrv" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-iscsi-${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-iscsi-${count.index + 1}"
   }
 
   tags = {
-    Name      = "${terraform.workspace} - iSCSI Server - ${count.index + 1}"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]} - iSCSI Server - ${count.index + 1}"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 

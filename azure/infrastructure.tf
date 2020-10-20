@@ -24,6 +24,8 @@ data "azurerm_subnet" "mysubnet" {
 }
 
 locals {
+  deployment_name = var.deployment_name != "" ? var.deployment_name : terraform.workspace
+
   resource_group_name = var.resource_group_name == "" ? azurerm_resource_group.myrg.0.name : var.resource_group_name
   vnet_name           = var.vnet_name == "" ? azurerm_virtual_network.mynet.0.name : var.vnet_name
   subnet_id = var.subnet_name == "" ? azurerm_subnet.mysubnet.0.id : format(
@@ -40,38 +42,38 @@ locals {
 # Azure resource group and storage account resources
 resource "azurerm_resource_group" "myrg" {
   count    = var.resource_group_name == "" ? 1 : 0
-  name     = "rg-ha-sap-${terraform.workspace}"
+  name     = "rg-ha-sap-${local.deployment_name}"
   location = var.az_region
 }
 
 resource "azurerm_storage_account" "mytfstorageacc" {
-  name                     = "stdiag${lower(terraform.workspace)}"
+  name                     = "stdiag${lower(local.deployment_name)}"
   resource_group_name      = local.resource_group_name
   location                 = var.az_region
   account_replication_type = "LRS"
   account_tier             = "Standard"
 
   tags = {
-    workspace = terraform.workspace
+    workspace = local.deployment_name
   }
 }
 
 # Network resources: Virtual Network, Subnet
 resource "azurerm_virtual_network" "mynet" {
   count               = var.vnet_name == "" ? 1 : 0
-  name                = "vnet-${lower(terraform.workspace)}"
+  name                = "vnet-${lower(local.deployment_name)}"
   address_space       = [local.vnet_address_range]
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
   tags = {
-    workspace = terraform.workspace
+    workspace = local.deployment_name
   }
 }
 
 resource "azurerm_subnet" "mysubnet" {
   count                = var.subnet_name == "" ? 1 : 0
-  name                 = "snet-${lower(terraform.workspace)}"
+  name                 = "snet-${lower(local.deployment_name)}"
   resource_group_name  = local.resource_group_name
   virtual_network_name = local.vnet_name
   address_prefix       = local.subnet_address_range
@@ -90,7 +92,7 @@ resource "azurerm_subnet_route_table_association" "mysubnet" {
 # Subnet route table
 
 resource "azurerm_route_table" "myroutes" {
-  name                = "route-${lower(terraform.workspace)}"
+  name                = "route-${lower(local.deployment_name)}"
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
@@ -101,14 +103,14 @@ resource "azurerm_route_table" "myroutes" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = local.deployment_name
   }
 }
 
 # Security group
 
 resource "azurerm_network_security_group" "mysecgroup" {
-  name                = "nsg-${lower(terraform.workspace)}"
+  name                = "nsg-${lower(local.deployment_name)}"
   location            = var.az_region
   resource_group_name = local.resource_group_name
   security_rule {
@@ -242,7 +244,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = local.deployment_name
   }
 }
 
@@ -256,6 +258,7 @@ module "bastion" {
   resource_group_name = local.resource_group_name
   vnet_name           = local.vnet_name
   admin_user          = var.admin_user
+  deployment_name     = local.deployment_name
   public_key_location = local.bastion_public_key
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   snet_address_range  = cidrsubnet(local.vnet_address_range, 8, 2)

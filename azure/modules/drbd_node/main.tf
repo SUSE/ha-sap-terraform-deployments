@@ -15,7 +15,7 @@ resource "azurerm_availability_set" "drbd-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -35,7 +35,7 @@ resource "azurerm_lb" "drbd-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -121,7 +121,7 @@ resource "azurerm_public_ip" "drbd" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -141,7 +141,7 @@ resource "azurerm_network_interface" "drbd" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -161,7 +161,7 @@ resource "azurerm_image" "drbd-image" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -227,7 +227,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 

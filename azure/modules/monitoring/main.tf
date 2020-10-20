@@ -20,7 +20,7 @@ resource "azurerm_network_interface" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -33,7 +33,7 @@ resource "azurerm_public_ip" "monitoring" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -53,7 +53,7 @@ resource "azurerm_image" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -118,7 +118,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 

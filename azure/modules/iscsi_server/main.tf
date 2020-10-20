@@ -20,7 +20,7 @@ resource "azurerm_network_interface" "iscsisrv" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -33,7 +33,7 @@ resource "azurerm_public_ip" "iscsisrv" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -53,7 +53,7 @@ resource "azurerm_image" "iscsi_srv" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -118,7 +118,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 

@@ -1,20 +1,20 @@
 resource "libvirt_volume" "drbd_image_disk" {
   count            = var.drbd_count
-  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
+  name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_volume" "drbd_data_disk" {
-  name  = "${terraform.workspace}-${var.name}-${count.index + 1}-drbd-disk"
+  name  = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-drbd-disk"
   pool  = var.storage_pool
   count = var.drbd_count
   size  = var.drbd_disk_size
 }
 
 resource "libvirt_domain" "drbd_domain" {
-  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.drbd_count

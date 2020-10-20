@@ -13,8 +13,8 @@ resource "aws_subnet" "hana-subnet" {
   availability_zone = element(var.availability_zones, count.index)
 
   tags = {
-    Name      = "${terraform.workspace}-hana-subnet-${count.index + 1}"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]}-hana-subnet-${count.index + 1}"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -41,6 +41,7 @@ resource "aws_route" "hana-cluster-vip-secondary" {
 module "sap_cluster_policies" {
   enabled           = var.hana_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"
+  common_variables  = var.common_variables
   name              = var.name
   aws_region        = var.aws_region
   cluster_instances = aws_instance.clusternodes.*.id
@@ -74,18 +75,18 @@ resource "aws_instance" "clusternodes" {
 
   ebs_block_device {
     volume_type = var.hana_data_disk_type
-    volume_size = "60"
+    volume_size = var.hana_data_disk_size
     device_name = local.hana_disk_device
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
   }
 
   tags = {
-    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace                        = terraform.workspace
-    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Workspace                                            = var.common_variables["deployment_name"]
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 

@@ -33,7 +33,7 @@ resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -47,7 +47,7 @@ resource "azurerm_availability_set" "netweaver-app-availability-set" {
   platform_update_domain_count = 10
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -74,7 +74,7 @@ resource "azurerm_lb" "netweaver-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -194,7 +194,7 @@ resource "azurerm_public_ip" "netweaver" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -215,7 +215,7 @@ resource "azurerm_network_interface" "netweaver" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -235,7 +235,7 @@ resource "azurerm_image" "netweaver-image" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -312,7 +312,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 

@@ -3,6 +3,12 @@ variable "provider_type" {
   type        = string
 }
 
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
+  type        = string
+  default     = ""
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""

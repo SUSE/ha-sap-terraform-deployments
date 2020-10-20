@@ -25,6 +25,11 @@ region = "europe-west1"
 # General configuration variables
 #################################
 
+# Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
+# If it is not used, the terraform workspace string is used
+# The name must be unique among different deployments
+# deployment_name "mydeployment"
+
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
 #reg_code = "<<REG_CODE>>"
@@ -69,9 +74,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
 # Contains the salt formulas rpm packages.
 # To auto detect the SLE version
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
-# Specific SLE version used in all the created machines
-#ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/"
+# Otherwise use a specific SLE version:
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15/"
 #ha_sap_deployment_repo = ""
 
 # Provisioning log level (error by default)
@@ -117,14 +122,16 @@ pre_deployment = true
 # Disk type for HANA
 #hana_data_disk_type = "pd-ssd"
 
-# Disk size for HANA in GB
-#hana_data_disk_size = "834"
+# Disk size for HANA database content in GB
+#hana_data_disk_size  = 64 # 64GB
+# For S/4HANA set a big disk size
+#hana_data_disk_size  = 350 # 350GB
 
 # Disk type for HANA backup
 #hana_backup_disk_type = "pd-standard"
 
 # Disk size for HANA backup in GB
-#hana_backup_disk_size = "416"
+#hana_backup_disk_size = "64"
 
 # HANA cluster vip
 #hana_cluster_vip = "10.0.1.200"
@@ -175,6 +182,20 @@ sap_hana_deployment_bucket = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 # Each host IP address (sequential order).
 #hana_ips = ["10.0.0.2", "10.0.0.3"]
+
+# HANA instance configuration
+# Find some references about the variables in:
+# https://help.sap.com
+# HANA instance system identifier. It's composed of 3 characters string
+#hana_sid = "prd"
+# HANA instance number. It's composed of 2 integers string
+#hana_instance_number = "00"
+# HANA instance master password. It must follow the SAP Password policies
+#hana_master_password = "YourPassword1234"
+# HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
+#hana_primary_site = "Site1"
+# HANA secondary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
+#hana_secondary_site = "Site2"
 
 # Cost optimized scenario
 #scenario_type: "cost-optimized"
@@ -247,29 +268,46 @@ sap_hana_deployment_bucket = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Enable netweaver cluster
 #netweaver_enabled = true
 
+# Netweaver APP server count (PAS and AAS)
+# Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
+# Set to 1 to only enable 1 PAS instance in an additional machine`
+# Set to 2 or higher to deploy additional AAS instances in new machines
+#netweaver_app_server_count = 2
+
 #netweaver_machine_type = n1-standard-4
 
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
 #netweaver_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
 
-# This storage bucket must contain the next software (select the version you want to install of course)
-#SWPM - `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*x`
-#Netweaver export - `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`
-#HANA Platform- `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51053787`
-#Sapexe folder files:
-#igsexe_23-20007790.sar  igshelper_4-10010245.sar  SAPEXE_501-80002573.SAR  SAPEXEDB_501-80002572.SAR  SAPHOSTAGENT45_45-20009394.SAR
+# Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
+# Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
+# - NW750.HDB.ABAP
+# - NW750.HDB.ABAPHA
+# - S4HANA1709.CORE.HDB.ABAP
+# - S4HANA1709.CORE.HDB.ABAPHA
+# Below are the supported SAP Netweaver product ids if using SWPM version 2.0:
+# - S4HANA1809.CORE.HDB.ABAP
+# - S4HANA1809.CORE.HDB.ABAPHA
+# - S4HANA1909.CORE.HDB.ABAP
+# - S4HANA1909.CORE.HDB.ABAPHA
 
+# Example:
+#netweaver_product_id = "NW750.HDB.ABAPHA"
+
+# Preparing the Netweaver download basket. Check `doc/sap_software.md` for more information
+
+# GCP storage where all the Netweaver software is available. The next paths are relative to this folder.
 #netweaver_software_bucket = "MyNetweaverBucket"
 
 # Netweaver installation required folders
 # SAP SWPM installation folder, relative to netweaver_software_bucket folder
 #netweaver_swpm_folder     =  "your_swpm"
 # Or specify the path to the sapcar executable & SWPM installer sar archive, relative to netweaver_software_bucket folder
-# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia/NW/SWPM)
+# The sar archive will be extracted to path specified at netweaver_extract_dir under SWPM directory (optional, by default /sapmedia_extract/NW/SWPM)
 #netweaver_sapcar_exe = "your_sapcar_exe_file_path"
 #netweaver_swpm_sar = "your_swpm_sar_file_path"
 # Folder where needed SAR executables (sapexe, sapdbexe) are stored, relative to netweaver_software_bucket folder
-#netweaver_sapexe_folder   =  "kernel_nw75_sar"
+#netweaver_sapexe_folder   =  "download_basket"
 # Additional media archives or folders (added in start_dir.cd), relative to netweaver_software_bucket folder
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
 
@@ -277,17 +315,21 @@ sap_hana_deployment_bucket = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 #netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]
 
-# Netweaver system identifier
-#netweaver_sid = "HA1"
+# Netweaver installation configuration
+# Netweaver system identifier. It's composed of 3 characters string
+#netweaver_sid = "ha1"
+# Netweaver ASCS instance number. It's composed of 2 integers string
+#netweaver_ascs_instance_number = "00"
+# Netweaver ERS instance number. It's composed of 2 integers string
+#netweaver_ers_instance_number = "10"
+# Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
+#netweaver_pas_instance_number = "01"
+# Netweaver master password. It must follow the SAP Password policies such as having 8 characters at least combining upper and lower case characters and numbers. It cannot start with special characters.
+#netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
 # Set to false to only create a ASCS and PAS instances
 #netweaver_ha_enabled = true
-
-# Set the Netweaver product id for HA (this is just an example)
-#netweaver_product_id = NW750.HDB.ABAPHA
-# Fon non HA
-#netweaver_product_id = NW750.HDB.ABAP
 
 # Select Netweaver cluster fencing mechanism. 'native' by default
 #netweaver_cluster_fencing_mechanism = "sbd"

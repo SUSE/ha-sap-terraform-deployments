@@ -1,20 +1,20 @@
 resource "libvirt_volume" "hana_image_disk" {
   count            = var.hana_count
-  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
+  name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_volume" "hana_data_disk" {
-  name  = "${terraform.workspace}-${var.name}-${count.index + 1}-hana-disk"
+  name  = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-hana-disk"
   pool  = var.storage_pool
   count = var.hana_count
   size  = var.hana_disk_size
 }
 
 resource "libvirt_domain" "hana_domain" {
-  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.hana_count
@@ -41,7 +41,7 @@ resource "libvirt_domain" "hana_domain" {
           // we set null but it will never reached because the slice with 0 cut it off
           "volume_id" = var.sbd_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
         },
-      ], 0, var.fencing_mechanism == "sbd"  && var.sbd_storage_type == "shared-disk" ? 1 : 0
+      ], 0, var.ha_enabled && var.fencing_mechanism == "sbd" && var.sbd_storage_type == "shared-disk" ? 1 : 0
     )
     content {
       volume_id = disk.value.volume_id

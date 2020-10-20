@@ -1,16 +1,20 @@
+locals {
+  vm_count = var.xscs_server_count + var.app_server_count
+}
+
 resource "libvirt_volume" "netweaver_image_disk" {
-  count            = var.netweaver_count
-  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
+  count            = local.vm_count
+  name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
-  count      = var.netweaver_count
+  count      = local.vm_count
   qemu_agent = true
 
   dynamic "disk" {
@@ -79,7 +83,7 @@ output "output_data" {
 
 module "netweaver_on_destroy" {
   source       = "../../../generic_modules/on_destroy"
-  node_count   = var.netweaver_count
+  node_count   = local.vm_count
   instance_ids = libvirt_domain.netweaver_domain.*.id
   user         = "root"
   password     = "linux"
