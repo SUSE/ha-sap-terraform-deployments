@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "monitoring" {
-  count               = var.bastion_enabled == false && var.monitoring_enabled == true ? 1 : 0
+  count               = local.bastion_enabled == false && var.monitoring_enabled == true ? 1 : 0
   name                = azurerm_public_ip.monitoring.0.name
   resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
 }

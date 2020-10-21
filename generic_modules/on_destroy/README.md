@@ -14,7 +14,7 @@ connection {
   host        = element(aws_instance.netweaver.*.public_ip, count.index)
   type        = "ssh"
   user        = "ec2-user"
-  private_key = file(var.private_key_location)
+  private_key = var.private_key
 }
 ```
 

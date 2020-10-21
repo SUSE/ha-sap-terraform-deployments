@@ -1,9 +1,10 @@
 # Availability set for the hana VMs
 
 locals {
+  bastion_enabled             = var.common_variables["bastion_enabled"]
   create_ha_infra             = var.hana_count > 1 && var.ha_enabled ? 1 : 0
   create_actitve_active_infra = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
-  provisioning_addresses      = var.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  provisioning_addresses      = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
   hana_lb_rules_ports         = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
     "3${var.hana_instance_number}14",
@@ -26,7 +27,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -57,7 +58,7 @@ resource "azurerm_lb" "hana-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -161,16 +162,16 @@ resource "azurerm_network_interface" "hana" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.hana.*.id, count.index)
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.hana.*.id, count.index)
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
 resource "azurerm_public_ip" "hana" {
-  count                   = var.bastion_enabled ? 0 : var.hana_count
+  count                   = local.bastion_enabled ? 0 : var.hana_count
   name                    = "pip-${var.name}0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -178,7 +179,7 @@ resource "azurerm_public_ip" "hana" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -196,7 +197,7 @@ resource "azurerm_image" "sles4sap" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -264,7 +265,7 @@ resource "azurerm_virtual_machine" "hana" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -274,7 +275,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -283,9 +284,9 @@ module "hana_on_destroy" {
   node_count           = var.hana_count
   instance_ids         = azurerm_virtual_machine.hana.*.id
   user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  private_key          = var.common_variables["private_key"]
+  bastion_host         = var.common_variables["bastion_host"]
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.hana]
 }

@@ -15,12 +15,13 @@ ___
 ## Major features
 
 - HA Clusters and HANA deployment
+- [Preparing SAP software](doc/sap_software.md)
 - [Monitoring of cluster](doc/monitoring.md)
 - [Netweaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)
 - [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
-- [SBD](doc/sbd.md)
+- [Fencing mechanism](doc/fencing.md)
 - [IP addresses auto generation](doc/ip_autogeneration.md)
 
 ## Templates

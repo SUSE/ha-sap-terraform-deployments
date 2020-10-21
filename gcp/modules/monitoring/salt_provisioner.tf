@@ -9,15 +9,15 @@ resource "null_resource" "monitoring_provisioner" {
     host        = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
     type        = "ssh"
     user        = "root"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
     content     = <<EOF
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
-name_prefix: ${terraform.workspace}-monitoring
-hostname: ${terraform.workspace}-monitoring
+name_prefix: ${var.common_variables["deployment_name"]}-monitoring
+hostname: ${var.common_variables["deployment_name"]}-monitoring
 network_domain: "tf.local"
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${google_compute_instance.monitoring[0].network_interface[0].access_config[0].nat_ip}
@@ -34,7 +34,7 @@ module "monitoring_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" && var.monitoring_enabled ? 1 : 0
   instance_ids         = null_resource.monitoring_provisioner.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
   background           = var.common_variables["background"]
 }

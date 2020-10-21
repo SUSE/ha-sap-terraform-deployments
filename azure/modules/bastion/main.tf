@@ -1,5 +1,6 @@
 locals {
   bastion_enabled = var.bastion_enabled ? 1 : 0
+  public_key      = fileexists(var.public_key) ? file(var.public_key) : var.public_key
 }
 
 
@@ -64,7 +65,7 @@ resource "azurerm_network_interface" "bastion" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }
 
@@ -77,7 +78,7 @@ resource "azurerm_public_ip" "bastion" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }
 
@@ -115,7 +116,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_location)
+      key_data = local.public_key
     }
   }
 
@@ -125,6 +126,6 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.deployment_name
   }
 }

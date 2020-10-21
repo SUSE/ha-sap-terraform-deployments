@@ -60,24 +60,6 @@ variable "admin_user" {
   default = "azadmin"
 }
 
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
-}
-
 variable "hana_targets" {
   description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
   type        = list(string)

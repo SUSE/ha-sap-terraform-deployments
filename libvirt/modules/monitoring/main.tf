@@ -4,14 +4,14 @@ terraform {
 
 resource "libvirt_volume" "monitoring_image_disk" {
   count            = var.monitoring_enabled == true ? 1 : 0
-  name             = format("%s-monitoring-disk", terraform.workspace)
+  name             = format("%s-monitoring-disk", var.common_variables["deployment_name"])
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "monitoring_domain" {
-  name       = "${terraform.workspace}-${var.name}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}"
   count      = var.monitoring_enabled == true ? 1 : 0
   memory     = var.memory
   vcpu       = var.vcpu

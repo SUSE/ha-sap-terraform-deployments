@@ -43,24 +43,6 @@ variable "admin_user" {
   default = "azadmin"
 }
 
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
-}
-
 variable "iscsi_count" {
   description = "Number of iscsi machines to deploy"
   type        = number

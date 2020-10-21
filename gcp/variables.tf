@@ -39,17 +39,29 @@ variable "ip_cidr_range" {
   default     = "10.0.0.0/24"
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+variable "public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
 }
 
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. The key is only used to provision the machines. It is not uploaded to the machines in any case"
   type        = string
+}
+
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (root in this case)"
+  type        = list(string)
+  default     = []
 }
 
 # Deployment variables
+
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
+  type        = string
+  default     = ""
+}
 
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
@@ -200,7 +212,7 @@ variable "hana_data_disk_type" {
 variable "hana_data_disk_size" {
   description = "Disk size of the disks used to store hana database content"
   type        = string
-  default     = "834"
+  default     = "64"
 }
 
 variable "hana_backup_disk_type" {
@@ -212,7 +224,7 @@ variable "hana_backup_disk_type" {
 variable "hana_backup_disk_size" {
   description = "Disk size of the disks used to store hana database backup content"
   type        = string
-  default     = "416"
+  default     = "64"
 }
 
 variable "hana_fstype" {
@@ -221,16 +233,63 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
+}
+
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
   default     = ""
 }
 
-variable "hana_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the hana HA cluster"
-  type        = bool
-  default     = false
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "hana_ha_enabled" {
@@ -361,10 +420,10 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the drbd HA cluster"
-  type        = bool
-  default     = false
+variable "drbd_cluster_fencing_mechanism" {
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "drbd_nfs_mounting_point" {
@@ -379,6 +438,12 @@ variable "netweaver_enabled" {
   description = "Enable netweaver cluster creation"
   type        = bool
   default     = false
+}
+
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  type        = number
+  default     = 2
 }
 
 variable "netweaver_machine_type" {
@@ -411,16 +476,39 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the netweaver HA cluster"
-  type        = bool
-  default     = false
-}
-
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string
   default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "netweaver_product_id" {
@@ -438,7 +526,7 @@ variable "netweaver_inst_folder" {
 variable "netweaver_extract_dir" {
   description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
   type        = string
-  default     = "/sapmedia/NW"
+  default     = "/sapmedia_extract/NW"
 }
 
 variable "netweaver_swpm_folder" {

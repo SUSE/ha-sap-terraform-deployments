@@ -1,3 +1,7 @@
+variable "common_variables" {
+  description = "Output of the common_variables module"
+}
+
 variable "enabled" {
   description = "Enable the sap cluster policies creation"
   type        = bool

@@ -22,12 +22,11 @@ name_prefix: ${var.name}
 hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
-authorized_keys: [${trimspace(file(var.common_variables["public_key_location"]))}]
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 drbd_disk_device: /dev/vdb
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 2

@@ -7,8 +7,8 @@ resource "aws_subnet" "drbd-subnet" {
   availability_zone = element(var.availability_zones, count.index)
 
   tags = {
-    Name      = "${terraform.workspace}-drbd-subnet-${count.index + 1}"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]}-drbd-subnet-${count.index + 1}"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -28,6 +28,7 @@ resource "aws_route" "drbd-cluster-vip" {
 module "sap_cluster_policies" {
   enabled           = var.drbd_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"
+  common_variables  = var.common_variables
   name              = var.name
   aws_region        = var.aws_region
   cluster_instances = aws_instance.drbd.*.id
@@ -66,13 +67,13 @@ resource "aws_instance" "drbd" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
   }
 
   tags = {
-    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace                        = terraform.workspace
-    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Workspace                                            = var.common_variables["deployment_name"]
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 
@@ -81,7 +82,7 @@ module "drbd_on_destroy" {
   node_count           = var.drbd_count
   instance_ids         = aws_instance.drbd.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.drbd.*.public_ip
   dependencies         = var.on_destroy_dependencies
 }

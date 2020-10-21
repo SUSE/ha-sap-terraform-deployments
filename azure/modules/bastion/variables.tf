@@ -30,14 +30,19 @@ variable "snet_address_range" {
   description = "Subnet address range of the bastion subnet"
 }
 
+variable "deployment_name" {
+  description = "Name used to complement some of the infrastructure resources name as sufix. If it is not provided, the terraform workspace string is used"
+  type        = string
+}
+
 variable "admin_user" {
   description = "Administration user used to create the machines"
   type        = string
   default     = "azadmin"
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the bastion. This key will be authorized"
+variable "public_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion"
   type        = string
 }
 

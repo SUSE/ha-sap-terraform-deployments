@@ -3,6 +3,12 @@ variable "provider_type" {
   type        = string
 }
 
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
+  type        = string
+  default     = ""
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -31,14 +37,49 @@ variable "additional_packages" {
   default     = []
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+variable "public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
   default     = ""
 }
 
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. The key is only used to provision the machines. It is not uploaded to the machines in any case"
+  type        = string
+  default     = ""
+}
+
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (admin_user variable in this case)"
+  type        = list(string)
+  default     = []
+}
+
+variable "authorized_user" {
+  description = "Authorized user for the given authorized_keys"
+  type        = string
+}
+
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_public_key" {
+  description = "Path to a SSH public key used to connect to the bastion. If it's not set the key provided in public_key_location will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Path to a SSH private key used to connect to the bastion. If it's not set the key provided in private_key_location will be used"
   type        = string
   default     = ""
 }

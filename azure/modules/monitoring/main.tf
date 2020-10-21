@@ -1,7 +1,8 @@
 # monitoring network configuration
 
 locals {
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
 }
 
 resource "azurerm_network_interface" "monitoring" {
@@ -16,24 +17,24 @@ resource "azurerm_network_interface" "monitoring" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id          = var.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
+    public_ip_address_id          = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
 resource "azurerm_public_ip" "monitoring" {
   name                    = "pip-monitoring"
-  count                   = var.bastion_enabled ? 0 : (var.monitoring_enabled ? 1 : 0)
+  count                   = local.bastion_enabled ? 0 : (var.monitoring_enabled ? 1 : 0)
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -53,7 +54,7 @@ resource "azurerm_image" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -108,7 +109,7 @@ resource "azurerm_virtual_machine" "monitoring" {
 
     ssh_keys {
       path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -118,7 +119,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -127,9 +128,9 @@ module "monitoring_on_destroy" {
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = azurerm_virtual_machine.monitoring.*.id
   user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  private_key          = var.common_variables["private_key"]
+  bastion_host         = var.common_variables["bastion_host"]
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.monitoring]
 }

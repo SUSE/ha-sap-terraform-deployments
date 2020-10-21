@@ -9,11 +9,11 @@ resource "null_resource" "hana_node_provisioner" {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.admin_user
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
 
-    bastion_host        = var.bastion_host
+    bastion_host        = var.common_variables["bastion_host"]
     bastion_user        = var.admin_user
-    bastion_private_key = file(var.bastion_private_key)
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -36,10 +36,18 @@ hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.h
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 ha_enabled: ${var.ha_enabled}
-sbd_enabled: ${var.sbd_enabled}
+fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
+hana_cost_optimized_instance_number: ${var.hana_cost_optimized_instance_number}
+hana_master_password: ${var.hana_master_password}
+hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
+hana_primary_site: ${var.hana_primary_site}
+hana_secondary_site: ${var.hana_secondary_site}
 hana_cluster_vip: ${var.ha_enabled ? azurerm_lb.hana-load-balancer[0].private_ip_address : ""}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
@@ -55,9 +63,9 @@ module "hana_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  private_key          = var.common_variables["private_key"]
+  bastion_host         = var.common_variables["bastion_host"]
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
 }

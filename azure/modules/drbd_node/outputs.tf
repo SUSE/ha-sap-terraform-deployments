@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "drbd" {
-  count               = var.bastion_enabled ? 0 : var.drbd_count
+  count               = local.bastion_enabled ? 0 : var.drbd_count
   name                = element(azurerm_public_ip.drbd.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.drbd.*.resource_group_name, count.index)
 }

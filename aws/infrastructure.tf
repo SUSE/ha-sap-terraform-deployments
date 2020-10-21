@@ -18,6 +18,8 @@ data "aws_internet_gateway" "current-gateway" {
 }
 
 locals {
+  deployment_name = var.deployment_name != "" ? var.deployment_name : terraform.workspace
+
   vpc_id            = var.vpc_id == "" ? aws_vpc.vpc.0.id : var.vpc_id
   internet_gateway  = var.vpc_id == "" ? aws_internet_gateway.igw.0.id : data.aws_internet_gateway.current-gateway.0.internet_gateway_id
   security_group_id = var.security_group_id != "" ? var.security_group_id : aws_security_group.secgroup.0.id
@@ -41,18 +43,18 @@ locals {
 # It will be created for netweaver only when drbd is disabled
 resource "aws_efs_file_system" "netweaver-efs" {
   count            = var.netweaver_enabled == true && var.drbd_enabled == false ? 1 : 0
-  creation_token   = "${terraform.workspace}-netweaver-efs"
+  creation_token   = "${local.deployment_name}-netweaver-efs"
   performance_mode = var.netweaver_efs_performance_mode
 
   tags = {
-    Name = "${terraform.workspace}-efs"
+    Name = "${local.deployment_name}-efs"
   }
 }
 
 # AWS key pair
 resource "aws_key_pair" "key-pair" {
-  key_name   = "${terraform.workspace} - terraform"
-  public_key = file(var.public_key_location)
+  key_name   = "${local.deployment_name} - terraform"
+  public_key = module.common_variables.configuration["public_key"]
 }
 
 # AWS availability zones
@@ -68,8 +70,8 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name      = "${terraform.workspace}-vpc"
-    Workspace = terraform.workspace
+    Name      = "${local.deployment_name}-vpc"
+    Workspace = local.deployment_name
   }
 }
 
@@ -78,8 +80,8 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = local.vpc_id
 
   tags = {
-    Name      = "${terraform.workspace}-igw"
-    Workspace = terraform.workspace
+    Name      = "${local.deployment_name}-igw"
+    Workspace = local.deployment_name
   }
 }
 
@@ -89,8 +91,8 @@ resource "aws_subnet" "infra-subnet" {
   availability_zone = element(data.aws_availability_zones.available.names, 0)
 
   tags = {
-    Name      = "${terraform.workspace}-infra-subnet"
-    Workspace = terraform.workspace
+    Name      = "${local.deployment_name}-infra-subnet"
+    Workspace = local.deployment_name
   }
 }
 
@@ -98,8 +100,8 @@ resource "aws_route_table" "route-table" {
   vpc_id = local.vpc_id
 
   tags = {
-    Name      = "${terraform.workspace}-hana-route-table"
-    Workspace = terraform.workspace
+    Name      = "${local.deployment_name}-hana-route-table"
+    Workspace = local.deployment_name
   }
 }
 
@@ -121,12 +123,12 @@ locals {
 
 resource "aws_security_group" "secgroup" {
   count  = local.create_security_group
-  name   = "${terraform.workspace}-sg"
+  name   = "${local.deployment_name}-sg"
   vpc_id = local.vpc_id
 
   tags = {
-    Name      = "${terraform.workspace}-sg"
-    Workspace = terraform.workspace
+    Name      = "${local.deployment_name}-sg"
+    Workspace = local.deployment_name
   }
 }
 
