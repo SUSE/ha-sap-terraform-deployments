@@ -51,18 +51,18 @@ variable "storage_account_key" {
   type        = string
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+variable "public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
 }
 
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. The key is only used to provision the machines. It is not uploaded to the machines in any case"
   type        = string
 }
 
 variable "authorized_keys" {
-  description = "List of additional authorized SSH public keys paths to access the created machines with the used admin user (admin_user variable in this case)"
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (admin_user variable in this case)"
   type        = list(string)
   default     = []
 }
@@ -73,14 +73,14 @@ variable "bastion_enabled" {
   default     = true
 }
 
-variable "bastion_public_key_location" {
-  description = "Path to a SSH public key used to connect to the bastion. If it's not set the key provided in public_key_location will be used"
+variable "bastion_public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
   type        = string
   default     = ""
 }
 
-variable "bastion_private_key_location" {
-  description = "Path to a SSH private key used to connect to the bastion. If it's not set the key provided in private_key_location will be used"
+variable "bastion_private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
   type        = string
   default     = ""
 }

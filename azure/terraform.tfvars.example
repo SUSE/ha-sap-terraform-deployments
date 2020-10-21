@@ -1,3 +1,8 @@
+#################################
+# ha-sap-terraform-deployments project configuration file
+# Find all the available variables and definitions in the variables.tf file
+#################################
+
 # Region where to deploy the configuration
 az_region = "westeurope"
 
@@ -53,12 +58,24 @@ admin_user = "cloudadmin"
 # The project requires a pair of SSH keys (public and private) to provision the machines
 # The private key is only used to create the SSH connection, it is not uploaded to the machines
 # Besides the provisioning, the SSH connection for this keys will be authorized in the created machines
-# These keys are provided using the next two variables
-public_key_location = "/home/myuser/.ssh/id_rsa.pub"
-private_key_location = "/home/myuser/.ssh/id_rsa"
+# These keys are provided using the next two variables in 2 different ways
+# Path to already existing keys
+public_key  = "/home/myuser/.ssh/id_rsa.pub"
+private_key = "/home/myuser/.ssh/id_rsa"
+
+# Or provide the content of SSH keys
+#public_key  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCt06V...."
+#private_key = <<EOF
+#-----BEGIN OPENSSH PRIVATE KEY-----
+#b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
+#...
+#P9eYliTYFxhv/0E7AAAAEnhhcmJ1bHVAbGludXgtYWZqOQ==
+#-----END OPENSSH PRIVATE KEY-----
+#EOF
 
 # Authorize additional keys optionally (in this case, the private key is not required)
-#authorized_keys = ["/home/myuser/.ssh/id_rsa_second_key.pub", "/home/myuser/.ssh/id_rsa_third_key.pub"]
+# Path to local files or keys content
+#authorized_keys = ["/home/myuser/.ssh/id_rsa_second_key.pub", "/home/myuser/.ssh/id_rsa_third_key.pub", "ssh-rsa AAAAB3NzaC1yc2EAAAA...."]
 
 # An additional pair of SSH keys is needed to provide the HA cluster the capability to SSH among the machines
 # This keys are uploaded to the machines!

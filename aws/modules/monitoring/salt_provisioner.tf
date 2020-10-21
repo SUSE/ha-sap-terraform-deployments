@@ -9,7 +9,7 @@ resource "null_resource" "monitoring_provisioner" {
     host        = aws_instance.monitoring.0.public_ip
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
@@ -37,7 +37,7 @@ module "monitoring_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" && var.monitoring_enabled ? 1 : 0
   instance_ids         = null_resource.monitoring_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.monitoring.*.public_ip
   background           = var.common_variables["background"]
 }

@@ -82,7 +82,7 @@ module "drbd_on_destroy" {
   node_count           = var.drbd_count
   instance_ids         = aws_instance.drbd.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.drbd.*.public_ip
   dependencies         = var.on_destroy_dependencies
 }

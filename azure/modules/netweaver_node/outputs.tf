@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "netweaver" {
-  count               = var.bastion_enabled ? 0 : local.vm_count
+  count               = local.bastion_enabled ? 0 : local.vm_count
   name                = element(azurerm_public_ip.netweaver.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.netweaver.*.resource_group_name, count.index)
 }

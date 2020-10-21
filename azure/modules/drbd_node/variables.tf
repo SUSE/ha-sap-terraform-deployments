@@ -65,24 +65,6 @@ variable "network_domain" {
   default = "tf.local"
 }
 
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
-}
-
 variable "fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd"
   type        = string

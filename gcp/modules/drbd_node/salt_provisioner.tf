@@ -12,7 +12,7 @@ resource "null_resource" "drbd_provisioner" {
     )
     type        = "ssh"
     user        = "root"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
@@ -51,7 +51,7 @@ module "drbd_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
   instance_ids         = null_resource.drbd_provisioner.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
   background           = var.common_variables["background"]
 }

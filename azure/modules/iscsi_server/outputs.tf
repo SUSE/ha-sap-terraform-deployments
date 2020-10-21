@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "iscsisrv" {
-  count               = var.bastion_enabled ? 0 : var.iscsi_count
+  count               = local.bastion_enabled ? 0 : var.iscsi_count
   name                = element(azurerm_public_ip.iscsisrv.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.iscsisrv.*.resource_group_name, count.index)
 }

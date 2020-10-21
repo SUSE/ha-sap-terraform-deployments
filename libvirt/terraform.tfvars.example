@@ -1,3 +1,8 @@
+#################################
+# ha-sap-terraform-deployments project configuration file
+# Find all the available variables and definitions in the variables.tf file
+#################################
+
 # qemu uri, this example is to run locally
 qemu_uri = "qemu:///system"
 
@@ -41,7 +46,8 @@ iprange = "192.168.XXX.Y/24"
 #}
 
 # Authorize additional keys optionally (in this case, the private key is not required)
-#authorized_keys = ["/home/myuser/.ssh/id_rsa_second_key.pub", "/home/myuser/.ssh/id_rsa_third_key.pub"]
+# Path to local files or keys content
+#authorized_keys = ["/home/myuser/.ssh/id_rsa_second_key.pub", "/home/myuser/.ssh/id_rsa_third_key.pub", "ssh-rsa AAAAB3NzaC1yc2EAAAA...."]
 
 ##########################
 # Other deployment options

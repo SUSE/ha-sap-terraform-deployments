@@ -41,8 +41,8 @@ variable "admin_user" {
   default     = "azadmin"
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the bastion. This key will be authorized"
+variable "public_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion"
   type        = string
 }
 
