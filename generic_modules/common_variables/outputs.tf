@@ -1,9 +1,10 @@
 locals {
-  public_key      = fileexists(var.public_key) ? file(var.public_key) : var.public_key
-  private_key     = fileexists(var.private_key) ? file(var.private_key) : var.private_key
+  # fileexists doesn't work properly with empty strings ("")
+  public_key      = var.public_key != "" ? (fileexists(var.public_key) ? file(var.public_key) : var.public_key) : ""
+  private_key     = var.private_key != "" ? (fileexists(var.private_key) ? file(var.private_key) : var.private_key) : ""
   authorized_keys = join(", ", formatlist("\"%s\"",
     concat(
-      [trimspace(local.public_key)],
+      local.public_key != "" ? [trimspace(local.public_key)] : [],
       [for key in var.authorized_keys: trimspace(fileexists(key) ? file(key) : key)])
     )
   )
