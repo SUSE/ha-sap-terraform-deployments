@@ -3,25 +3,25 @@
     "azure_region": {
       "type": "string",
       "default": "westeurope",
-      "description": "Azure region where the deployment machines will be created"
+      "description": "Azure region where the machines will be created"
     },
     "ssh_authorized_keys": {
       "type": "list",
-      "description": "List of additional authorized SSH public keys paths to access the created machines with the used admin user"
+      "description": "List of additional authorized SSH public keys paths to access the created machines with the OS admin user"
     },
     "system_identifier": {
       "type": "string",
       "default": "prd",
-      "description": "HANA system identifier. System identifier must be 3 letters string]"
+      "description": "HANA SID. The System identifier (SID) must be 3 letters]"
     },
     "instance_number": {
       "type": "string",
       "default": "00",
-      "description": "HANA system instance number. Instance number must be 2 digits string]"
+      "description": "HANA system instance number. Instance number must be 2 digits]"
     },
     "sap_admin_password": {
       "type": "string",
-      "description": "SAP administrator password"
+      "description": "SAP HANA administrator password"
     },
     "deployment_type": {
       "type": "string",
@@ -34,11 +34,11 @@
     },
     "hana_installation_software_path": {
       "type": "string",
-      "description": "Azure storage account file share where HANA installation platform is available"
+      "description": "Azure storage account file share path, where the downloaded SAP HANA installation media is available"
     },
     "storage_account_name": {
       "type": "string",
-      "description": "Azure storage account where the file share is located"
+      "description": "Azure storage account name of the file share"
     },
     "storage_account_key": {
       "type": "string",
