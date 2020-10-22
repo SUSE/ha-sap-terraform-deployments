@@ -15,7 +15,7 @@ locals {
       }
     }
     small = {
-      vm_size                       = "Standard_E64s_v3"
+      vm_size                       = "Standard_E32s_v3"
       enable_accelerated_networking = true
       data_disks_configuration = {
         disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
@@ -29,7 +29,7 @@ locals {
       }
     }
     medium = {
-      vm_size                       = "Standard_M128s"
+      vm_size                       = "Standard_E64s_v3"
       enable_accelerated_networking = true
       data_disks_configuration = {
         disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
@@ -43,7 +43,7 @@ locals {
       }
     }
     large = {
-      vm_size                       = "Standard_E4s_v3"
+      vm_size                       = "Standard_M64s"
       enable_accelerated_networking = false
       data_disks_configuration = {
         disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
@@ -66,37 +66,37 @@ locals {
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = false
-      app_server_count            = 2
+      app_server_count            = 1
     }
     small = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E8s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 5
+      app_server_count            = 1
     }
     medium = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E8s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 5
+      app_server_count            = 4
     }
     large = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E16s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 10
+      app_server_count            = 6
     }
   }
   sles4sap_version = "SLES15SP2"
