@@ -1,6 +1,6 @@
 locals {
   hana_sizes = {
-    demo = {
+    demo_sap_hana = {
       vm_size                       = "Standard_E4s_v3"
       enable_accelerated_networking = false
       data_disks_configuration = {
@@ -14,7 +14,7 @@ locals {
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
       }
     }
-    small = {
+    small_sap_hana = {
       vm_size                       = "Standard_E64s_v3"
       enable_accelerated_networking = true
       data_disks_configuration = {
@@ -28,7 +28,7 @@ locals {
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
       }
     }
-    medium = {
+    medium_sap_hana = {
       vm_size                       = "Standard_M128s"
       enable_accelerated_networking = true
       data_disks_configuration = {
@@ -42,7 +42,7 @@ locals {
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
       }
     }
-    large = {
+    large_sap_hana = {
       vm_size                       = "Standard_E4s_v3"
       enable_accelerated_networking = false
       data_disks_configuration = {
@@ -100,72 +100,72 @@ locals {
     }
   }
   sles4sap_version = "SLES15SP2"
+  scc_registration_code = ""
   sles_version = {
     SLES15 = {
       publisher = "SUSE"
-      offer     = var.scc_registration_code == "" ? "SLES-SAP" : "SLES-SAP-BYOS"
+      offer     = local.scc_registration_code == "" ? "SLES-SAP" : "SLES-SAP-BYOS"
       sku       = "gen2-15"
       version   = "latest"
     }
     SLES15SP1 = {
       publisher = "SUSE"
-      offer     = var.scc_registration_code == "" ? "sles-sap-15-sp1" : "sles-sap-15-sp1-byos"
+      offer     = local.scc_registration_code == "" ? "sles-sap-15-sp1" : "sles-sap-15-sp1-byos"
       sku       = "gen2"
       version   = "latest"
     }
     SLES15SP2 = {
       publisher = "SUSE"
-      offer     = var.scc_registration_code == "" ? "sles-sap-15-sp2" : "sles-sap-15-sp2-byos"
+      offer     = local.scc_registration_code == "" ? "sles-sap-15-sp2" : "sles-sap-15-sp2-byos"
       sku       = "gen2"
       version   = "latest"
     }
   }
   os_image = join(":", [
-    local.sles_version[var.sles4sap_version]["publisher"],
-    local.sles_version[var.sles4sap_version]["offer"],
-    local.sles_version[var.sles4sap_version]["sku"],
-    local.sles_version[var.sles4sap_version]["version"]])
+    local.sles_version[local.sles4sap_version]["publisher"],
+    local.sles_version[local.sles4sap_version]["offer"],
+    local.sles_version[local.sles4sap_version]["sku"],
+    local.sles_version[local.sles4sap_version]["version"]])
+
+  storage_account_path = "//${var.storage_account_name}.file.core.windows.net/"
+
+  hana_inst_master  = length(regexall(".*\\..*", basename(var.hana_installation_software_path))) > 0 ? dirname(var.hana_installation_software_path) : var.hana_installation_software_path
+  hana_archive_file = length(regexall(".*\\..*", basename(var.hana_installation_software_path))) > 0 ? basename(var.hana_installation_software_path) : ""
+}
+
+resource "tls_private_key" "salt_execution_ssh_keys" {
+  algorithm   = "RSA"
 }
 
 module "bluehorizon" {
   source                             = "git::https://github.com/SUSE/ha-sap-terraform-deployments.git///azure?ref=develop"
   az_region                          = var.azure_region
-  admin_user                         = "azadmin"
-  authorized_keys                    = ssh_authorized.keys
+  admin_user                         = var.os_admnistrator_name
+  deployment_name                    = var.deployment_name
+  public_key                         = tls_private_key.salt_execution_ssh_keys.public_key_openssh
+  private_key                        = tls_private_key.salt_execution_ssh_keys.private_key_pem
+  authorized_keys                    = ["${var.ssh_authorized_key}"]
   cluster_ssh_pub                    = "salt://sshkeys/cluster.id_rsa.pub"
   cluster_ssh_key                    = "salt://sshkeys/cluster.id_rsa"
-  reg_code                           = ""
-  reg_email                          = ""
-  hana_count                         = var.deployment_type == "2-tier-HA" ? 2 : 1
+  hana_count                         = var.deployment_type == "HA" ? 2 : 1
   os_image                           = local.os_image
-  hana_vm_size                       = local.hana_sizes[var.deployment_size]["vm_size"]
-  hana_data_disks_configuration      = local.hana_sizes[var.deployment_size]["data_disks_configuration"]
-  hana_enable_accelerated_networking = local.hana_sizes[var.deployment_size]["enable_accelerated_networking"]
+  hana_vm_size                       = local.hana_sizes[var.instance_type]["vm_size"]
+  hana_data_disks_configuration      = local.hana_sizes[var.instance_type]["data_disks_configuration"]
+  hana_enable_accelerated_networking = local.hana_sizes[var.instance_type]["enable_accelerated_networking"]
   hana_sid                           = var.system_identifier
   hana_instance_number               = var.instance_number
-  #hana_master_password               = var.sap_admin_password
-  #hana_primary_site                  = "siteA"
-  #hana_secondary_site                = "siteB"
+  hana_master_password               = var.sap_admin_password
+  hana_primary_site                  = "${var.deployment_name}-siteA"
+  hana_secondary_site                = "${var.deployment_name}-siteB"
   hana_cluster_fencing_mechanism     = "sbd"
-  hana_ha_enabled                    = var.deployment_type == "2-tier-HA" ? true : false
-  hana_inst_master                   = var.hana_installation_software_path
+  hana_ha_enabled                    = var.deployment_type == "HA" ? true : false
+  hana_inst_master                   = "${local.storage_account_path}${local.hana_inst_master}"
+  hana_archive_file                  = local.hana_archive_file
   storage_account_name               = var.storage_account_name
   storage_account_key                = var.storage_account_key
   monitoring_enabled                 = true
-  #drbd_enabled                       = var.deployment_type == "3-tier-HA" ? true : false
-  #netweaver_enabled                  = var.deployment_type == "2-tier" || var.deployment_type == "2-tie-HA" ? false : true
   pre_deployment                     = true
   provisioning_log_level             = "info"
-}
-
-output "admin_user" {
-  value = module.bluehorizon.admin_user
-}
-
-output "bastion_ip" {
-  value = module.bluehorizon.bastion_public_ip
-}
-
-output "hana_ips" {
-  value = join(",", module.bluehorizon.cluster_nodes_ip)
+  #ha_sap_deployment_repo             = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel"
+  netweaver_master_password          = "not used"
 }
