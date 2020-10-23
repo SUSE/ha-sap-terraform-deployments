@@ -61,11 +61,6 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "hana_targets" {
   description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
   type        = list(string)

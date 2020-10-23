@@ -118,11 +118,6 @@ variable "vm_size" {
   default = "Standard_E4s_v3"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd"
   type        = string

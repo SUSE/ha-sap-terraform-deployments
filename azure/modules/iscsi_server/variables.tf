@@ -44,11 +44,6 @@ variable "vm_size" {
   default = "Standard_D2s_v3"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "iscsi_count" {
   description = "Number of iscsi machines to deploy"
   type        = number

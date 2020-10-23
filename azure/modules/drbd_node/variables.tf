@@ -61,11 +61,6 @@ variable "vm_size" {
   default = "Standard_D2s_v3"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "network_domain" {
   type    = string
   default = "tf.local"

@@ -29,11 +29,6 @@ variable "storage_account" {
   type = string
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "network_domain" {
   type    = string
   default = "tf.local"

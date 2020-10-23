@@ -87,7 +87,6 @@ module "drbd_node" {
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
-  admin_user          = var.admin_user
   host_ips            = local.drbd_ips
   fencing_mechanism   = var.drbd_cluster_fencing_mechanism
   sbd_storage_type    = var.sbd_storage_type
@@ -119,7 +118,6 @@ module "netweaver_node" {
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
-  admin_user                  = var.admin_user
   hana_ip                     = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   hana_sid                    = var.hana_sid
   hana_instance_number        = var.hana_instance_number
@@ -188,7 +186,6 @@ module "hana_node" {
   cluster_ssh_key                     = var.cluster_ssh_key
   hana_data_disks_configuration       = var.hana_data_disks_configuration
   os_image                            = local.hana_os_image
-  admin_user                          = var.admin_user
   fencing_mechanism                   = var.hana_cluster_fencing_mechanism
   sbd_storage_type                    = var.sbd_storage_type
   iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
@@ -209,7 +206,6 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
-  admin_user          = var.admin_user
   hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
@@ -231,5 +227,4 @@ module "iscsi_server" {
   host_ips            = [local.iscsi_ip]
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size
-  admin_user          = var.admin_user
 }
