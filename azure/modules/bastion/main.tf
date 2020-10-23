@@ -1,5 +1,6 @@
 locals {
-  bastion_enabled = var.common_variables["bastion_enabled"] ? 1 : 0
+  bastion_enabled    = var.common_variables["bastion_enabled"] ? 1 : 0
+  private_ip_address = cidrhost(var.snet_address_range, 5)
 }
 
 
@@ -26,7 +27,7 @@ resource "azurerm_network_security_group" "bastion" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    destination_address_prefix = local.private_ip_address
   }
 
   security_rule {
@@ -40,6 +41,21 @@ resource "azurerm_network_security_group" "bastion" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+}
+
+resource "azurerm_network_security_rule" "grafana" {
+  count                       = var.common_variables["monitoring_enabled"] ? local.bastion_enabled : 0
+  name                        = "Grafana"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "3000"
+  source_address_prefix       = "*"
+  destination_address_prefix  = local.private_ip_address
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = join("", azurerm_network_security_group.bastion.*.name)
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
@@ -59,7 +75,7 @@ resource "azurerm_network_interface" "bastion" {
     name                          = "ipconf-primary"
     subnet_id                     = azurerm_subnet.bastion[0].id
     private_ip_address_allocation = "static"
-    private_ip_address            = cidrhost(var.snet_address_range, 5)
+    private_ip_address            = local.private_ip_address
     public_ip_address_id          = azurerm_public_ip.bastion[0].id
   }
 
@@ -100,7 +116,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
   storage_image_reference {
     publisher = "SUSE"
-    offer     = "sles-sap-15-sp1-byos"
+    offer     = "sles-sap-15-sp1-byos" # need to change this
     sku       = "gen2"
     version   = "latest"
   }
@@ -127,4 +143,14 @@ resource "azurerm_virtual_machine" "bastion" {
   tags = {
     workspace = var.common_variables["deployment_name"]
   }
+}
+
+module "bastion_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = local.bastion_enabled
+  instance_ids         = azurerm_virtual_machine.bastion.*.id
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["bastion_private_key"]
+  public_ips           = data.azurerm_public_ip.bastion.*.ip_address
+  dependencies         = [data.azurerm_public_ip.bastion]
 }
