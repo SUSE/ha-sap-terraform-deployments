@@ -1,6 +1,5 @@
 locals {
-  bastion_enabled = var.bastion_enabled ? 1 : 0
-  public_key      = fileexists(var.public_key) ? file(var.public_key) : var.public_key
+  bastion_enabled = var.common_variables["bastion_enabled"] ? 1 : 0
 }
 
 
@@ -65,7 +64,7 @@ resource "azurerm_network_interface" "bastion" {
   }
 
   tags = {
-    workspace = var.deployment_name
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -78,7 +77,7 @@ resource "azurerm_public_ip" "bastion" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = var.deployment_name
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -108,15 +107,15 @@ resource "azurerm_virtual_machine" "bastion" {
 
   os_profile {
     computer_name  = "vmbastion"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = local.public_key
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["bastion_public_key"]
     }
   }
 
@@ -126,6 +125,6 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   tags = {
-    workspace = var.deployment_name
+    workspace = var.common_variables["deployment_name"]
   }
 }
