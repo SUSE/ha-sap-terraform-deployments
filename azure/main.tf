@@ -46,6 +46,7 @@ locals {
   monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
   drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
   netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
 }
 
 module "common_variables" {

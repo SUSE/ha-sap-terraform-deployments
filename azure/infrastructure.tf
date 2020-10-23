@@ -251,6 +251,7 @@ module "bastion" {
   source              = "./modules/bastion"
   common_variables    = module.common_variables.configuration
   az_region           = var.az_region
+  os_image            = local.bastion_os_image
   vm_size             = "Standard_B1s"
   resource_group_name = local.resource_group_name
   vnet_name           = local.vnet_name

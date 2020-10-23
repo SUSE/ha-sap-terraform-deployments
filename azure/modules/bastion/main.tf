@@ -97,6 +97,11 @@ resource "azurerm_public_ip" "bastion" {
   }
 }
 
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
+}
+
 resource "azurerm_virtual_machine" "bastion" {
   count                            = local.bastion_enabled
   name                             = "vmbastion"
@@ -115,10 +120,10 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   storage_image_reference {
-    publisher = "SUSE"
-    offer     = "sles-sap-15-sp1-byos" # need to change this
-    sku       = "gen2"
-    version   = "latest"
+    publisher = module.os_image_reference.publisher
+    offer     = module.os_image_reference.offer
+    sku       = module.os_image_reference.sku
+    version   = module.os_image_reference.version
   }
 
   os_profile {
