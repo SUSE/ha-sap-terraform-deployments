@@ -62,7 +62,6 @@ module "common_variables" {
   authorized_keys        = var.authorized_keys
   authorized_user        = var.admin_user
   bastion_enabled        = var.bastion_enabled
-  bastion_host           = module.bastion.public_ip
   bastion_public_key     = var.bastion_public_key
   bastion_private_key    = var.bastion_private_key
   provisioner            = var.provisioner
@@ -76,6 +75,7 @@ module "common_variables" {
 module "drbd_node" {
   source              = "./modules/drbd_node"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   az_region           = var.az_region
   drbd_count          = var.drbd_enabled == true ? 2 : 0
   vm_size             = var.drbd_vm_size
@@ -100,6 +100,7 @@ module "drbd_node" {
 module "netweaver_node" {
   source                      = "./modules/netweaver_node"
   common_variables            = module.common_variables.configuration
+  bastion_host                = module.bastion.public_ip
   az_region                   = var.az_region
   xscs_server_count           = local.netweaver_xscs_server_count
   app_server_count            = var.netweaver_enabled ? var.netweaver_app_server_count : 0
@@ -151,6 +152,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                              = "./modules/hana_node"
   common_variables                    = module.common_variables.configuration
+  bastion_host                        = module.bastion.public_ip
   az_region                           = var.az_region
   hana_count                          = var.hana_count
   vm_size                             = var.hana_vm_size
@@ -196,6 +198,7 @@ module "hana_node" {
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   az_region           = var.az_region
   vm_size             = var.monitoring_vm_size
@@ -215,6 +218,7 @@ module "monitoring" {
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled ? 1 : 0
   az_region           = var.az_region
   vm_size             = var.iscsi_vm_size

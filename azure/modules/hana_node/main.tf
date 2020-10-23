@@ -285,7 +285,7 @@ module "hana_on_destroy" {
   instance_ids         = azurerm_virtual_machine.hana.*.id
   user                 = var.admin_user
   private_key          = var.common_variables["private_key"]
-  bastion_host         = var.common_variables["bastion_host"]
+  bastion_host         = var.bastion_host
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.hana]

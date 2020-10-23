@@ -11,7 +11,7 @@ resource "null_resource" "drbd_provisioner" {
     user        = var.admin_user
     private_key = var.common_variables["private_key"]
 
-    bastion_host        = var.common_variables["bastion_host"]
+    bastion_host        = var.bastion_host
     bastion_user        = var.admin_user
     bastion_private_key = var.common_variables["bastion_private_key"]
   }
@@ -50,7 +50,7 @@ module "drbd_provision" {
   instance_ids         = null_resource.drbd_provisioner.*.id
   user                 = var.admin_user
   private_key          = var.common_variables["private_key"]
-  bastion_host         = var.common_variables["bastion_host"]
+  bastion_host         = var.bastion_host
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
