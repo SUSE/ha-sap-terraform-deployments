@@ -34,4 +34,5 @@ module "bastion_provision" {
   private_key          = var.common_variables["bastion_private_key"]
   public_ips           = data.azurerm_public_ip.bastion.*.ip_address
   background           = var.common_variables["background"]
+  reboot               = false
 }
