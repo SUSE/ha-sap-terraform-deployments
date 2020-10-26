@@ -3,38 +3,62 @@
     "azure_region": {
       "type": "string",
       "default": "westeurope",
-      "description": "Azure region where the machines will be created"
+      "description": "Azure region where the machines will be created<!-- [group:Azure_configuration] -->"
     },
     "ssh_authorized_keys": {
       "type": "list",
       "description": "List of additional authorized SSH public keys paths to access the created machines with the OS admin user"
     },
+    "deployment_name": {
+      "type": "string",
+      "description": "Suffix string added to some of the infrastructure resources names such as the resource group (rsg-ha-sap-${deployment_name})<!-- [group:Azure_configuration] -->"
+    },
+    "os_admnistrator_name": {
+      "type": "string",
+      "description": "Name of the user created in the machines<!-- [group:Azure_configuration] -->",
+      "default": "cloudadmin"
+    },
+    "ssh_authorized_key": {
+      "type": "string",
+      "description": "SSH public key content that will be authorized to access the machines with azadmin username<!-- file_key [group:Azure_configuration] -->"
+    },
+    "storage_account_name": {
+      "type": "string",
+      "description": "Azure storage account where the file share with the SAP installation software is located<!-- [group:Azure_configuration] -->"
+    },
+    "storage_account_key": {
+      "type": "string",
+      "description": "Azure storage account access key<!-- password_key [group:Azure_configuration] -->"
+    },
+    "instance_type": {
+      "type": "string"
+    },
     "system_identifier": {
       "type": "string",
       "default": "prd",
-      "description": "HANA SID. The System identifier (SID) must be 3 letters]"
+      "description": "HANA SID. The System identifier (SID) must be 3 letters"
     },
     "instance_number": {
       "type": "string",
       "default": "00",
-      "description": "HANA system instance number. Instance number must be 2 digits]"
+      "description": "HANA system instance number. Instance number must be 2 digits"
     },
     "sap_admin_password": {
       "type": "string",
       "description": "SAP HANA administrator password"
     },
+    "sap_admin_password": {
+      "type": "string",
+      "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key -->"
+    },
     "deployment_type": {
       "type": "string",
       "default": "HA",
-      "description": "Select between HA (SAP HANA system replication and HA capabilities) or non HA deployment. Options=[\"HA\",\"non HA\"]"
-    },
-    "instance_type": {
-      "type": "string",
-      "description": "Only used to create the 'Size cluster' page"
+      "description": "Select if the deployment creates a Cluster with HANA system replication and HA capabilities or not<!-- Options=[\"HA\",\"non HA\"] -->"
     },
     "hana_installation_software_path": {
       "type": "string",
-      "description": "Azure storage account file share path, where the downloaded SAP HANA installation media is available"
+      "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381"
     },
     "storage_account_name": {
       "type": "string",
