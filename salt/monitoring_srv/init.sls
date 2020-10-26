@@ -1,4 +1,4 @@
 include:
   - .prometheus
   - .grafana
-  - .loki
+#  - .loki

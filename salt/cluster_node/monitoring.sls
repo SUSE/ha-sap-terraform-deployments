@@ -20,34 +20,35 @@ activate_node_exporter_systemd_collector:
     - contents: |
         ARGS="--collector.systemd --no-collector.mdadm"
 
-loki:
-  pkg.installed:
-    - name: loki
-    - retry:
-        attempts: 3
-        interval: 15
+# Below are loki package and promtail configuration. These are currently disabled 
+# loki:
+#   pkg.installed:
+#     - name: loki
+#     - retry:
+#         attempts: 3
+#         interval: 15
 
-promtail_config:
-  file.managed:
-    - name: /etc/loki/promtail.yaml
-    - template: jinja
-    - source: salt://cluster_node/templates/promtail.yaml.j2
+# promtail_config:
+#   file.managed:
+#     - name: /etc/loki/promtail.yaml
+#     - template: jinja
+#     - source: salt://cluster_node/templates/promtail.yaml.j2
 
-# we need to add loki's user to the systemd-journal group, to let promtail read /run/log/journal
-loki_systemd_journal_member:
-  group.present:
-    - name: systemd-journal
-    - addusers:
-      - loki
-    - require:
-      - pkg: loki
+# # we need to add loki's user to the systemd-journal group, to let promtail read /run/log/journal
+# loki_systemd_journal_member:
+#   group.present:
+#     - name: systemd-journal
+#     - addusers:
+#       - loki
+#     - require:
+#       - pkg: loki
 
-promtail_service:
-  service.running:
-    - name: promtail
-    - enable: True
-    - restart: True
-    - require:
-      - pkg: loki
-      - file: promtail_config
-      - group: loki_systemd_journal_member
+# promtail_service:
+#   service.running:
+#     - name: promtail
+#     - enable: True
+#     - restart: True
+#     - require:
+#       - pkg: loki
+#       - file: promtail_config
+#       - group: loki_systemd_journal_member
