@@ -50,5 +50,23 @@ monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 EOF
+    hana_grains_output     = <<EOF
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
+hana_cost_optimized_instance_number: ${var.hana_cost_optimized_instance_number}
+hana_master_password: ${var.hana_master_password}
+hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
+hana_primary_site: ${var.hana_primary_site}
+hana_secondary_site: ${var.hana_secondary_site}
+hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
+hana_inst_folder: ${var.hana_inst_folder}
+hana_platform_folder: ${var.hana_platform_folder}
+hana_sapcar_exe: ${var.hana_sapcar_exe}
+hana_archive_file: ${var.hana_archive_file}
+hana_extract_dir: ${var.hana_extract_dir}
+scenario_type: ${var.scenario_type}
+EOF
   }
 }
