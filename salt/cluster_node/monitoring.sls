@@ -20,6 +20,8 @@ activate_node_exporter_systemd_collector:
     - contents: |
         ARGS="--collector.systemd --no-collector.mdadm"
 
+{# Below are loki package and promtail configuration. These are currently disabled #}
+{#
 loki:
   pkg.installed:
     - name: loki
@@ -51,3 +53,4 @@ promtail_service:
       - pkg: loki
       - file: promtail_config
       - group: loki_systemd_journal_member
+#}

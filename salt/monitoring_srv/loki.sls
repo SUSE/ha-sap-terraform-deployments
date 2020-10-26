@@ -1,3 +1,4 @@
+{# loki package is currently disabled. To use it, add the .loki sls entry in init.sls and enable loki as datasource in grafana/datasources template #}
 loki:
   pkg.installed:
     - name: loki
