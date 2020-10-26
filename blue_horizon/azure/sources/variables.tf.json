@@ -59,14 +59,6 @@
     "hana_installation_software_path": {
       "type": "string",
       "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381"
-    },
-    "storage_account_name": {
-      "type": "string",
-      "description": "Azure storage account name of the file share"
-    },
-    "storage_account_key": {
-      "type": "string",
-      "description": "password_key: Azure storage account access key"
     }
   }
 }
