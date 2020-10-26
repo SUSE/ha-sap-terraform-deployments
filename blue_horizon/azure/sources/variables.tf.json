@@ -20,7 +20,7 @@
     },
     "ssh_authorized_key": {
       "type": "string",
-      "description": "SSH public key content that will be authorized to access the machines with azadmin username<!-- file_key [group:Azure_configuration] -->"
+      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
     },
     "storage_account_name": {
       "type": "string",
@@ -36,20 +36,20 @@
     "system_identifier": {
       "type": "string",
       "default": "prd",
-      "description": "HANA SID. The System identifier (SID) must be 3 letters"
+      "description": "HANA SID. The System identifier (SID) must be 3 letters<!-- [group:HANA_configuration] -->"
     },
     "instance_number": {
       "type": "string",
       "default": "00",
-      "description": "HANA system instance number. Instance number must be 2 digits"
+      "description": "HANA system instance number. Instance number must be 2 digits<!-- [group:HANA_configuration] -->"
     },
     "sap_admin_password": {
       "type": "string",
-      "description": "SAP HANA administrator password"
+      "description": "SAP HANA administrator password<!-- [group:HANA_configuration] -->"
     },
     "sap_admin_password": {
       "type": "string",
-      "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key -->"
+      "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key [group:HANA_configuration] -->"
     },
     "deployment_type": {
       "type": "string",
@@ -58,7 +58,7 @@
     },
     "hana_installation_software_path": {
       "type": "string",
-      "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381"
+      "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381<!-- [group:HANA_configuration] -->"
     }
   }
 }
