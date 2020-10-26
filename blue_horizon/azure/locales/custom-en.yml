@@ -1,6 +1,8 @@
 # Copy to vendor/locales/[LANGUAGE_KEY].yml
 # Adjust the language key below
-
+sidebarL:
+  cluster: "Sizes"
+  deploy: "Deploy your machines"
 en:
   # Application title - shown on the home page
   title: "Blue Horizon for SLES4SAP"
@@ -18,7 +20,7 @@ en:
     The solution will deploy the needed Azure infrastructure for SAP Netweaver and SAP HANA 
     and provision and configure the virtual machines and install the SAP application for you.
     
-    Doing SAP sizing right is not easy, therefor a simplified sizing approach is used. 
+    Doing SAP sizing right is not easy, therefore a simplified sizing approach is used. 
     With the well known concept of T-Shirt sizes S,M,L we provide a simple way of using different settings. 
     
     Behind such T-Shirt sizes, we use the right Azure instance and the needed number of disks with the right size.
@@ -29,7 +31,7 @@ en:
     * Medium <  70.000 SAPS
     * Large  < 180.000 SAPS
     
-    **Please be aware that it may require a high amount of resources, therefor an increase of your quota could be necessary**.
+    **Please be aware that it may require a high amount of resources, therefore an increase of your quota could be necessary**.
     
     For a more advanced customization you will need to get your hands dirty and work directly with the source project: https://github.com/SUSE/ha-sap-terraform-deployments
 
@@ -41,7 +43,7 @@ en:
         The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter
 
     3. In order to provide the SAP software in Azure, please create a storage account in your Azure subscription and upload the downloaded format to a file share.
-       See Microsoft documentation [Howto create a storage account][]
+       See Microsoft documentation 
        [Howto create a storage account]:https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#create-a-storage-account
 
         **This storage account has an account name and key. Store them as they are needed in the next steps.** They can be collected from the Azure portal.
