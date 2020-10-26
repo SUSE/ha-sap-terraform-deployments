@@ -55,24 +55,24 @@ locals {
 }
 
 module "common_variables" {
-  source                 = "../generic_modules/common_variables"
-  provider_type          = "aws"
-  deployment_name        = local.deployment_name
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  additional_packages    = var.additional_packages
-  public_key             = var.public_key
-  private_key            = var.private_key
-  authorized_keys        = var.authorized_keys
-  authorized_user        = "ec2-user"
-  provisioner            = var.provisioner
-  provisioning_log_level = var.provisioning_log_level
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
-  monitoring_srv_ip      = var.monitoring_enabled ? local.monitoring_ip : ""
-  qa_mode                = var.qa_mode
+  source                              = "../generic_modules/common_variables"
+  provider_type                       = "aws"
+  deployment_name                     = local.deployment_name
+  reg_code                            = var.reg_code
+  reg_email                           = var.reg_email
+  reg_additional_modules              = var.reg_additional_modules
+  ha_sap_deployment_repo              = var.ha_sap_deployment_repo
+  additional_packages                 = var.additional_packages
+  public_key                          = var.public_key
+  private_key                         = var.private_key
+  authorized_keys                     = var.authorized_keys
+  authorized_user                     = "ec2-user"
+  provisioner                         = var.provisioner
+  provisioning_log_level              = var.provisioning_log_level
+  background                          = var.background
+  monitoring_enabled                  = var.monitoring_enabled
+  monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
+  qa_mode                             = var.qa_mode
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
   hana_cost_optimized_sid             = var.hana_cost_optimized_sid
@@ -86,8 +86,6 @@ module "common_variables" {
   hana_sapcar_exe                     = var.hana_sapcar_exe
   hana_archive_file                   = var.hana_archive_file
   hana_extract_dir                    = var.hana_extract_dir
-  hana_cluster_vip                    = local.hana_cluster_vip
-  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   scenario_type                       = var.scenario_type
 }
 
@@ -204,35 +202,37 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                              = "./modules/hana_node"
-  common_variables                    = module.common_variables.configuration
-  hana_count                          = var.hana_count
-  instance_type                       = var.hana_instancetype
-  name                                = var.name
-  aws_region                          = var.aws_region
-  availability_zones                  = data.aws_availability_zones.available.names
-  os_image                            = local.hana_os_image
-  os_owner                            = local.hana_os_owner
-  vpc_id                              = local.vpc_id
-  subnet_address_range                = local.hana_subnet_address_range
-  key_name                            = aws_key_pair.key-pair.key_name
-  security_group_id                   = local.security_group_id
-  route_table_id                      = aws_route_table.route-table.id
-  aws_credentials                     = var.aws_credentials
-  aws_access_key_id                   = var.aws_access_key_id
-  aws_secret_access_key               = var.aws_secret_access_key
-  host_ips                            = local.hana_ips
-  hana_data_disk_type                 = var.hana_data_disk_type
-  hana_data_disk_size                 = var.hana_data_disk_size
-  hana_inst_master                    = var.hana_inst_master
-  hana_fstype                         = var.hana_fstype
-  ha_enabled                          = var.hana_ha_enabled
-  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
-  sbd_storage_type                    = var.sbd_storage_type
-  iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
-  cluster_ssh_pub                     = var.cluster_ssh_pub
-  cluster_ssh_key                     = var.cluster_ssh_key
-  hwcct                               = var.hwcct
+  source                     = "./modules/hana_node"
+  common_variables           = module.common_variables.configuration
+  hana_count                 = var.hana_count
+  instance_type              = var.hana_instancetype
+  name                       = var.name
+  aws_region                 = var.aws_region
+  availability_zones         = data.aws_availability_zones.available.names
+  os_image                   = local.hana_os_image
+  os_owner                   = local.hana_os_owner
+  vpc_id                     = local.vpc_id
+  subnet_address_range       = local.hana_subnet_address_range
+  key_name                   = aws_key_pair.key-pair.key_name
+  security_group_id          = local.security_group_id
+  route_table_id             = aws_route_table.route-table.id
+  aws_credentials            = var.aws_credentials
+  aws_access_key_id          = var.aws_access_key_id
+  aws_secret_access_key      = var.aws_secret_access_key
+  host_ips                   = local.hana_ips
+  hana_data_disk_type        = var.hana_data_disk_type
+  hana_data_disk_size        = var.hana_data_disk_size
+  hana_inst_master           = var.hana_inst_master
+  hana_fstype                = var.hana_fstype
+  hana_cluster_vip           = local.hana_cluster_vip
+  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                 = var.hana_ha_enabled
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
+  sbd_storage_type           = var.sbd_storage_type
+  iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
+  cluster_ssh_pub            = var.cluster_ssh_pub
+  cluster_ssh_key            = var.cluster_ssh_key
+  hwcct                      = var.hwcct
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,

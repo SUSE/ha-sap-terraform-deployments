@@ -40,17 +40,6 @@ variable "hana_secondary_site" {
   type        = string
 }
 
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP"
-  type        = string
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = string

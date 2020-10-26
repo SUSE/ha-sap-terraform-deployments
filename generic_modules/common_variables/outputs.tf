@@ -59,8 +59,6 @@ hana_master_password: ${var.hana_master_password}
 hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
 hana_primary_site: ${var.hana_primary_site}
 hana_secondary_site: ${var.hana_secondary_site}
-hana_cluster_vip: ${var.hana_cluster_vip}
-hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}

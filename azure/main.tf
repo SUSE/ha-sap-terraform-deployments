@@ -49,28 +49,42 @@ locals {
 }
 
 module "common_variables" {
-  source                 = "../generic_modules/common_variables"
-  provider_type          = "azure"
-  deployment_name        = local.deployment_name
-  reg_code               = var.reg_code
-  reg_email              = var.reg_email
-  reg_additional_modules = var.reg_additional_modules
-  ha_sap_deployment_repo = var.ha_sap_deployment_repo
-  additional_packages    = var.additional_packages
-  public_key             = var.public_key
-  private_key            = var.private_key
-  authorized_keys        = var.authorized_keys
-  authorized_user        = var.admin_user
-  bastion_enabled        = var.bastion_enabled
-  bastion_host           = module.bastion.public_ip
-  bastion_public_key     = var.bastion_public_key
-  bastion_private_key    = var.bastion_private_key
-  provisioner            = var.provisioner
-  provisioning_log_level = var.provisioning_log_level
-  background             = var.background
-  monitoring_enabled     = var.monitoring_enabled
-  monitoring_srv_ip      = var.monitoring_enabled ? local.monitoring_ip : ""
-  qa_mode                = var.qa_mode
+  source                              = "../generic_modules/common_variables"
+  provider_type                       = "azure"
+  deployment_name                     = local.deployment_name
+  reg_code                            = var.reg_code
+  reg_email                           = var.reg_email
+  reg_additional_modules              = var.reg_additional_modules
+  ha_sap_deployment_repo              = var.ha_sap_deployment_repo
+  additional_packages                 = var.additional_packages
+  public_key                          = var.public_key
+  private_key                         = var.private_key
+  authorized_keys                     = var.authorized_keys
+  authorized_user                     = var.admin_user
+  bastion_enabled                     = var.bastion_enabled
+  bastion_host                        = module.bastion.public_ip
+  bastion_public_key                  = var.bastion_public_key
+  bastion_private_key                 = var.bastion_private_key
+  provisioner                         = var.provisioner
+  provisioning_log_level              = var.provisioning_log_level
+  background                          = var.background
+  monitoring_enabled                  = var.monitoring_enabled
+  monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
+  qa_mode                             = var.qa_mode
+  hana_sid                            = var.hana_sid
+  hana_instance_number                = var.hana_instance_number
+  hana_cost_optimized_sid             = var.hana_cost_optimized_sid
+  hana_cost_optimized_instance_number = var.hana_cost_optimized_instance_number
+  hana_master_password                = var.hana_master_password
+  hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
+  hana_primary_site                   = var.hana_primary_site
+  hana_secondary_site                 = var.hana_secondary_site
+  hana_inst_folder                    = var.hana_inst_folder
+  hana_platform_folder                = var.hana_platform_folder
+  hana_sapcar_exe                     = var.hana_sapcar_exe
+  hana_archive_file                   = var.hana_archive_file
+  hana_extract_dir                    = var.hana_extract_dir
+  scenario_type                       = var.scenario_type
 }
 
 module "drbd_node" {
@@ -149,48 +163,34 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                              = "./modules/hana_node"
-  common_variables                    = module.common_variables.configuration
-  az_region                           = var.az_region
-  hana_count                          = var.hana_count
-  vm_size                             = var.hana_vm_size
-  host_ips                            = local.hana_ips
-  hana_sid                            = var.hana_sid
-  hana_instance_number                = var.hana_instance_number
-  hana_cost_optimized_sid             = var.hana_cost_optimized_sid
-  hana_cost_optimized_instance_number = var.hana_cost_optimized_instance_number
-  hana_master_password                = var.hana_master_password
-  hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
-  hana_primary_site                   = var.hana_primary_site
-  hana_secondary_site                 = var.hana_secondary_site
-  scenario_type                       = var.scenario_type
-  resource_group_name                 = local.resource_group_name
-  network_subnet_id                   = local.subnet_id
-  sec_group_id                        = azurerm_network_security_group.mysecgroup.id
-  storage_account                     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  storage_account_name                = var.storage_account_name
-  storage_account_key                 = var.storage_account_key
-  enable_accelerated_networking       = var.hana_enable_accelerated_networking
-  sles4sap_uri                        = var.sles4sap_uri
-  hana_cluster_vip                    = local.hana_cluster_vip
-  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                          = var.hana_ha_enabled
-  hana_inst_master                    = var.hana_inst_master
-  hana_inst_folder                    = var.hana_inst_folder
-  hana_platform_folder                = var.hana_platform_folder
-  hana_sapcar_exe                     = var.hana_sapcar_exe
-  hana_archive_file                   = var.hana_archive_file
-  hana_extract_dir                    = var.hana_extract_dir
-  hana_fstype                         = var.hana_fstype
-  cluster_ssh_pub                     = var.cluster_ssh_pub
-  cluster_ssh_key                     = var.cluster_ssh_key
-  hana_data_disks_configuration       = var.hana_data_disks_configuration
-  os_image                            = local.hana_os_image
-  admin_user                          = var.admin_user
-  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
-  sbd_storage_type                    = var.sbd_storage_type
-  iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
-  hwcct                               = var.hwcct
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  az_region                     = var.az_region
+  hana_count                    = var.hana_count
+  vm_size                       = var.hana_vm_size
+  host_ips                      = local.hana_ips
+  resource_group_name           = local.resource_group_name
+  network_subnet_id             = local.subnet_id
+  sec_group_id                  = azurerm_network_security_group.mysecgroup.id
+  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account_name          = var.storage_account_name
+  storage_account_key           = var.storage_account_key
+  enable_accelerated_networking = var.hana_enable_accelerated_networking
+  sles4sap_uri                  = var.sles4sap_uri
+  hana_instance_number          = var.hana_instance_number
+  hana_cluster_vip              = local.hana_cluster_vip
+  hana_cluster_vip_secondary    = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                    = var.hana_ha_enabled
+  hana_inst_master              = var.hana_inst_master
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  os_image                      = local.hana_os_image
+  admin_user                    = var.admin_user
+  fencing_mechanism             = var.hana_cluster_fencing_mechanism
+  sbd_storage_type              = var.sbd_storage_type
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  hwcct                         = var.hwcct
 }
 
 module "monitoring" {
