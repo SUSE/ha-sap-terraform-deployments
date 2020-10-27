@@ -42,10 +42,6 @@
     },
     "sap_admin_password": {
       "type": "string",
-      "description": "SAP HANA administrator password<!-- [group:HANA_configuration] -->"
-    },
-    "sap_admin_password": {
-      "type": "string",
       "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key [group:HANA_configuration] -->"
     },
     "deployment_type": {
