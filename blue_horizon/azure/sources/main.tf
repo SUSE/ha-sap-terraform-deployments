@@ -1,12 +1,12 @@
 locals {
   hana_sizes = {
     demo_sap_hana = {
-      vm_size                       = "Standard_E4s_v3"
+      vm_size                       = "Standard_E8s_v3"
       enable_accelerated_networking = false
       data_disks_configuration = {
         disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
         disks_size       = "128,128,128,128,128,128,128"
-        caching          = "None,None,None,None,None,None,None"
+        caching          = "ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly"
         writeaccelerator = "false,false,false,false,false,false,false"
         luns             = "0,1#2,3#4#5#6#7"
         names            = "data#log#shared#usrsap#backup"
@@ -15,42 +15,42 @@ locals {
       }
     }
     small_sap_hana = {
-      vm_size                       = "Standard_E64s_v3"
+      vm_size                       = "Standard_E32s_v3"
       enable_accelerated_networking = true
       data_disks_configuration = {
-        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-        disks_size       = "512,512,512,512,512,512,1024,64,1024,1024"
-        caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
-        writeaccelerator = "false,false,false,false,false,false,false,false,false,false"
-        luns             = "0,1,2,3#4,5#6#7#8,9"
-        names            = "data#log#shared#usrsap#backup"
-        lv_sizes         = "100#100#100#100#100"
+        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+        disks_size       = "512,512,512,512,64,512"
+        caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+        writeaccelerator = "false,false,false,false,false,false"
+        luns             = "0,1,2#3#4#5"
+        names            = "datalog#shared#usrsap#backup"
+        lv_sizes         = "70,100#100#100#100#100"
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
       }
     }
     medium_sap_hana = {
-      vm_size                       = "Standard_M128s"
+      vm_size                       = "Standard_E64s_v3"
       enable_accelerated_networking = true
       data_disks_configuration = {
-        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-        disks_size       = "1024,1024,1024,512,512,1024,64,2048,2048"
-        caching          = "ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
-        writeaccelerator = "false,false,false,true,true,false,false,false,false"
-        luns             = "0,1,2#3,4#5#6#7,8"
+        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+        disks_size       = "512,512,512,512,64,1024"
+        caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+        writeaccelerator = "false,false,false,false,false,false"
+        luns             = "0,1,2#3#4#5"
         names            = "data#log#shared#usrsap#backup"
-        lv_sizes         = "100#100#100#100#100"
+        lv_sizes         = "70,100#100#100#100#100"
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
       }
     }
     large_sap_hana = {
-      vm_size                       = "Standard_E4s_v3"
+      vm_size                       = "Standard_M64s"
       enable_accelerated_networking = false
       data_disks_configuration = {
-        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-        disks_size       = "128,128,128,128,128,128,128"
-        caching          = "None,None,None,None,None,None,None"
-        writeaccelerator = "false,false,false,false,false,false,false"
-        luns             = "0,1#2,3#4#5#6#7"
+        disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+        disks_size       = "512,512,512,512,512,512,1024,64,1024,1024"
+        caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None,None,ReadOnly,ReadOnly,ReadOnly,ReadOnly"
+        writeaccelerator = "false,false,false,false,true,true,false,false,false,false"
+        luns             = "0,1,2,3#4,5#6#7#8,9"
         names            = "data#log#shared#usrsap#backup"
         lv_sizes         = "100#100#100#100#100"
         paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
@@ -66,37 +66,37 @@ locals {
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = false
-      app_server_count            = 2
+      app_server_count            = 1
     }
     small = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E8s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 5
+      app_server_count            = 1
     }
     medium = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E8s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 5
+      app_server_count            = 4
     }
     large = {
-      xscs_vm_size                = "Standard_D2s_v3"
-      app_vm_size                 = "Standard_E64s_v3"
+      xscs_vm_size                = "Standard_E2s_v3"
+      app_vm_size                 = "Standard_E16s_v3"
       data_disk_type              = "Premium_LRS"
       data_disk_size              = 128
       data_disk_caching           = "ReadWrite"
       xscs_accelerated_networking = false
       app_accelerated_networking  = true
-      app_server_count            = 10
+      app_server_count            = 6
     }
   }
   sles4sap_version = "SLES15SP2"

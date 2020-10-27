@@ -7,42 +7,78 @@ en:
   # Abbreviated title for use in navigation
   short_title: "BlueHorizon"
   # Brief tag line shown below the title
-  lead: "Deploy your SAP deployments using SLES4SAP in Azure"
+  lead: "Deploy your SAP Landscapes using SLES4SAP in Azure"
   # Long-form description of the application
   # Markdown syntax is accepted - see https://daringfireball.net/projects/markdown/syntax
+  # 
+  ## Note: to minimize the text on the page, i would like to move the details with the software
+  ## out to a webpage/document instead of showing it here
+  #
   description: |
-    Here the solution you were looking for to deploy your SAP workspaces using SLES4SAP in some few clicks!
+    The solution will deploy the needed Azure infrastructure for SAP Netweaver and SAP HANA 
+    and provision and configure the virtual machines and install the SAP application for you.
+    
+    Doing SAP sizing right is not easy, therefore a simplified sizing approach is used. 
+    With the well known concept of T-Shirt sizes S,M,L we provide a simple way of using different settings. 
+    
+    Behind such T-Shirt sizes, we use the right Azure instance and the needed number of disks with the right size.
+    The Demo and S size are thought for non-production, the M and L will use SAP certified instance types and can be used for production scenarios.
+    Below is a rought estimation about the SAPS behind the three sizes:
 
-    This tool will create your SAP infrastructure and provision the machines to have an up and running environment in blink of an eye!
-
-    It just provides a basic set of options that we think are the most used ones.
-
-    For a more advanced customization you will need to get your hands dirty and play with the source project: https://github.com/SUSE/ha-sap-terraform-deployments
-
+    * Small  <  30.000 SAPS
+    * Medium <  70.000 SAPS
+    * Large  < 180.000 SAPS
+    
+    **Please be aware that it may require a high amount of resources, therefore an increase of your quota could be necessary**.
+    
+    For a more advanced customization you will need to get your hands dirty and work directly with the source project: https://github.com/SUSE/ha-sap-terraform-deployments
 
     ## Pre-requirements
+    1. You need to have ssh-keys to be able to access the deployed machines.
 
-    In order to use the project the SAP installation software must be available for the installer.
-    The software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter
+    2. The SAP software must be available in Azure, in order to be installed by the solution.
 
-    In order to use the software, create a new Storage account in your Azure subscription and upload the downloaded format to a file share.
+        The SAP software can be downloaded from https://launchpad.support.sap.com/#/softwarecenter
 
-    **This Storage account has an account name and key. Store them as they are needed in the next steps.** They can be collected from the Azure portal.
+    3. In order to provide the SAP software in Azure, please create a storage account in your Azure subscription and upload the downloaded format to a file share.
+       See Microsoft documentation 
+       [Howto create a storage account](https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#create-a-storage-account)
 
-    ### SAP HANA
+        **This storage account has an account name and key. Store them as they are needed in the next steps.** They can be collected from the Azure portal.
 
-    This software is available in different formats.
+    ### SAP Software
+    The SAP software is available in different formats from the SAP Software Download Center.
 
-    1. HANA platform in `.zip` or multipart `.rar` archive format. HANA platform edition contains all HANA components like HANA Database, Client, Studio, XS Engine etc. The multipart `rar` archive consists of a group of `.exe` and `.rar` files. To use an archive for the installation, it can be uploaded as it is (uploading all the files to the storage) or after extracting the contents with any compression tools (`unrar` for example. Find more information about how to extract in: https://launchpad.support.sap.com/#/notes/0001791258). The extracted HANA platform can be recognized checking the `LABEL.ASC` file in the main folder. It should look like (it can have a different version): `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51054084`
+    1. Installation & Upgrades
 
+        Provides the software in `.zip` or multipart `.rar` archive format. 
+
+    2. Support Packages & Patches
+
+        Provides the software mostly in `.SAR` format. 
+
+    ##### SAP HANA Example
+
+    1. Installation & Upgrades
+
+        The HANA platform edition contains all HANA components like HANA Database, Client, Studio, XS Engine etc. 
+        The multipart `rar` archive consists of a group of `.exe` and `.rar` files. 
+        To use an archive for the installation, it can be uploaded as it is (uploading all the files to the storage) 
+        or after extracting the contents. Find more information about how to extract in: https://launchpad.support.sap.com/#/notes/0001791258.
+        The extracted HANA platform can be recognized checking the `LABEL.ASC` file in the main folder. 
+        It should look like (it can be a different version): `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::BD51054084`
+    
         Example: `51053381_part1.exe`, `51053381_part2.rar`, `51053381_part3.rar` and `51053381_part4.rar`
 
-    2. HANA database in `.SAR` format. This archive format consist of only the HANA Database Server component. It contains a particular Patch level or revision of only the database component of HANA platform. To extract this option, the SAP `SAPCAR` utility is mandatory, which must be downloaded from the SAP download center.
+    2. Support Packages & Patches
+   
+        The archive consist of only the HANA Database Server component. 
+        It contains a particular patch level or revision of only the database component of HANA platform. 
+        To extract this option, the SAP `SAPCAR` utility is mandatory, which must be downloaded too.
 
         Example: `IMDB_SERVER_2_00_037_05.SAR` and `SAPCAR_1311_80000935.EXE`
 
-    Upload the downloaded files (or the extracted) version to the file share under a new subfolder (`hana` as example). **This folder name is used later in the configuration.**
-
+    Upload the downloaded SAP files (or the extracted) version to the file share under a _new_ subfolder (`hana` as example). **This folder name is used later in the configuration.**
 
   # Long-form description of steps to take after deployment
   # Markdown syntax is accepted - see https://daringfireball.net/projects/markdown/syntax

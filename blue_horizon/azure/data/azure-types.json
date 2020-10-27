@@ -1,10 +1,10 @@
 {
     "categories": {
         "sap_hana": {
-            "name": "SAP HANA database",
-            "description": "Simple or clustered SAP HANA database environment",
+            "name": "SAP HANA Deployment",
+            "description": "Create a single SAP HANA instance or two in a HA setup with SystemReplication",
             "features": [
-              "Find more information in [Azure Solution Template](https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html)"
+              "Find more information in the documentation at [Azure Solution Template](https://documentation.suse.com/sbp/all/html/SBP-SAP-AzureSolutionTemplates/index.html)"
             ]
         }
     },
@@ -14,39 +14,40 @@
             "name": "Demo",
             "category": "sap_hana",
             "details": {
-                "Instance type": "E8s_v3",
-                "Premium storage": "7× 128GB",
-                "Accelerated networking": "False"
+                "Description":"This setup creates a small demo system with a SAP HANA database, not for production use",
+                "Azure Instance type used": "E8s_v3",
+                "Details":"8 vCPUs, 64 GB Memory"
+        
             }
         },
         "small_sap_hana": {
             "sort_value": "01",
-            "name": "Small",
+            "name": "Small < 30.000 SAPS",
             "category": "sap_hana",
             "details": {
-                "Instance type": "E32s_v3",
-                "Premium storage": "4× 256GB, 2× 64GB, 1× 1TB",
-                "Accelerated networking": "True"
+                "Description":"This setup creates a small system with a SAP HANA database, not for production use",
+                "Azure Instance type used": "E32s_v3",
+                "Details":"32 vCPUs, 256 GB Memory"
             }
         },
         "medium_sap_hana": {
             "sort_value": "02",
-            "name": "Medium",
+            "name": "Medium < 70.000 SAPS",
             "category": "sap_hana",
             "details": {
-                "Instance type": "E64s",
-                "Premium storage": "3× 1TB, 6× 512GB, 2× 64GB",
-                "Accelerated networking": "True"
+                "Description":"This setup creates a medium system with a SAP HANA database, with SAP certified instance types for production use",
+                "Azure Instance type used": "E64s_v3",
+                "Details":"64 vCPUs, 432 GB Memory"
             }
         },
         "large_sap_hana": {
             "sort_value": "03",
-            "name": "Large",
+            "name": "Large < 180.000 SAPS",
             "category": "sap_hana",
             "details": {
-                "Instance type": "M128s",
-                "Premium storage": "2× 2TB, 4× 1TB, 2× 512GB, 2× 64GB",
-                "Accelerated networking": "True"
+                "Description":"This setup creates a large system with a SAP HANA database, with SAP certified instance types for production use",
+                "Azure Instance type used": "M64s",
+                "Details":"64 vCPUs, 1024 GB Memory"
             }
         }
     }

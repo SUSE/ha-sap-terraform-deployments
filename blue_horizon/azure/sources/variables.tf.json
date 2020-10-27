@@ -3,54 +3,55 @@
     "azure_region": {
       "type": "string",
       "default": "westeurope",
-      "description": "Azure region where the deployment machines will be created<!-- [group:general_configuration] -->"
+      "description": "Azure region where the machines will be created<!-- [group:Azure_configuration] -->"
     },
     "deployment_name": {
       "type": "string",
-      "description": "Suffix string added to some of the infrastructure resources names such as the resource group (rsg-ha-sap-${deployment_name})<!-- [group:general_configuration] -->"
+      "description": "Suffix string added to some of the infrastructure resources names such as the resource group (rsg-ha-sap-${deployment_name})<!-- [group:Azure_configuration] -->"
     },
     "os_admnistrator_name": {
       "type": "string",
-      "description": "Name of the user created in the machines<!-- [group:general_configuration] -->",
+      "description": "Name of the OS user created in the machines<!-- [group:Azure_configuration] -->",
       "default": "cloudadmin"
     },
     "ssh_authorized_key": {
       "type": "string",
-      "description": "SSH public key content that will be authorized to access the machines with azadmin username<!-- file_key [group:general_configuration] -->"
+      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
     },
     "storage_account_name": {
       "type": "string",
-      "description": "Azure storage account where the file share with the SAP installation software is located<!-- [group:general_configuration] -->"
+      "description": "Azure storage account where the file share with the SAP installation software is located<!-- [group:Azure_configuration] -->"
     },
     "storage_account_key": {
       "type": "string",
-      "description": "Azure storage account access key<!-- password_key [group:general_configuration] -->"
+      "description": "Azure storage account access key<!-- password_key [group:Azure_configuration] -->"
     },
     "instance_type": {
-      "type": "string"
+      "type": "string",
+      "description": "<!-- [group:HANA_configuration] -->"
     },
     "system_identifier": {
       "type": "string",
       "default": "prd",
-      "description": "HANA system identifier. System identifier must be 3 letters string"
+      "description": "HANA SID. The System identifier (SID) must be 3 letters<!-- [group:HANA_configuration] -->"
     },
     "instance_number": {
       "type": "string",
       "default": "00",
-      "description": "HANA system instance number. Instance number must be 2 digits string"
+      "description": "HANA system instance number. Instance number must be 2 digits<!-- [group:HANA_configuration] -->"
     },
     "sap_admin_password": {
       "type": "string",
-      "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key -->"
+      "description": "SAP administrator password. It is used to access to the sidadm user<!-- password_key [group:HANA_configuration] -->"
     },
     "deployment_type": {
       "type": "string",
       "default": "HA",
-      "description": "Select if the deployment creates a Cluster with HANA system replication and HA capabilities or not<!-- Options=[\"HA\",\"non HA\"] -->"
+      "description": "Select if the deployment creates a Cluster with HANA system replication and HA capabilities or not<!-- Options=[\"HA\",\"non HA\"] [group:HANA_configuration] -->"
     },
     "hana_installation_software_path": {
       "type": "string",
-      "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381"
+      "description": "Path to the folder where the SAP HANA installation software is uploaded in the Storage account. It is composed of the file share name and the uploaded HANA folder or archive file. For example: myshare/51053381_part1.exe or myshare/51053381<!-- [group:HANA_configuration] -->"
     }
   }
 }
