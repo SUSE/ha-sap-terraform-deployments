@@ -5,9 +5,9 @@
       "default": "westeurope",
       "description": "Azure region where the machines will be created<!-- [group:Azure_configuration] -->"
     },
-    "ssh_authorized_keys": {
-      "type": "list",
-      "description": "List of additional authorized SSH public keys paths to access the created machines with the OS admin user<!-- [group:Azure_configuration] -->"
+    "ssh_authorized_key": {
+      "type": "string",
+      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
     },
     "deployment_name": {
       "type": "string",
