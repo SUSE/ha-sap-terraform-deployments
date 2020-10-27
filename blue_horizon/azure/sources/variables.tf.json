@@ -27,7 +27,8 @@
       "description": "Azure storage account access key<!-- password_key [group:Azure_configuration] -->"
     },
     "instance_type": {
-      "type": "string"
+      "type": "string",
+      "description": "<!-- [group:HANA_configuration] -->"
     },
     "system_identifier": {
       "type": "string",
