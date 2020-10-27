@@ -107,7 +107,7 @@ module "hana_node" {
   isolated_network_name      = local.internal_network_name
   storage_pool               = var.storage_pool
   host_ips                   = local.hana_ips
-  hana_inst_media            = var.hana_inst_media
+  hana_inst_master            = var.hana_inst_master
   hana_disk_size             = var.hana_node_disk_size
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""

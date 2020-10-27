@@ -35,7 +35,7 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 hwcct: ${var.hwcct}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
-hana_inst_media: ${var.hana_inst_media}
+hana_inst_master: ${var.hana_inst_master}
 EOF
     destination = "/tmp/grains"
   }

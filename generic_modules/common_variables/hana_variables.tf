@@ -52,13 +52,13 @@ variable "hana_fstype" {
 }
 
 variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
