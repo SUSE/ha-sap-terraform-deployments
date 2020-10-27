@@ -42,7 +42,7 @@ en:
 
     3. In order to provide the SAP software in Azure, please create a storage account in your Azure subscription and upload the downloaded format to a file share.
        See Microsoft documentation 
-       [Howto create a storage account]:https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#create-a-storage-account
+       [Howto create a storage account]https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#create-a-storage-account
 
         **This storage account has an account name and key. Store them as they are needed in the next steps.** They can be collected from the Azure portal.
 
