@@ -210,14 +210,14 @@ resource "azurerm_virtual_machine" "drbd" {
 
   os_profile {
     computer_name  = "vmdrbd0${count.index + 1}"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
       key_data = var.common_variables["public_key"]
     }
   }
@@ -236,9 +236,9 @@ module "drbd_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.drbd_count
   instance_ids         = azurerm_virtual_machine.drbd.*.id
-  user                 = var.admin_user
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  bastion_host         = var.common_variables["bastion_host"]
+  bastion_host         = var.bastion_host
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.drbd]

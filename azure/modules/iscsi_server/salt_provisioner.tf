@@ -8,11 +8,11 @@ resource "null_resource" "iscsi_provisioner" {
   connection {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
-    user        = var.admin_user
+    user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
 
-    bastion_host        = var.common_variables["bastion_host"]
-    bastion_user        = var.admin_user
+    bastion_host        = var.bastion_host
+    bastion_user        = var.common_variables["authorized_user"]
     bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
@@ -40,9 +40,9 @@ module "iscsi_provision" {
   source               = "../../../generic_modules/salt_provisioner"
   node_count           = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
   instance_ids         = null_resource.iscsi_provisioner.*.id
-  user                 = var.admin_user
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  bastion_host         = var.common_variables["bastion_host"]
+  bastion_host         = var.bastion_host
   bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]

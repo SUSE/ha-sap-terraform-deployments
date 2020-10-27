@@ -1,5 +1,5 @@
 data "azurerm_public_ip" "bastion" {
-  count               = var.bastion_enabled ? 1 : 0
+  count               = local.bastion_enabled
   name                = azurerm_public_ip.bastion[0].name
   resource_group_name = azurerm_virtual_machine.bastion[0].resource_group_name
 }
