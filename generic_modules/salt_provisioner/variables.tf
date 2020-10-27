@@ -48,3 +48,9 @@ variable "background" {
   type        = bool
   default     = false
 }
+
+variable "reboot" {
+  description = "Reboot the machines after the initial update of the packages"
+  type        = bool
+  default     = true
+}

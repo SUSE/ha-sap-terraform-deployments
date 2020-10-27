@@ -46,6 +46,7 @@ locals {
   monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
   drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
   netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
 }
 
 module "common_variables" {
@@ -62,7 +63,6 @@ module "common_variables" {
   authorized_keys        = var.authorized_keys
   authorized_user        = var.admin_user
   bastion_enabled        = var.bastion_enabled
-  bastion_host           = module.bastion.public_ip
   bastion_public_key     = var.bastion_public_key
   bastion_private_key    = var.bastion_private_key
   provisioner            = var.provisioner
@@ -76,6 +76,7 @@ module "common_variables" {
 module "drbd_node" {
   source              = "./modules/drbd_node"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   az_region           = var.az_region
   drbd_count          = var.drbd_enabled == true ? 2 : 0
   vm_size             = var.drbd_vm_size
@@ -87,7 +88,6 @@ module "drbd_node" {
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
-  admin_user          = var.admin_user
   host_ips            = local.drbd_ips
   fencing_mechanism   = var.drbd_cluster_fencing_mechanism
   sbd_storage_type    = var.sbd_storage_type
@@ -100,6 +100,7 @@ module "drbd_node" {
 module "netweaver_node" {
   source                      = "./modules/netweaver_node"
   common_variables            = module.common_variables.configuration
+  bastion_host                = module.bastion.public_ip
   az_region                   = var.az_region
   xscs_server_count           = local.netweaver_xscs_server_count
   app_server_count            = var.netweaver_enabled ? var.netweaver_app_server_count : 0
@@ -118,7 +119,6 @@ module "netweaver_node" {
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
-  admin_user                  = var.admin_user
   hana_ip                     = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   hana_sid                    = var.hana_sid
   hana_instance_number        = var.hana_instance_number
@@ -151,6 +151,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                              = "./modules/hana_node"
   common_variables                    = module.common_variables.configuration
+  bastion_host                        = module.bastion.public_ip
   az_region                           = var.az_region
   hana_count                          = var.hana_count
   vm_size                             = var.hana_vm_size
@@ -186,7 +187,6 @@ module "hana_node" {
   cluster_ssh_key                     = var.cluster_ssh_key
   hana_data_disks_configuration       = var.hana_data_disks_configuration
   os_image                            = local.hana_os_image
-  admin_user                          = var.admin_user
   fencing_mechanism                   = var.hana_cluster_fencing_mechanism
   sbd_storage_type                    = var.sbd_storage_type
   iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
@@ -196,6 +196,7 @@ module "hana_node" {
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   az_region           = var.az_region
   vm_size             = var.monitoring_vm_size
@@ -206,7 +207,6 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
-  admin_user          = var.admin_user
   hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
@@ -215,6 +215,7 @@ module "monitoring" {
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled ? 1 : 0
   az_region           = var.az_region
   vm_size             = var.iscsi_vm_size
@@ -227,5 +228,4 @@ module "iscsi_server" {
   host_ips            = [local.iscsi_ip]
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size
-  admin_user          = var.admin_user
 }

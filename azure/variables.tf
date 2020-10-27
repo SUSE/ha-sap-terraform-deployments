@@ -73,6 +73,12 @@ variable "bastion_enabled" {
   default     = true
 }
 
+variable "bastion_os_image" {
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
+  default     = ""
+}
+
 variable "bastion_public_key" {
   description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
   type        = string

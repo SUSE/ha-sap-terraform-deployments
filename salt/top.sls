@@ -47,3 +47,7 @@ predeployment:
     - match: grain
     - default
     - monitoring_srv
+
+  'role:bastion':
+    - match: grain
+    - bastion

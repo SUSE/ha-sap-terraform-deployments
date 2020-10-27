@@ -1,0 +1,16 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+    use epoll;
+}
+
+http {
+  server {
+    listen 3000;
+    listen [::]:3000;
+    location / {
+      proxy_pass http://{{ monitoring_srv_ip }}:3000;
+    }
+  }
+}

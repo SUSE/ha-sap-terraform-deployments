@@ -66,12 +66,6 @@ variable "bastion_enabled" {
   default     = true
 }
 
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
 variable "bastion_public_key" {
   description = "Path to a SSH public key used to connect to the bastion. If it's not set the key provided in public_key_location will be used"
   type        = string

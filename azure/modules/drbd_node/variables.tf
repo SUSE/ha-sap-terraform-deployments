@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "az_region" {
   type    = string
   default = "westeurope"
@@ -53,11 +59,6 @@ variable "os_image" {
 variable "vm_size" {
   type    = string
   default = "Standard_D2s_v3"
-}
-
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
 }
 
 variable "network_domain" {
