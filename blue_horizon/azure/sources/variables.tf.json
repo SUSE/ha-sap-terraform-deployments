@@ -7,7 +7,7 @@
     },
     "ssh_authorized_keys": {
       "type": "list",
-      "description": "List of additional authorized SSH public keys paths to access the created machines with the OS admin user"
+      "description": "List of additional authorized SSH public keys paths to access the created machines with the OS admin user<!-- [group:Azure_configuration] -->"
     },
     "deployment_name": {
       "type": "string",
@@ -17,10 +17,6 @@
       "type": "string",
       "description": "Name of the user created in the machines<!-- [group:Azure_configuration] -->",
       "default": "cloudadmin"
-    },
-    "ssh_authorized_key": {
-      "type": "string",
-      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
     },
     "storage_account_name": {
       "type": "string",

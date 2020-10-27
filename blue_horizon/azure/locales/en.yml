@@ -53,7 +53,7 @@ en:
   sidebar:
     welcome: "Welcome"
     sources: "Edit sources"
-    cluster: "Sizes"
+    cluster: "Size cluster"
     variables: "Variables"
     plan: "Plan"
     download_plan: "Download plan"
@@ -77,7 +77,7 @@ en:
 
   page_title:
     plan: "Plan your deployment"
-    deploy: "Deploy your machines"
+    deploy: "Deploy your cluster"
     wrapup: "Next steps after deployment"
 
   page_subtitle:

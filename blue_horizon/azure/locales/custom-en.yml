@@ -1,8 +1,6 @@
 # Copy to vendor/locales/[LANGUAGE_KEY].yml
 # Adjust the language key below
-sidebarL:
-  cluster: "Sizes"
-  deploy: "Deploy your machines"
+
 en:
   # Application title - shown on the home page
   title: "Blue Horizon for SLES4SAP"
@@ -13,7 +11,7 @@ en:
   # Long-form description of the application
   # Markdown syntax is accepted - see https://daringfireball.net/projects/markdown/syntax
   # 
-  ## Note: to minimize the text on the page, i would like to the details with the software
+  ## Note: to minimize the text on the page, i would like to move the details with the software
   ## out to a webpage/document instead of showing it here
   #
   description: |
