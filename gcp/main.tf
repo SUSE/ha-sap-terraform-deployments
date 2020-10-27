@@ -77,6 +77,7 @@ module "common_variables" {
   hana_primary_site                   = var.hana_primary_site
   hana_secondary_site                 = var.hana_secondary_site
   hana_inst_folder                    = var.hana_inst_folder
+  hana_fstype                         = var.hana_fstype
   hana_platform_folder                = var.hana_platform_folder
   hana_sapcar_exe                     = var.hana_sapcar_exe
   hana_archive_file                   = var.hana_archive_file
@@ -156,31 +157,30 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                              = "./modules/hana_node"
-  common_variables                    = module.common_variables.configuration
-  hana_count                          = var.hana_count
-  machine_type                        = var.machine_type
-  compute_zones                       = data.google_compute_zones.available.names
-  network_name                        = local.vpc_name
-  network_subnet_name                 = local.subnet_name
-  os_image                            = local.hana_os_image
-  gcp_credentials_file                = var.gcp_credentials_file
-  host_ips                            = local.hana_ips
-  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
-  sbd_storage_type                    = var.sbd_storage_type
-  iscsi_srv_ip                        = module.iscsi_server.iscsisrv_ip
-  sap_hana_deployment_bucket          = var.sap_hana_deployment_bucket
-  hana_data_disk_type                 = var.hana_data_disk_type
-  hana_data_disk_size                 = var.hana_data_disk_size
-  hana_backup_disk_type               = var.hana_backup_disk_type
-  hana_backup_disk_size               = var.hana_backup_disk_size
-  hana_fstype                         = var.hana_fstype
-  hana_cluster_vip                    = local.hana_cluster_vip
-  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                          = var.hana_ha_enabled
-  cluster_ssh_pub                     = var.cluster_ssh_pub
-  cluster_ssh_key                     = var.cluster_ssh_key
-  hwcct                               = var.hwcct
+  source                     = "./modules/hana_node"
+  common_variables           = module.common_variables.configuration
+  hana_count                 = var.hana_count
+  machine_type               = var.machine_type
+  compute_zones              = data.google_compute_zones.available.names
+  network_name               = local.vpc_name
+  network_subnet_name        = local.subnet_name
+  os_image                   = local.hana_os_image
+  gcp_credentials_file       = var.gcp_credentials_file
+  host_ips                   = local.hana_ips
+  fencing_mechanism          = var.hana_cluster_fencing_mechanism
+  sbd_storage_type           = var.sbd_storage_type
+  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
+  sap_hana_deployment_bucket = var.sap_hana_deployment_bucket
+  hana_data_disk_type        = var.hana_data_disk_type
+  hana_data_disk_size        = var.hana_data_disk_size
+  hana_backup_disk_type      = var.hana_backup_disk_type
+  hana_backup_disk_size      = var.hana_backup_disk_size
+  hana_cluster_vip           = local.hana_cluster_vip
+  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                 = var.hana_ha_enabled
+  cluster_ssh_pub            = var.cluster_ssh_pub
+  cluster_ssh_key            = var.cluster_ssh_key
+  hwcct                      = var.hwcct
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

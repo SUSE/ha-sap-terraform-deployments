@@ -113,12 +113,6 @@ variable "hana_inst_master" {
   type = string
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
 variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster"
   type        = string

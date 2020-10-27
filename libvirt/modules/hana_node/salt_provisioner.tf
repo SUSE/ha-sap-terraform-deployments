@@ -26,7 +26,6 @@ timezone: ${var.timezone}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 hana_disk_device: /dev/vdb
-hana_fstype: ${var.hana_fstype}
 ha_enabled: ${var.ha_enabled}
 fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
@@ -34,6 +33,8 @@ sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hwcct: ${var.hwcct}
+hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_inst_media: ${var.hana_inst_media}
 EOF
     destination = "/tmp/grains"

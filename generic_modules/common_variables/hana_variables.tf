@@ -45,6 +45,12 @@ variable "hana_inst_folder" {
   type        = string
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type used by the disk where hana is installed"
+  type        = string
+  default     = "xfs"
+}
+
 variable "hana_platform_folder" {
   description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
   type        = string

@@ -42,7 +42,6 @@ sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_inst_master: ${var.hana_inst_master}
 hana_disk_device: ${local.hana_disk_device}
-hana_fstype: ${var.hana_fstype}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 hwcct: ${var.hwcct}

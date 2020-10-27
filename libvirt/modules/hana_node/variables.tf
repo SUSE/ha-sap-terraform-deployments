@@ -27,15 +27,21 @@ variable "hana_disk_size" {
   default     = "68719476736" # 64GB
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+  default     = ""
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+  default     = ""
 }
 
 variable "fencing_mechanism" {

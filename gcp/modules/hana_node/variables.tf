@@ -105,12 +105,6 @@ variable "hana_inst_disk_device" {
   default     = "/dev/sdd"
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
-  type        = string
-  default     = "xfs"
-}
-
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string

@@ -80,6 +80,7 @@ module "common_variables" {
   hana_primary_site                   = var.hana_primary_site
   hana_secondary_site                 = var.hana_secondary_site
   hana_inst_folder                    = var.hana_inst_folder
+  hana_fstype                         = var.hana_fstype
   hana_platform_folder                = var.hana_platform_folder
   hana_sapcar_exe                     = var.hana_sapcar_exe
   hana_archive_file                   = var.hana_archive_file
