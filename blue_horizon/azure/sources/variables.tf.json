@@ -50,7 +50,7 @@
     "deployment_type": {
       "type": "string",
       "default": "HA",
-      "description": "Select if the deployment creates a Cluster with HANA system replication and HA capabilities or not<!-- Options=[\"HA\",\"non HA\"] -->"
+      "description": "Select if the deployment creates a Cluster with HANA system replication and HA capabilities or not<!-- Options=[\"HA\",\"non HA\"] [group:HANA_configuration] -->"
     },
     "hana_installation_software_path": {
       "type": "string",
