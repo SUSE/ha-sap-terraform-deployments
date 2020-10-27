@@ -5,18 +5,18 @@
       "default": "westeurope",
       "description": "Azure region where the machines will be created<!-- [group:Azure_configuration] -->"
     },
-    "ssh_authorized_key": {
-      "type": "string",
-      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
-    },
     "deployment_name": {
       "type": "string",
       "description": "Suffix string added to some of the infrastructure resources names such as the resource group (rsg-ha-sap-${deployment_name})<!-- [group:Azure_configuration] -->"
     },
     "os_admnistrator_name": {
       "type": "string",
-      "description": "Name of the user created in the machines<!-- [group:Azure_configuration] -->",
+      "description": "Name of the OS user created in the machines<!-- [group:Azure_configuration] -->",
       "default": "cloudadmin"
+    },
+    "ssh_authorized_key": {
+      "type": "string",
+      "description": "SSH public key content that will be authorized to access the machines with  OS admin username<!-- file_key [group:Azure_configuration] -->"
     },
     "storage_account_name": {
       "type": "string",
