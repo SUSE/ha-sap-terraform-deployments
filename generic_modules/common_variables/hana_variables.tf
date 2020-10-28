@@ -40,6 +40,11 @@ variable "hana_secondary_site" {
   type        = string
 }
 
+variable "hana_inst_master" {
+  description = "Shared storage path where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`. Depending on cloud provider, it can be S3 bucket folder path in AWS, an Azure storage account path or a NFS share url in Libvirt "
+  type        = string
+}
+
 variable "hana_inst_folder" {
   description = "Folder where SAP HANA installation files are stored"
   type        = string
@@ -48,34 +53,54 @@ variable "hana_inst_folder" {
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where hana is installed"
   type        = string
-  default     = "xfs"
 }
 
 variable "hana_platform_folder" {
   description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
-  default     = ""
 }
 
 variable "hana_sapcar_exe" {
   description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
   type        = string
-  default     = ""
 }
 
 variable "hana_archive_file" {
   description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
   type        = string
-  default     = ""
 }
 
 variable "hana_extract_dir" {
   description = "Absolute path to folder where SAP HANA archive will be extracted"
   type        = string
-  default     = "/sapmedia/HANA"
 }
 
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
+  type        = string
+}
+
+variable "hana_cluster_vip" {
+  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
+  type        = string
+}
+
+variable "hana_cluster_vip_secondary" {
+  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
+  type        = string
+}
+
+variable "hana_ha_enabled" {
+  description = "Enable HA cluster in top of HANA system replication"
+  type        = bool
+}
+
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  type        = string
+}
+
+variable "sbd_storage_type" {
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in Libvirt only)"
+  type        = string
 }

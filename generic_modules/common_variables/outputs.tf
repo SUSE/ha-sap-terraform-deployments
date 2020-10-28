@@ -35,6 +35,27 @@ output "configuration" {
     monitoring_enabled     = var.monitoring_enabled
     monitoring_srv_ip      = var.monitoring_srv_ip
     qa_mode                = var.qa_mode
+    hana                   = {
+      sid = var.hana_sid
+      instance_number = var.hana_instance_number
+      cost_optimized_sid = var.hana_cost_optimized_sid
+      cost_optimized_instance_number = var.hana_cost_optimized_instance_number
+      master_password = var.hana_master_password
+      cost_optimized_master_password = var.hana_cost_optimized_master_password
+      primary_site = var.hana_primary_site
+      secondary_site = var.hana_secondary_site
+      inst_master = var.hana_inst_master
+      inst_folder = var.hana_inst_folder
+      fstype = var.hana_fstype
+      platform_folder = var.hana_platform_folder
+      sapcar_exe = var.hana_sapcar_exe
+      archive_file = var.hana_archive_file
+      extract_dir = var.hana_extract_dir
+      scenario_type = var.scenario_type
+      ha_enabled = var.hana_ha_enabled
+      fencing_mechanism = var.hana_cluster_fencing_mechanism
+      sbd_storage_type = var.sbd_storage_type
+    }
     grains_output          = <<EOF
 provider: ${var.provider_type}
 reg_code: ${var.reg_code}
@@ -47,6 +68,7 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 monitoring_enabled: ${var.monitoring_enabled}
 monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
+hwcct: ${var.hwcct}
 provisioning_log_level: ${var.provisioning_log_level}
 EOF
     hana_grains_output     = <<EOF
@@ -58,13 +80,19 @@ hana_master_password: ${var.hana_master_password}
 hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
 hana_primary_site: ${var.hana_primary_site}
 hana_secondary_site: ${var.hana_secondary_site}
+hana_inst_master: ${var.hana_inst_master}
 hana_inst_folder: ${var.hana_inst_folder}
 hana_fstype: ${var.hana_fstype}
 hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
 hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
+hana_cluster_vip: ${var.hana_cluster_vip}
+hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 scenario_type: ${var.scenario_type}
+ha_enabled: ${var.hana_ha_enabled}
+fencing_mechanism: ${var.hana_cluster_fencing_mechanism}
+sbd_storage_type: ${var.sbd_storage_type}
 EOF
   }
 }

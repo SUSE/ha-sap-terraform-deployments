@@ -25,20 +25,13 @@ name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
-hana_inst_master: ${var.hana_inst_master}
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
-ha_enabled: ${var.ha_enabled}
-fencing_mechanism: ${var.fencing_mechanism}
-sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-hana_cluster_vip: ${var.ha_enabled ? azurerm_lb.hana-load-balancer[0].private_ip_address : ""}
-hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-hwcct: ${var.hwcct}
 EOF
     destination = "/tmp/grains"
   }

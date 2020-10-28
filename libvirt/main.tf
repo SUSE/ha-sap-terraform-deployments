@@ -59,6 +59,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_srv_ip : ""
   qa_mode                             = var.qa_mode
+  hwcct                               = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
   hana_cost_optimized_sid             = var.hana_cost_optimized_sid
@@ -67,6 +68,7 @@ module "common_variables" {
   hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
   hana_primary_site                   = var.hana_primary_site
   hana_secondary_site                 = var.hana_secondary_site
+  hana_inst_master                    = var.hana_inst_master
   hana_inst_folder                    = var.hana_inst_folder
   hana_fstype                         = var.hana_fstype
   hana_platform_folder                = var.hana_platform_folder
@@ -74,6 +76,11 @@ module "common_variables" {
   hana_archive_file                   = var.hana_archive_file
   hana_extract_dir                    = var.hana_extract_dir
   scenario_type                       = var.scenario_type
+  hana_cluster_vip                    = local.hana_cluster_vip
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  hana_ha_enabled                     = var.hana_ha_enabled
+  hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
 }
 
 module "iscsi_server" {
@@ -94,29 +101,25 @@ module "iscsi_server" {
 }
 
 module "hana_node" {
-  source                     = "./modules/hana_node"
-  common_variables           = module.common_variables.configuration
-  name                       = "hana"
-  source_image               = var.hana_source_image
-  volume_name                = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
-  hana_count                 = var.hana_count
-  vcpu                       = var.hana_node_vcpu
-  memory                     = var.hana_node_memory
-  bridge                     = "br0"
-  isolated_network_id        = local.internal_network_id
-  isolated_network_name      = local.internal_network_name
-  storage_pool               = var.storage_pool
-  host_ips                   = local.hana_ips
-  hana_inst_master            = var.hana_inst_master
-  hana_disk_size             = var.hana_node_disk_size
-  hana_cluster_vip           = local.hana_cluster_vip
-  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                 = var.hana_ha_enabled
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
-  sbd_disk_id                = module.hana_sbd_disk.id
-  iscsi_srv_ip               = module.iscsi_server.output_data.private_addresses.0
-  hwcct                      = var.hwcct
+  source                = "./modules/hana_node"
+  common_variables      = module.common_variables.configuration
+  name                  = "hana"
+  source_image          = var.hana_source_image
+  volume_name           = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
+  hana_count            = var.hana_count
+  vcpu                  = var.hana_node_vcpu
+  memory                = var.hana_node_memory
+  bridge                = "br0"
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  storage_pool          = var.storage_pool
+  host_ips              = local.hana_ips
+  hana_disk_size        = var.hana_node_disk_size
+  ha_enabled            = var.hana_ha_enabled
+  fencing_mechanism     = var.hana_cluster_fencing_mechanism
+  sbd_storage_type      = var.sbd_storage_type
+  sbd_disk_id           = module.hana_sbd_disk.id
+  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
 }
 
 module "drbd_node" {

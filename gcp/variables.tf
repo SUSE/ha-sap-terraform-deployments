@@ -168,7 +168,7 @@ variable "hana_ips" {
   default     = []
 }
 
-variable "sap_hana_deployment_bucket" {
+variable "hana_inst_master" {
   description = "GCP storage bucket that contains the SAP HANA installation files"
   type        = string
 }
@@ -180,19 +180,19 @@ variable "hana_inst_folder" {
 }
 
 variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'sap_hana_deployment_bucket' mounting point"
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'sap_hana_deployment_bucket' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'sap_hana_deployment_bucket' mounting point. Use this parameter if the HANA media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }

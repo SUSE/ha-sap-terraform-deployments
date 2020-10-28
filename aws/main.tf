@@ -73,6 +73,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
   qa_mode                             = var.qa_mode
+  hwcct                               = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
   hana_cost_optimized_sid             = var.hana_cost_optimized_sid
@@ -83,11 +84,17 @@ module "common_variables" {
   hana_secondary_site                 = var.hana_secondary_site
   hana_inst_folder                    = var.hana_inst_folder
   hana_fstype                         = var.hana_fstype
+  hana_inst_master                    = var.hana_inst_master
   hana_platform_folder                = var.hana_platform_folder
   hana_sapcar_exe                     = var.hana_sapcar_exe
   hana_archive_file                   = var.hana_archive_file
   hana_extract_dir                    = var.hana_extract_dir
   scenario_type                       = var.scenario_type
+  hana_cluster_vip                    = local.hana_cluster_vip
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  hana_ha_enabled                     = var.hana_ha_enabled
+  hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -223,16 +230,12 @@ module "hana_node" {
   host_ips                   = local.hana_ips
   hana_data_disk_type        = var.hana_data_disk_type
   hana_data_disk_size        = var.hana_data_disk_size
-  hana_inst_master           = var.hana_inst_master
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                 = var.hana_ha_enabled
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
   iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub            = var.cluster_ssh_pub
   cluster_ssh_key            = var.cluster_ssh_key
-  hwcct                      = var.hwcct
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,

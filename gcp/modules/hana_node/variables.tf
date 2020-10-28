@@ -42,24 +42,8 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
-  type        = string
-}
-
-variable "sap_hana_deployment_bucket" {
-  description = "GCP storage bucket that contains the SAP HANA installation files"
   type        = string
 }
 
@@ -131,12 +115,6 @@ variable "cluster_ssh_pub" {
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }
 
 variable "on_destroy_dependencies" {

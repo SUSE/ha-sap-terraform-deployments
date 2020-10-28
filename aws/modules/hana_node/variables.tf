@@ -18,11 +18,6 @@ variable "name" {
   default     = "hana"
 }
 
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
-}
-
 variable "aws_region" {
   type = string
 }
@@ -86,10 +81,6 @@ variable "hana_data_disk_size" {
   type        = number
 }
 
-variable "hana_inst_master" {
-  type = string
-}
-
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
@@ -106,17 +97,6 @@ variable "ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
-}
-
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
@@ -137,12 +117,6 @@ variable "cluster_ssh_key" {
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }
 
 variable "on_destroy_dependencies" {

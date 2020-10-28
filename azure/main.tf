@@ -71,6 +71,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
   qa_mode                             = var.qa_mode
+  hwcct                               = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
   hana_cost_optimized_sid             = var.hana_cost_optimized_sid
@@ -79,6 +80,7 @@ module "common_variables" {
   hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
   hana_primary_site                   = var.hana_primary_site
   hana_secondary_site                 = var.hana_secondary_site
+  hana_inst_master                    = var.hana_inst_master
   hana_inst_folder                    = var.hana_inst_folder
   hana_fstype                         = var.hana_fstype
   hana_platform_folder                = var.hana_platform_folder
@@ -86,6 +88,11 @@ module "common_variables" {
   hana_archive_file                   = var.hana_archive_file
   hana_extract_dir                    = var.hana_extract_dir
   scenario_type                       = var.scenario_type
+  hana_cluster_vip                    = var.hana_ha_enabled ? local.hana_cluster_vip : ""
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  hana_ha_enabled                     = var.hana_ha_enabled
+  hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -183,15 +190,11 @@ module "hana_node" {
   hana_cluster_vip              = local.hana_cluster_vip
   hana_cluster_vip_secondary    = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   ha_enabled                    = var.hana_ha_enabled
-  hana_inst_master              = var.hana_inst_master
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
-  fencing_mechanism             = var.hana_cluster_fencing_mechanism
-  sbd_storage_type              = var.sbd_storage_type
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
-  hwcct                         = var.hwcct
 }
 
 module "monitoring" {

@@ -29,22 +29,15 @@ aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
-hana_cluster_vip: ${var.hana_cluster_vip}
-hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 name_prefix: ${var.name}
 hostname: ${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
-ha_enabled: ${var.ha_enabled}
-fencing_mechanism: ${var.fencing_mechanism}
-sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-hana_inst_master: ${var.hana_inst_master}
 hana_disk_device: ${local.hana_disk_device}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-hwcct: ${var.hwcct}
 EOF
     destination = "/tmp/grains"
   }

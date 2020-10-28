@@ -32,18 +32,6 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = ""
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
 variable "fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd"
   type        = string
@@ -64,11 +52,6 @@ variable "iscsi_srv_ip" {
   description = "iscsi server address. Only used if sbd_storage_type is iscsi"
   type        = string
   default     = ""
-}
-
-variable "hana_inst_master" {
-  description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
-  type        = string
 }
 
 variable "ha_enabled" {
@@ -129,12 +112,4 @@ variable "network_name" {
 variable "bridge" {
   description = "a bridge device name available on the libvirt host, leave default for NAT"
   default     = ""
-}
-
-// QA mode variables
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }
