@@ -212,7 +212,7 @@ variable "hana_data_disk_type" {
 variable "hana_data_disk_size" {
   description = "Disk size of the disks used to store hana database content"
   type        = string
-  default     = "64"
+  default     = "896"
 }
 
 variable "hana_backup_disk_type" {
@@ -224,7 +224,7 @@ variable "hana_backup_disk_type" {
 variable "hana_backup_disk_size" {
   description = "Disk size of the disks used to store hana database backup content"
   type        = string
-  default     = "64"
+  default     = "128"
 }
 
 variable "hana_fstype" {

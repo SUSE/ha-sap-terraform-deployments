@@ -249,7 +249,7 @@ variable "hana_data_disk_type" {
 variable "hana_data_disk_size" {
   description = "Disk size in GB for the disk used to store HANA database content"
   type        = number
-  default     = 60
+  default     = 1024
 }
 
 
