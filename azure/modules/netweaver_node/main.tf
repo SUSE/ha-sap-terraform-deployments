@@ -204,7 +204,6 @@ resource "azurerm_network_interface" "netweaver" {
   name                          = "nic-netweaver0${count.index + 1}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
-  network_security_group_id     = var.sec_group_id
   enable_accelerated_networking = count.index < var.xscs_server_count ? var.xscs_accelerated_networking : var.app_accelerated_networking
 
   ip_configuration {

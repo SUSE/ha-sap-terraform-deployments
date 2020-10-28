@@ -2,12 +2,14 @@ data "azurerm_public_ip" "netweaver" {
   count               = local.bastion_enabled ? 0 : local.vm_count
   name                = element(azurerm_public_ip.netweaver.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.netweaver.*.resource_group_name, count.index)
+  depends_on          = [azurerm_virtual_machine.netweaver]
 }
 
 data "azurerm_network_interface" "netweaver" {
   count               = local.vm_count
   name                = element(azurerm_network_interface.netweaver.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.netweaver.*.resource_group_name, count.index)
+  depends_on          = [azurerm_virtual_machine.netweaver]
 }
 
 output "netweaver_ip" {

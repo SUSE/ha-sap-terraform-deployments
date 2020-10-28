@@ -2,12 +2,14 @@ data "azurerm_public_ip" "hana" {
   count               = local.bastion_enabled ? 0 : var.hana_count
   name                = element(azurerm_public_ip.hana.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.hana.*.resource_group_name, count.index)
+  depends_on          = [azurerm_virtual_machine.hana]
 }
 
 data "azurerm_network_interface" "hana" {
   count               = var.hana_count
   name                = element(azurerm_network_interface.hana.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.hana.*.resource_group_name, count.index)
+  depends_on          = [azurerm_virtual_machine.hana]
 }
 
 output "cluster_nodes_ip" {
