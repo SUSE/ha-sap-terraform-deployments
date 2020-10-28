@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 0.13"
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "0.6.2"
+    }
+  }
+}
+
 resource "libvirt_volume" "hana_image_disk" {
   count            = var.hana_count
   name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
