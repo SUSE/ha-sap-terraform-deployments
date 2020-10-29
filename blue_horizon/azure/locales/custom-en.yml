@@ -26,7 +26,7 @@ en:
     The solution will deploy the needed Azure infrastructure for SAP Netweaver and SAP HANA
     and provision and configure the virtual machines and install the SAP application for you.
 
-    Doing SAP sizing right is not easy, therefore a simplified sizing approach is used.
+    As SAP sizing can be complex, a simplified sizing approach is used.
     With the well known concept of T-Shirt sizes S,M,L we provide a simple way of using different settings.
 
     Behind such T-Shirt sizes, we use the right Azure instance and the needed number of disks with the right size.
