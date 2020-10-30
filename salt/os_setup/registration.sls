@@ -1,8 +1,8 @@
 {% if grains['os_family'] == 'Suse' %}
+{% set arch = grains['osarch'] %}
 
 {% if grains['reg_code'] and (not grains.get('qa_mode') or '_node' not in grains.get('role')) %}
 {% set reg_code = grains['reg_code'] %}
-{% set arch = grains['osarch'] %}
 register_system:
   cmd.run:
     - name: /usr/bin/SUSEConnect -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
@@ -57,6 +57,18 @@ default_sle_module_public_cloud_registration:
 {% endfor %}
 {% endif %}
 
+{% endif %}
+
+{% if grains['role'] == 'monitoring_srv' %}
+# Workaround to get the monitoring server packages (prometheus/grafana) from PackageHub
+# Works for BYOS and PAYG images
+# These packages are only available for SLE15SP1 and SLE15SP2
+packagehub_registration_monitoring:
+  cmd.run:
+    - name: /usr/bin/SUSEConnect -p PackageHub/{{ grains['osrelease'] }}/{{ arch }}
+    - retry:
+        attempts: 3
+        interval: 15
 {% endif %}
 
 # Workaround for the 'Script died unexpectedly' error bsc#1158664
