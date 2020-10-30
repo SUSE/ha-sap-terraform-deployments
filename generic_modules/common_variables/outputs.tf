@@ -94,5 +94,51 @@ ha_enabled: ${var.hana_ha_enabled}
 fencing_mechanism: ${var.hana_cluster_fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
 EOF
+    netweaver = {
+      ha_enabled = var.netweaver_ha_enabled
+      fencing_mechanism = var.netweaver_cluster_fencing_mechanism
+      sbd_storage_type = var.netweaver_sbd_storage_type
+      netweaver_sid = var.netweaver_sid
+      ascs_instance_number = var.ascs_instance_number
+      ers_instance_number = var.ers_instance_number
+      pas_instance_number = var.pas_instance_number
+      netweaver_master_password = var.netweaver_master_password
+      netweaver_product_id = var.netweaver_product_id
+      netweaver_inst_folder = var.netweaver_inst_folder
+      netweaver_extract_dir = var.netweaver_extract_dir
+      netweaver_swpm_folder = var.netweaver_swpm_folder
+      netweaver_sapcar_exe = var.netweaver_sapcar_exe
+      netweaver_swpm_sar = var.netweaver_swpm_sar
+      netweaver_sapexe_folder = var.netweaver_sapexe_folder
+      netweaver_additional_dvds = var.netweaver_additional_dvds
+      netweaver_nfs_share = var.netweaver_nfs_share
+      hana_ip = var.hana_ip
+      hana_sid = var.netweaver_hana_sid
+      hana_instance_number = var.netweaver_hana_instance_number
+      hana_master_password = var.netweaver_hana_master_password
+    }
+    netweaver_grains_output     = <<EOF
+ha_enabled: ${var.netweaver_ha_enabled}
+fencing_mechanism: ${var.netweaver_cluster_fencing_mechanism}
+sbd_storage_type: ${var.netweaver_sbd_storage_type}
+netweaver_sid: ${var.netweaver_sid}
+ascs_instance_number: ${var.ascs_instance_number}
+ers_instance_number: ${var.ers_instance_number}
+pas_instance_number: ${var.pas_instance_number}
+netweaver_master_password: ${var.netweaver_master_password}
+netweaver_product_id: ${var.netweaver_product_id}
+netweaver_inst_folder: ${var.netweaver_inst_folder}
+netweaver_extract_dir: ${var.netweaver_extract_dir}
+netweaver_swpm_folder: ${var.netweaver_swpm_folder}
+netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
+netweaver_swpm_sar: ${var.netweaver_swpm_sar}
+netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
+netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
+netweaver_nfs_share: ${var.netweaver_nfs_share}
+hana_ip: ${var.hana_ip}
+hana_sid: ${var.netweaver_hana_sid}
+hana_instance_number: ${var.netweaver_hana_instance_number}
+hana_master_password: ${var.netweaver_hana_master_password}
+EOF
   }
 }

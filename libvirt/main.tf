@@ -81,6 +81,27 @@ module "common_variables" {
   hana_ha_enabled                     = var.hana_ha_enabled
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   sbd_storage_type                    = var.sbd_storage_type
+  netweaver_sid                       = var.netweaver_sid
+  ascs_instance_number                = var.netweaver_ascs_instance_number
+  ers_instance_number                 = var.netweaver_ers_instance_number
+  pas_instance_number                 = var.netweaver_pas_instance_number
+  netweaver_master_password           = var.netweaver_master_password
+  netweaver_product_id                = var.netweaver_product_id
+  netweaver_inst_folder               = var.netweaver_inst_folder
+  netweaver_extract_dir               = var.netweaver_extract_dir
+  netweaver_swpm_folder               = var.netweaver_swpm_folder
+  netweaver_sapcar_exe                = var.netweaver_sapcar_exe
+  netweaver_swpm_sar                  = var.netweaver_swpm_sar
+  netweaver_sapexe_folder             = var.netweaver_sapexe_folder
+  netweaver_additional_dvds           = var.netweaver_additional_dvds
+  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
+  hana_ip                             = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  netweaver_hana_sid                  = var.hana_sid
+  netweaver_hana_instance_number      = var.hana_instance_number
+  netweaver_hana_master_password      = var.hana_master_password
+  netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
+  netweaver_sbd_storage_type          = var.sbd_storage_type
 }
 
 module "iscsi_server" {
@@ -166,43 +187,23 @@ module "monitoring" {
 }
 
 module "netweaver_node" {
-  source                    = "./modules/netweaver_node"
-  common_variables          = module.common_variables.configuration
-  xscs_server_count         = local.netweaver_xscs_server_count
-  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
-  name                      = "netweaver"
-  source_image              = var.netweaver_source_image
-  volume_name               = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
-  vcpu                      = var.netweaver_node_vcpu
-  memory                    = var.netweaver_node_memory
-  bridge                    = "br0"
-  storage_pool              = var.storage_pool
-  isolated_network_id       = local.internal_network_id
-  isolated_network_name     = local.internal_network_name
-  host_ips                  = local.netweaver_ips
-  virtual_host_ips          = local.netweaver_virtual_ips
-  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
-  sbd_storage_type          = var.sbd_storage_type
-  shared_disk_id            = module.netweaver_shared_disk.id
-  iscsi_srv_ip              = module.iscsi_server.output_data.private_addresses.0
-  hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
-  hana_sid                  = var.hana_sid
-  hana_instance_number      = var.hana_instance_number
-  hana_master_password      = var.hana_master_password
-  netweaver_sid             = var.netweaver_sid
-  ascs_instance_number      = var.netweaver_ascs_instance_number
-  ers_instance_number       = var.netweaver_ers_instance_number
-  pas_instance_number       = var.netweaver_pas_instance_number
-  netweaver_master_password = var.netweaver_master_password
-  netweaver_product_id      = var.netweaver_product_id
-  netweaver_inst_media      = var.netweaver_inst_media
-  netweaver_inst_folder     = var.netweaver_inst_folder
-  netweaver_extract_dir     = var.netweaver_extract_dir
-  netweaver_swpm_folder     = var.netweaver_swpm_folder
-  netweaver_sapcar_exe      = var.netweaver_sapcar_exe
-  netweaver_swpm_sar        = var.netweaver_swpm_sar
-  netweaver_sapexe_folder   = var.netweaver_sapexe_folder
-  netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
-  ha_enabled                = var.netweaver_ha_enabled
+  source                = "./modules/netweaver_node"
+  common_variables      = module.common_variables.configuration
+  xscs_server_count     = local.netweaver_xscs_server_count
+  app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
+  name                  = "netweaver"
+  source_image          = var.netweaver_source_image
+  volume_name           = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
+  vcpu                  = var.netweaver_node_vcpu
+  memory                = var.netweaver_node_memory
+  bridge                = "br0"
+  storage_pool          = var.storage_pool
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  host_ips              = local.netweaver_ips
+  virtual_host_ips      = local.netweaver_virtual_ips
+  shared_disk_id        = module.netweaver_shared_disk.id
+  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
+  netweaver_inst_media  = var.netweaver_inst_media
+  ha_enabled            = var.netweaver_ha_enabled
 }

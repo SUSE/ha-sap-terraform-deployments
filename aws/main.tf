@@ -95,6 +95,27 @@ module "common_variables" {
   hana_ha_enabled                     = var.hana_ha_enabled
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   sbd_storage_type                    = var.sbd_storage_type
+  netweaver_sid                       = var.netweaver_sid
+  ascs_instance_number                = var.netweaver_ascs_instance_number
+  ers_instance_number                 = var.netweaver_ers_instance_number
+  pas_instance_number                 = var.netweaver_pas_instance_number
+  netweaver_master_password           = var.netweaver_master_password
+  netweaver_product_id                = var.netweaver_product_id
+  netweaver_inst_folder               = var.netweaver_inst_folder
+  netweaver_extract_dir               = var.netweaver_extract_dir
+  netweaver_swpm_folder               = var.netweaver_swpm_folder
+  netweaver_sapcar_exe                = var.netweaver_sapcar_exe
+  netweaver_swpm_sar                  = var.netweaver_swpm_sar
+  netweaver_sapexe_folder             = var.netweaver_sapexe_folder
+  netweaver_additional_dvds           = var.netweaver_additional_dvds
+  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
+  hana_ip                             = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  netweaver_hana_sid                  = var.hana_sid
+  netweaver_hana_instance_number      = var.hana_instance_number
+  netweaver_hana_master_password      = var.hana_master_password
+  netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
+  netweaver_sbd_storage_type          = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -176,29 +197,9 @@ module "netweaver_node" {
   aws_access_key_id         = var.aws_access_key_id
   aws_secret_access_key     = var.aws_secret_access_key
   s3_bucket                 = var.netweaver_s3_bucket
-  netweaver_sid             = var.netweaver_sid
-  ascs_instance_number      = var.netweaver_ascs_instance_number
-  ers_instance_number       = var.netweaver_ers_instance_number
-  pas_instance_number       = var.netweaver_pas_instance_number
-  netweaver_master_password = var.netweaver_master_password
-  netweaver_product_id      = var.netweaver_product_id
-  netweaver_inst_folder     = var.netweaver_inst_folder
-  netweaver_extract_dir     = var.netweaver_extract_dir
-  netweaver_swpm_folder     = var.netweaver_swpm_folder
-  netweaver_sapcar_exe      = var.netweaver_sapcar_exe
-  netweaver_swpm_sar        = var.netweaver_swpm_sar
-  netweaver_sapexe_folder   = var.netweaver_sapexe_folder
-  netweaver_additional_dvds = var.netweaver_additional_dvds
-  netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
-  hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
-  hana_sid                  = var.hana_sid
-  hana_instance_number      = var.hana_instance_number
-  hana_master_password      = var.hana_master_password
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
   ha_enabled                = var.netweaver_ha_enabled
-  fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
-  sbd_storage_type          = var.sbd_storage_type
   iscsi_srv_ip              = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
