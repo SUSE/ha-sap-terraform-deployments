@@ -176,33 +176,33 @@ module "iscsi_server" {
 }
 
 module "netweaver_node" {
-  source                    = "./modules/netweaver_node"
-  common_variables          = module.common_variables.configuration
-  xscs_server_count         = local.netweaver_xscs_server_count
-  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
-  instance_type             = var.netweaver_instancetype
-  name                      = "netweaver"
-  aws_region                = var.aws_region
-  availability_zones        = data.aws_availability_zones.available.names
-  os_image                  = local.netweaver_os_image
-  os_owner                  = local.netweaver_os_owner
-  vpc_id                    = local.vpc_id
-  subnet_address_range      = local.netweaver_subnet_address_range
-  key_name                  = aws_key_pair.key-pair.key_name
-  security_group_id         = local.security_group_id
-  route_table_id            = aws_route_table.route-table.id
-  efs_enable_mount          = var.netweaver_enabled == true && var.drbd_enabled == false ? true : false
-  efs_file_system_id        = join("", aws_efs_file_system.netweaver-efs.*.id)
-  aws_credentials           = var.aws_credentials
-  aws_access_key_id         = var.aws_access_key_id
-  aws_secret_access_key     = var.aws_secret_access_key
-  s3_bucket                 = var.netweaver_s3_bucket
-  host_ips                  = local.netweaver_ips
-  virtual_host_ips          = local.netweaver_virtual_ips
-  ha_enabled                = var.netweaver_ha_enabled
-  iscsi_srv_ip              = join("", module.iscsi_server.iscsisrv_ip)
-  cluster_ssh_pub           = var.cluster_ssh_pub
-  cluster_ssh_key           = var.cluster_ssh_key
+  source                = "./modules/netweaver_node"
+  common_variables      = module.common_variables.configuration
+  xscs_server_count     = local.netweaver_xscs_server_count
+  app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
+  instance_type         = var.netweaver_instancetype
+  name                  = "netweaver"
+  aws_region            = var.aws_region
+  availability_zones    = data.aws_availability_zones.available.names
+  os_image              = local.netweaver_os_image
+  os_owner              = local.netweaver_os_owner
+  vpc_id                = local.vpc_id
+  subnet_address_range  = local.netweaver_subnet_address_range
+  key_name              = aws_key_pair.key-pair.key_name
+  security_group_id     = local.security_group_id
+  route_table_id        = aws_route_table.route-table.id
+  efs_enable_mount      = var.netweaver_enabled == true && var.drbd_enabled == false ? true : false
+  efs_file_system_id    = join("", aws_efs_file_system.netweaver-efs.*.id)
+  aws_credentials       = var.aws_credentials
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_secret_access_key
+  s3_bucket             = var.netweaver_s3_bucket
+  host_ips              = local.netweaver_ips
+  virtual_host_ips      = local.netweaver_virtual_ips
+  ha_enabled            = var.netweaver_ha_enabled
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  cluster_ssh_pub       = var.cluster_ssh_pub
+  cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,
