@@ -1,5 +1,3 @@
-# HANA related variables used to render the HANA pillar data
-
 variable "hana_sid" {
   description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
   type        = string
@@ -75,7 +73,7 @@ variable "hana_extract_dir" {
   type        = string
 }
 
-variable "scenario_type" {
+variable "hana_scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   type        = string
 }
@@ -90,6 +88,12 @@ variable "hana_cluster_vip_secondary" {
   type        = string
 }
 
+variable "hana_hwcct" {
+  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
+  type        = bool
+  default     = false
+}
+
 variable "hana_ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
@@ -100,7 +104,7 @@ variable "hana_cluster_fencing_mechanism" {
   type        = string
 }
 
-variable "sbd_storage_type" {
+variable "hana_sbd_storage_type" {
   description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in Libvirt only)"
   type        = string
 }

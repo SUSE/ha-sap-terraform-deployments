@@ -18,17 +18,17 @@ variable "netweaver_sid" {
   type        = string
 }
 
-variable "ascs_instance_number" {
+variable "netweaver_ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
 }
 
-variable "ers_instance_number" {
+variable "netweaver_ers_instance_number" {
   description = "ERS instance number"
   type        = string
 }
 
-variable "pas_instance_number" {
+variable "netweaver_pas_instance_number" {
   description = "PAS instance number"
   type        = string
 }
@@ -83,7 +83,7 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
-variable "hana_ip" {
+variable "netweaver_hana_ip" {
   description = "IP address of the HANA database. If the database is clustered, use the cluster virtual ip address"
   type        = string
 }

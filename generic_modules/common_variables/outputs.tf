@@ -51,12 +51,35 @@ output "configuration" {
       sapcar_exe                     = var.hana_sapcar_exe
       archive_file                   = var.hana_archive_file
       extract_dir                    = var.hana_extract_dir
-      scenario_type                  = var.scenario_type
+      scenario_type                  = var.hana_scenario_type
       ha_enabled                     = var.hana_ha_enabled
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
-      sbd_storage_type               = var.sbd_storage_type
+      sbd_storage_type               = var.hana_sbd_storage_type
     }
-    grains_output      = <<EOF
+    netweaver = {
+      ha_enabled                = var.netweaver_ha_enabled
+      fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
+      sbd_storage_type          = var.netweaver_sbd_storage_type
+      netweaver_sid             = var.netweaver_sid
+      ascs_instance_number      = var.netweaver_ascs_instance_number
+      ers_instance_number       = var.netweaver_ers_instance_number
+      pas_instance_number       = var.netweaver_pas_instance_number
+      netweaver_master_password = var.netweaver_master_password
+      netweaver_product_id      = var.netweaver_product_id
+      netweaver_inst_folder     = var.netweaver_inst_folder
+      netweaver_extract_dir     = var.netweaver_extract_dir
+      netweaver_swpm_folder     = var.netweaver_swpm_folder
+      netweaver_sapcar_exe      = var.netweaver_sapcar_exe
+      netweaver_swpm_sar        = var.netweaver_swpm_sar
+      netweaver_sapexe_folder   = var.netweaver_sapexe_folder
+      netweaver_additional_dvds = var.netweaver_additional_dvds
+      netweaver_nfs_share       = var.netweaver_nfs_share
+      hana_ip                   = var.netweaver_hana_ip
+      hana_sid                  = var.netweaver_hana_sid
+      hana_instance_number      = var.netweaver_hana_instance_number
+      hana_master_password      = var.netweaver_hana_master_password
+    }
+    grains_output           = <<EOF
 provider: ${var.provider_type}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
@@ -68,10 +91,9 @@ additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}
 monitoring_enabled: ${var.monitoring_enabled}
 monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
-hwcct: ${var.hwcct}
 provisioning_log_level: ${var.provisioning_log_level}
 EOF
-    hana_grains_output = <<EOF
+    hana_grains_output      = <<EOF
 hana_sid: ${var.hana_sid}
 hana_instance_number: ${var.hana_instance_number}
 hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
@@ -89,42 +111,20 @@ hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
-scenario_type: ${var.scenario_type}
+scenario_type: ${var.hana_scenario_type}
+hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}
 fencing_mechanism: ${var.hana_cluster_fencing_mechanism}
-sbd_storage_type: ${var.sbd_storage_type}
+sbd_storage_type: ${var.hana_sbd_storage_type}
 EOF
-    netweaver = {
-      ha_enabled                = var.netweaver_ha_enabled
-      fencing_mechanism         = var.netweaver_cluster_fencing_mechanism
-      sbd_storage_type          = var.netweaver_sbd_storage_type
-      netweaver_sid             = var.netweaver_sid
-      ascs_instance_number      = var.ascs_instance_number
-      ers_instance_number       = var.ers_instance_number
-      pas_instance_number       = var.pas_instance_number
-      netweaver_master_password = var.netweaver_master_password
-      netweaver_product_id      = var.netweaver_product_id
-      netweaver_inst_folder     = var.netweaver_inst_folder
-      netweaver_extract_dir     = var.netweaver_extract_dir
-      netweaver_swpm_folder     = var.netweaver_swpm_folder
-      netweaver_sapcar_exe      = var.netweaver_sapcar_exe
-      netweaver_swpm_sar        = var.netweaver_swpm_sar
-      netweaver_sapexe_folder   = var.netweaver_sapexe_folder
-      netweaver_additional_dvds = var.netweaver_additional_dvds
-      netweaver_nfs_share       = var.netweaver_nfs_share
-      hana_ip                   = var.hana_ip
-      hana_sid                  = var.netweaver_hana_sid
-      hana_instance_number      = var.netweaver_hana_instance_number
-      hana_master_password      = var.netweaver_hana_master_password
-    }
     netweaver_grains_output = <<EOF
 ha_enabled: ${var.netweaver_ha_enabled}
 fencing_mechanism: ${var.netweaver_cluster_fencing_mechanism}
 sbd_storage_type: ${var.netweaver_sbd_storage_type}
 netweaver_sid: ${var.netweaver_sid}
-ascs_instance_number: ${var.ascs_instance_number}
-ers_instance_number: ${var.ers_instance_number}
-pas_instance_number: ${var.pas_instance_number}
+ascs_instance_number: ${var.netweaver_ascs_instance_number}
+ers_instance_number: ${var.netweaver_ers_instance_number}
+pas_instance_number: ${var.netweaver_pas_instance_number}
 netweaver_master_password: ${var.netweaver_master_password}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_folder: ${var.netweaver_inst_folder}
@@ -135,7 +135,7 @@ netweaver_swpm_sar: ${var.netweaver_swpm_sar}
 netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: ${var.netweaver_nfs_share}
-hana_ip: ${var.hana_ip}
+hana_ip: ${var.netweaver_hana_ip}
 hana_sid: ${var.netweaver_hana_sid}
 hana_instance_number: ${var.netweaver_hana_instance_number}
 hana_master_password: ${var.netweaver_hana_master_password}
