@@ -27,12 +27,12 @@ resource "aws_instance" "monitoring" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-monitoring"
+    Name = "${var.common_variables["deployment_name"]}-monitoring"
   }
 
   tags = {
-    Name      = "${terraform.workspace} - Monitoring"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]} - Monitoring"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -41,7 +41,7 @@ module "monitoring_on_destroy" {
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = aws_instance.monitoring.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.monitoring.*.public_ip
   dependencies         = var.on_destroy_dependencies
 }

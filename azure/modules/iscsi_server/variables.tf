@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "az_region" {
   type    = string
   default = "westeurope"
@@ -12,10 +18,6 @@ variable "resource_group_name" {
 }
 
 variable "network_subnet_id" {
-  type = string
-}
-
-variable "sec_group_id" {
   type = string
 }
 
@@ -36,29 +38,6 @@ variable "iscsi_srv_uri" {
 variable "vm_size" {
   type    = string
   default = "Standard_D2s_v3"
-}
-
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
 }
 
 variable "iscsi_count" {

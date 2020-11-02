@@ -1,5 +1,6 @@
 locals {
-  bastion_enabled = var.bastion_enabled ? 1 : 0
+  bastion_enabled    = var.common_variables["bastion_enabled"] ? 1 : 0
+  private_ip_address = cidrhost(var.snet_address_range, 5)
 }
 
 
@@ -8,7 +9,7 @@ resource "azurerm_subnet" "bastion" {
   name                 = "snet-bastion"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefix       = var.snet_address_range
+  address_prefixes     = [var.snet_address_range]
 }
 
 resource "azurerm_network_security_group" "bastion" {
@@ -26,7 +27,7 @@ resource "azurerm_network_security_group" "bastion" {
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    destination_address_prefix = local.private_ip_address
   }
 
   security_rule {
@@ -42,6 +43,21 @@ resource "azurerm_network_security_group" "bastion" {
   }
 }
 
+resource "azurerm_network_security_rule" "grafana" {
+  count                       = var.common_variables["monitoring_enabled"] ? local.bastion_enabled : 0
+  name                        = "Grafana"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "3000"
+  source_address_prefix       = "*"
+  destination_address_prefix  = local.private_ip_address
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = join("", azurerm_network_security_group.bastion.*.name)
+}
+
 resource "azurerm_subnet_network_security_group_association" "bastion" {
   count                     = local.bastion_enabled
   subnet_id                 = azurerm_subnet.bastion[0].id
@@ -53,18 +69,17 @@ resource "azurerm_network_interface" "bastion" {
   name                      = "nic-bastion"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.bastion[0].id
 
   ip_configuration {
     name                          = "ipconf-primary"
     subnet_id                     = azurerm_subnet.bastion[0].id
     private_ip_address_allocation = "static"
-    private_ip_address            = cidrhost(var.snet_address_range, 5)
+    private_ip_address            = local.private_ip_address
     public_ip_address_id          = azurerm_public_ip.bastion[0].id
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -77,8 +92,13 @@ resource "azurerm_public_ip" "bastion" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
+}
+
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
 }
 
 resource "azurerm_virtual_machine" "bastion" {
@@ -99,23 +119,23 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   storage_image_reference {
-    publisher = "SUSE"
-    offer     = "sles-sap-15-sp1-byos"
-    sku       = "gen2"
-    version   = "latest"
+    publisher = module.os_image_reference.publisher
+    offer     = module.os_image_reference.offer
+    sku       = module.os_image_reference.sku
+    version   = module.os_image_reference.version
   }
 
   os_profile {
     computer_name  = "vmbastion"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_location)
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["bastion_public_key"]
     }
   }
 
@@ -125,6 +145,16 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
+}
+
+module "bastion_on_destroy" {
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = local.bastion_enabled
+  instance_ids         = azurerm_virtual_machine.bastion.*.id
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["bastion_private_key"]
+  public_ips           = data.azurerm_public_ip.bastion.*.ip_address
+  dependencies         = [data.azurerm_public_ip.bastion]
 }

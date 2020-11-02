@@ -3,7 +3,7 @@
 
 resource "google_compute_disk" "data" {
   count = var.drbd_count
-  name  = "${terraform.workspace}-disk-drbd-${count.index}"
+  name  = "${var.common_variables["deployment_name"]}-disk-drbd-${count.index}"
   type  = var.drbd_data_disk_type
   size  = var.drbd_data_disk_size
   zone  = element(var.compute_zones, count.index)
@@ -11,7 +11,7 @@ resource "google_compute_disk" "data" {
 
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "drbd-route" {
-  name                   = "${terraform.workspace}-drbd-route"
+  name                   = "${var.common_variables["deployment_name"]}-drbd-route"
   count                  = var.drbd_count > 0 ? 1 : 0
   dest_range             = "${var.drbd_cluster_vip}/32"
   network                = var.network_name
@@ -22,7 +22,7 @@ resource "google_compute_route" "drbd-route" {
 
 resource "google_compute_instance" "drbd" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-drbd0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-drbd0${count.index + 1}"
   count        = var.drbd_count
   zone         = element(var.compute_zones, count.index)
 
@@ -58,7 +58,7 @@ resource "google_compute_instance" "drbd" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
+    sshKeys = "root:${var.common_variables["public_key"]}"
   }
 
   service_account {
@@ -71,7 +71,7 @@ module "drbd_on_destroy" {
   node_count           = var.drbd_count
   instance_ids         = google_compute_instance.drbd.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

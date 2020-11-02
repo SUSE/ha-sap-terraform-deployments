@@ -1,6 +1,6 @@
 resource "google_compute_disk" "iscsi_data" {
   count = var.iscsi_count
-  name  = "${terraform.workspace}-iscsi-data-${count.index + 1}"
+  name  = "${var.common_variables["deployment_name"]}-iscsi-data-${count.index + 1}"
   type  = "pd-standard"
   size  = var.iscsi_disk_size
   zone  = element(var.compute_zones, 0)
@@ -8,7 +8,7 @@ resource "google_compute_disk" "iscsi_data" {
 
 resource "google_compute_instance" "iscsisrv" {
   count        = var.iscsi_count
-  name         = "${terraform.workspace}-iscsisrv-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-iscsisrv-${count.index + 1}"
   description  = "iSCSI server"
   machine_type = var.machine_type
   zone         = element(var.compute_zones, 0)
@@ -47,7 +47,7 @@ resource "google_compute_instance" "iscsisrv" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
+    sshKeys = "root:${var.common_variables["public_key"]}"
   }
 }
 
@@ -56,7 +56,7 @@ module "iscsi_on_destroy" {
   node_count           = var.iscsi_count
   instance_ids         = google_compute_instance.iscsisrv.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

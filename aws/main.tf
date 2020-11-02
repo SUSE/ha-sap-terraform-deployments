@@ -29,11 +29,13 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for index in range(2) : cidrhost(element(local.drbd_subnet_address_range, index % 2), index + local.drbd_ip_start)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(var.virtual_address_range, local.drbd_ip_start)
 
-  # range(4) hardcoded as we always deploy 4 nw machines
+  netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
+  netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
+  netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
+
   netweaver_ip_start    = 30
-  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for index in range(local.netweaver_count) : cidrhost(element(local.netweaver_subnet_address_range, index % 2), index + local.netweaver_ip_start)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(var.virtual_address_range, ip_index)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(var.virtual_address_range, ip_index)]
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -55,12 +57,16 @@ locals {
 module "common_variables" {
   source                 = "../generic_modules/common_variables"
   provider_type          = "aws"
+  deployment_name        = local.deployment_name
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
-  private_key_location   = var.private_key_location
+  public_key             = var.public_key
+  private_key            = var.private_key
+  authorized_keys        = var.authorized_keys
+  authorized_user        = "ec2-user"
   provisioner            = var.provisioner
   provisioning_log_level = var.provisioning_log_level
   background             = var.background
@@ -129,7 +135,8 @@ module "iscsi_server" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
-  netweaver_count           = local.netweaver_count
+  xscs_server_count         = local.netweaver_xscs_server_count
+  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   instance_type             = var.netweaver_instancetype
   name                      = "netweaver"
   aws_region                = var.aws_region
@@ -148,6 +155,10 @@ module "netweaver_node" {
   aws_secret_access_key     = var.aws_secret_access_key
   s3_bucket                 = var.netweaver_s3_bucket
   netweaver_sid             = var.netweaver_sid
+  ascs_instance_number      = var.netweaver_ascs_instance_number
+  ers_instance_number       = var.netweaver_ers_instance_number
+  pas_instance_number       = var.netweaver_pas_instance_number
+  netweaver_master_password = var.netweaver_master_password
   netweaver_product_id      = var.netweaver_product_id
   netweaver_inst_folder     = var.netweaver_inst_folder
   netweaver_extract_dir     = var.netweaver_extract_dir
@@ -158,6 +169,9 @@ module "netweaver_node" {
   netweaver_additional_dvds = var.netweaver_additional_dvds
   netweaver_nfs_share       = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  hana_sid                  = var.hana_sid
+  hana_instance_number      = var.hana_instance_number
+  hana_master_password      = var.hana_master_password
   host_ips                  = local.netweaver_ips
   virtual_host_ips          = local.netweaver_virtual_ips
   ha_enabled                = var.netweaver_ha_enabled
@@ -174,42 +188,51 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                     = "./modules/hana_node"
-  common_variables           = module.common_variables.configuration
-  hana_count                 = var.hana_count
-  instance_type              = var.hana_instancetype
-  name                       = var.name
-  scenario_type              = var.scenario_type
-  aws_region                 = var.aws_region
-  availability_zones         = data.aws_availability_zones.available.names
-  os_image                   = local.hana_os_image
-  os_owner                   = local.hana_os_owner
-  vpc_id                     = local.vpc_id
-  subnet_address_range       = local.hana_subnet_address_range
-  key_name                   = aws_key_pair.key-pair.key_name
-  security_group_id          = local.security_group_id
-  route_table_id             = aws_route_table.route-table.id
-  aws_credentials            = var.aws_credentials
-  aws_access_key_id          = var.aws_access_key_id
-  aws_secret_access_key      = var.aws_secret_access_key
-  host_ips                   = local.hana_ips
-  hana_data_disk_type        = var.hana_data_disk_type
-  hana_inst_master           = var.hana_inst_master
-  hana_inst_folder           = var.hana_inst_folder
-  hana_platform_folder       = var.hana_platform_folder
-  hana_sapcar_exe            = var.hana_sapcar_exe
-  hana_archive_file          = var.hana_archive_file
-  hana_extract_dir           = var.hana_extract_dir
-  hana_fstype                = var.hana_fstype
-  hana_cluster_vip           = local.hana_cluster_vip
-  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                 = var.hana_ha_enabled
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
-  iscsi_srv_ip               = join("", module.iscsi_server.iscsisrv_ip)
-  cluster_ssh_pub            = var.cluster_ssh_pub
-  cluster_ssh_key            = var.cluster_ssh_key
-  hwcct                      = var.hwcct
+  source                              = "./modules/hana_node"
+  common_variables                    = module.common_variables.configuration
+  hana_count                          = var.hana_count
+  instance_type                       = var.hana_instancetype
+  name                                = var.name
+  scenario_type                       = var.scenario_type
+  aws_region                          = var.aws_region
+  availability_zones                  = data.aws_availability_zones.available.names
+  os_image                            = local.hana_os_image
+  os_owner                            = local.hana_os_owner
+  vpc_id                              = local.vpc_id
+  subnet_address_range                = local.hana_subnet_address_range
+  key_name                            = aws_key_pair.key-pair.key_name
+  security_group_id                   = local.security_group_id
+  route_table_id                      = aws_route_table.route-table.id
+  aws_credentials                     = var.aws_credentials
+  aws_access_key_id                   = var.aws_access_key_id
+  aws_secret_access_key               = var.aws_secret_access_key
+  host_ips                            = local.hana_ips
+  hana_sid                            = var.hana_sid
+  hana_instance_number                = var.hana_instance_number
+  hana_cost_optimized_sid             = var.hana_cost_optimized_sid
+  hana_cost_optimized_instance_number = var.hana_cost_optimized_instance_number
+  hana_master_password                = var.hana_master_password
+  hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
+  hana_primary_site                   = var.hana_primary_site
+  hana_secondary_site                 = var.hana_secondary_site
+  hana_data_disk_type                 = var.hana_data_disk_type
+  hana_data_disk_size                 = var.hana_data_disk_size
+  hana_inst_master                    = var.hana_inst_master
+  hana_inst_folder                    = var.hana_inst_folder
+  hana_platform_folder                = var.hana_platform_folder
+  hana_sapcar_exe                     = var.hana_sapcar_exe
+  hana_archive_file                   = var.hana_archive_file
+  hana_extract_dir                    = var.hana_extract_dir
+  hana_fstype                         = var.hana_fstype
+  hana_cluster_vip                    = local.hana_cluster_vip
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                          = var.hana_ha_enabled
+  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
+  iscsi_srv_ip                        = join("", module.iscsi_server.iscsisrv_ip)
+  cluster_ssh_pub                     = var.cluster_ssh_pub
+  cluster_ssh_key                     = var.cluster_ssh_key
+  hwcct                               = var.hwcct
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,

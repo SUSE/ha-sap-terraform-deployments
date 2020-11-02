@@ -2,12 +2,13 @@
 # official documentation: https://cloud.google.com/solutions/sap/docs/netweaver-ha-planning-guide
 
 locals {
-  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+  vm_count        = var.xscs_server_count + var.app_server_count
+  create_ha_infra = local.vm_count > 1 && var.ha_enabled ? 1 : 0
 }
 
 resource "google_compute_disk" "netweaver-software" {
-  count = var.netweaver_count
-  name  = "${terraform.workspace}-nw-installation-sw-${count.index}"
+  count = local.vm_count
+  name  = "${var.common_variables["deployment_name"]}-nw-installation-sw-${count.index}"
   type  = "pd-standard"
   size  = 60
   zone  = element(var.compute_zones, count.index)
@@ -15,7 +16,7 @@ resource "google_compute_disk" "netweaver-software" {
 
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "nw-ascs-route" {
-  name                   = "${terraform.workspace}-nw-ascs-route"
+  name                   = "${var.common_variables["deployment_name"]}-nw-ascs-route"
   count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
@@ -25,7 +26,7 @@ resource "google_compute_route" "nw-ascs-route" {
 }
 
 resource "google_compute_route" "nw-ers-route" {
-  name                   = "${terraform.workspace}-nw-ers-route"
+  name                   = "${var.common_variables["deployment_name"]}-nw-ers-route"
   count                  = local.create_ha_infra
   dest_range             = "${element(var.virtual_host_ips, 1)}/32"
   network                = var.network_name
@@ -36,8 +37,8 @@ resource "google_compute_route" "nw-ers-route" {
 
 resource "google_compute_instance" "netweaver" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-netweaver0${count.index + 1}"
-  count        = var.netweaver_count
+  name         = "${var.common_variables["deployment_name"]}-netweaver0${count.index + 1}"
+  count        = local.vm_count
   zone         = element(var.compute_zones, count.index)
 
   can_ip_forward = true
@@ -72,7 +73,7 @@ resource "google_compute_instance" "netweaver" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
+    sshKeys = "root:${var.common_variables["public_key"]}"
   }
 
   service_account {
@@ -82,10 +83,10 @@ resource "google_compute_instance" "netweaver" {
 
 module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = var.netweaver_count
+  node_count           = local.vm_count
   instance_ids         = google_compute_instance.netweaver.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

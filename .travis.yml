@@ -5,7 +5,7 @@ matrix:
     - language: bash
       install:
         - set -e
-        - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
+        - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.13.4/terraform_0.13.4_linux_amd64.zip
         - unzip /tmp/terraform -d /tmp
         - chmod +x /tmp/terraform
         - /tmp/terraform -version

@@ -1,10 +1,16 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "0.6.2"
+    }
+  }
 }
 
 resource "libvirt_volume" "iscsi_image_disk" {
   count            = var.iscsi_count
-  name             = format("%s-iscsi-disk-%s", terraform.workspace, count.index + 1)
+  name             = format("%s-iscsi-disk-%s", var.common_variables["deployment_name"], count.index + 1)
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
@@ -12,13 +18,13 @@ resource "libvirt_volume" "iscsi_image_disk" {
 
 resource "libvirt_volume" "iscsi_dev_disk" {
   count = var.iscsi_count
-  name  = format("%s-iscsi-dev-%s", terraform.workspace, count.index + 1)
+  name  = format("%s-iscsi-dev-%s", var.common_variables["deployment_name"], count.index + 1)
   pool  = var.storage_pool
   size  = var.iscsi_disk_size
 }
 
 resource "libvirt_domain" "iscsisrv" {
-  name       = format("%s-iscsi-%s", terraform.workspace, count.index + 1)
+  name       = format("%s-iscsi-%s", var.common_variables["deployment_name"], count.index + 1)
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.iscsi_count
