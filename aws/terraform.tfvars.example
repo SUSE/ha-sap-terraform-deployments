@@ -131,9 +131,8 @@ pre_deployment = true
 #hana_data_disk_type = "gp2"
 
 # Disk size for HANA database content in GB
-#hana_data_disk_size  = 64 # 64GB
-# For S/4HANA set a big disk size
-#hana_data_disk_size  = 350 # 350GB
+# For S/4HANA a big disk size is required, at least 350GB
+#hana_data_disk_size  = 1024 # 1024GB
 
 # Number of nodes in the cluster
 #hana_count = "2"

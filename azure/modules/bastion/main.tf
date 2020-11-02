@@ -9,7 +9,7 @@ resource "azurerm_subnet" "bastion" {
   name                 = "snet-bastion"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefix       = var.snet_address_range
+  address_prefixes     = [var.snet_address_range]
 }
 
 resource "azurerm_network_security_group" "bastion" {
@@ -69,7 +69,6 @@ resource "azurerm_network_interface" "bastion" {
   name                      = "nic-bastion"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
-  network_security_group_id = azurerm_network_security_group.bastion[0].id
 
   ip_configuration {
     name                          = "ipconf-primary"

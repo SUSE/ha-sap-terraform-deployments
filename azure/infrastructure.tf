@@ -1,10 +1,11 @@
 # Configure the Azure Provider
 provider "azurerm" {
-  version = "~> 1.44"
+  version = "~> 2.32.0"
+  features {}
 }
 
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
 }
 
 data "azurerm_subscription" "current" {
@@ -73,7 +74,7 @@ resource "azurerm_subnet" "mysubnet" {
   name                 = "snet-${lower(local.deployment_name)}"
   resource_group_name  = local.resource_group_name
   virtual_network_name = local.vnet_name
-  address_prefix       = local.subnet_address_range
+  address_prefixes     = [local.subnet_address_range]
 }
 
 resource "azurerm_subnet_network_security_group_association" "mysubnet" {

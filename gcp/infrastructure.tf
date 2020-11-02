@@ -1,17 +1,18 @@
 # Configure the GCP Provider
 provider "google" {
+  version     = "~> 3.43.0"
   credentials = file(var.gcp_credentials_file)
   project     = var.project
   region      = var.region
 }
 
+terraform {
+  required_version = ">= 0.13"
+}
+
 data "google_compute_zones" "available" {
   region = var.region
   status = "UP"
-}
-
-terraform {
-  required_version = ">= 0.12"
 }
 
 data "google_compute_subnetwork" "current-subnet" {

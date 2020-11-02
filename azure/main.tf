@@ -84,7 +84,6 @@ module "drbd_node" {
   os_image            = local.drbd_os_image
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  sec_group_id        = azurerm_network_security_group.mysecgroup.id
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
@@ -115,7 +114,6 @@ module "netweaver_node" {
   os_image                    = local.netweaver_os_image
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
-  sec_group_id                = azurerm_network_security_group.mysecgroup.id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
@@ -167,7 +165,6 @@ module "hana_node" {
   scenario_type                       = var.scenario_type
   resource_group_name                 = local.resource_group_name
   network_subnet_id                   = local.subnet_id
-  sec_group_id                        = azurerm_network_security_group.mysecgroup.id
   storage_account                     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   storage_account_name                = var.storage_account_name
   storage_account_key                 = var.storage_account_key
@@ -202,7 +199,6 @@ module "monitoring" {
   vm_size             = var.monitoring_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  sec_group_id        = azurerm_network_security_group.mysecgroup.id
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
@@ -221,7 +217,6 @@ module "iscsi_server" {
   vm_size             = var.iscsi_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  sec_group_id        = azurerm_network_security_group.mysecgroup.id
   storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   iscsi_srv_uri       = var.iscsi_srv_uri
   os_image            = local.iscsi_os_image
