@@ -3,14 +3,14 @@ groups:
 - name: sap-hana-resource-monitoring
   rules:
   - alert: sap-hana-master-resource-down
-    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="master",status="active"})
+    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="master",status="active"} == 1)
     labels:
       severity: page
     annotations:
       summary: Primary SAP-HANA resource down
 
   - alert: sap-hana-secondary-resource-absent
-    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="slave",status="active"})
+    expr: absent(ha_cluster_pacemaker_resources{resource=~"rsc_SAPHana_.*",role="slave",status="active"} == 1)
     labels:
       severity: page
     annotations:
@@ -28,7 +28,7 @@ groups:
 - name: cluster-resources-monitoring
   rules:
   - alert: cluster-resources-a-resource-failed
-    expr: count(ha_cluster_pacemaker_resources{status="failed"}) > 0
+    expr: count(ha_cluster_pacemaker_resources{status="failed"} == 1) > 0
     labels:
       severity: page
     annotations:
@@ -73,7 +73,7 @@ groups:
 - name: sbd-device-alerts
   rules:
   - alert: a-sbd-device-unhealthy
-    expr: ha_cluster_sbd_device_status == 0
+    expr: count(ha_cluster_sbd_devices{status="unhealthy"} == 1) > 0
     labels:
       severity: page
     annotations:
