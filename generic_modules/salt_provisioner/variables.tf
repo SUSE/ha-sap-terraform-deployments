@@ -20,8 +20,8 @@ variable "password" {
   default     = ""
 }
 
-variable "private_key_location" {
-  description = "SSH private key for the connection. It has priority over password variable"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. It has priority over password variable"
   type        = string
   default     = ""
 }
@@ -33,7 +33,7 @@ variable "bastion_host" {
 }
 
 variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. It must be provided if bastion is enabled"
   type        = string
   default     = ""
 }
@@ -47,4 +47,10 @@ variable "background" {
   description = "Execute the provisioning in background"
   type        = bool
   default     = false
+}
+
+variable "reboot" {
+  description = "Reboot the machines after the initial update of the packages"
+  type        = bool
+  default     = true
 }

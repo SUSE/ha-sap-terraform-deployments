@@ -9,7 +9,7 @@ resource "null_resource" "hana_node_provisioner" {
     host        = element(aws_instance.clusternodes.*.public_ip, count.index)
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
@@ -23,10 +23,18 @@ role: hana_node
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}
 aws_cluster_profile: Cluster
-aws_instance_tag: ${terraform.workspace}-cluster
+aws_instance_tag: ${var.common_variables["deployment_name"]}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
+hana_cost_optimized_instance_number: ${var.hana_cost_optimized_instance_number}
+hana_master_password: ${var.hana_master_password}
+hana_cost_optimized_master_password: ${var.hana_cost_optimized_master_password}
+hana_primary_site: ${var.hana_primary_site}
+hana_secondary_site: ${var.hana_secondary_site}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 route_table: ${var.route_table_id}
@@ -61,7 +69,7 @@ module "hana_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
   instance_ids         = null_resource.hana_node_provisioner.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.clusternodes.*.public_ip
   background           = var.common_variables["background"]
 }

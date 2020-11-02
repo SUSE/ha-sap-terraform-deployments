@@ -3,7 +3,8 @@
 # disclaimer: only supports a single NW installation
 
 locals {
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.drbd.*.private_ip_address : data.azurerm_public_ip.drbd.*.ip_address
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.drbd.*.private_ip_address : data.azurerm_public_ip.drbd.*.ip_address
 }
 
 resource "azurerm_availability_set" "drbd-availability-set" {
@@ -15,7 +16,7 @@ resource "azurerm_availability_set" "drbd-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -35,7 +36,7 @@ resource "azurerm_lb" "drbd-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -113,7 +114,7 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
 # drbd network configuration
 
 resource "azurerm_public_ip" "drbd" {
-  count                   = var.bastion_enabled ? 0 : var.drbd_count
+  count                   = local.bastion_enabled ? 0 : var.drbd_count
   name                    = "pip-drbd0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -121,7 +122,7 @@ resource "azurerm_public_ip" "drbd" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -130,18 +131,17 @@ resource "azurerm_network_interface" "drbd" {
   name                      = "nic-drbd0${count.index + 1}"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
-  network_security_group_id = var.sec_group_id
 
   ip_configuration {
     name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.drbd.*.id, count.index)
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.drbd.*.id, count.index)
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -161,7 +161,7 @@ resource "azurerm_image" "drbd-image" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -209,15 +209,15 @@ resource "azurerm_virtual_machine" "drbd" {
 
   os_profile {
     computer_name  = "vmdrbd0${count.index + 1}"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -227,7 +227,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -235,10 +235,10 @@ module "drbd_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.drbd_count
   instance_ids         = azurerm_virtual_machine.drbd.*.id
-  user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.drbd]
 }

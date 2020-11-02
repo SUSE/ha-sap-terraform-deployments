@@ -14,11 +14,10 @@ resource "null_resource" "monitoring_provisioner" {
     content     = <<EOF
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
-name_prefix: ${terraform.workspace}-${var.name}
-hostname: ${terraform.workspace}-${var.name}
+name_prefix: ${var.common_variables["deployment_name"]}-${var.name}
+hostname: ${var.common_variables["deployment_name"]}-${var.name}
 timezone: ${var.timezone}
 network_domain: ${var.network_domain}
-authorized_keys: [${trimspace(file(var.common_variables["public_key_location"]))}]
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${libvirt_domain.monitoring_domain[0].network_interface[0].addresses[0]}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]

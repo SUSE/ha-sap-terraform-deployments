@@ -8,12 +8,12 @@ resource "null_resource" "netweaver_provisioner" {
   connection {
     host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
-    user        = var.admin_user
-    private_key = file(var.common_variables["private_key_location"])
+    user        = var.common_variables["authorized_user"]
+    private_key = var.common_variables["private_key"]
 
     bastion_host        = var.bastion_host
-    bastion_user        = var.admin_user
-    bastion_private_key = file(var.bastion_private_key)
+    bastion_user        = var.common_variables["authorized_user"]
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -39,6 +39,7 @@ netweaver_sid: ${var.netweaver_sid}
 ascs_instance_number: ${var.ascs_instance_number}
 ers_instance_number: ${var.ers_instance_number}
 pas_instance_number: ${var.pas_instance_number}
+netweaver_master_password: ${var.netweaver_master_password}
 netweaver_product_id: ${var.netweaver_product_id}
 netweaver_inst_folder: ${var.netweaver_inst_folder}
 netweaver_extract_dir: ${var.netweaver_extract_dir}
@@ -52,6 +53,9 @@ storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 storage_account_path: ${var.storage_account_path}
 hana_ip: ${var.hana_ip}
+hana_sid: ${var.hana_sid}
+hana_instance_number: ${var.hana_instance_number}
+hana_master_password: ${var.hana_master_password}
   EOF
     destination = "/tmp/grains"
   }
@@ -61,10 +65,10 @@ module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
   node_count           = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
-  user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
 }

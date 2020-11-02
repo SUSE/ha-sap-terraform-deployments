@@ -9,7 +9,7 @@ resource "null_resource" "iscsi_provisioner" {
     host        = element(google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip, count.index)
     type        = "ssh"
     user        = "root"
-    private_key = file(var.common_variables["private_key_location"])
+    private_key = var.common_variables["private_key"]
   }
 
   provisioner "file" {
@@ -37,7 +37,7 @@ module "iscsi_provision" {
   node_count           = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
   instance_ids         = null_resource.iscsi_provisioner.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
   background           = var.common_variables["background"]
 }

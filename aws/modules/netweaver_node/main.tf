@@ -1,22 +1,23 @@
 locals {
-  create_ha_infra = var.netweaver_count > 1 && var.ha_enabled ? 1 : 0
+  vm_count        = var.xscs_server_count + var.app_server_count
+  create_ha_infra = local.vm_count > 1 && var.ha_enabled ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc
 
 resource "aws_subnet" "netweaver-subnet" {
-  count             = min(var.netweaver_count, 2) # Create 2 subnets max
+  count             = min(local.vm_count, 2) # Create 2 subnets max
   vpc_id            = var.vpc_id
   cidr_block        = element(var.subnet_address_range, count.index)
   availability_zone = element(var.availability_zones, count.index)
   tags = {
-    Name      = "${terraform.workspace}-netweaver-subnet-${count.index + 1}"
-    Workspace = terraform.workspace
+    Name      = "${var.common_variables["deployment_name"]}-netweaver-subnet-${count.index + 1}"
+    Workspace = var.common_variables["deployment_name"]
   }
 }
 
 resource "aws_route_table_association" "netweaver-subnet-route-association" {
-  count          = min(var.netweaver_count, 2)
+  count          = min(local.vm_count, 2)
   subnet_id      = element(aws_subnet.netweaver-subnet.*.id, count.index)
   route_table_id = var.route_table_id
 }
@@ -36,18 +37,19 @@ resource "aws_route" "ers-cluster-vip" {
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
-  count           = var.netweaver_count > 0 && var.efs_enable_mount ? 2 : 0
+  count           = local.vm_count > 0 && var.efs_enable_mount ? min(local.vm_count, 2) : 0
   file_system_id  = var.efs_file_system_id
   subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
   security_groups = [var.security_group_id]
 }
 
 module "sap_cluster_policies" {
-  enabled           = var.netweaver_count > 0 ? true : false
+  enabled           = local.vm_count > 0 ? true : false
   source            = "../../modules/sap_cluster_policies"
+  common_variables  = var.common_variables
   name              = var.name
   aws_region        = var.aws_region
-  cluster_instances = slice(aws_instance.netweaver.*.id, 0, min(var.netweaver_count, 2))
+  cluster_instances = slice(aws_instance.netweaver.*.id, 0, min(local.vm_count, 2))
   route_table_id    = var.route_table_id
 }
 
@@ -58,7 +60,7 @@ module "get_os_image" {
 }
 
 resource "aws_instance" "netweaver" {
-  count                       = var.netweaver_count
+  count                       = local.vm_count
   ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
@@ -83,22 +85,22 @@ resource "aws_instance" "netweaver" {
   }
 
   volume_tags = {
-    Name = "${terraform.workspace}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
   }
 
   tags = {
-    Name                             = "${terraform.workspace} - ${var.name}0${count.index + 1}"
-    Workspace                        = terraform.workspace
-    "${terraform.workspace}-cluster" = "${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Workspace                                            = var.common_variables["deployment_name"]
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
   }
 }
 
 module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = var.netweaver_count
+  node_count           = local.vm_count
   instance_ids         = aws_instance.netweaver.*.id
   user                 = "ec2-user"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = aws_instance.netweaver.*.public_ip
   dependencies = concat(
     [aws_route_table_association.netweaver-subnet-route-association],

@@ -29,10 +29,13 @@ locals {
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
 
+  netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
+  netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
+  netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
+
   netweaver_ip_start    = 30
-  netweaver_count       = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 4 : 2) : 0
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -49,13 +52,16 @@ locals {
 module "common_variables" {
   source                 = "../generic_modules/common_variables"
   provider_type          = "gcp"
+  deployment_name        = local.deployment_name
   reg_code               = var.reg_code
   reg_email              = var.reg_email
   reg_additional_modules = var.reg_additional_modules
   ha_sap_deployment_repo = var.ha_sap_deployment_repo
   additional_packages    = var.additional_packages
-  public_key_location    = var.public_key_location
-  private_key_location   = var.private_key_location
+  public_key             = var.public_key
+  private_key            = var.private_key
+  authorized_keys        = var.authorized_keys
+  authorized_user        = "root"
   provisioner            = var.provisioner
   provisioning_log_level = var.provisioning_log_level
   background             = var.background
@@ -94,7 +100,8 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
-  netweaver_count           = local.netweaver_count
+  xscs_server_count         = local.netweaver_xscs_server_count
+  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   machine_type              = var.netweaver_machine_type
   compute_zones             = data.google_compute_zones.available.names
   network_name              = local.vpc_name
@@ -109,6 +116,10 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_sid             = var.netweaver_sid
+  ascs_instance_number      = var.netweaver_ascs_instance_number
+  ers_instance_number       = var.netweaver_ers_instance_number
+  pas_instance_number       = var.netweaver_pas_instance_number
+  netweaver_master_password = var.netweaver_master_password
   netweaver_product_id      = var.netweaver_product_id
   netweaver_software_bucket = var.netweaver_software_bucket
   netweaver_inst_folder     = var.netweaver_inst_folder
@@ -121,6 +132,9 @@ module "netweaver_node" {
   netweaver_nfs_share       = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   ha_enabled                = var.netweaver_ha_enabled
   hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
+  hana_sid                  = var.hana_sid
+  hana_instance_number      = var.hana_instance_number
+  hana_master_password      = var.hana_master_password
   virtual_host_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
@@ -128,37 +142,45 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                     = "./modules/hana_node"
-  common_variables           = module.common_variables.configuration
-  hana_count                 = var.hana_count
-  machine_type               = var.machine_type
-  compute_zones              = data.google_compute_zones.available.names
-  network_name               = local.vpc_name
-  network_subnet_name        = local.subnet_name
-  os_image                   = local.hana_os_image
-  gcp_credentials_file       = var.gcp_credentials_file
-  host_ips                   = local.hana_ips
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
-  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
-  sap_hana_deployment_bucket = var.sap_hana_deployment_bucket
-  hana_inst_folder           = var.hana_inst_folder
-  hana_platform_folder       = var.hana_platform_folder
-  hana_sapcar_exe            = var.hana_sapcar_exe
-  hana_archive_file          = var.hana_archive_file
-  hana_extract_dir           = var.hana_extract_dir
-  hana_data_disk_type        = var.hana_data_disk_type
-  hana_data_disk_size        = var.hana_data_disk_size
-  hana_backup_disk_type      = var.hana_backup_disk_type
-  hana_backup_disk_size      = var.hana_backup_disk_size
-  hana_fstype                = var.hana_fstype
-  hana_cluster_vip           = local.hana_cluster_vip
-  hana_cluster_vip_secondary = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
-  ha_enabled                 = var.hana_ha_enabled
-  scenario_type              = var.scenario_type
-  cluster_ssh_pub            = var.cluster_ssh_pub
-  cluster_ssh_key            = var.cluster_ssh_key
-  hwcct                      = var.hwcct
+  source                              = "./modules/hana_node"
+  common_variables                    = module.common_variables.configuration
+  hana_count                          = var.hana_count
+  machine_type                        = var.machine_type
+  compute_zones                       = data.google_compute_zones.available.names
+  network_name                        = local.vpc_name
+  network_subnet_name                 = local.subnet_name
+  os_image                            = local.hana_os_image
+  gcp_credentials_file                = var.gcp_credentials_file
+  host_ips                            = local.hana_ips
+  fencing_mechanism                   = var.hana_cluster_fencing_mechanism
+  sbd_storage_type                    = var.sbd_storage_type
+  iscsi_srv_ip                        = module.iscsi_server.iscsisrv_ip
+  sap_hana_deployment_bucket          = var.sap_hana_deployment_bucket
+  hana_sid                            = var.hana_sid
+  hana_instance_number                = var.hana_instance_number
+  hana_cost_optimized_sid             = var.hana_cost_optimized_sid
+  hana_cost_optimized_instance_number = var.hana_cost_optimized_instance_number
+  hana_master_password                = var.hana_master_password
+  hana_cost_optimized_master_password = var.hana_cost_optimized_master_password == "" ? var.hana_master_password : var.hana_cost_optimized_master_password
+  hana_primary_site                   = var.hana_primary_site
+  hana_secondary_site                 = var.hana_secondary_site
+  hana_inst_folder                    = var.hana_inst_folder
+  hana_platform_folder                = var.hana_platform_folder
+  hana_sapcar_exe                     = var.hana_sapcar_exe
+  hana_archive_file                   = var.hana_archive_file
+  hana_extract_dir                    = var.hana_extract_dir
+  hana_data_disk_type                 = var.hana_data_disk_type
+  hana_data_disk_size                 = var.hana_data_disk_size
+  hana_backup_disk_type               = var.hana_backup_disk_type
+  hana_backup_disk_size               = var.hana_backup_disk_size
+  hana_fstype                         = var.hana_fstype
+  hana_cluster_vip                    = local.hana_cluster_vip
+  hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
+  ha_enabled                          = var.hana_ha_enabled
+  scenario_type                       = var.scenario_type
+  cluster_ssh_pub                     = var.cluster_ssh_pub
+  cluster_ssh_key                     = var.cluster_ssh_key
+  hwcct                               = var.hwcct
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
   ]

@@ -53,21 +53,28 @@ variable "infra_subnet_address_range" {
   default     = ""
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+variable "public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
 }
 
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. The key is only used to provision the machines. It is not uploaded to the machines in any case"
   type        = string
+}
+
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (ec2-user in this case)"
+  type        = list(string)
+  default     = []
 }
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
+  default     = ""
 }
 
 variable "os_image" {
@@ -157,6 +164,11 @@ variable "background" {
 
 # Hana related variables
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "hana_count" {
   description = "Number of hana nodes"
   type        = number
@@ -229,15 +241,69 @@ variable "hana_extract_dir" {
 }
 
 variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
+  description = "Disk type of the disks used to store HANA database content"
   type        = string
   default     = "gp2"
 }
 
+variable "hana_data_disk_size" {
+  description = "Disk size in GB for the disk used to store HANA database content"
+  type        = number
+  default     = 1024
+}
+
+
 variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
+  description = "Filesystem type used by the disk where HANA is installed"
   type        = string
   default     = "xfs"
+}
+
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
 }
 
 variable "hana_cluster_vip" {
@@ -431,6 +497,12 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  type        = number
+  default     = 2
+}
+
 variable "netweaver_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
@@ -479,16 +551,39 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_fencing_mechanism" {
-  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
-  type        = string
-  default     = "native"
-}
-
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string
   default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
+  type        = string
+  default     = "native"
 }
 
 variable "netweaver_product_id" {

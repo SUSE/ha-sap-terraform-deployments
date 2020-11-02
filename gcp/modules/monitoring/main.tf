@@ -3,7 +3,7 @@
 
 resource "google_compute_disk" "monitoring_data" {
   count = var.monitoring_enabled == true ? 1 : 0
-  name  = "${terraform.workspace}-monitoring-data"
+  name  = "${var.common_variables["deployment_name"]}-monitoring-data"
   type  = "pd-standard"
   size  = "20"
   zone  = element(var.compute_zones, 0)
@@ -11,7 +11,7 @@ resource "google_compute_disk" "monitoring_data" {
 
 resource "google_compute_instance" "monitoring" {
   count        = var.monitoring_enabled == true ? 1 : 0
-  name         = "${terraform.workspace}-monitoring"
+  name         = "${var.common_variables["deployment_name"]}-monitoring"
   description  = "Monitoring server"
   machine_type = "custom-1-2048"
   zone         = element(var.compute_zones, 0)
@@ -50,7 +50,7 @@ resource "google_compute_instance" "monitoring" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
+    sshKeys = "root:${var.common_variables["public_key"]}"
   }
 }
 
@@ -59,7 +59,7 @@ module "monitoring_on_destroy" {
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = google_compute_instance.monitoring.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

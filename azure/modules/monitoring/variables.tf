@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -14,10 +20,6 @@ variable "az_region" {
 }
 
 variable "resource_group_name" {
-  type = string
-}
-
-variable "sec_group_id" {
   type = string
 }
 
@@ -51,29 +53,6 @@ variable "monitoring_uri" {
 
 variable "monitoring_srv_ip" {
   description = "monitoring server address"
-  type        = string
-  default     = ""
-}
-
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
   type        = string
   default     = ""
 }
