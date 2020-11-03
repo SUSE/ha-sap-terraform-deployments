@@ -8,9 +8,9 @@ get_grain () {
     re="$1:\s*(.*)"
     grains_file=$2
     grains_file=${grains_file:="/etc/salt/grains"}
-    grains_content=$(grep -E $re $grains_file)
+    grains_content=$(grep -E "$re" "$grains_file")
     if [[ $grains_content =~ $re ]]; then
-        echo ${BASH_REMATCH[1]};
+        echo "${BASH_REMATCH[1]}";
         return 0
     else
         return 1
@@ -18,19 +18,19 @@ get_grain () {
 }
 
 log_ok () {
-    NODE=`hostname`
-    TIMESTAMP=`date -u`
+    NODE=$(hostname)
+    TIMESTAMP=$(date -u)
     GREEN='\033[0;32m'
     NC='\033[0m' # No Color
-    printf "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}\n"
+    echo "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}"
 }
 
 log_error () {
-    NODE=`hostname`
-    TIMESTAMP=`date -u`
+    NODE=$(hostname)
+    TIMESTAMP=$(date -u)
     RED='\033[0;31m'
     NC='\033[0m' # No Color
-    printf "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}\n"
+    echo "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}"
     exit 1
 }
 
@@ -55,7 +55,7 @@ install_salt_minion () {
       if [[ $VERSION_ID =~ ^12\.? ]]; then
         SUSEConnect -p sle-module-adv-systems-management/12/x86_64
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
-        SUSEConnect -p sle-module-basesystem/$VERSION_ID/x86_64
+        SUSEConnect -p sle-module-basesystem/"$VERSION_ID"/x86_64
       else
         log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
@@ -75,7 +75,7 @@ repeat_command () {
     cmd=$1
     timeout=${2:-120}
     interval=${3:-15}
-    timeout $timeout bash -c "until $cmd;do sleep $interval;done"
+    timeout "$timeout" bash -c "until $cmd;do sleep $interval;done"
 }
 
 bootstrap_salt () {
@@ -92,7 +92,7 @@ bootstrap_salt () {
     # Get registration code
     reg_code=$(get_grain reg_code /tmp/grains)
     # Check if salt-call is installed
-    which salt-call > /dev/null 2>&1 && salt_installed=1
+    command -v salt-call > /dev/null 2>&1 && salt_installed=1
 
     # Workaround for the cases where the cloud providers are coming without repositories
     # https://www.suse.com/support/kb/doc/?id=7022311
@@ -105,11 +105,11 @@ bootstrap_salt () {
 
     # Install salt if qa_mode is False and salt is not already installed
     if [[ ${qa_mode} != 1 && ${salt_installed} != 1 ]]; then
-        install_salt_minion ${reg_code}
+        install_salt_minion "${reg_code}"
     fi
 
     # Recheck if salt-call is installed. If it's not available stop execution
-    which salt-call || log_error "salt call isn't installed"
+    command -v salt-call || log_error "salt call isn't installed"
     # Move salt grains to salt folder
     mkdir -p /etc/salt;mv /tmp/grains /etc/salt || true
     log_ok "bootstrapped salt"
@@ -119,11 +119,11 @@ os_setup () {
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
     salt-call --local \
-        --log-level=$(get_grain provisioning_log_level) \
+        --log-level="$(get_grain provisioning_log_level)" \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(salt_output_colored) \
+        "$(salt_output_colored)" \
         state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
@@ -132,11 +132,11 @@ predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     salt-call --local \
-        --log-level=$(get_grain provisioning_log_level) \
+        --log-level="$(get_grain provisioning_log_level)" \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(salt_output_colored) \
+        "$(salt_output_colored)" \
         state.highstate saltenv=predeployment || log_error "predeployment failed"
     log_ok "predeployment done"
 }
@@ -145,11 +145,11 @@ deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
         salt-call --local \
-            --log-level=$(get_grain provisioning_log_level) \
+            --log-level="$(get_grain provisioning_log_level)" \
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(salt_output_colored) \
+            "$(salt_output_colored)" \
             state.highstate saltenv=base || log_error "deployment failed"
         log_ok "deployment done"
     fi
@@ -160,14 +160,15 @@ run_tests () {
     if [[ ${qa_mode} && $(get_grain role) == hana_node ]]; then
         # We need to export HOST with the new hostname set by Salt
         # Otherwise, hwcct will error out.
-        export HOST=$(hostname)
+        HOST=$(hostname)
+        export HOST
         # Execute qa state file
         salt-call --local \
-            --log-level=$(get_grain provisioning_log_level) \
+            --log-level="$(get_grain provisioning_log_level)" \
             --log-file=/var/log/salt-qa.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(salt_output_colored) \
+            "$(salt_output_colored)" \
             state.apply qa_mode || log_error "tests failed"
         log_ok "tests failed"
     fi
@@ -227,7 +228,7 @@ done
 if [[ -n $log_to_file ]]; then
     argument_number=$((argument_number - 1))
     # Find the logic of the next command in: https://unix.stackexchange.com/questions/145651/using-exec-and-tee-to-redirect-logs-to-stdout-and-a-log-file-in-the-same-time
-    exec > >(tee -a $log_to_file)
+    exec > >(tee -a "$log_to_file")
 fi
 
 if [ $argument_number -eq 0 ]; then
