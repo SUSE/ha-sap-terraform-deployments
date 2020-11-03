@@ -3,7 +3,7 @@
 locals {
   bastion_enabled             = var.common_variables["bastion_enabled"]
   create_ha_infra             = var.hana_count > 1 && var.ha_enabled ? 1 : 0
-  create_actitve_active_infra = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses      = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
   hana_lb_rules_ports         = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
@@ -15,7 +15,7 @@ locals {
     "3${var.hana_instance_number}17"
   ]) : toset([])
 
-  hana_lb_rules_ports_secondary = local.create_actitve_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
+  hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -43,12 +43,12 @@ resource "azurerm_lb" "hana-load-balancer" {
     name                          = "lbfe-hana"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = var.hana_cluster_vip
+    private_ip_address            = var.common_variables["hana"]["cluster_vip"]
   }
 
   # Create a new frontend for the Active/Active scenario
   dynamic "frontend_ip_configuration" {
-    for_each = local.create_actitve_active_infra == 1 ? [var.hana_cluster_vip_secondary] : []
+    for_each = local.create_active_active_infra == 1 ? [var.common_variables["hana"]["cluster_vip_secondary"]] : []
     content {
       name                          = "lbfe-hana-secondary"
       subnet_id                     = var.network_subnet_id
@@ -90,7 +90,7 @@ resource "azurerm_lb_probe" "hana-load-balancer" {
 }
 
 resource "azurerm_lb_probe" "hana-load-balancer-secondary" {
-  count               = local.create_actitve_active_infra
+  count               = local.create_active_active_infra
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.hana-load-balancer[0].id
   name                = "lbhp-hana-secondary"

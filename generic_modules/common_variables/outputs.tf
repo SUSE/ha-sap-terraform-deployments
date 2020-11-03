@@ -52,6 +52,8 @@ output "configuration" {
       archive_file                   = var.hana_archive_file
       extract_dir                    = var.hana_extract_dir
       scenario_type                  = var.hana_scenario_type
+      cluster_vip                    = var.hana_cluster_vip
+      cluster_vip_secondary          = var.hana_cluster_vip_secondary
       ha_enabled                     = var.hana_ha_enabled
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
       sbd_storage_type               = var.hana_sbd_storage_type

@@ -81,18 +81,6 @@ variable "hana_data_disk_size" {
   type        = number
 }
 
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = "192.168.1.10"
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
 variable "ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
