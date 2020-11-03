@@ -21,6 +21,7 @@ resource "null_resource" "netweaver_provisioner" {
     content     = <<EOF
 role: netweaver_node
 ${var.common_variables["grains_output"]}
+${var.common_variables["netweaver_grains_output"]}
 region: ${var.aws_region}
 name_prefix: ${var.name}
 hostname: ${var.name}0${count.index + 1}

@@ -102,11 +102,6 @@ variable "virtual_host_ips" {
   default     = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
-  type        = bool
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string

@@ -25,7 +25,7 @@ resource "libvirt_domain" "netweaver_domain" {
       {
         "vol_id" = var.shared_disk_id
       },
-    ], 0, var.ha_enabled ? 2 : 1)
+    ], 0, var.common_variables["hana"]["ha_enabled"] ? 2 : 1)
     content {
       volume_id = disk.value.vol_id
     }

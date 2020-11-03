@@ -89,12 +89,6 @@ variable "hana_inst_disk_device" {
   default     = "/dev/sdd"
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string

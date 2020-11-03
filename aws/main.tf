@@ -199,7 +199,6 @@ module "netweaver_node" {
   s3_bucket             = var.netweaver_s3_bucket
   host_ips              = local.netweaver_ips
   virtual_host_ips      = local.netweaver_virtual_ips
-  ha_enabled            = var.netweaver_ha_enabled
   iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
@@ -231,7 +230,6 @@ module "hana_node" {
   host_ips              = local.hana_ips
   hana_data_disk_type   = var.hana_data_disk_type
   hana_data_disk_size   = var.hana_data_disk_size
-  ha_enabled            = var.hana_ha_enabled
   iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key

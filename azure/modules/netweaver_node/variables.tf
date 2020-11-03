@@ -129,12 +129,6 @@ variable "os_image" {
   type        = string
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
-  type        = bool
-  default     = true
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string

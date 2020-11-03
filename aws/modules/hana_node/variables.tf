@@ -81,12 +81,6 @@ variable "hana_data_disk_size" {
   type        = number
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string

@@ -93,12 +93,6 @@ variable "cluster_ssh_key" {
   type        = string
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
 variable "hana_data_disks_configuration" {
   type = map
   default = {

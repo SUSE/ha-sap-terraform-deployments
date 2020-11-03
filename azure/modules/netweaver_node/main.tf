@@ -4,7 +4,7 @@
 locals {
   vm_count               = var.xscs_server_count + var.app_server_count
   bastion_enabled        = var.common_variables["bastion_enabled"]
-  create_ha_infra        = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
+  create_ha_infra        = var.xscs_server_count > 0 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   additional_lun_number  = "0"
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
   ascs_lb_rules_ports    = local.create_ha_infra == 1 ? toset([

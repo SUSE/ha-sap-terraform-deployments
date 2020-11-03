@@ -54,12 +54,6 @@ variable "netweaver_inst_media" {
   type        = string
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
-  type        = bool
-  default     = true
-}
-
 // Provider-specific variables
 
 variable "source_image" {

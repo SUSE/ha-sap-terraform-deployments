@@ -169,7 +169,6 @@ module "netweaver_node" {
   storage_account_path        = var.netweaver_storage_account
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
-  ha_enabled                  = var.netweaver_ha_enabled
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
 }
 
@@ -190,7 +189,6 @@ module "hana_node" {
   enable_accelerated_networking = var.hana_enable_accelerated_networking
   sles4sap_uri                  = var.sles4sap_uri
   hana_instance_number          = var.hana_instance_number
-  ha_enabled                    = var.hana_ha_enabled
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
   hana_data_disks_configuration = var.hana_data_disks_configuration

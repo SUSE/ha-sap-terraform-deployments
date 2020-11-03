@@ -28,6 +28,7 @@ resource "null_resource" "netweaver_provisioner" {
     content     = <<EOF
 role: netweaver_node
 ${var.common_variables["grains_output"]}
+${var.common_variables["netweaver_grains_output"]}
 name_prefix: ${var.common_variables["deployment_name"]}-netweaver
 hostname: ${var.common_variables["deployment_name"]}-netweaver0${count.index + 1}
 network_domain: ${var.network_domain}

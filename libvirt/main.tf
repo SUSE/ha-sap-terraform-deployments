@@ -136,7 +136,6 @@ module "hana_node" {
   storage_pool          = var.storage_pool
   host_ips              = local.hana_ips
   hana_disk_size        = var.hana_node_disk_size
-  ha_enabled            = var.hana_ha_enabled
   fencing_mechanism     = var.hana_cluster_fencing_mechanism
   sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.hana_sbd_disk.id
@@ -205,5 +204,4 @@ module "netweaver_node" {
   shared_disk_id        = module.netweaver_shared_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   netweaver_inst_media  = var.netweaver_inst_media
-  ha_enabled            = var.netweaver_ha_enabled
 }

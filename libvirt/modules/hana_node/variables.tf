@@ -54,12 +54,6 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
 // Provider-specific variables
 
 variable "source_image" {

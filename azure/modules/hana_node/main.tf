@@ -2,7 +2,7 @@
 
 locals {
   bastion_enabled             = var.common_variables["bastion_enabled"]
-  create_ha_infra             = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra             = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses      = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
   hana_lb_rules_ports         = local.create_ha_infra == 1 ? toset([
@@ -72,7 +72,7 @@ resource "azurerm_lb_backend_address_pool" "hana-load-balancer" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "hana" {
-  count                   = var.ha_enabled ? var.hana_count : 0
+  count                   = var.common_variables["hana"]["ha_enabled"] ? var.hana_count : 0
   network_interface_id    = element(azurerm_network_interface.hana.*.id, count.index)
   ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
@@ -222,7 +222,7 @@ resource "azurerm_virtual_machine" "hana" {
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.hana.*.id, count.index)]
-  availability_set_id              = var.ha_enabled ? azurerm_availability_set.hana-availability-set[0].id : null
+  availability_set_id              = var.common_variables["hana"]["ha_enabled"] ? azurerm_availability_set.hana-availability-set[0].id : null
   vm_size                          = var.vm_size
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true

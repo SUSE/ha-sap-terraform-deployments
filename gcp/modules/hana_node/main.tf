@@ -1,7 +1,7 @@
 # HANA deployment in GCP
 
 locals {
-  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration

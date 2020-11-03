@@ -157,7 +157,6 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
-  ha_enabled                = var.netweaver_ha_enabled
   virtual_host_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp
@@ -180,7 +179,6 @@ module "hana_node" {
   hana_data_disk_size   = var.hana_data_disk_size
   hana_backup_disk_type = var.hana_backup_disk_type
   hana_backup_disk_size = var.hana_backup_disk_size
-  ha_enabled            = var.hana_ha_enabled
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
