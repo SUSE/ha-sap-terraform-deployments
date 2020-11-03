@@ -9,8 +9,10 @@ matrix:
         - unzip /tmp/terraform -d /tmp
         - chmod +x /tmp/terraform
         - /tmp/terraform -version
+        - apt-get install shellcheck
       script:
         - .ci/validate-terraform.sh
+        - shellcheck salt/provision.sh
     - language: node_js
       install:
         - npm install -g jsonlint

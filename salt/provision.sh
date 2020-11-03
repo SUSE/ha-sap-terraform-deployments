@@ -1,4 +1,5 @@
-#!/bin/bash -xeo pipefail
+#!/usr/bin/env bash
+set -xeo pipefail
 # Script to provision the machines using salt. It provides different stages to install and
 # configure salt and run different salt executions. Find more information in print_help method
 # or running `sh provision.sh -h`
