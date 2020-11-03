@@ -27,7 +27,8 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 app_server_count: ${var.app_server_count}
-sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdb1" : ""}"
+netweaver_inst_media: ${var.netweaver_inst_media}
+sbd_disk_device: "${var.common_variables["netweaver"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdb1" : ""}"
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 EOF

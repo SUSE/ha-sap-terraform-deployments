@@ -136,8 +136,6 @@ module "hana_node" {
   storage_pool          = var.storage_pool
   host_ips              = local.hana_ips
   hana_disk_size        = var.hana_node_disk_size
-  fencing_mechanism     = var.hana_cluster_fencing_mechanism
-  sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.hana_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
 }

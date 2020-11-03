@@ -26,7 +26,7 @@ timezone: ${var.timezone}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 hana_disk_device: /dev/vdb
-sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/vdc" : ""}"
+sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 EOF

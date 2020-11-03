@@ -32,17 +32,6 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
-  type        = string
-  default     = "shared-disk"
-}
-
 variable "sbd_disk_id" {
   description = "SBD disk volume id. Only used if sbd_storage_type is shared-disk"
   type        = string
