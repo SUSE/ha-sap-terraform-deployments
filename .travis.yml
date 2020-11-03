@@ -1,4 +1,8 @@
-dist: xenial
+dist: focal
+addons:
+  apt:
+    packages:
+    - shellcheck
 
 matrix:
   include:
@@ -11,6 +15,7 @@ matrix:
         - /tmp/terraform -version
       script:
         - .ci/validate-terraform.sh
+        - shellcheck salt/provision.sh
     - language: node_js
       install:
         - npm install -g jsonlint
