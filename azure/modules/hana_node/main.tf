@@ -154,7 +154,6 @@ resource "azurerm_network_interface" "hana" {
   name                          = "nic-${var.name}0${count.index + 1}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
-  network_security_group_id     = var.sec_group_id
   enable_accelerated_networking = var.enable_accelerated_networking
 
   ip_configuration {

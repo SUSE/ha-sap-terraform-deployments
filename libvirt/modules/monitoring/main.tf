@@ -1,5 +1,11 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "0.6.2"
+    }
+  }
 }
 
 resource "libvirt_volume" "monitoring_image_disk" {

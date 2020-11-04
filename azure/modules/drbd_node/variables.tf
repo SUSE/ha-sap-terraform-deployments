@@ -21,10 +21,6 @@ variable "network_subnet_id" {
   type = string
 }
 
-variable "sec_group_id" {
-  type = string
-}
-
 variable "storage_account" {
   type = string
 }

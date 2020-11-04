@@ -10,7 +10,6 @@ resource "azurerm_network_interface" "monitoring" {
   count                     = var.monitoring_enabled == true ? 1 : 0
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
-  network_security_group_id = var.sec_group_id
 
   ip_configuration {
     name                          = "ipconf-primary"
