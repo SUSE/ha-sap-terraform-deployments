@@ -1,6 +1,6 @@
 locals {
   vm_count        = var.xscs_server_count + var.app_server_count
-  create_ha_infra = local.vm_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc

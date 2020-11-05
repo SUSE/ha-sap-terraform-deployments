@@ -1,7 +1,7 @@
 # HANA deployment in GCP
 
 locals {
-  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
@@ -33,7 +33,7 @@ resource "google_compute_disk" "hana-software" {
 resource "google_compute_route" "hana-route" {
   name                   = "${var.common_variables["deployment_name"]}-hana-route"
   count                  = local.create_ha_infra
-  dest_range             = "${var.hana_cluster_vip}/32"
+  dest_range             = "${var.common_variables["hana"]["cluster_vip"]}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)
@@ -43,8 +43,8 @@ resource "google_compute_route" "hana-route" {
 # Route for Active/Active setup
 resource "google_compute_route" "hana-route-secondary" {
   name                   = "${var.common_variables["deployment_name"]}-hana-route-secondary"
-  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
-  dest_range             = "${var.hana_cluster_vip_secondary}/32"
+  count                  = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
+  dest_range             = "${var.common_variables["hana"]["cluster_vip_secondary"]}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.1.name
   next_hop_instance_zone = element(var.compute_zones, 1)

@@ -103,8 +103,8 @@ ha_sap_deployment_repo = ""
 #hana_node_disk_size  = 375809638400 # 350GB
 
 # The next variables define how the HANA installation software is obtained.
-# 'hana_inst_media' is a NFS share where HANA installation files (extracted or not) are stored
-# 'hana_inst_media' must be used always! It is used as the reference path to the other variables
+# 'hana_inst_master' is a NFS share where HANA installation files (extracted or not) are stored
+# 'hana_inst_master' must be used always! It is used as the reference path to the other variables
 
 # Local folder where HANA installation master will be mounted
 #hana_inst_folder = "/sapmedia/HANA"
@@ -113,15 +113,15 @@ ha_sap_deployment_repo = ""
 # 1. Use an already extracted HANA Platform folder structure.
 # The last numbered folder is the HANA Platform folder with the extracted files with
 # something like `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::XXXXXX` in the LABEL.ASC file
-hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
+hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 
-# 2. Combine the `hana_inst_media` with `hana_platform_folder` variable.
-#hana_inst_media = "url-to-your-nfs-share:/sapdata/sap_inst_media"
-# Specify the path to already extracted HANA platform installation media, relative to hana_inst_media mounting point.
+# 2. Combine the `hana_inst_master` with `hana_platform_folder` variable.
+#hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media"
+# Specify the path to already extracted HANA platform installation media, relative to hana_inst_master mounting point.
 # This will have preference over hana archive installation media
 #hana_platform_folder = "51053381"
 
-# 3. Specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_media' mounting point
+# 3. Specify the path to the HANA installation archive file in either of SAR, RAR, ZIP, EXE formats, relative to the 'hana_inst_master' mounting point
 # For multipart RAR archives, provide the first part EXE file name.
 #hana_archive_file = "51053381_part1.exe"
 

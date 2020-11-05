@@ -49,9 +49,9 @@ resource "libvirt_domain" "hana_domain" {
       [
         {
           // we set null but it will never reached because the slice with 0 cut it off
-          "volume_id" = var.sbd_storage_type == "shared-disk" ? var.sbd_disk_id : "null"
+          "volume_id" = var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? var.sbd_disk_id : "null"
         },
-      ], 0, var.ha_enabled && var.fencing_mechanism == "sbd" && var.sbd_storage_type == "shared-disk" ? 1 : 0
+      ], 0, var.common_variables["hana"]["ha_enabled"] && var.common_variables["hana"]["fencing_mechanism"] == "sbd" && var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? 1 : 0
     )
     content {
       volume_id = disk.value.volume_id

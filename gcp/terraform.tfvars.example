@@ -165,8 +165,8 @@ pre_deployment = true
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a GCP storage bucket
 
-# 'sap_hana_deployment_bucket' is a GCP storage bucket where HANA installation files (extracted or not) are stored
-# `sap_hana_deployment_bucket` must be used always! It is used as the reference path to the other variables
+# 'hana_inst_master' is a GCP storage bucket where HANA installation files (extracted or not) are stored
+# `hana_inst_master` must be used always! It is used as the reference path to the other variables
 
 # Local folder where HANA installation master will be mounted
 #hana_inst_folder = "/sapmedia/HANA"
@@ -175,7 +175,7 @@ pre_deployment = true
 # 1. Use an already extracted HANA Platform folder structure.
 # The last numbered folder is the HANA Platform folder with the extracted files with
 # something like `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::XXXXXX` in the LABEL.ASC file
-sap_hana_deployment_bucket = "MyHanaBucket/sapdata/sap_inst_media/51053381"
+hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 # 2. Combine the `hana_inst_master` with `hana_platform_folder` variable.
 #hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media"

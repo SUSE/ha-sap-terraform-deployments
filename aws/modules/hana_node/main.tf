@@ -1,7 +1,7 @@
 
 locals {
   hana_disk_device = "/dev/xvdd"
-  create_ha_infra  = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra  = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc
@@ -27,14 +27,14 @@ resource "aws_route_table_association" "hana-subnet-route-association" {
 resource "aws_route" "hana-cluster-vip" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
-  destination_cidr_block = "${var.hana_cluster_vip}/32"
+  destination_cidr_block = "${var.common_variables["hana"]["cluster_vip"]}/32"
   instance_id            = aws_instance.clusternodes.0.id
 }
 
 resource "aws_route" "hana-cluster-vip-secondary" {
-  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
+  count                  = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   route_table_id         = var.route_table_id
-  destination_cidr_block = "${var.hana_cluster_vip_secondary}/32"
+  destination_cidr_block = "${var.common_variables["hana"]["cluster_vip_secondary"]}/32"
   instance_id            = aws_instance.clusternodes.1.id
 }
 

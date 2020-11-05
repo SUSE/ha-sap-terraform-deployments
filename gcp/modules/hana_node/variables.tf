@@ -42,55 +42,9 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
-}
-
-variable "sap_hana_deployment_bucket" {
-  description = "GCP storage bucket that contains the SAP HANA installation files"
-  type        = string
-}
-
-variable "hana_inst_folder" {
-  description = "Folder where the hana installation software will be downloaded"
-  type        = string
-  default     = "/sapmedia/HANA"
-}
-
-variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the hana_inst_folder"
-  type        = string
-  default     = ""
-}
-
-variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the hana_inst_folder"
-  type        = string
-  default     = ""
-}
-
-variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
-  type        = string
-  default     = ""
-}
-
-variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
-  type        = string
-  default     = "/sapmedia/HANA"
 }
 
 variable "hana_data_disk_type" {
@@ -135,75 +89,6 @@ variable "hana_inst_disk_device" {
   default     = "/dev/sdd"
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
-  type        = string
-  default     = "xfs"
-}
-
-variable "hana_sid" {
-  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
-  type        = string
-}
-
-variable "hana_cost_optimized_sid" {
-  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
-  type        = string
-}
-
-variable "hana_instance_number" {
-  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
-  type        = string
-}
-
-variable "hana_cost_optimized_instance_number" {
-  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
-  type        = string
-}
-
-variable "hana_master_password" {
-  description = "Master password for the HANA system (sidadm user included)"
-  type        = string
-}
-
-variable "hana_cost_optimized_master_password" {
-  description = "Master password for the HANA system (sidadm user included)"
-  type        = string
-}
-
-variable "hana_primary_site" {
-  description = "HANA system replication primary site name"
-  type        = string
-}
-
-variable "hana_secondary_site" {
-  description = "HANA system replication secondary site name"
-  type        = string
-}
-
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = ""
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
-}
-
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string
@@ -212,12 +97,6 @@ variable "cluster_ssh_pub" {
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }
 
 variable "on_destroy_dependencies" {
