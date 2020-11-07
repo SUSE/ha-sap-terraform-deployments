@@ -90,6 +90,11 @@ variable "network_domain" {
   default = "tf.local"
 }
 
+variable "netweaver_nfs_share" {	
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"	
+  type        = string	
+}
+
 variable "host_ips" {
   description = "ip addresses of the machines.  The addresses must belong to the the subnet provided in subnet_address_range"
   type        = list(string)

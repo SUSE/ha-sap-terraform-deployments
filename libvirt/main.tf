@@ -94,7 +94,6 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
-  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
   netweaver_hana_instance_number      = var.hana_instance_number
@@ -202,4 +201,5 @@ module "netweaver_node" {
   shared_disk_id        = module.netweaver_shared_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   netweaver_inst_media  = var.netweaver_inst_media
+  netweaver_nfs_share   = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
 }

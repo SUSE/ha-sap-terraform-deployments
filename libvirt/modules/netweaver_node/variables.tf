@@ -54,6 +54,11 @@ variable "netweaver_inst_media" {
   type        = string
 }
 
+variable "netweaver_nfs_share" {	
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"	
+  type        = string	
+}
+
 // Provider-specific variables
 
 variable "source_image" {

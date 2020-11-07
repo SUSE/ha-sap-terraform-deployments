@@ -75,7 +75,6 @@ output "configuration" {
       swpm_sar             = var.netweaver_swpm_sar
       sapexe_folder        = var.netweaver_sapexe_folder
       additional_dvds      = var.netweaver_additional_dvds
-      nfs_share            = var.netweaver_nfs_share
       hana_ip              = var.netweaver_hana_ip
       hana_sid             = var.netweaver_hana_sid
       hana_instance_number = var.netweaver_hana_instance_number
@@ -136,7 +135,6 @@ netweaver_sapcar_exe: ${var.netweaver_sapcar_exe}
 netweaver_swpm_sar: ${var.netweaver_swpm_sar}
 netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
-netweaver_nfs_share: ${var.netweaver_nfs_share}
 hana_ip: ${var.netweaver_hana_ip}
 hana_sid: ${var.netweaver_hana_sid}
 hana_instance_number: ${var.netweaver_hana_instance_number}

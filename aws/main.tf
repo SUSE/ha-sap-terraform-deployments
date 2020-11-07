@@ -108,7 +108,6 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
-  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
   netweaver_hana_instance_number      = var.hana_instance_number
@@ -197,6 +196,7 @@ module "netweaver_node" {
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   s3_bucket             = var.netweaver_s3_bucket
+  netweaver_nfs_share   = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
   host_ips              = local.netweaver_ips
   virtual_host_ips      = local.netweaver_virtual_ips
   iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)

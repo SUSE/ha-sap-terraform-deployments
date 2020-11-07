@@ -72,6 +72,11 @@ variable "netweaver_software_bucket" {
   type        = string
 }
 
+variable "netweaver_nfs_share" {	
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"	
+  type        = string	
+}
+
 variable "virtual_host_ips" {
   description = "virtual ip addresses to set to the nodes"
   type        = list(string)
