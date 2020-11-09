@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xeo pipefail
+set -eo pipefail
 # Script to provision the machines using salt. It provides different stages to install and
 # configure salt and run different salt executions. Find more information in print_help method
 # or running `sh provision.sh -h`
@@ -22,7 +22,7 @@ log_ok () {
     TIMESTAMP=$(date -u)
     GREEN='\033[0;32m'
     NC='\033[0m' # No Color
-    echo "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}"
+    echo -e "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}"
 }
 
 log_error () {
@@ -30,7 +30,7 @@ log_error () {
     TIMESTAMP=$(date -u)
     RED='\033[0;31m'
     NC='\033[0m' # No Color
-    echo "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}"
+    echo -e "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}"
     exit 1
 }
 
@@ -55,7 +55,7 @@ install_salt_minion () {
       if [[ $VERSION_ID =~ ^12\.? ]]; then
         SUSEConnect -p sle-module-adv-systems-management/12/x86_64
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
-        SUSEConnect -p sle-module-basesystem/"$VERSION_ID"/x86_64
+        SUSEConnect -p sle-module-basesystem/${VERSION_ID:+"$VERSION_ID"}/x86_64
       else
         log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
@@ -118,12 +118,13 @@ bootstrap_salt () {
 os_setup () {
     # Execute the states within /srv/salt/os_setup
     # This first execution is done to configure the salt minion and install the iscsi formula
+    # shellcheck disable=SC2046
     salt-call --local \
-        --log-level="$(get_grain provisioning_log_level)" \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        "$(salt_output_colored)" \
+        $(salt_output_colored) \
         state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
@@ -131,12 +132,13 @@ os_setup () {
 predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
+    # shellcheck disable=SC2046
     salt-call --local \
-        --log-level="$(get_grain provisioning_log_level)" \
+        --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        "$(salt_output_colored)" \
+        $(salt_output_colored) \
         state.highstate saltenv=predeployment || log_error "predeployment failed"
     log_ok "predeployment done"
 }
@@ -144,12 +146,13 @@ predeploy () {
 deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
+        # shellcheck disable=SC2046
         salt-call --local \
-            --log-level="$(get_grain provisioning_log_level)" \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            "$(salt_output_colored)" \
+            $(salt_output_colored) \
             state.highstate saltenv=base || log_error "deployment failed"
         log_ok "deployment done"
     fi
@@ -163,14 +166,15 @@ run_tests () {
         HOST=$(hostname)
         export HOST
         # Execute qa state file
+        # shellcheck disable=SC2046
         salt-call --local \
-            --log-level="$(get_grain provisioning_log_level)" \
+            --log-level=$(get_grain provisioning_log_level) \
             --log-file=/var/log/salt-qa.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            "$(salt_output_colored)" \
+            $(salt_output_colored) \
             state.apply qa_mode || log_error "tests failed"
-        log_ok "tests failed"
+        log_ok "tests done"
     fi
 }
 
