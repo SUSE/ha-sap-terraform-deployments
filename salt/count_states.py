@@ -10,6 +10,7 @@ import json
 LOWSTATE_CMD = "salt-call --local -l quiet --no-color state.show_lowstate saltenv={saltenv} --out=json"
 LOWSTATE_SLS_CMD = "salt-call --local -l quiet --no-color state.show_low_sls {state_path} saltenv={saltenv} --out=json"
 
+LOW_STATES = ["os_setup"]
 SALTENVS = ["predeployment", "base"]
 
 LOGGER = logging.getLogger(__name__)
@@ -27,6 +28,18 @@ def execute_command(cmd):
     out, err = proc.communicate()
     return json.loads(out)
 
+def run_lowstate(state_path, saltenv):
+    """
+    Run low state
+    """
+    state_count = 0
+    cmd = LOWSTATE_SLS_CMD.format(state_path=state_path, saltenv=saltenv)
+    state_data = execute_command(cmd)
+    state_count += len(state_data["local"])
+    LOGGER.debug("States count: %d", state_count)
+    state_count += count_inner_states(saltenv, state_data)
+    return state_count
+
 def count_inner_states(saltenv, states):
     """
     Count inner states show_low_sls
@@ -37,11 +50,7 @@ def count_inner_states(saltenv, states):
             LOGGER.debug("Inner state found: %s", state["name"])
             mods = state["state.sls"][0]["mods"]
             for mod in mods:
-                cmd = LOWSTATE_SLS_CMD.format(state_path=mod, saltenv=saltenv)
-                state_data = execute_command(cmd)
-                state_count += len(state_data["local"])
-                state_count += count_inner_states(saltenv, state_data)
-            LOGGER.debug("States count: %d", state_count)
+                state_count += run_lowstate(state_path=mod, saltenv=saltenv)
     return state_count
 
 
@@ -50,6 +59,8 @@ def main():
     Main method
     """
     state_count = 0
+    for state in LOW_STATES:
+        state_count += run_lowstate(state_path=state, saltenv="base")
     for saltenv in SALTENVS:
         cmd = LOWSTATE_CMD.format(saltenv=saltenv)
         state_data = execute_command(cmd)
