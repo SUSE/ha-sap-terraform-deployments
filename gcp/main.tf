@@ -103,6 +103,7 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
+  netweaver_nfs_share                 = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
   netweaver_hana_instance_number      = var.hana_instance_number
@@ -156,7 +157,6 @@ module "netweaver_node" {
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
-  netweaver_nfs_share       = "${local.drbd_cluster_vip}:/${var.netweaver_sid}"
   virtual_host_ips          = local.netweaver_virtual_ips
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp

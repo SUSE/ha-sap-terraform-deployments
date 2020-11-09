@@ -106,6 +106,7 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
+  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
   netweaver_hana_instance_number      = var.hana_instance_number
@@ -161,7 +162,6 @@ module "netweaver_node" {
   cluster_ssh_key             = var.cluster_ssh_key
   ascs_instance_number        = var.netweaver_ascs_instance_number
   ers_instance_number         = var.netweaver_ers_instance_number
-  netweaver_nfs_share         = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   storage_account_name        = var.netweaver_storage_account_name
   storage_account_key         = var.netweaver_storage_account_key
   storage_account_path        = var.netweaver_storage_account

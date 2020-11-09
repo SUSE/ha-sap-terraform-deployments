@@ -78,6 +78,11 @@ variable "netweaver_additional_dvds" {
   type        = list
 }
 
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  type        = string
+}
+
 variable "netweaver_hana_ip" {
   description = "IP address of the HANA database. If the database is clustered, use the cluster virtual ip address"
   type        = string

@@ -33,7 +33,6 @@ app_server_count: ${var.app_server_count}
 additional_lun: ${count.index < var.xscs_server_count ? "" : local.additional_lun_number}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-netweaver_nfs_share: ${var.netweaver_nfs_share}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 storage_account_path: ${var.storage_account_path}
