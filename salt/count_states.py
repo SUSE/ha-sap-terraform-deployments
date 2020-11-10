@@ -6,6 +6,7 @@ import logging
 import subprocess
 import shlex
 import json
+import re
 
 LOWSTATE_CMD = "salt-call --local -l quiet --no-color state.show_lowstate saltenv={saltenv} --out=json"
 LOWSTATE_SLS_CMD = "salt-call --local -l quiet --no-color state.show_low_sls {state_path} saltenv={saltenv} pillar='{pillar}' --out=json"
@@ -34,6 +35,9 @@ def run_lowstate(state_path, saltenv="base", pillar={}):
     """
     state_count = 0
     pillar = json.dumps(pillar)
+    # Workaround to change to existing `/dev`. Real devs cause errors during the low_state
+    # sda2 is one of the partitions used for booting
+    pillar = re.sub('"/dev/.*?"', '"/dev/sda2"', pillar)
     cmd = LOWSTATE_SLS_CMD.format(state_path=state_path, saltenv=saltenv, pillar=pillar)
     state_data = execute_command(cmd)
     state_count += len(state_data["local"])
