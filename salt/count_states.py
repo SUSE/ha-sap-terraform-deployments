@@ -8,7 +8,7 @@ import shlex
 import json
 
 LOWSTATE_CMD = "salt-call --local -l quiet --no-color state.show_lowstate saltenv={saltenv} --out=json"
-LOWSTATE_SLS_CMD = "salt-call --local -l quiet --no-color state.show_low_sls {state_path} saltenv={saltenv} --out=json"
+LOWSTATE_SLS_CMD = "salt-call --local -l quiet --no-color state.show_low_sls {state_path} saltenv={saltenv} pillar='{pillar}' --out=json"
 
 LOW_STATES = ["os_setup"]
 SALTENVS = ["predeployment", "base"]
@@ -28,12 +28,13 @@ def execute_command(cmd):
     out, err = proc.communicate()
     return json.loads(out)
 
-def run_lowstate(state_path, saltenv):
+def run_lowstate(state_path, saltenv="base", pillar={}):
     """
     Run low state
     """
     state_count = 0
-    cmd = LOWSTATE_SLS_CMD.format(state_path=state_path, saltenv=saltenv)
+    pillar = json.dumps(pillar)
+    cmd = LOWSTATE_SLS_CMD.format(state_path=state_path, saltenv=saltenv, pillar=pillar)
     state_data = execute_command(cmd)
     state_count += len(state_data["local"])
     LOGGER.debug("States count: %d", state_count)
@@ -45,12 +46,15 @@ def count_inner_states(saltenv, states):
     Count inner states show_low_sls
     """
     state_count = 0
+    pillar = {}
     for state in states["local"]:
         if "state.sls" in state and state["state"] == "module":
             LOGGER.debug("Inner state found: %s", state["name"])
             mods = state["state.sls"][0]["mods"]
+            if len(state["state.sls"]) > 1:
+                pillar = state["state.sls"][1].get("pillar", {})
             for mod in mods:
-                state_count += run_lowstate(state_path=mod, saltenv=saltenv)
+                state_count += run_lowstate(state_path=mod, saltenv=saltenv, pillar=pillar)
     return state_count
 
 
@@ -60,7 +64,7 @@ def main():
     """
     state_count = 0
     for state in LOW_STATES:
-        state_count += run_lowstate(state_path=state, saltenv="base")
+        state_count += run_lowstate(state_path=state)
     for saltenv in SALTENVS:
         cmd = LOWSTATE_CMD.format(saltenv=saltenv)
         state_data = execute_command(cmd)
