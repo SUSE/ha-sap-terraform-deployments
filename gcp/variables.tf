@@ -142,6 +142,12 @@ variable "background" {
   default     = false
 }
 
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}
+
 # Hana related variables
 
 variable "hana_count" {

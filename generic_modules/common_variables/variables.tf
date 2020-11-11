@@ -112,3 +112,9 @@ variable "qa_mode" {
   type        = bool
   default     = false
 }
+
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}

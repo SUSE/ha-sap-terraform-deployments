@@ -18,27 +18,37 @@ get_grain () {
 }
 
 log_ok () {
-    NODE=$(hostname)
-    TIMESTAMP=$(date -u)
-    GREEN='\033[0;32m'
-    NC='\033[0m' # No Color
-    echo -e "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}"
+    node=$(hostname)
+    timestamp=$(date -u)
+    message="$timestamp::$node::[INFO] $1"
+    if [[ "$(get_grain provisioning_output_colored)" == "true" ]]; then
+      green="\033[0;32m"
+      nc="\033[0m" # No Color
+      echo -e "$green$message $nc"
+    else
+      echo -e "$message"
+    fi
 }
 
 log_error () {
-    NODE=$(hostname)
-    TIMESTAMP=$(date -u)
-    RED='\033[0;31m'
-    NC='\033[0m' # No Color
-    echo -e "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}"
+    node=$(hostname)
+    timestamp=$(date -u)
+    message="$timestamp::$node::[ERROR] $1"
+    if [[ "$(get_grain provisioning_output_colored)" == "true" ]]; then
+      red="\033[0;31m"
+      nc="\033[0m" # No Color
+      echo -e "$red$message $nc"
+    else
+      echo -e "$message"
+    fi
     exit 1
 }
 
-salt_output_colored () {
-    if [[ "$(get_grain qa_mode)" == "true" ]]; then
-        echo "--no-color"
-    else
+provisioning_output_colored () {
+    if [[ "$(get_grain provisioning_output_colored)" == "true" ]]; then
         echo "--force-color"
+    else
+        echo "--no-color"
     fi
 }
 
@@ -124,7 +134,7 @@ os_setup () {
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(salt_output_colored) \
+        $(provisioning_output_colored) \
         state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
@@ -138,7 +148,7 @@ predeploy () {
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(salt_output_colored) \
+        $(provisioning_output_colored) \
         state.highstate saltenv=predeployment || log_error "predeployment failed"
     log_ok "predeployment done"
 }
@@ -152,7 +162,7 @@ deploy () {
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(salt_output_colored) \
+            $(provisioning_output_colored) \
             state.highstate saltenv=base || log_error "deployment failed"
         log_ok "deployment done"
     fi
@@ -172,7 +182,7 @@ run_tests () {
             --log-file=/var/log/salt-qa.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(salt_output_colored) \
+            $(provisioning_output_colored) \
             state.apply qa_mode || log_error "tests failed"
         log_ok "tests done"
     fi
