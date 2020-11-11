@@ -1,11 +1,11 @@
 locals {
-  bastion_enabled    = var.common_variables["bastion_enabled"] ? 1 : 0
+  bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   private_ip_address = cidrhost(var.snet_address_range, 5)
 }
 
 
 resource "azurerm_subnet" "bastion" {
-  count                = local.bastion_enabled
+  count                = local.bastion_count
   name                 = "snet-bastion"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
@@ -13,7 +13,7 @@ resource "azurerm_subnet" "bastion" {
 }
 
 resource "azurerm_network_security_group" "bastion" {
-  count               = local.bastion_enabled
+  count               = local.bastion_count
   name                = "nsg-bastion"
   location            = var.az_region
   resource_group_name = var.resource_group_name
@@ -44,7 +44,7 @@ resource "azurerm_network_security_group" "bastion" {
 }
 
 resource "azurerm_network_security_rule" "grafana" {
-  count                       = var.common_variables["monitoring_enabled"] ? local.bastion_enabled : 0
+  count                       = var.common_variables["monitoring_enabled"] ? local.bastion_count : 0
   name                        = "Grafana"
   priority                    = 110
   direction                   = "Inbound"
@@ -59,13 +59,13 @@ resource "azurerm_network_security_rule" "grafana" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
-  count                     = local.bastion_enabled
+  count                     = local.bastion_count
   subnet_id                 = azurerm_subnet.bastion[0].id
   network_security_group_id = azurerm_network_security_group.bastion[0].id
 }
 
 resource "azurerm_network_interface" "bastion" {
-  count                     = local.bastion_enabled
+  count                     = local.bastion_count
   name                      = "nic-bastion"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
@@ -84,7 +84,7 @@ resource "azurerm_network_interface" "bastion" {
 }
 
 resource "azurerm_public_ip" "bastion" {
-  count                   = local.bastion_enabled
+  count                   = local.bastion_count
   name                    = "pip-bastion"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -102,7 +102,7 @@ module "os_image_reference" {
 }
 
 resource "azurerm_virtual_machine" "bastion" {
-  count                            = local.bastion_enabled
+  count                            = local.bastion_count
   name                             = "vmbastion"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
@@ -151,7 +151,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
 module "bastion_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
-  node_count           = local.bastion_enabled
+  node_count           = local.bastion_count
   instance_ids         = azurerm_virtual_machine.bastion.*.id
   user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["bastion_private_key"]

@@ -48,6 +48,6 @@ predeployment:
     - default
     - monitoring_srv
 
-  'role:bastion':
-    - match: grain
+  'G@role:bastion and G@monitoring_enabled:true':
+    - match: compound
     - bastion
