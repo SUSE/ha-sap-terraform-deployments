@@ -22,7 +22,7 @@ log_ok () {
     TIMESTAMP=$(date -u)
     GREEN='\033[0;32m'
     NC='\033[0m' # No Color
-    echo -e "${GREEN}$TIMESTAMP::$NODE::[INFO] $1 ${NC}"
+    echo -e "${GREEN}$TIMESTAMP::$NODE::[INFO] $1${NC}"
 }
 
 log_error () {
@@ -30,7 +30,7 @@ log_error () {
     TIMESTAMP=$(date -u)
     RED='\033[0;31m'
     NC='\033[0m' # No Color
-    echo -e "${RED}$TIMESTAMP::$NODE::[ERROR] $1 ${NC}"
+    echo -e "${RED}$TIMESTAMP::$NODE::[ERROR] $1::Deployment failed${NC}"
     exit 1
 }
 
@@ -118,7 +118,7 @@ bootstrap_salt () {
 os_setup () {
     # Execute the states within /srv/salt/os_setup
     # shellcheck disable=SC2046
-    log_ok "configuring os..."
+    log_ok "Configuring operative system..."
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-os-setup.log \
@@ -140,6 +140,7 @@ predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
     # shellcheck disable=SC2046
+    log_ok "Provisioning system..."
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-predeployment.log \
