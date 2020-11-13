@@ -100,6 +100,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"
 
+# Print colored output of the provisioning execution (true by default)
+#provisioning_output_colored = false
+
 # Enable pre deployment steps (disabled by default)
 pre_deployment = true
 
