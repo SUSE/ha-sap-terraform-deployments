@@ -44,7 +44,7 @@ log_error () {
     exit 1
 }
 
-provisioning_output_colored () {
+salt_color_flag () {
     if [[ "$(get_grain provisioning_output_colored)" == "true" ]]; then
         echo "--force-color"
     else
@@ -134,7 +134,7 @@ os_setup () {
         --log-file=/var/log/salt-os-setup.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(provisioning_output_colored) \
+        $(salt_color_flag) \
         state.apply os_setup || log_error "os setup failed"
     log_ok "os setup done"
 }
@@ -148,7 +148,7 @@ predeploy () {
         --log-file=/var/log/salt-predeployment.log \
         --log-file-level=debug \
         --retcode-passthrough \
-        $(provisioning_output_colored) \
+        $(salt_color_flag) \
         state.highstate saltenv=predeployment || log_error "predeployment failed"
     log_ok "predeployment done"
 }
@@ -162,7 +162,7 @@ deploy () {
             --log-file=/var/log/salt-deployment.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(provisioning_output_colored) \
+            $(salt_color_flag) \
             state.highstate saltenv=base || log_error "deployment failed"
         log_ok "deployment done"
     fi
@@ -182,7 +182,7 @@ run_tests () {
             --log-file=/var/log/salt-qa.log \
             --log-file-level=debug \
             --retcode-passthrough \
-            $(provisioning_output_colored) \
+            $(salt_color_flag) \
             state.apply qa_mode || log_error "tests failed"
         log_ok "tests done"
     fi
