@@ -52,6 +52,9 @@ output "configuration" {
       sapcar_exe                     = var.hana_sapcar_exe
       archive_file                   = var.hana_archive_file
       extract_dir                    = var.hana_extract_dir
+      client_folder                  = var.hana_client_folder
+      client_archive_file            = var.hana_client_archive_file
+      client_extract_dir             = var.hana_client_extract_dir
       scenario_type                  = var.hana_scenario_type
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
@@ -113,6 +116,9 @@ hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
 hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
+hana_client_folder: ${var.hana_client_folder}
+hana_client_archive_file: ${var.hana_client_archive_file}
+hana_client_extract_dir: ${var.hana_client_extract_dir}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 scenario_type: ${var.hana_scenario_type}
