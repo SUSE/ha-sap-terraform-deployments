@@ -1,10 +1,9 @@
 locals {
-  salt_enabled      = var.common_variables["provisioner"] == "salt" ? local.bastion_enabled : 0
-  provision_enabled = var.common_variables["monitoring_enabled"] ? local.salt_enabled : 0
+  node_count = var.common_variables["provisioner"] == "salt" ? local.bastion_count : 0
 }
 
 resource "null_resource" "bastion_provisioner" {
-  count = local.provision_enabled
+  count = local.node_count
 
   triggers = {
     bastion_id = join(",", azurerm_virtual_machine.bastion.*.id)
@@ -28,7 +27,7 @@ EOF
 
 module "bastion_provision" {
   source               = "../../../generic_modules/salt_provisioner"
-  node_count           = local.provision_enabled
+  node_count           = local.node_count
   instance_ids         = null_resource.bastion_provisioner.*.id
   user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["bastion_private_key"]

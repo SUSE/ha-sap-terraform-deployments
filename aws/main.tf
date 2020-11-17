@@ -69,6 +69,7 @@ module "common_variables" {
   authorized_user                     = "ec2-user"
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
+  provisioning_output_colored         = var.provisioning_output_colored
   background                          = var.background
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
