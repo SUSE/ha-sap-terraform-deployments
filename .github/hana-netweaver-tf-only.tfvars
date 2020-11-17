@@ -2,7 +2,7 @@
 # qemu_uri            =
 # source_image        =
 
-hana_inst_media     = "10.162.32.134:/sapdata/sap_inst_media/51053787"
+hana_inst_master     = "10.162.32.134:/sapdata/sap_inst_media/51053787"
 iprange             = "192.168.25.0/24"
 
 storage_pool = "terraform"

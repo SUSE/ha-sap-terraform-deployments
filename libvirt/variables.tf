@@ -112,6 +112,12 @@ variable "background" {
   default     = false
 }
 
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}
+
 #
 # Hana related variables
 
@@ -163,7 +169,7 @@ variable "hana_ips" {
   default     = []
 }
 
-variable "hana_inst_media" {
+variable "hana_inst_master" {
   description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
 }
@@ -175,13 +181,13 @@ variable "hana_inst_folder" {
 }
 
 variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
