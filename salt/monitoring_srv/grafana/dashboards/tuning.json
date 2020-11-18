@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1603633104064,
+  "iteration": 1605698565793,
   "links": [],
   "panels": [
     {
@@ -25,7 +25,8 @@
         "defaults": {
           "custom": {
             "align": null,
-            "displayMode": "color-background"
+            "displayMode": "color-background",
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -45,8 +46,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 11,
+        "h": 12,
+        "w": 10,
         "x": 0,
         "y": 0
       },
@@ -67,7 +68,7 @@
           }
         ]
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "expr": "saptune_note_enabled",
@@ -108,9 +109,19 @@
         "defaults": {
           "custom": {
             "align": null,
-            "displayMode": "color-background"
+            "displayMode": "color-background",
+            "filterable": false
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Enabled",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -132,9 +143,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 13,
-        "x": 11,
+        "h": 4,
+        "w": 14,
+        "x": 10,
         "y": 0
       },
       "id": 4,
@@ -143,64 +154,13 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "saptune_solution_bobj{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "expr": "saptune_solution_enabled",
           "interval": "",
-          "legendFormat": "BOBJ",
+          "legendFormat": "{{ solutionName}}",
           "refId": "C"
-        },
-        {
-          "expr": "saptune_solution_hana{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "HANA",
-          "refId": "A"
-        },
-        {
-          "expr": "saptune_solution_maxdb{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "format": "time_series",
-          "interval": "",
-          "legendFormat": "MAXDB",
-          "refId": "B"
-        },
-        {
-          "expr": "saptune_solution_netweaver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "NETWEAVER",
-          "refId": "D"
-        },
-        {
-          "expr": "saptune_solution_netweaver_hana{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "NETWEAVER-HANA",
-          "refId": "E"
-        },
-        {
-          "expr": "saptune_solution_s4hana_app_db{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "S4HANA-APP+DB",
-          "refId": "G"
-        },
-        {
-          "expr": "saptune_solution_s4hana_appserver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "S4HANA-APPSERVER",
-          "refId": "H"
-        },
-        {
-          "expr": "saptune_solution_s4hana_dbserver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "S4HANA-DBSERVER",
-          "refId": "I"
-        },
-        {
-          "expr": "saptune_solution_sap_ase{instance=\"192.168.23.12:9758\", job=\"hana\"}",
-          "interval": "",
-          "legendFormat": "SAP-ASE",
-          "refId": "F"
         }
       ],
       "timeFrom": null,
@@ -229,8 +189,8 @@
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "Field": "Node",
-              "Last (not null)": "Active"
+              "Field": "Solution Name",
+              "Last (not null)": "Status"
             }
           }
         }
@@ -243,7 +203,102 @@
         "defaults": {
           "custom": {
             "align": null,
-            "displayMode": "color-background"
+            "displayMode": "color-background",
+            "filterable": false
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Compliant",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "dark-blue",
+                "value": 0
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 14,
+        "x": 10,
+        "y": 4
+      },
+      "id": 9,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.3.1",
+      "targets": [
+        {
+          "expr": "saptune_solution_compliant",
+          "interval": "",
+          "legendFormat": "{{ solutionName}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Saptune solution compliant",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": []
+            }
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Field": "Solution name",
+              "Last (not null)": "Compliant"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-background",
+            "filterable": false
           },
           "mappings": [
             {
@@ -284,10 +339,10 @@
         ]
       },
       "gridPos": {
-        "h": 3,
-        "w": 16,
-        "x": 3,
-        "y": 11
+        "h": 5,
+        "w": 14,
+        "x": 10,
+        "y": 7
       },
       "id": 2,
       "options": {
@@ -299,16 +354,16 @@
           }
         ]
       },
-      "pluginVersion": "7.1.5",
+      "pluginVersion": "7.3.1",
       "repeat": "node",
       "repeatDirection": "v",
       "targets": [
         {
-          "expr": "saptune_misc_version{instance=\"192.168.23.12:9758\",job=\"hana\"}",
+          "expr": "saptune_meta_version\n",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "{{ instance }]",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
@@ -342,6 +397,7 @@
           "text": "Prometheus",
           "value": "Prometheus"
         },
+        "error": null,
         "hide": 2,
         "includeAll": false,
         "label": "Data Source",
@@ -378,5 +434,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 9
+  "version": 4
 }
