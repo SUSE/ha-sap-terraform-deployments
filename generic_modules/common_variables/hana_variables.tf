@@ -73,6 +73,21 @@ variable "hana_extract_dir" {
   type        = string
 }
 
+variable "hana_client_folder" {
+  description = "Path to the extracted HANA Client folder, relative to the 'hana_inst_master' mounting point"
+  type        = string
+}
+
+variable "hana_client_archive_file" {
+  description = "Path to the HANA Client SAR archive , relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA Client archive is not already extracted"
+  type        = string
+}
+
+variable "hana_client_extract_dir" {
+  description = "Absolute path to folder where SAP HANA Client archive will be extracted"
+  type        = string
+}
+
 variable "hana_scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   type        = string

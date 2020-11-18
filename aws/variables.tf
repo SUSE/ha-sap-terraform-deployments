@@ -246,6 +246,24 @@ variable "hana_extract_dir" {
   default     = "/sapmedia_extract/HANA"
 }
 
+variable "hana_client_folder" {
+  description = "Path to the extracted HANA Client folder, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_archive_file" {
+  description = "Path to the HANA Client SAR archive , relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA Client archive is not already extracted"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_extract_dir" {
+  description = "Absolute path to folder where SAP HANA Client archive will be extracted"
+  type        = string
+  default     = "/sapmedia_extract/HANA_CLIENT"
+}
+
 variable "hana_data_disk_type" {
   description = "Disk type of the disks used to store HANA database content"
   type        = string
@@ -257,7 +275,6 @@ variable "hana_data_disk_size" {
   type        = number
   default     = 1024
 }
-
 
 variable "hana_fstype" {
   description = "Filesystem type used by the disk where HANA is installed"
