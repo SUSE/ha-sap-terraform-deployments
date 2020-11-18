@@ -1,0 +1,382 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 6,
+  "iteration": 1603633104064,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-background"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-blue",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "SAP NOTES",
+          "url": "https://support.sap.com/en/index.html"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Enabled"
+          }
+        ]
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "expr": "saptune_note_enabled",
+          "interval": "",
+          "legendFormat": "{{ noteName }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Saptune notes enabled",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "last"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Field": "Saptune note  ID ",
+              "Last": "Enabled"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-background"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "dark-blue",
+                "value": 0
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 13,
+        "x": 11,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "expr": "saptune_solution_bobj{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "BOBJ",
+          "refId": "C"
+        },
+        {
+          "expr": "saptune_solution_hana{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "HANA",
+          "refId": "A"
+        },
+        {
+          "expr": "saptune_solution_maxdb{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "MAXDB",
+          "refId": "B"
+        },
+        {
+          "expr": "saptune_solution_netweaver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "NETWEAVER",
+          "refId": "D"
+        },
+        {
+          "expr": "saptune_solution_netweaver_hana{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "NETWEAVER-HANA",
+          "refId": "E"
+        },
+        {
+          "expr": "saptune_solution_s4hana_app_db{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "S4HANA-APP+DB",
+          "refId": "G"
+        },
+        {
+          "expr": "saptune_solution_s4hana_appserver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "S4HANA-APPSERVER",
+          "refId": "H"
+        },
+        {
+          "expr": "saptune_solution_s4hana_dbserver{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "S4HANA-DBSERVER",
+          "refId": "I"
+        },
+        {
+          "expr": "saptune_solution_sap_ase{instance=\"192.168.23.12:9758\", job=\"hana\"}",
+          "interval": "",
+          "legendFormat": "SAP-ASE",
+          "refId": "F"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Saptune solution enabled",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": []
+            }
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Field": "Node",
+              "Last (not null)": "Active"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "color-background"
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 929
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 16,
+        "x": 3,
+        "y": 11
+      },
+      "id": 2,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "instance"
+          }
+        ]
+      },
+      "pluginVersion": "7.1.5",
+      "repeat": "node",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "expr": "saptune_misc_version{instance=\"192.168.23.12:9758\",job=\"hana\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{ instance }]",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "saptune version",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Value",
+                "instance"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "DS_PROMETHEUS",
+        "options": [],
+        "query": "prometheus",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Tuning",
+  "uid": "HzFepKtMz",
+  "version": 9
+}

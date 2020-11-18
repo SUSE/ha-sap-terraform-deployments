@@ -32,6 +32,16 @@ grafana_dashboards:
       - grafana-sap-hana-dashboards
       - grafana-sap-netweaver-dashboards
 
+tuning_dashboard:
+  file.managed:
+    - name:  /var/lib/grafana/dashboards/sles4sap/tuning.json
+    - source: salt://monitoring_srv/grafana/dashboards/tuning.json
+    - user: grafana
+    - group: grafana
+    - require:
+      - pkg: grafana
+
+
 grafana_service:
   service.running:
     - name: grafana-server
