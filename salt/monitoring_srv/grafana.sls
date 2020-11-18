@@ -16,12 +16,22 @@ grafana_anonymous_login_configuration:
 
 # by default grafana will instruct browsers to not allow rendering Grafana in a <iframe>, set value to true
 # this is needed in the blue-horizon static pages
-grafana__allow_embedding:
+grafana_allow_embedding:
   file.line:
     - name: /etc/grafana/grafana.ini
     - mode: ensure
     - after: \[security\]
     - content: allow_embedding = true
+    - require:
+      - pkg: grafana
+
+# change default_them to light for better matching blue-horizon colors ;default_theme = dark
+grafana_default_color:
+  file.line:
+    - name: /etc/grafana/grafana.ini
+    - mode: ensure
+    - after: \[users\]
+    - content: default_theme = light
     - require:
       - pkg: grafana
 
