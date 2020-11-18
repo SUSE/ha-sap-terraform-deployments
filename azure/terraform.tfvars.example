@@ -100,6 +100,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"
 
+# Print colored output of the provisioning execution (true by default)
+#provisioning_output_colored = false
+
 # Enable pre deployment steps (disabled by default)
 pre_deployment = true
 
@@ -214,6 +217,16 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # For option 3 and 4, HANA installation archives are extracted to the path specified
 # at hana_extract_dir (optional, by default /sapmedia_extract/HANA). This folder cannot be the same as `hana_inst_folder`!
 #hana_extract_dir = "/sapmedia_extract/HANA"
+
+# The following SAP HANA Client variables are needed only when you are using a HANA database SAR archive for HANA installation.
+# HANA Client is used by monitoring & cost-optimized scenario and it is already included in HANA platform media unless a HANA database SAR archive is used 
+# You can provide HANA Client in one of the two options below:
+# 1. Path to already extracted hana client folder, relative to hana_inst_master mounting point
+#hana_client_folder = "SAP_HANA_CLIENT"
+# 2. Or specify the path to the hana client SAR archive file, relative to the 'hana_inst_master'. To extract the SAR archive, you need to also provide compatible version of sapcar executable in variable hana_sapcar_exe 
+# It will be extracted to hana_client_extract_dir path (optional, by default /sapmedia_extract/HANA_CLIENT)
+#hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
+#hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true

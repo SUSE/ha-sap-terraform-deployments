@@ -15,6 +15,14 @@ hana:
   {%- if grains.get('hana_extract_dir', False) %}
   hana_extract_dir: {{ grains['hana_extract_dir'] }}
   {%- endif %}
+  {%- if grains.get('hana_client_folder', False) %}
+  hana_client_software_path: {{ grains['hana_inst_folder'] }}/{{ grains['hana_client_folder'] }}
+  {%- elif grains.get('hana_client_archive_file', False) %}
+  hana_client_archive_file: {{ grains['hana_inst_folder'] }}/{{ grains['hana_client_archive_file'] }}
+  {%- endif %}
+  {%- if grains.get('hana_client_extract_dir', False) %}
+  hana_client_extract_dir: {{ grains['hana_client_extract_dir'] }}
+  {%- endif %}
   saptune_solution: 'HANA'
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   ha_enabled: {{ grains['ha_enabled'] }}

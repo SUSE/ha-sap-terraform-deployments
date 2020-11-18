@@ -15,26 +15,27 @@ locals {
 
 output "configuration" {
   value = {
-    provider_type          = var.provider_type
-    deployment_name        = var.deployment_name
-    reg_code               = var.reg_code
-    reg_email              = var.reg_email
-    reg_additional_modules = var.reg_additional_modules
-    ha_sap_deployment_repo = var.ha_sap_deployment_repo
-    additional_packages    = var.additional_packages
-    public_key             = local.public_key
-    private_key            = local.private_key
-    authorized_keys        = var.authorized_keys
-    bastion_enabled        = var.bastion_enabled
-    bastion_public_key     = local.bastion_public_key
-    bastion_private_key    = local.bastion_private_key
-    authorized_user        = var.authorized_user
-    provisioner            = var.provisioner
-    provisioning_log_level = var.provisioning_log_level
-    background             = var.background
-    monitoring_enabled     = var.monitoring_enabled
-    monitoring_srv_ip      = var.monitoring_srv_ip
-    qa_mode                = var.qa_mode
+    provider_type               = var.provider_type
+    deployment_name             = var.deployment_name
+    reg_code                    = var.reg_code
+    reg_email                   = var.reg_email
+    reg_additional_modules      = var.reg_additional_modules
+    ha_sap_deployment_repo      = var.ha_sap_deployment_repo
+    additional_packages         = var.additional_packages
+    public_key                  = local.public_key
+    private_key                 = local.private_key
+    authorized_keys             = var.authorized_keys
+    bastion_enabled             = var.bastion_enabled
+    bastion_public_key          = local.bastion_public_key
+    bastion_private_key         = local.bastion_private_key
+    authorized_user             = var.authorized_user
+    provisioner                 = var.provisioner
+    provisioning_log_level      = var.provisioning_log_level
+    provisioning_output_colored = var.provisioning_output_colored
+    background                  = var.background
+    monitoring_enabled          = var.monitoring_enabled
+    monitoring_srv_ip           = var.monitoring_srv_ip
+    qa_mode                     = var.qa_mode
     hana = {
       sid                            = var.hana_sid
       instance_number                = var.hana_instance_number
@@ -51,6 +52,9 @@ output "configuration" {
       sapcar_exe                     = var.hana_sapcar_exe
       archive_file                   = var.hana_archive_file
       extract_dir                    = var.hana_extract_dir
+      client_folder                  = var.hana_client_folder
+      client_archive_file            = var.hana_client_archive_file
+      client_extract_dir             = var.hana_client_extract_dir
       scenario_type                  = var.hana_scenario_type
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
@@ -94,6 +98,7 @@ monitoring_enabled: ${var.monitoring_enabled}
 monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
 provisioning_log_level: ${var.provisioning_log_level}
+provisioning_output_colored: ${var.provisioning_output_colored}
 EOF
     hana_grains_output      = <<EOF
 hana_sid: ${var.hana_sid}
@@ -111,6 +116,9 @@ hana_platform_folder: ${var.hana_platform_folder}
 hana_sapcar_exe: ${var.hana_sapcar_exe}
 hana_archive_file: ${var.hana_archive_file}
 hana_extract_dir: ${var.hana_extract_dir}
+hana_client_folder: ${var.hana_client_folder}
+hana_client_archive_file: ${var.hana_client_archive_file}
+hana_client_extract_dir: ${var.hana_client_extract_dir}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 scenario_type: ${var.hana_scenario_type}

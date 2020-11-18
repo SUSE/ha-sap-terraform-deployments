@@ -178,6 +178,12 @@ variable "background" {
   default     = false
 }
 
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}
+
 # Hana related variables
 
 variable "name" {
@@ -283,6 +289,24 @@ variable "hana_extract_dir" {
   description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
   default     = "/sapmedia_extract/HANA"
+}
+
+variable "hana_client_folder" {
+  description = "Path to the extracted HANA Client folder, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_archive_file" {
+  description = "Path to the HANA Client SAR archive , relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA Client archive is not already extracted"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_extract_dir" {
+  description = "Absolute path to folder where SAP HANA Client archive will be extracted"
+  type        = string
+  default     = "/sapmedia_extract/HANA_CLIENT"
 }
 
 variable "hana_fstype" {

@@ -55,6 +55,7 @@ module "common_variables" {
   authorized_user                     = "root"
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
+  provisioning_output_colored         = var.provisioning_output_colored
   background                          = var.background
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_srv_ip : ""
@@ -75,6 +76,9 @@ module "common_variables" {
   hana_sapcar_exe                     = var.hana_sapcar_exe
   hana_archive_file                   = var.hana_archive_file
   hana_extract_dir                    = var.hana_extract_dir
+  hana_client_folder                  = var.hana_client_folder
+  hana_client_archive_file            = var.hana_client_archive_file
+  hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
