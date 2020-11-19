@@ -16,7 +16,6 @@ nginx_service:
   service.running:
     - name: nginx
     - enable: True
-    - restart: True
     - require:
       - pkg: nginx
       - file: nginx_config_file
