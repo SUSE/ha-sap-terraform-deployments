@@ -18,8 +18,6 @@
    [openSUSE Build Service](http://download.opensuse.org/repositories/systemsmanagement:/terraform/) or
    [build from source](https://github.com/dmacvicar/terraform-provider-libvirt)
 
-   **Note:** The project only supports `terraform v0.13.x`. In order to install correctly the `terraform-libvirt-provider` for this terraform version have a look on the [migration guide to v0.13](https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/docs/migration-13.md)
-
    You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider](https://github.com/dmacvicar/terraform-provider-libvirt))
 
 2. You need to fulfill the system requirements provided by SAP for each Application. At least 15 GB of free disk space and 512 MiB of free memory per node.
