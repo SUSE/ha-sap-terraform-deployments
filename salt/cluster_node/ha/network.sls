@@ -18,9 +18,11 @@ cloud-netconfig-azure:
   file.replace:
     - pattern: '^CLOUD_NETCONFIG_MANAGE.*'
     - repl: "CLOUD_NETCONFIG_MANAGE='no'"
+    {% if grains['provider'] != 'libvirt' %}
+    - append_if_not_found: True
+    {% endif %}
 
 network:
   service.running:
-    - enable: True
     - watch:
       - file: /etc/sysconfig/network/ifcfg-eth0
