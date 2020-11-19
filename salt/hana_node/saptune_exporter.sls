@@ -1,4 +1,4 @@
-prometheus_ha_cluster_exporter:
+prometheus_saptune_exporter:
   pkg.installed:
     - name: prometheus-saptune_exporter
 
