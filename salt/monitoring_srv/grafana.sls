@@ -25,7 +25,7 @@ grafana_allow_embedding:
     - require:
       - pkg: grafana
 
-# change default_them to light for better matching blue-horizon colors ;default_theme = dark
+# change theme to light for better matching blue-horizon colors ;default_theme = dark
 grafana_default_color:
   file.line:
     - name: /etc/grafana/grafana.ini
