@@ -58,6 +58,10 @@ output "cluster_nodes_public_name" {
   value = module.hana_node.cluster_nodes_public_name
 }
 
+output "hana_ip" {
+  value = var.hana_ha_enabled ? local.hana_cluster_vip : local.hana_ips[0]
+}
+
 # drbd
 
 output "drbd_ip" {
