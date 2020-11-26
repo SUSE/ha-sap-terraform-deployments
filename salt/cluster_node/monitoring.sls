@@ -6,7 +6,6 @@ node_exporter_service:
   service.running:
     - name: prometheus-node_exporter
     - enable: True
-    - restart: True
     - require:
       - pkg: prometheus_node_exporter
       - file: activate_node_exporter_systemd_collector
@@ -46,7 +45,6 @@ promtail_service:
   service.running:
     - name: promtail
     - enable: True
-    - restart: True
     - require:
       - pkg: loki
       - file: promtail_config
