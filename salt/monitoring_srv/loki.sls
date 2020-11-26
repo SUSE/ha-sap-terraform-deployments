@@ -9,6 +9,5 @@ loki_service:
   service.running:
     - name: loki
     - enable: True
-    - restart: True
     - require:
       - pkg: loki
