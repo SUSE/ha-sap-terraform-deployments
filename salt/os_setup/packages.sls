@@ -5,7 +5,7 @@ install-salt-formulas:
       {%- if grains['role'] == 'iscsi_srv' %}
       - iscsi-formula
       {%- elif grains['role'] == 'drbd_node' %}
-      - drbd-formula`
+      - drbd-formula
       - habootstrap-formula
       {%- elif grains['role'] == 'hana_node' %}
       - saphanabootstrap-formula

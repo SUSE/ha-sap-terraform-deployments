@@ -226,7 +226,7 @@ while getopts ":hsocpdql:" opt; do
             excute_bootstrap_salt=1
             ;;
         c)
-            excute_count_states=1
+            execute_count_states=1
             ;;
         o)
             excute_os_setup=1
@@ -267,7 +267,7 @@ if [ $argument_number -eq 0 ]; then
 else
     [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
     [[ -n $excute_os_setup ]] && os_setup
-    [[ -n $excute_count_states ]] && count_states
+    [[ -n $execute_count_states ]] && count_states
     [[ -n $excute_predeploy ]] && predeploy
     [[ -n $excute_deploy ]] && deploy
     [[ -n $excute_run_tests ]] && run_tests
