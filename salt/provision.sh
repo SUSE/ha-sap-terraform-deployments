@@ -127,8 +127,8 @@ bootstrap_salt () {
 
 os_setup () {
     # Execute the states within /srv/salt/os_setup
-    # shellcheck disable=SC2046
     log_ok "Configuring operative system..."
+    # shellcheck disable=SC2046
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-os-setup.log \
@@ -149,8 +149,8 @@ count_states () {
 predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
-    # shellcheck disable=SC2046
     log_ok "Provisioning system..."
+    # shellcheck disable=SC2046
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
         --log-file=/var/log/salt-predeployment.log \
