@@ -1,5 +1,20 @@
 """
-Count salt states that are executed during the predeployment and deployment
+Count planned salt states that are executed during the os_setup, predeployment and deployment.
+
+The execution will run multiple salt show low state commands to render the planned states with the
+provided pillar files.
+
+Find more information about highstate and lowstates:
+https://docs.saltstack.com/en/latest/ref/states/layers.html
+
+The show prefix just runs the execution in a dry-run mode, without applying the real changes.
+
+Besides that, the code will run the lowstates command recursively if some of them have more
+salt execution within them, like `set_grains_sbd_disk_device` in cluster_node.ha.iscsi_initiator.
+
+Find more about the used commands in:
+Look for `show_low_sls` and `show_lowstate`
+https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.state.html
 """
 
 import logging
@@ -31,7 +46,7 @@ def execute_command(cmd):
 
 def run_lowstate(state_path, saltenv="base", pillar={}):
     """
-    Run low state
+    Run state.show_low_sls command to the provided salt path and env
     """
     state_count = 0
     pillar = json.dumps(pillar)
@@ -47,7 +62,9 @@ def run_lowstate(state_path, saltenv="base", pillar={}):
 
 def count_inner_states(saltenv, states):
     """
-    Count inner states show_low_sls
+    Count inner states recursively.
+    Some times, some salt code executes other salt code. This method will execute this
+    scenarios
     """
     state_count = 0
     pillar = {}
@@ -64,7 +81,7 @@ def count_inner_states(saltenv, states):
 
 def main():
     """
-    Main method
+    Main method. Check the script information at the top dostring entry
     """
     state_count = 0
     for state in LOW_STATES:
