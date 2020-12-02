@@ -33,7 +33,7 @@ log_ok () {
 log_error () {
     node=$(hostname)
     timestamp=$(date -u)
-    message="$timestamp::$node::[ERROR] $1"
+    message="$timestamp::$node::[ERROR] $1::Deployment failed"
     if [[ "$(get_grain provisioning_output_colored)" == "true" ]]; then
       red="\033[0;31m"
       nc="\033[0m" # No Color
@@ -127,7 +127,7 @@ bootstrap_salt () {
 
 os_setup () {
     # Execute the states within /srv/salt/os_setup
-    # This first execution is done to configure the salt minion and install the iscsi formula
+    log_ok "Configuring operative system..."
     # shellcheck disable=SC2046
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
@@ -139,9 +139,17 @@ os_setup () {
     log_ok "os setup done"
 }
 
+count_states () {
+    # Run count_state.py to print the planned states count
+    # This number is used to manage the blue-horizon progress bar
+    log_ok "running count states..."
+    python3 /srv/salt/count_states.py
+}
+
 predeploy () {
     # Execute the states defined in /srv/salt/top.sls
     # This execution is done to pre configure the cluster nodes, the support machines and install the formulas
+    log_ok "Provisioning system..."
     # shellcheck disable=SC2046
     salt-call --local \
         --log-level=$(get_grain provisioning_log_level) \
@@ -197,6 +205,7 @@ from top to bottom in this help text.
 Supported Options (if no options are provided (excluding -l) all the steps will be executed):
   -s               Bootstrap salt installation and configuration. It will register to SCC channels if needed
   -o               Execute OS setup operations. Register to SCC, updated the packages, etc
+  -c               Count salt states that will be executed during predeployment and deployment
   -p               Execute predeployment operations (update hosts and hostnames, install support packages, etc)
   -d               Execute deployment operations (install sap, ha, drbd, etc)
   -q               Execute qa tests
@@ -206,7 +215,7 @@ EOF
 }
 
 argument_number=0
-while getopts ":hsopdql:" opt; do
+while getopts ":hsocpdql:" opt; do
     argument_number=$((argument_number + 1))
     case $opt in
         h)
@@ -215,6 +224,9 @@ while getopts ":hsopdql:" opt; do
             ;;
         s)
             excute_bootstrap_salt=1
+            ;;
+        c)
+            execute_count_states=1
             ;;
         o)
             excute_os_setup=1
@@ -248,12 +260,14 @@ fi
 if [ $argument_number -eq 0 ]; then
     bootstrap_salt
     os_setup
+    count_states
     predeploy
     deploy
     run_tests
 else
     [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
     [[ -n $excute_os_setup ]] && os_setup
+    [[ -n $execute_count_states ]] && count_states
     [[ -n $excute_predeploy ]] && predeploy
     [[ -n $excute_deploy ]] && deploy
     [[ -n $excute_run_tests ]] && run_tests

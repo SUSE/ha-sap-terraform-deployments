@@ -64,7 +64,7 @@ resource "null_resource" "provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo bash /tmp/salt/provision.sh -sol /var/log/salt-result.log",
+      "sudo bash /tmp/salt/provision.sh -socl /var/log/salt-result.log",
     ]
   }
 
