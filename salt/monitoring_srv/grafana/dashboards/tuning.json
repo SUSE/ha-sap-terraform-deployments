@@ -16,93 +16,9 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1605698565793,
+  "iteration": 1606995630740,
   "links": [],
   "panels": [
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "dark-green",
-                "value": null
-              },
-              {
-                "color": "dark-blue",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 10,
-        "x": 0,
-        "y": 0
-      },
-      "id": 6,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "SAP NOTES",
-          "url": "https://support.sap.com/en/index.html"
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "Enabled"
-          }
-        ]
-      },
-      "pluginVersion": "7.3.1",
-      "targets": [
-        {
-          "expr": "saptune_note_enabled",
-          "interval": "",
-          "legendFormat": "{{ noteName }}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Saptune notes enabled",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "last"
-            ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Field": "Saptune note  ID ",
-              "Last": "Enabled"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
     {
       "datasource": "Prometheus",
       "fieldConfig": {
@@ -130,7 +46,7 @@
                 "value": null
               },
               {
-                "color": "dark-blue",
+                "color": "rgba(255, 255, 255, 0.87)",
                 "value": 0
               },
               {
@@ -144,22 +60,32 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 14,
-        "x": 10,
+        "w": 24,
+        "x": 0,
         "y": 0
       },
       "id": 4,
       "options": {
-        "frameIndex": 0,
+        "frameIndex": 1,
         "showHeader": true,
         "sortBy": []
       },
       "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "saptune_solution_enabled",
+          "expr": "node_uname_info",
+          "format": "table",
+          "instant": true,
           "interval": "",
-          "legendFormat": "{{ solutionName}}",
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "expr": "saptune_solution_enabled",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
           "refId": "C"
         }
       ],
@@ -171,17 +97,16 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": []
+              "names": [
+                "nodename",
+                "solution_name"
+              ]
             }
           }
         },
         {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "lastNotNull"
-            ]
-          }
+          "id": "concatenate",
+          "options": {}
         },
         {
           "id": "organize",
@@ -189,8 +114,8 @@
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "Field": "Solution Name",
-              "Last (not null)": "Status"
+              "nodename": "HOST",
+              "solution_name": "CURRENT PROFILE"
             }
           }
         }
@@ -198,9 +123,12 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "align": null,
             "displayMode": "color-background",
@@ -210,7 +138,7 @@
             {
               "from": "",
               "id": 1,
-              "text": "Compliant",
+              "text": "Applied",
               "to": "",
               "type": 1,
               "value": "1"
@@ -220,11 +148,11 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-green",
                 "value": null
               },
               {
-                "color": "dark-blue",
+                "color": "rgb(255, 255, 255)",
                 "value": 0
               },
               {
@@ -237,38 +165,45 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 14,
-        "x": 10,
+        "h": 17,
+        "w": 24,
+        "x": 0,
         "y": 4
       },
-      "id": 9,
+      "id": 6,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "SAP NOTES",
+          "url": "https://support.sap.com/en/index.html"
+        }
+      ],
       "options": {
-        "frameIndex": 0,
         "showHeader": true,
         "sortBy": []
       },
       "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "saptune_solution_compliant",
+          "expr": "saptune_note_enabled",
+          "format": "time_series",
+          "instant": false,
           "interval": "",
-          "legendFormat": "{{ solutionName}}",
+          "legendFormat": "{{note_id}} - {{note_desc}}",
           "refId": "A"
+        },
+        {
+          "expr": "node_uname_info",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Saptune solution compliant",
+      "title": "SAP NOTE",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": []
-            }
-          }
-        },
         {
           "id": "reduce",
           "options": {
@@ -283,102 +218,17 @@
             "excludeByName": {},
             "indexByName": {},
             "renameByName": {
-              "Field": "Solution name",
-              "Last (not null)": "Compliant"
+              "Field": "Saptune note  ID ",
+              "Last": "Enabled",
+              "Last (not null)": "Status"
             }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
-          },
-          "mappings": [
-            {
-              "from": "",
-              "id": 0,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 2
-              }
-            ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 929
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 14,
-        "x": 10,
-        "y": 7
-      },
-      "id": 2,
-      "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "instance"
-          }
-        ]
-      },
-      "pluginVersion": "7.3.1",
-      "repeat": "node",
-      "repeatDirection": "v",
-      "targets": [
-        {
-          "expr": "saptune_meta_version\n",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "saptune version",
-      "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": [
-                "Value",
-                "instance"
-              ]
+              "pattern": ""
             }
           }
         }
@@ -386,6 +236,7 @@
       "type": "table"
     }
   ],
+  "refresh": false,
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -434,5 +285,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 4
+  "version": 9
 }
