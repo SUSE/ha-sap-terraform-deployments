@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1606995630740,
+  "iteration": 1607348370168,
   "links": [],
   "panels": [
     {
@@ -64,24 +64,21 @@
         "x": 0,
         "y": 0
       },
-      "id": 4,
+      "id": 7,
       "options": {
         "frameIndex": 1,
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "CURRENT PROFILE"
+          }
+        ]
       },
       "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "node_uname_info",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        },
-        {
-          "expr": "saptune_solution_enabled",
+          "expr": "label_replace(saptune_solution_enabled, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")\n* on (instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -94,28 +91,18 @@
       "title": "Saptune solution enabled",
       "transformations": [
         {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "nodename",
-                "solution_name"
-              ]
-            }
-          }
-        },
-        {
-          "id": "concatenate",
-          "options": {}
-        },
-        {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "instance": true,
+              "job": true
+            },
             "indexByName": {},
             "renameByName": {
               "nodename": "HOST",
-              "solution_name": "CURRENT PROFILE"
+              "solution_name": "Current Profile"
             }
           }
         }
@@ -162,10 +149,35 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SAP NOTE DESC"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 659
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HOST"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 316
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 17,
+        "h": 15,
         "w": 24,
         "x": 0,
         "y": 4
@@ -185,19 +197,12 @@
       "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "saptune_note_enabled",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{note_id}} - {{note_desc}}",
-          "refId": "A"
-        },
-        {
-          "expr": "node_uname_info",
-          "format": "time_series",
+          "expr": "label_replace(saptune_note_enabled, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")\n* on (instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")",
+          "format": "table",
+          "instant": true,
           "interval": "",
           "legendFormat": "",
-          "refId": "B"
+          "refId": "A"
         }
       ],
       "timeFrom": null,
@@ -205,30 +210,19 @@
       "title": "SAP NOTE",
       "transformations": [
         {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "lastNotNull"
-            ]
-          }
-        },
-        {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "Time": true,
+              "instance": true,
+              "job": true
+            },
             "indexByName": {},
             "renameByName": {
-              "Field": "Saptune note  ID ",
-              "Last": "Enabled",
-              "Last (not null)": "Status"
-            }
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "pattern": ""
+              "Value": "STATUS",
+              "nodename": "HOST",
+              "note_desc": "SAP NOTE DESC",
+              "note_id": "SAP NOTE ID"
             }
           }
         }
@@ -285,5 +279,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 9
+  "version": 7
 }
