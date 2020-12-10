@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1607348370168,
+  "iteration": 1607618915268,
   "links": [],
   "panels": [
     {
@@ -101,7 +101,7 @@
             },
             "indexByName": {},
             "renameByName": {
-              "nodename": "HOST",
+              "nodename": "Host",
               "solution_name": "Current Profile"
             }
           }
@@ -114,12 +114,12 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
+            "align": "left",
+            "displayMode": "auto",
+            "filterable": true
           },
           "mappings": [
             {
@@ -141,10 +141,6 @@
               {
                 "color": "rgb(255, 255, 255)",
                 "value": 0
-              },
-              {
-                "color": "dark-green",
-                "value": 1
               }
             ]
           }
@@ -171,6 +167,42 @@
               {
                 "id": "custom.width",
                 "value": 316
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SAP Note ID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SAP Note description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 996
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Host"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 307
               }
             ]
           }
@@ -207,7 +239,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "SAP NOTE",
+      "title": "SAP Note",
       "transformations": [
         {
           "id": "organize",
@@ -217,12 +249,21 @@
               "instance": true,
               "job": true
             },
-            "indexByName": {},
+            "indexByName": {
+              "Time": 0,
+              "Value": 4,
+              "instance": 5,
+              "job": 6,
+              "nodename": 1,
+              "note_desc": 3,
+              "note_id": 2
+            },
             "renameByName": {
-              "Value": "STATUS",
-              "nodename": "HOST",
-              "note_desc": "SAP NOTE DESC",
-              "note_id": "SAP NOTE ID"
+              "Value": "Status",
+              "instance": "",
+              "nodename": "Host",
+              "note_desc": "SAP Note description",
+              "note_id": "SAP Note ID"
             }
           }
         }
@@ -279,5 +320,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 7
+  "version": 15
 }
