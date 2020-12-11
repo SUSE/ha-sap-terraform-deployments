@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1607618915268,
+  "iteration": 1607679721663,
   "links": [],
   "panels": [
     {
@@ -71,7 +71,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "CURRENT PROFILE"
+            "displayName": "Current Profile"
           }
         ]
       },
@@ -88,7 +88,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Saptune solution enabled",
+      "title": "Applied profile",
       "transformations": [
         {
           "id": "organize",
@@ -102,7 +102,7 @@
             "indexByName": {},
             "renameByName": {
               "nodename": "Host",
-              "solution_name": "Current Profile"
+              "solution_name": "Profile"
             }
           }
         }
@@ -239,7 +239,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "SAP Note",
+      "title": "Applied SAP notes",
       "transformations": [
         {
           "id": "organize",
@@ -320,5 +320,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 15
+  "version": 17
 }
