@@ -16,93 +16,9 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 6,
-  "iteration": 1605698565793,
+  "iteration": 1607679721663,
   "links": [],
   "panels": [
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "dark-green",
-                "value": null
-              },
-              {
-                "color": "dark-blue",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 10,
-        "x": 0,
-        "y": 0
-      },
-      "id": 6,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "SAP NOTES",
-          "url": "https://support.sap.com/en/index.html"
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "Enabled"
-          }
-        ]
-      },
-      "pluginVersion": "7.3.1",
-      "targets": [
-        {
-          "expr": "saptune_note_enabled",
-          "interval": "",
-          "legendFormat": "{{ noteName }}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Saptune notes enabled",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "last"
-            ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Field": "Saptune note  ID ",
-              "Last": "Enabled"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
     {
       "datasource": "Prometheus",
       "fieldConfig": {
@@ -130,7 +46,7 @@
                 "value": null
               },
               {
-                "color": "dark-blue",
+                "color": "rgba(255, 255, 255, 0.87)",
                 "value": 0
               },
               {
@@ -144,53 +60,49 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 14,
-        "x": 10,
+        "w": 24,
+        "x": 0,
         "y": 0
       },
-      "id": 4,
+      "id": 7,
       "options": {
-        "frameIndex": 0,
+        "frameIndex": 1,
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Current Profile"
+          }
+        ]
       },
       "pluginVersion": "7.3.1",
       "targets": [
         {
-          "expr": "saptune_solution_enabled",
+          "expr": "label_replace(saptune_solution_enabled, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")\n* on (instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")",
+          "format": "table",
+          "instant": true,
           "interval": "",
-          "legendFormat": "{{ solutionName}}",
+          "legendFormat": "",
           "refId": "C"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Saptune solution enabled",
+      "title": "Applied profile",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": []
-            }
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "lastNotNull"
-            ]
-          }
-        },
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "instance": true,
+              "job": true
+            },
             "indexByName": {},
             "renameByName": {
-              "Field": "Solution Name",
-              "Last (not null)": "Status"
+              "nodename": "Host",
+              "solution_name": "Profile"
             }
           }
         }
@@ -198,19 +110,22 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
+            "align": "left",
+            "displayMode": "auto",
+            "filterable": true
           },
           "mappings": [
             {
               "from": "",
               "id": 1,
-              "text": "Compliant",
+              "text": "Applied",
               "to": "",
               "type": 1,
               "value": "1"
@@ -220,105 +135,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-green",
                 "value": null
               },
               {
-                "color": "dark-blue",
+                "color": "rgb(255, 255, 255)",
                 "value": 0
-              },
-              {
-                "color": "dark-green",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 14,
-        "x": 10,
-        "y": 4
-      },
-      "id": 9,
-      "options": {
-        "frameIndex": 0,
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "7.3.1",
-      "targets": [
-        {
-          "expr": "saptune_solution_compliant",
-          "interval": "",
-          "legendFormat": "{{ solutionName}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Saptune solution compliant",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": []
-            }
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "lastNotNull"
-            ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Field": "Solution name",
-              "Last (not null)": "Compliant"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
-          },
-          "mappings": [
-            {
-              "from": "",
-              "id": 0,
-              "text": "",
-              "to": "",
-              "type": 1
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "dark-green",
-                "value": 2
               }
             ]
           }
@@ -327,39 +149,87 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value"
+              "options": "SAP NOTE DESC"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 929
+                "value": 659
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HOST"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 316
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SAP Note ID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SAP Note description"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 996
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Host"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 307
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
-        "w": 14,
-        "x": 10,
-        "y": 7
+        "h": 15,
+        "w": 24,
+        "x": 0,
+        "y": 4
       },
-      "id": 2,
+      "id": 6,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "SAP NOTES",
+          "url": "https://support.sap.com/en/index.html"
+        }
+      ],
       "options": {
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "instance"
-          }
-        ]
+        "sortBy": []
       },
       "pluginVersion": "7.3.1",
-      "repeat": "node",
-      "repeatDirection": "v",
       "targets": [
         {
-          "expr": "saptune_meta_version\n",
+          "expr": "label_replace(saptune_note_enabled, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")\n* on (instance) group_left(nodename) label_replace(node_uname_info, \"instance\", \"$1\", \"instance\", \"([^:]*):.*\")",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -369,16 +239,31 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "saptune version",
+      "title": "Applied SAP notes",
       "transformations": [
         {
-          "id": "filterFieldsByName",
+          "id": "organize",
           "options": {
-            "include": {
-              "names": [
-                "Value",
-                "instance"
-              ]
+            "excludeByName": {
+              "Time": true,
+              "instance": true,
+              "job": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value": 4,
+              "instance": 5,
+              "job": 6,
+              "nodename": 1,
+              "note_desc": 3,
+              "note_id": 2
+            },
+            "renameByName": {
+              "Value": "Status",
+              "instance": "",
+              "nodename": "Host",
+              "note_desc": "SAP Note description",
+              "note_id": "SAP Note ID"
             }
           }
         }
@@ -386,6 +271,7 @@
       "type": "table"
     }
   ],
+  "refresh": false,
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -434,5 +320,5 @@
   "timezone": "",
   "title": "Tuning",
   "uid": "HzFepKtMz",
-  "version": 4
+  "version": 17
 }
