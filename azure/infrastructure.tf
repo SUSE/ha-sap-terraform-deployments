@@ -4,6 +4,10 @@ provider "azurerm" {
   features {}
 }
 
+provider "null" {
+  version = "3.0.0"
+}
+
 terraform {
   required_version = ">= 0.13"
 }
