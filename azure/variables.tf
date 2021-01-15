@@ -51,6 +51,28 @@ variable "storage_account_key" {
   type        = string
 }
 
+# The next 4 variables are only introduced to enable the Service Principal usage
+
+variable "subscription_id" {
+  description = "Azure subscription ID"
+  type        = string
+}
+
+variable "client_id" {
+  description = "Azure Service Principal 'appId'"
+  type        = string
+}
+
+variable "client_secret" {
+  description = "Azure Service Principal 'password'"
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "Azure Service Principal 'tenant'"
+  type        = string
+}
+
 variable "public_key" {
   description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
