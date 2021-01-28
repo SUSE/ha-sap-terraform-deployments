@@ -18,13 +18,14 @@ hana_lvm_vgcreate_{{ vg }}_azure:
       {%- endfor %}
 
 # Configure the logical volumes
+{%- set lun_count = luns|length %}
 {%- for lv_size in grains['hana_data_disks_configuration']['lv_sizes'].split('#')[vg_index].split(',') %}
 hana_lvm_lvcreate_{{ vg }}_{{ loop.index0 }}_azure:
   lvm.lv_present:
     - name: lv_hana_{{ vg }}_{{ loop.index0 }}
     - vgname: vg_hana_{{ vg }}
     - extents: {{ lv_size }}%FREE
-    - stripes: {{ loop.length }}
+    - stripes: {{ lun_count }}
 
 hana_format_lv_{{ vg }}_{{ loop.index0 }}_azure:
   cmd.run:
