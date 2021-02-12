@@ -1,14 +1,15 @@
-get_aws_data_provider:
+# Code based in: https://docs.aws.amazon.com/sap/latest/general/data-provider-install.html
+import_aws_data_provider_key:
   cmd.run:
-    - name: wget https://s3.amazonaws.com/aws-data-provider/bin/aws-agent_install.sh -O /usr/bin/aws-agent_install.sh
-    - unless: ls /usr/bin/aws-agent_install.sh
+    - name: rpm --import https://aws-sap-data-provider.s3.amazonaws.com/Installers/RPM-GPG-KEY-AWS
 
-change_script_mode:
-  file.managed:
-    - name: /usr/bin/aws-agent_install.sh
-    - mode: '0755'
-
-start_script:
+install_aws_data_providers:
   cmd.run:
-    - name: /usr/bin/aws-agent_install.sh
-    - unless: systemctl status aws-agent
+    - name: zypper in -y https://aws-sap-data-provider.s3.amazonaws.com/Installers/aws-sap-dataprovider-sles.x86_64.rpm
+    - require:
+      - import_aws_data_provider_key
+
+aws-dataprovider:
+  service.running:
+    - require:
+        - install_aws_data_providers
