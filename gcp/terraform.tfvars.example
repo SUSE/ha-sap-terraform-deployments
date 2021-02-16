@@ -200,11 +200,11 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_extract_dir = "/sapmedia_extract/HANA"
 
 # The following SAP HANA Client variables are needed only when you are using a HANA database SAR archive for HANA installation.
-# HANA Client is used by monitoring & cost-optimized scenario and it is already included in HANA platform media unless a HANA database SAR archive is used 
+# HANA Client is used by monitoring & cost-optimized scenario and it is already included in HANA platform media unless a HANA database SAR archive is used
 # You can provide HANA Client in one of the two options below:
 # 1. Path to already extracted hana client folder, relative to hana_inst_master mounting point
 #hana_client_folder = "SAP_HANA_CLIENT"
-# 2. Or specify the path to the hana client SAR archive file, relative to the 'hana_inst_master'. To extract the SAR archive, you need to also provide compatible version of sapcar executable in variable hana_sapcar_exe 
+# 2. Or specify the path to the hana client SAR archive file, relative to the 'hana_inst_master'. To extract the SAR archive, you need to also provide compatible version of sapcar executable in variable hana_sapcar_exe
 # It will be extracted to hana_client_extract_dir path (optional, by default /sapmedia_extract/HANA_CLIENT)
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
@@ -322,6 +322,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
+
+# NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
+#netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
 # Preparing the Netweaver download basket. Check `doc/sap_software.md` for more information
 
