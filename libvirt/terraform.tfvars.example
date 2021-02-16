@@ -257,6 +257,9 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
+# Path where netweaver sapmnt data is stored.
+#netweaver_sapmnt_path = "/sapmnt"
+
 # Netweaver installation required folders
 # SAP SWPM installation folder, relative to the netweaver_inst_media mounting point
 #netweaver_swpm_folder     =  "your_swpm"

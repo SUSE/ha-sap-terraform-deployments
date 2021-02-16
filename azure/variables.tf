@@ -648,6 +648,12 @@ variable "netweaver_nfs_share" {
   default     = ""
 }
 
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+  default     = "/sapmnt"
+}
+
 variable "netweaver_storage_account_name" {
   description = "Azure storage account where SAP Netweaver installation files are stored"
   type        = string

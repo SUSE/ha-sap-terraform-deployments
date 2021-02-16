@@ -99,6 +99,7 @@ module "common_variables" {
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
   netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
+  netweaver_sapmnt_path               = var.netweaver_sapmnt_path
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
   netweaver_hana_instance_number      = var.hana_instance_number

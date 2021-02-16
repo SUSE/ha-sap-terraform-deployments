@@ -42,6 +42,7 @@ netweaver:
   sap_adm_password: {{ grains['netweaver_master_password'] }}
   master_password: {{ grains['netweaver_master_password'] }}
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
+  sapmnt_path: {{ grains['netweaver_sapmnt_path'] }}
   {%- if grains.get('netweaver_swpm_folder', False) %}
   swpm_folder: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_folder'] }}
   {%- endif %}

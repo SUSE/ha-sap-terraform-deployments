@@ -326,6 +326,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
+# Path where netweaver sapmnt data is stored.
+#netweaver_sapmnt_path = "/sapmnt"
+
 # Preparing the Netweaver download basket. Check `doc/sap_software.md` for more information
 
 # GCP storage where all the Netweaver software is available. The next paths are relative to this folder.
