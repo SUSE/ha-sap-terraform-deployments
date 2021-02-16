@@ -643,9 +643,15 @@ variable "netweaver_cluster_fencing_mechanism" {
 }
 
 variable "netweaver_nfs_share" {
-  description = "NFS share used to store shared netweaver files. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project"
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+  default     = "/sapmnt"
 }
 
 variable "netweaver_storage_account_name" {
