@@ -609,6 +609,12 @@ variable "netweaver_cluster_fencing_mechanism" {
   default     = "native"
 }
 
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+  default     = "/sapmnt"
+}
+
 variable "netweaver_product_id" {
   description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
   type        = string

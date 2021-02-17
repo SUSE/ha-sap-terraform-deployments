@@ -83,6 +83,11 @@ variable "netweaver_nfs_share" {
   type        = string
 }
 
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+}
+
 variable "netweaver_hana_ip" {
   description = "IP address of the HANA database. If the database is clustered, use the cluster virtual ip address"
   type        = string

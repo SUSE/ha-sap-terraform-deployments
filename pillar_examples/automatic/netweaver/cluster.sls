@@ -79,3 +79,4 @@ cluster:
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
+        sapmnt_path: {{ grains['netweaver_sapmnt_path'] }}
