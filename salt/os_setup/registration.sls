@@ -59,8 +59,11 @@ default_sle_module_public_cloud_registration:
 
 {% endif %}
 
-{% if grains['role'] == 'monitoring_srv' %}
-# Workaround to get the monitoring server packages (prometheus/grafana) from PackageHub
+{% if grains['role'] in ['hana_node', 'monitoring_srv'] %}
+# Workaround to get the monitoring packages from PackageHub
+# - prometheus/grafana family for the monitoring server
+# - prometheus-saptune_exporter for the hana nodes
+# If the packages are already preinstalled in the image, those will have preference
 # Works for BYOS and PAYG images
 # These packages are only available for SLE15SP1 and SLE15SP2
 packagehub_registration_monitoring:
