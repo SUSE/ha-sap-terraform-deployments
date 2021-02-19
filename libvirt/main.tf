@@ -10,6 +10,7 @@ module "local_execution" {
 # Hana ips: 192.168.135.10, 192.168.135.11
 # Hana cluster vip: 192.168.135.12
 # Hana cluster vip secondary: 192.168.135.13
+# Hana cluster majority maker: 192.168.135.14
 # DRBD ips: 192.168.135.20, 192.168.135.21
 # DRBD cluster vip: 192.168.135.22
 # Netweaver ips: 192.168.135.30, 192.168.135.31, 192.168.135.32, 192.168.135.33
@@ -23,6 +24,7 @@ locals {
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.iprange, local.hana_ip_start + var.hana_count + 1)
+  majority_maker_ip          = var.majority_maker_ip != "" ? var.majority_maker_ip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count + 2)
 
   # 2 is hardcoded for drbd because we always deploy 2 machines
   drbd_ip_start    = 20
@@ -148,7 +150,7 @@ module "hana_node" {
 module "drbd_node" {
   source                = "./modules/drbd_node"
   common_variables      = module.common_variables.configuration
-  name                  = "drbd"
+  name                  = "drbd-primary"
   source_image          = var.drbd_source_image
   volume_name           = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
   drbd_count            = var.drbd_enabled == true ? 2 : 0
@@ -157,8 +159,34 @@ module "drbd_node" {
   bridge                = "br0"
   host_ips              = local.drbd_ips
   drbd_cluster_vip      = local.drbd_cluster_vip
+  sbd_lun_index         = 1
   drbd_disk_size        = var.drbd_disk_size
-  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
+  sbd_storage_type      = var.sbd_storage_type
+  sbd_disk_id           = module.drbd_sbd_disk.id
+  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
+  isolated_network_id   = local.internal_network_id
+  isolated_network_name = local.internal_network_name
+  storage_pool          = var.storage_pool
+  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_export_name       = var.netweaver_sid
+}
+
+module "drbd_node_sec" {
+  source                = "./modules/drbd_node"
+  common_variables      = module.common_variables.configuration
+  name                  = "drbd-secondary"
+  source_image          = var.drbd_source_image
+  volume_name           = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
+  drbd_count            = var.drbd_enabled == true ? 2 : 0
+  vcpu                  = var.drbd_node_vcpu
+  memory                = var.drbd_node_memory
+  bridge                = "br0"
+  host_ips              = ["192.168.137.23", "192.168.137.24"]
+  drbd_cluster_vip      = "192.168.137.25"
+  sbd_lun_index         = 2
+  drbd_disk_size        = var.drbd_disk_size
+  sbd_enabled           = var.drbd_cluster_sbd_enabled
   sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.drbd_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
@@ -207,4 +235,24 @@ module "netweaver_node" {
   shared_disk_id        = module.netweaver_shared_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   netweaver_inst_media  = var.netweaver_inst_media
+}
+
+module "hana_majority_maker" {
+  source                 = "./modules/majority_maker"
+  common_variables       = module.common_variables.configuration
+  name                   = "hana"
+  source_image           = var.majority_maker_source_image
+  volume_name            = var.majority_maker_source_image != "" ? "" : (var.majority_maker_volume_name != "" ? var.majority_maker_volume_name : local.generic_volume_name)
+  vcpu                   = var.majority_maker_vcpu
+  memory                 = var.majority_maker_memory
+  bridge                 = "br0"
+  storage_pool           = var.storage_pool
+  isolated_network_id    = local.internal_network_id
+  isolated_network_name  = local.internal_network_name
+  majority_maker_enabled = var.majority_maker_enabled
+  majority_maker_ip      = local.majority_maker_ip
+  cluster_ips            = local.hana_ips
+  sbd_enabled            = var.hana_cluster_sbd_enabled
+  sbd_storage_type       = var.sbd_storage_type
+  sbd_disk_id            = module.hana_sbd_disk.id
 }

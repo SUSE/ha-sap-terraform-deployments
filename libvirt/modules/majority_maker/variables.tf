@@ -1,14 +1,11 @@
-variable "sbd_lun_index" {
-  description = "SBD device LUN index"
-}
-
 variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
-variable "name" {
-  description = "hostname, without the domain part"
+variable "majority_maker_image" {
+  description = "Majority maker machine base image"
   type        = string
+  default     = ""
 }
 
 variable "timezone" {
@@ -16,44 +13,46 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  default     = "majoritymaker"
+}
+
 variable "network_domain" {
   description = "hostname's network domain"
   default     = "tf.local"
 }
 
-variable "drbd_count" {
-  description = "number of hosts like this one"
-  default     = 2
+variable "network_name" {
+  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
+  default     = ""
 }
 
-variable "drbd_disk_size" {
-  description = "drbd partition disk size"
-  default     = "1024000000" # 1GB
+variable "bridge" {
+  description = "a bridge device name available on the libvirt host, leave default for NAT"
+  default     = ""
 }
 
-variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+variable "majority_maker_enabled" {
+  description = "whether or not to enable this module"
+  type        = bool
+  default     = false
+}
+
+variable "cluster_ips" {
+  description = "ip addresses of the rest of the cluster nodes"
   type        = list(string)
 }
 
-variable "drbd_cluster_vip" {
-  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
+variable "majority_maker_ip" {
+  description = "Majority maker machine address"
   type        = string
 }
 
-variable "nfs_mounting_point" {
-  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
-  type        = string
-}
-
-variable "nfs_export_name" {
-  description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
-  type        = string
-}
-
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd"
-  type        = string
+variable "sbd_enabled" {
+  description = "Enable sbd usage in the HA cluster"
+  type        = bool
+  default     = true
 }
 
 variable "sbd_storage_type" {
@@ -68,7 +67,7 @@ variable "sbd_disk_id" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+  description = "iscsi server address. Only used if sbd_storage_type is iscsi"
   type        = string
   default     = ""
 }
@@ -89,7 +88,7 @@ variable "volume_name" {
 
 variable "memory" {
   description = "RAM memory in MiB"
-  default     = 512
+  default     = 4096
 }
 
 variable "vcpu" {
@@ -102,6 +101,11 @@ variable "mac" {
   default     = ""
 }
 
+variable "cpu_model" {
+  description = "Define what CPU model the guest is getting (host-model, host-passthrough or the default)."
+  default     = ""
+}
+
 variable "isolated_network_id" {
   description = "Network id, internally created by terraform"
   type        = string
@@ -110,16 +114,6 @@ variable "isolated_network_id" {
 variable "isolated_network_name" {
   description = "Network name to attach the isolated network interface"
   type        = string
-}
-
-variable "network_name" {
-  description = "libvirt NAT network name for VMs, use empty string for bridged networking"
-  default     = ""
-}
-
-variable "bridge" {
-  description = "a bridge device name available on the libvirt host, leave default for NAT"
-  default     = ""
 }
 
 variable "storage_pool" {

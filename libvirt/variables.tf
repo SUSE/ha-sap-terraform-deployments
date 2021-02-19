@@ -622,6 +622,45 @@ variable "drbd_nfs_mounting_point" {
 }
 
 #
+# Majority maker related variables
+#
+variable "majority_maker_enabled" {
+  description = "Enable the majority maker node"
+  type        = bool
+  default     = false
+}
+
+variable "majority_maker_source_image" {
+  description = "Source image used to boot the majority_maker machine (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
+  type        = string
+  default     = ""
+}
+
+variable "majority_maker_volume_name" {
+  description = "Already existing volume name used to boot the majority_maker machine. It must be in the same storage pool. It's only used if majority_maker_source_image is not provided"
+  type        = string
+  default     = ""
+}
+
+variable "majority_maker_vcpu" {
+  description = "Number of CPUs for the majority maker machine"
+  type        = number
+  default     = 4
+}
+
+variable "majority_maker_memory" {
+  description = "Memory (in MBs) for the majority maker machine"
+  type        = number
+  default     = 4096
+}
+
+variable "majority_maker_ip" {
+  description = "Majority maker machines address"
+  type        = string
+  default     = ""
+}
+
+#
 # Specific QA variables
 #
 variable "qa_mode" {

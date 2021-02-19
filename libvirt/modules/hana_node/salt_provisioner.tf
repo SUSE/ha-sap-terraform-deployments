@@ -29,6 +29,8 @@ hana_disk_device: /dev/vdb
 sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+cluster_ssh_pub: salt://sshkeys/cluster.id_rsa.pub
+cluster_ssh_key: salt://sshkeys/cluster.id_rsa
 EOF
     destination = "/tmp/grains"
   }

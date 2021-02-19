@@ -7,7 +7,7 @@ base:
     - match: grain
     - hana.hana
 
-  'G@role:hana_node and G@ha_enabled:true':
+  '( G@role:hana_node and G@ha_enabled:true ) or G@role:majority_maker_node':
     - match: compound
     - hana.cluster
 
