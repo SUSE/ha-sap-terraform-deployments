@@ -133,15 +133,6 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: db
-      {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
-      extra_parameters:
-        NW_Recovery_Install_HDB.extractLocation: /usr/sap/{{ hana_sid_upper }}/HDB{{ hana_instance_number }}/backup/data/DB_{{ hana_sid_upper }}
-        NW_Recovery_Install_HDB.sidAdmName: {{ grains['hana_sid'].lower() }}adm
-        NW_Recovery_Install_HDB.sidAdmPassword: {{ grains['hana_master_password'] }}
-        NW_Recovery_Install_HDB.extractParallelJobs: 5 # By default, the value matches the number of extract files. Decreased to avoid high memory usage
-        NW_HDB_DBClient.clientPathStrategy: LOCAL
-        HDB_Software_Dialogs.useMediaCD: "false"
-      {%- endif %}
 
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+1 }}
       virtual_host: sap{{ sid_lower }}pas
@@ -153,10 +144,6 @@ netweaver:
       root_user: root
       root_password: linux
       sap_instance: pas
-      {%- if product_id_header in ['S4HANA1709'] %}
-      extra_parameters:
-        NW_liveCache.useLiveCache: "false"
-      {%- endif %}
 
     {%- for index in range(app_server_count-1) %}
     - host: {{ grains['name_prefix'] }}0{{ app_start_index+loop.index+1 }}
