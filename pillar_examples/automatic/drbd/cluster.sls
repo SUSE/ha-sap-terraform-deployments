@@ -31,6 +31,12 @@ cluster:
       join: 60
       consensus: 36000
       max_messages: 20
+  {% elif grains['provider'] == 'gcp' %}
+  corosync:
+    totem:
+      secauth: 'off'
+      token: 20000
+      consensus: 24000
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:

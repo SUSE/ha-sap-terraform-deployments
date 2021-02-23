@@ -17,6 +17,12 @@ ha_sap_deployments_repo:
   pkgrepo.managed:
     - name: ha_sap_deployments
     - baseurl: {{ repository }}
+
+set_priority_ha_sap_deployments_repo:
+  cmd.run:
+    - name: zypper mr -p 90 ha_sap_deployments
+    - require:
+      - ha_sap_deployments_repo
 {% endif %}
 
 refresh_repos_after_registration:
