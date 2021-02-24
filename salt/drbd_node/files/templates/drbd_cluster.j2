@@ -58,6 +58,8 @@ primitive rsc_socat_{{ res.name }}_nfs azure-lb \
 primitive rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} stonith:fence_gce \
   params plug={{ grains['gcp_instance_name'] }} pcmk_host_map="{{ grains['host'] }}:{{ grains['gcp_instance_name'] }}" \
   meta target-role=Started
+
+location loc_stonith_{{ res.name }}_{{ grains['host'] }} rsc_gcp_stonith_{{ res.name }}_{{ grains['host'] }} -inf: {{ grains['host'] }}
 {%- endif %}
 
 primitive vip_{{ res.name }}_nfs ocf:heartbeat:gcp-vpc-move-route \
