@@ -27,6 +27,7 @@ host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 drbd_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.drbd.*.attached_disk.0.device_name, count.index))}
+drbd_disk_device_list: [${join(", ", formatlist("'/dev/disk/by-id/google-%s'", google_compute_instance.drbd.*.attached_disk.0.device_name))}]
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 fencing_mechanism: ${var.fencing_mechanism}
 sbd_storage_type: ${var.sbd_storage_type}
