@@ -12,8 +12,9 @@ cluster:
   interface: eth0
   unicast: True
   {% endif %}
+  wait_for_initialization: 120
   join_timeout: 500
-  {% if grains['sbd_enabled'] %}
+  {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
     {% if grains['provider'] == 'azure' %}
@@ -78,6 +79,7 @@ cluster:
         {% if grains['hana_cluster_vip_secondary'] %}
         virtual_ip_secondary: {{ grains['hana_cluster_vip_secondary'] }}
         {% endif %}
+        native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}

@@ -17,6 +17,7 @@ netcat-openbsd:
       attempts: 3
       interval: 15
 
+{% if grains['netweaver_nfs_share'] %}
 {% set nfs_server_ip = grains['netweaver_nfs_share'].split(':')[0] %}
 wait_until_nfs_is_ready:
   cmd.run:
@@ -146,4 +147,5 @@ remove_tmp_folder:
     - name: /tmp/sapmnt
     - require:
       - wait_before_remove_tmp_folder
+{% endif %}
 {% endif %}

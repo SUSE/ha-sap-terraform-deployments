@@ -64,18 +64,26 @@ drbd:
   resource:
     - name: "sapdata"
       device: "/dev/drbd1"
+      {% if grains['provider'] != 'gcp' %}
       disk: {{ drbd_disk_device }}1
+      {% endif %}
 
       file_system: "xfs"
-      mount_point: "/mnt/sapdata/HA1"
+      mount_point: "{{ grains['nfs_mounting_point'] }}/{{ grains['nfs_export_name'] }}"
       virtual_ip: {{ grains['drbd_cluster_vip'] }}
 
       nodes:
         - name: {{ grains['name_prefix'] }}01
           ip: {{ grains['host_ips'][0] }}
+          {% if grains['provider'] == 'gcp' %}
+          disk: {{ grains['drbd_disk_device_list'][0] }}-part1
+          {% endif %}
           port: 7990
           id: 1
         - name: {{ grains['name_prefix'] }}02
           ip: {{ grains['host_ips'][1] }}
+          {% if grains['provider'] == 'gcp' %}
+          disk: {{ grains['drbd_disk_device_list'][1] }}-part1
+          {% endif %}
           port: 7990
           id: 2

@@ -1,7 +1,8 @@
 # monitoring network configuration
 
 locals {
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
 }
 
 resource "azurerm_network_interface" "monitoring" {
@@ -9,31 +10,30 @@ resource "azurerm_network_interface" "monitoring" {
   count                     = var.monitoring_enabled == true ? 1 : 0
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
-  network_security_group_id = var.sec_group_id
 
   ip_configuration {
     name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id          = var.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
+    public_ip_address_id          = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
 resource "azurerm_public_ip" "monitoring" {
   name                    = "pip-monitoring"
-  count                   = var.bastion_enabled ? 0 : (var.monitoring_enabled ? 1 : 0)
+  count                   = local.bastion_enabled ? 0 : (var.monitoring_enabled ? 1 : 0)
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -53,11 +53,16 @@ resource "azurerm_image" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
 # monitoring VM
+
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
+}
 
 resource "azurerm_virtual_machine" "monitoring" {
   name                             = "vmmonitoring"
@@ -78,10 +83,10 @@ resource "azurerm_virtual_machine" "monitoring" {
 
   storage_image_reference {
     id        = var.monitoring_uri != "" ? azurerm_image.monitoring.0.id : ""
-    publisher = var.monitoring_uri != "" ? "" : var.monitoring_public_publisher
-    offer     = var.monitoring_uri != "" ? "" : var.monitoring_public_offer
-    sku       = var.monitoring_uri != "" ? "" : var.monitoring_public_sku
-    version   = var.monitoring_uri != "" ? "" : var.monitoring_public_version
+    publisher = var.monitoring_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.monitoring_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.monitoring_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.monitoring_uri != "" ? "" : module.os_image_reference.version
   }
 
   storage_data_disk {
@@ -95,15 +100,15 @@ resource "azurerm_virtual_machine" "monitoring" {
 
   os_profile {
     computer_name  = "vmmonitoring"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -113,7 +118,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -121,10 +126,10 @@ module "monitoring_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = azurerm_virtual_machine.monitoring.*.id
-  user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.monitoring]
 }

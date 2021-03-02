@@ -3,9 +3,10 @@
 
 locals {
   vm_count               = var.xscs_server_count + var.app_server_count
-  create_ha_infra        = var.xscs_server_count > 0 && var.ha_enabled ? 1 : 0
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  create_ha_infra        = var.xscs_server_count > 0 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   additional_lun_number  = "0"
-  provisioning_addresses = var.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
   ascs_lb_rules_ports    = local.create_ha_infra == 1 ? toset([
     "32${var.ascs_instance_number}",
     "36${var.ascs_instance_number}",
@@ -33,7 +34,7 @@ resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
   platform_fault_domain_count = 2
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -47,7 +48,7 @@ resource "azurerm_availability_set" "netweaver-app-availability-set" {
   platform_update_domain_count = 10
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -74,7 +75,7 @@ resource "azurerm_lb" "netweaver-load-balancer" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -186,7 +187,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
 # netweaver network configuration
 
 resource "azurerm_public_ip" "netweaver" {
-  count                   = var.bastion_enabled ? 0 : local.vm_count
+  count                   = local.bastion_enabled ? 0 : local.vm_count
   name                    = "pip-netweaver0${count.index + 1}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -194,7 +195,7 @@ resource "azurerm_public_ip" "netweaver" {
   idle_timeout_in_minutes = 30
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -203,7 +204,6 @@ resource "azurerm_network_interface" "netweaver" {
   name                          = "nic-netweaver0${count.index + 1}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
-  network_security_group_id     = var.sec_group_id
   enable_accelerated_networking = count.index < var.xscs_server_count ? var.xscs_accelerated_networking : var.app_accelerated_networking
 
   ip_configuration {
@@ -211,11 +211,11 @@ resource "azurerm_network_interface" "netweaver" {
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
-    public_ip_address_id          = var.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -235,7 +235,7 @@ resource "azurerm_image" "netweaver-image" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -261,6 +261,11 @@ resource "azurerm_virtual_machine_data_disk_attachment" "app_server_disk" {
 
 # netweaver instances
 
+module "os_image_reference" {
+  source   = "../../modules/os_image_reference"
+  os_image = var.os_image
+}
+
 resource "azurerm_virtual_machine" "netweaver" {
   count                            = local.vm_count
   name                             = "vmnetweaver0${count.index + 1}"
@@ -281,23 +286,23 @@ resource "azurerm_virtual_machine" "netweaver" {
 
   storage_image_reference {
     id        = var.netweaver_image_uri != "" ? join(",", azurerm_image.netweaver-image.*.id) : ""
-    publisher = var.netweaver_image_uri != "" ? "" : var.netweaver_public_publisher
-    offer     = var.netweaver_image_uri != "" ? "" : var.netweaver_public_offer
-    sku       = var.netweaver_image_uri != "" ? "" : var.netweaver_public_sku
-    version   = var.netweaver_image_uri != "" ? "" : var.netweaver_public_version
+    publisher = var.netweaver_image_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.netweaver_image_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.netweaver_image_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.netweaver_image_uri != "" ? "" : module.os_image_reference.version
   }
 
   os_profile {
     computer_name  = "vmnetweaver0${count.index + 1}"
-    admin_username = var.admin_user
+    admin_username = var.common_variables["authorized_user"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
 
     ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = file(var.common_variables["public_key_location"])
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["public_key"]
     }
   }
 
@@ -307,7 +312,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   }
 
   tags = {
-    workspace = terraform.workspace
+    workspace = var.common_variables["deployment_name"]
   }
 }
 
@@ -315,10 +320,10 @@ module "netweaver_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = local.vm_count
   instance_ids         = azurerm_virtual_machine.netweaver.*.id
-  user                 = var.admin_user
-  private_key_location = var.common_variables["private_key_location"]
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["private_key"]
   bastion_host         = var.bastion_host
-  bastion_private_key  = var.bastion_private_key
+  bastion_private_key  = var.common_variables["bastion_private_key"]
   public_ips           = local.provisioning_addresses
   dependencies         = [data.azurerm_public_ip.netweaver]
 }

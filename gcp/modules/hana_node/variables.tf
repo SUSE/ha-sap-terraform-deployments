@@ -27,10 +27,9 @@ variable "network_subnet_name" {
   type        = string
 }
 
-variable "sles4sap_boot_image" {
-  description = "The image used to create the hana machines"
+variable "os_image" {
+  description = "Image used to create the machine"
   type        = string
-  default     = "suse-byos-cloud/sles-15-sap-byos"
 }
 
 variable "gcp_credentials_file" {
@@ -43,56 +42,9 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = false
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
-}
-
-variable "sap_hana_deployment_bucket" {
-  description = "GCP storage bucket that contains the SAP HANA installation files"
-  type        = string
-}
-
-variable "hana_inst_folder" {
-  description = "Folder where the hana installation software will be downloaded"
-  type        = string
-  default     = "/sapmedia/HANA"
-}
-
-variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the hana_inst_folder"
-  type        = string
-  default     = ""
-}
-
-variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the hana_inst_folder"
-  type        = string
-  default     = ""
-}
-
-variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
-  type        = string
-  default     = ""
-}
-
-variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
-  type        = string
-  default     = "/sapmedia/HANA"
 }
 
 variable "hana_data_disk_type" {
@@ -137,35 +89,6 @@ variable "hana_inst_disk_device" {
   default     = "/dev/sdd"
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type used by the disk where hana is installed"
-  type        = string
-  default     = "xfs"
-}
-
-variable "hana_cluster_vip" {
-  description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-  default     = ""
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
-}
-
 variable "cluster_ssh_pub" {
   description = "path for the public key needed by the cluster"
   type        = string
@@ -174,12 +97,6 @@ variable "cluster_ssh_pub" {
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
 }
 
 variable "on_destroy_dependencies" {

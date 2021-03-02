@@ -41,14 +41,20 @@ variable "volume_name" {
   default     = ""
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
-  type        = string
-  default     = "~/.ssh/id_rsa.pub"
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (root in this case)"
+  type        = list(string)
+  default     = ["~/.ssh/id_rsa.pub"]
 }
 
 # Deployment variables
 #
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
+  type        = string
+  default     = ""
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -106,6 +112,12 @@ variable "background" {
   default     = false
 }
 
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}
+
 #
 # Hana related variables
 
@@ -145,13 +157,19 @@ variable "hana_node_disk_size" {
   default     = 68719476736
 }
 
+variable "hana_fstype" {
+  description = "Filesystem type to use for HANA"
+  type        = string
+  default     = "xfs"
+}
+
 variable "hana_ips" {
   description = "ip addresses to set to the hana nodes"
   type        = list(string)
   default     = []
 }
 
-variable "hana_inst_media" {
+variable "hana_inst_master" {
   description = "URL of the NFS share where the SAP HANA software installer is stored. This media shall be mounted in `hana_inst_folder`"
   type        = string
 }
@@ -163,33 +181,92 @@ variable "hana_inst_folder" {
 }
 
 variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
   type        = string
   default     = ""
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_media' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
 }
 
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
+variable "hana_client_folder" {
+  description = "Path to the extracted HANA Client folder, relative to the 'hana_inst_master' mounting point"
   type        = string
-  default     = "xfs"
+  default     = ""
+}
+
+variable "hana_client_archive_file" {
+  description = "Path to the HANA Client SAR archive , relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA Client archive is not already extracted"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_extract_dir" {
+  description = "Absolute path to folder where SAP HANA Client archive will be extracted"
+  type        = string
+  default     = "/sapmedia_extract/HANA_CLIENT"
+}
+
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
+variable "hana_instance_number" {
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
 }
 
 variable "hana_cluster_vip" {
@@ -198,10 +275,10 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
-variable "hana_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the hana HA cluster"
-  type        = bool
-  default     = true
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "hana_ha_enabled" {
@@ -326,6 +403,12 @@ variable "netweaver_enabled" {
   default     = false
 }
 
+variable "netweaver_app_server_count" {
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
+  type        = number
+  default     = 2
+}
+
 variable "netweaver_source_image" {
   description = "Source image used to boot the netweaver machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string
@@ -368,16 +451,51 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the netweaver HA cluster"
-  type        = bool
-  default     = true
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "netweaver_nfs_share" {
-  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+  default     = "/sapmnt"
 }
 
 variable "netweaver_product_id" {
@@ -401,7 +519,7 @@ variable "netweaver_inst_folder" {
 variable "netweaver_extract_dir" {
   description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
   type        = string
-  default     = "/sapmedia/NW"
+  default     = "/sapmedia_extract/NW"
 }
 
 variable "netweaver_swpm_folder" {
@@ -491,10 +609,16 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the drbd HA cluster"
-  type        = bool
-  default     = true
+variable "drbd_cluster_fencing_mechanism" {
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
+}
+
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 #

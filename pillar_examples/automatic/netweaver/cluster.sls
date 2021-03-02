@@ -10,15 +10,21 @@ cluster:
   interface: eth0
   unicast: True
   {%- endif %}
-  {% if grains['sbd_enabled'] %}
+  {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
   watchdog:
     module: softdog
     device: /dev/watchdog
   {% endif %}
+  wait_for_initialization: 120
+  {%- if grains['app_server_count']|default(2) == 0 %}
+  # join_timeout must be large as the 1st machine where the cluster is started will host
+  # the DB and PAS installation, taking a long time
+  join_timeout: 10000
+  {%- else %}
   join_timeout: 180
-  wait_for_initialization: 20
+  {%- endif %}
   ntp: pool.ntp.org
   {%- if grains['provider'] == 'libvirt' %}
   sshkeys:
@@ -42,6 +48,11 @@ cluster:
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
+    properties:
+      stonith-enabled: true
+      {% if grains['provider'] == 'azure' %}
+      stonith-timeout: 144s
+      {% endif %}
     method: update
     template:
       source: salt://netweaver/templates/cluster_resources.j2
@@ -73,3 +84,5 @@ cluster:
         ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
+        native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
+        sapmnt_path: {{ grains['netweaver_sapmnt_path'] }}

@@ -17,7 +17,7 @@ variable "drbd_count" {
 variable "instance_type" {
   description = "The instance type of drbd node"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.large"
 }
 
 variable "aws_region" {
@@ -73,10 +73,9 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
+  type        = string
 }
 
 variable "drbd_cluster_vip" {
@@ -129,5 +128,15 @@ variable "os_image" {
 
 variable "os_owner" {
   description = "OS image owner"
+  type        = string
+}
+
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+}
+
+variable "nfs_export_name" {
+  description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
   type        = string
 }

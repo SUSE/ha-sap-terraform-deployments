@@ -19,8 +19,8 @@ Now, the created file must be configured to define the deployment.
 
 Alternatively, you can set the `pre_deployment` variable to automatically create the cluster ssh keys.
 ```
-mkdir ../salt/hana_node/files/sshkeys
-ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+mkdir -p ../salt/sshkeys
+ssh-keygen -f ../salt/sshkeys/cluster.id_rsa -q -P ""
 ```
 The key files must be named as you define them in the `terraform.tfvars` file
 
@@ -66,7 +66,7 @@ By default, the bastion machine is enabled in Azure (it can be disabled), which 
 
 To log to hana and others instances, use:
 ```
-ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{private_hana_instance_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 ```
 
 To disable the bastion use:

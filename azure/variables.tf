@@ -7,13 +7,13 @@ variable "az_region" {
 }
 
 variable "resource_group_name" {
-  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{terraform.workspace}}"
+  description = "Already existing resource group where the infrastructure is created. If it's not set a new one will be created named rg-ha-sap-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
 
 variable "vnet_name" {
-  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{terraform.workspace}}"
+  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
@@ -25,7 +25,7 @@ variable "vnet_address_range" {
 }
 
 variable "subnet_name" {
-  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{terraform.workspace}}"
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
@@ -42,7 +42,7 @@ variable "admin_user" {
 }
 
 variable "storage_account_name" {
-  description = "Azure storage account name"
+  description = "Azure storage account name where HANA insallation software is available"
   type        = string
 }
 
@@ -51,14 +51,20 @@ variable "storage_account_key" {
   type        = string
 }
 
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the created machines"
+variable "public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key. The key is only used to provision the machines and it is authorized for future accesses"
   type        = string
 }
 
-variable "private_key_location" {
-  description = "Path to a SSH private key used to connect to the created machines"
+variable "private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key. The key is only used to provision the machines. It is not uploaded to the machines in any case"
   type        = string
+}
+
+variable "authorized_keys" {
+  description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (admin_user variable in this case)"
+  type        = list(string)
+  default     = []
 }
 
 variable "bastion_enabled" {
@@ -67,24 +73,36 @@ variable "bastion_enabled" {
   default     = true
 }
 
-variable "bastion_public_key_location" {
-  description = "Path to a SSH public key used to connect to the bastion. If it's not set the key provided in public_key_location will be used"
+variable "bastion_os_image" {
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
   default     = ""
 }
 
-variable "bastion_private_key_location" {
-  description = "Path to a SSH private key used to connect to the bastion. If it's not set the key provided in private_key_location will be used"
+variable "bastion_public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
   type        = string
   default     = ""
 }
 
 # Deployment variables
 
-variable "name" {
-  description = "hostname, without the domain part"
+variable "deployment_name" {
+  description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
-  default     = "hana"
+  default     = ""
+}
+
+variable "os_image" {
+  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp2:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  type        = string
+  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
 }
 
 variable "timezone" {
@@ -160,7 +178,19 @@ variable "background" {
   default     = false
 }
 
+variable "provisioning_output_colored" {
+  description = "Print colored output of the provisioning execution"
+  type        = bool
+  default     = true
+}
+
 # Hana related variables
+
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "hana"
+}
 
 variable "hana_count" {
   description = "Number of hana nodes"
@@ -168,28 +198,10 @@ variable "hana_count" {
   default     = "2"
 }
 
-variable "hana_public_publisher" {
-  description = "Public image publisher name used to create the hana machines"
+variable "hana_os_image" {
+  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "hana_public_offer" {
-  description = "Public image offer name used to create the hana machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "hana_public_sku" {
-  description = "Public image sku used to create the hana machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "hana_public_version" {
-  description = "Public image version used to create the hana machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "sles4sap_uri" {
@@ -262,21 +274,39 @@ variable "hana_platform_folder" {
 }
 
 variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
+  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point. Only needed if HANA installation software comes in a SAR file (like IMDB_SERVER.SAR)"
   type        = string
   default     = ""
 }
 
 variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
+  description = "Path to the HANA database server installation SAR archive (for SAR files, `hana_sapcar_exe` variable is mandatory) or HANA platform archive file in ZIP or RAR (EXE) format, relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA media archive is not already extracted"
   type        = string
   default     = ""
 }
 
 variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
+  description = "Absolute path to folder where SAP HANA archive will be extracted. This folder cannot be the same as `hana_inst_folder`!"
   type        = string
-  default     = "/sapmedia/HANA"
+  default     = "/sapmedia_extract/HANA"
+}
+
+variable "hana_client_folder" {
+  description = "Path to the extracted HANA Client folder, relative to the 'hana_inst_master' mounting point"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_archive_file" {
+  description = "Path to the HANA Client SAR archive , relative to the 'hana_inst_master' mounting point. Use this parameter if the HANA Client archive is not already extracted"
+  type        = string
+  default     = ""
+}
+
+variable "hana_client_extract_dir" {
+  description = "Absolute path to folder where SAP HANA Client archive will be extracted"
+  type        = string
+  default     = "/sapmedia_extract/HANA_CLIENT"
 }
 
 variable "hana_fstype" {
@@ -285,10 +315,51 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_sid" {
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "prd"
+}
+
+variable "hana_cost_optimized_sid" {
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  type        = string
+  default     = "qas"
+}
+
 variable "hana_instance_number" {
-  description = "Hana instance number"
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
   type        = string
   default     = "00"
+}
+
+variable "hana_cost_optimized_instance_number" {
+  description = "Instance number of the HANA cost-optimized system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "hana_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+}
+
+variable "hana_cost_optimized_master_password" {
+  description = "Master password for the HANA system (sidadm user included)"
+  type        = string
+  default     = ""
+}
+
+variable "hana_primary_site" {
+  description = "HANA system replication primary site name"
+  type        = string
+  default     = "Site1"
+}
+
+variable "hana_secondary_site" {
+  description = "HANA system replication secondary site name"
+  type        = string
+  default     = "Site2"
 }
 
 variable "hana_cluster_vip" {
@@ -297,10 +368,10 @@ variable "hana_cluster_vip" {
   default     = ""
 }
 
-variable "hana_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the hana HA cluster"
-  type        = bool
-  default     = true
+variable "hana_cluster_fencing_mechanism" {
+  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "hana_ha_enabled" {
@@ -339,28 +410,10 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
-variable "iscsi_public_publisher" {
-  description = "Public image publisher name used to create the iscsi machines"
+variable "iscsi_os_image" {
+  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "iscsi_public_offer" {
-  description = "Public image offer name used to create the iscsi machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "iscsi_public_sku" {
-  description = "Public image sku used to create the iscsi machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "iscsi_public_version" {
-  description = "Public image version used to create the iscsi machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "iscsi_srv_uri" {
@@ -406,28 +459,10 @@ variable "monitoring_vm_size" {
   default     = "Standard_D2s_v3"
 }
 
-variable "monitoring_public_publisher" {
-  description = "Public image publisher name used to create the monitoring machines"
+variable "monitoring_os_image" {
+  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "monitoring_public_offer" {
-  description = "Public image offer name used to create the monitoring machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "monitoring_public_sku" {
-  description = "Public image sku used to create the monitoring machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "monitoring_public_version" {
-  description = "Public image version used to create the monitoring machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "monitoring_uri" {
@@ -462,28 +497,10 @@ variable "drbd_ips" {
   default     = []
 }
 
-variable "drbd_public_publisher" {
-  description = "Public image publisher name used to create the drbd machines"
+variable "drbd_os_image" {
+  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "drbd_public_offer" {
-  description = "Public image offer name used to create the drbd machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "drbd_public_sku" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "drbd_public_version" {
-  description = "Public image sku used to create the drbd machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "drbd_image_uri" {
@@ -498,10 +515,16 @@ variable "drbd_cluster_vip" {
   default     = ""
 }
 
-variable "drbd_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the drbd HA cluster"
-  type        = bool
-  default     = true
+variable "drbd_cluster_fencing_mechanism" {
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
+}
+
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 # Netweaver related variables
@@ -513,33 +536,15 @@ variable "netweaver_enabled" {
 }
 
 variable "netweaver_app_server_count" {
-  description = "Number of PAS/AAS server (1 PAS and the rest will be AAS)"
+  description = "Number of PAS/AAS servers (1 PAS and the rest will be AAS). 0 means that the PAS is installed in the same machines as the ASCS"
   type        = number
   default     = 2
 }
 
-variable "netweaver_public_publisher" {
-  description = "Public image publisher name used to create the netweaver machines"
+variable "netweaver_os_image" {
+  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
-  default     = "SUSE"
-}
-
-variable "netweaver_public_offer" {
-  description = "Public image offer name used to create the netweaver machines"
-  type        = string
-  default     = "sles-sap-15-sp1-byos"
-}
-
-variable "netweaver_public_sku" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "gen2"
-}
-
-variable "netweaver_public_version" {
-  description = "Public image sku used to create the netweaver machines"
-  type        = string
-  default     = "latest"
+  default     = ""
 }
 
 variable "netweaver_image_uri" {
@@ -602,16 +607,51 @@ variable "netweaver_virtual_ips" {
   default     = []
 }
 
-variable "netweaver_cluster_sbd_enabled" {
-  description = "Enable sbd usage in the netweaver HA cluster"
-  type        = bool
-  default     = true
+variable "netweaver_sid" {
+  description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
+  type        = string
+  default     = "HA1"
+}
+
+variable "netweaver_ascs_instance_number" {
+  description = "Instance number of the ASCS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "00"
+}
+
+variable "netweaver_ers_instance_number" {
+  description = "Instance number of the ERS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "10"
+}
+
+variable "netweaver_pas_instance_number" {
+  description = "Instance number of the PAS system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+  default     = "01"
+}
+
+variable "netweaver_master_password" {
+  description = "Master password for the Netweaver system (sidadm user included)"
+  type        = string
+}
+
+variable "netweaver_cluster_fencing_mechanism" {
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
+  type        = string
+  default     = "sbd"
 }
 
 variable "netweaver_nfs_share" {
-  description = "NFS share used to store shared netweaver files. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project"
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
   type        = string
   default     = ""
+}
+
+variable "netweaver_sapmnt_path" {
+  description = "Path where sapmnt folder is stored"
+  type        = string
+  default     = "/sapmnt"
 }
 
 variable "netweaver_storage_account_name" {
@@ -647,7 +687,7 @@ variable "netweaver_inst_folder" {
 variable "netweaver_extract_dir" {
   description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
   type        = string
-  default     = "/sapmedia/NW"
+  default     = "/sapmedia_extract/NW"
 }
 
 variable "netweaver_swpm_folder" {

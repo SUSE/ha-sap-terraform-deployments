@@ -19,8 +19,8 @@ Now, the created file must be configured to define the deployment.
 
 Alternatively, you can set the `pre_deployment` variable to automatically create the cluster ssh keys.
 ```
-mkdir ../salt/hana_node/files/sshkeys
-ssh-keygen -t rsa -N '' -f ../salt/hana_node/files/sshkeys/cluster.id_rsa
+mkdir -p ../salt/sshkeys
+ssh-keygen -f ../salt/sshkeys/cluster.id_rsa -q -P ""
 ```
 
 The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
@@ -118,4 +118,9 @@ gsutil cp OS-Image-File-for-SLES4SAP-for-GCP.tar.gz gs://sles-images/OS-Image-Fi
 Create a bootable image
 ```
 gcloud compute images create OS-Image-File-for-SLES4SAP-for-GCP --source-uri gs://sles-images/OS-Image-File-for-SLES4SAP-for-GCP.tar.gz
+```
+
+View available SLES images using the gcloud utility
+```
+gcloud compute images list --standard-images --filter=sles
 ```

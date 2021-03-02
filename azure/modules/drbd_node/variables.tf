@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "az_region" {
   type    = string
   default = "westeurope"
@@ -12,10 +18,6 @@ variable "resource_group_name" {
 }
 
 variable "network_subnet_id" {
-  type = string
-}
-
-variable "sec_group_id" {
   type = string
 }
 
@@ -45,24 +47,9 @@ variable "drbd_image_uri" {
   default = ""
 }
 
-variable "drbd_public_publisher" {
-  type    = string
-  default = "SUSE"
-}
-
-variable "drbd_public_offer" {
-  type    = string
-  default = "SLES-SAP-BYOS"
-}
-
-variable "drbd_public_sku" {
-  type    = string
-  default = "15"
-}
-
-variable "drbd_public_version" {
-  type    = string
-  default = "latest"
+variable "os_image" {
+  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "vm_size" {
@@ -70,38 +57,14 @@ variable "vm_size" {
   default = "Standard_D2s_v3"
 }
 
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
 variable "network_domain" {
   type    = string
   default = "tf.local"
 }
 
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd"
   type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
-}
-
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
 }
 
 variable "sbd_storage_type" {
@@ -127,5 +90,15 @@ variable "cluster_ssh_key" {
 
 variable "drbd_cluster_vip" {
   description = "Virtual ip for the drbd cluster"
+  type        = string
+}
+
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+}
+
+variable "nfs_export_name" {
+  description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
   type        = string
 }

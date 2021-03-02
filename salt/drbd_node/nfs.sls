@@ -1,6 +1,6 @@
 create_nfs_folder:
   file.directory:
-    - name: /mnt/sapdata
+    - name: {{ grains['nfs_mounting_point'] }}
     - user: root
     - mode: "0755"
     - makedirs: True
@@ -8,7 +8,7 @@ create_nfs_folder:
 
 configure_nfs:
   nfs_export.present:
-    - name: /mnt/sapdata
+    - name: {{ grains['nfs_mounting_point'] }}
     - hosts: '*'
     - options:
       - rw

@@ -1,13 +1,13 @@
 # HANA deployment in GCP
 
 locals {
-  create_ha_infra = var.hana_count > 1 && var.ha_enabled ? 1 : 0
+  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
 resource "google_compute_disk" "data" {
   count = var.hana_count
-  name  = "${terraform.workspace}-hana-data-${count.index}"
+  name  = "${var.common_variables["deployment_name"]}-hana-data-${count.index}"
   type  = var.hana_data_disk_type
   size  = var.hana_data_disk_size
   zone  = element(var.compute_zones, count.index)
@@ -15,7 +15,7 @@ resource "google_compute_disk" "data" {
 
 resource "google_compute_disk" "backup" {
   count = var.hana_count
-  name  = "${terraform.workspace}-hana-backup-${count.index}"
+  name  = "${var.common_variables["deployment_name"]}-hana-backup-${count.index}"
   type  = var.hana_backup_disk_type
   size  = var.hana_backup_disk_size
   zone  = element(var.compute_zones, count.index)
@@ -23,7 +23,7 @@ resource "google_compute_disk" "backup" {
 
 resource "google_compute_disk" "hana-software" {
   count = var.hana_count
-  name  = "${terraform.workspace}-hana-software-${count.index}"
+  name  = "${var.common_variables["deployment_name"]}-hana-software-${count.index}"
   type  = "pd-standard"
   size  = "20"
   zone  = element(var.compute_zones, count.index)
@@ -31,9 +31,9 @@ resource "google_compute_disk" "hana-software" {
 
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "hana-route" {
-  name                   = "${terraform.workspace}-hana-route"
+  name                   = "${var.common_variables["deployment_name"]}-hana-route"
   count                  = local.create_ha_infra
-  dest_range             = "${var.hana_cluster_vip}/32"
+  dest_range             = "${var.common_variables["hana"]["cluster_vip"]}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)
@@ -42,9 +42,9 @@ resource "google_compute_route" "hana-route" {
 
 # Route for Active/Active setup
 resource "google_compute_route" "hana-route-secondary" {
-  name                   = "${terraform.workspace}-hana-route-secondary"
-  count                  = local.create_ha_infra == 1 && var.hana_cluster_vip_secondary != "" ? 1 : 0
-  dest_range             = "${var.hana_cluster_vip_secondary}/32"
+  name                   = "${var.common_variables["deployment_name"]}-hana-route-secondary"
+  count                  = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
+  dest_range             = "${var.common_variables["hana"]["cluster_vip_secondary"]}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.clusternodes.1.name
   next_hop_instance_zone = element(var.compute_zones, 1)
@@ -53,7 +53,7 @@ resource "google_compute_route" "hana-route-secondary" {
 
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
-  name         = "${terraform.workspace}-hana0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-hana0${count.index + 1}"
   count        = var.hana_count
   zone         = element(var.compute_zones, count.index)
 
@@ -76,7 +76,7 @@ resource "google_compute_instance" "clusternodes" {
 
   boot_disk {
     initialize_params {
-      image = var.sles4sap_boot_image
+      image = var.os_image
     }
 
     auto_delete = true
@@ -101,7 +101,7 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   metadata = {
-    sshKeys = "root:${file(var.common_variables["public_key_location"])}"
+    sshKeys = "root:${var.common_variables["public_key"]}"
   }
 
   service_account {
@@ -114,7 +114,7 @@ module "hana_on_destroy" {
   node_count           = var.hana_count
   instance_ids         = google_compute_instance.clusternodes.*.id
   user                 = "root"
-  private_key_location = var.common_variables["private_key_location"]
+  private_key          = var.common_variables["private_key"]
   public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
   dependencies         = var.on_destroy_dependencies
 }

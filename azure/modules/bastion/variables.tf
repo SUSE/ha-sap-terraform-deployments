@@ -1,13 +1,16 @@
-variable "bastion_enabled" {
-  description = "Enable bastion machine creation"
-  type        = bool
-  default     = true
+variable "common_variables" {
+  description = "Output of the common_variables module"
 }
 
 variable "az_region" {
   description = "Azure region where the deployment machines will be created"
   type    = string
   default = "westeurope"
+}
+
+variable "os_image" {
+  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "vm_size" {
@@ -28,17 +31,6 @@ variable "vnet_name" {
 
 variable "snet_address_range" {
   description = "Subnet address range of the bastion subnet"
-}
-
-variable "admin_user" {
-  description = "Administration user used to create the machines"
-  type        = string
-  default     = "azadmin"
-}
-
-variable "public_key_location" {
-  description = "Path to a SSH public key used to connect to the bastion. This key will be authorized"
-  type        = string
 }
 
 variable "storage_account" {

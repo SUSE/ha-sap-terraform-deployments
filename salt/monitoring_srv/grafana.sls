@@ -6,15 +6,11 @@ grafana:
         interval: 15
 
 grafana_anonymous_login_configuration:
-  file.blockreplace:
+  file.line:
     - name: /etc/grafana/grafana.ini
-    - marker_start: '#################################### Anonymous Auth ######################'
-    - marker_end: '#################################### Github Auth ##########################'
-    - content: |
-        [auth.anonymous]
-        enabled = true
-        org_name = Main Org.
-        org_role = Admin
+    - mode: ensure
+    - after: \[auth\.anonymous\]
+    - content: enabled = true
     - require:
       - pkg: grafana
 

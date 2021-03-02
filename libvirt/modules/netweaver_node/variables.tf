@@ -12,9 +12,14 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "netweaver_count" {
-  description = "number of hosts like this one"
-  default     = 4
+variable "xscs_server_count" {
+  type    = number
+  default = 2
+}
+
+variable "app_server_count" {
+  type    = number
+  default = 2
 }
 
 variable "host_ips" {
@@ -25,12 +30,6 @@ variable "host_ips" {
 variable "virtual_host_ips" {
   description = "virtual host ip addresses to set to the nodes"
   type        = list(string)
-}
-
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
 }
 
 variable "sbd_storage_type" {
@@ -50,97 +49,9 @@ variable "iscsi_srv_ip" {
   default     = ""
 }
 
-variable "hana_ip" {
-  type        = string
-  description = "Ip address of the hana database"
-}
-
-variable "netweaver_product_id" {
-  description = "Netweaver installation product. Even though the module is about Netweaver, it can be used to install other SAP instances like S4/HANA"
-  type        = string
-  default     = "NW750.HDB.ABAPHA"
-}
-
 variable "netweaver_inst_media" {
   description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `netweaver_inst_folder`"
   type        = string
-}
-
-variable "netweaver_inst_folder" {
-  description = "Folder where SAP Netweaver installation files are mounted"
-  type        = string
-  default     = "/sapmedia/NW"
-}
-
-variable "netweaver_extract_dir" {
-  description = "Extraction path for Netweaver media archives of SWPM and netweaver additional dvds"
-  type        = string
-  default     = "/sapmedia/NW"
-}
-
-variable "netweaver_swpm_folder" {
-  description = "Netweaver software SWPM folder, path relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
-}
-
-variable "netweaver_sapcar_exe" {
-  description = "Path to sapcar executable, relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
-}
-
-variable "netweaver_swpm_sar" {
-  description = "SWPM installer sar archive containing the installer, path relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
-}
-
-variable "netweaver_sapexe_folder" {
-  description = "Software folder where needed sapexe `SAR` executables are stored (sapexe, sapexedb, saphostagent), path relative from the `netweaver_inst_media` mounted point"
-  type        = string
-  default     = ""
-}
-
-variable "netweaver_additional_dvds" {
-  description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
-  default     = []
-}
-
-variable "netweaver_nfs_share" {
-  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders"
-  type        = string
-}
-
-variable "ascs_instance_number" {
-  description = "ASCS instance number"
-  type        = string
-  default     = "00"
-}
-
-variable "ers_instance_number" {
-  description = "ERS instance number"
-  type        = string
-  default     = "10"
-}
-
-variable "pas_instance_number" {
-  description = "PAS instance number"
-  type        = string
-  default     = "01"
-}
-
-variable "aas_instance_number" {
-  description = "AAS instance number"
-  type        = string
-  default     = "02"
-}
-
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
-  type        = bool
-  default     = true
 }
 
 // Provider-specific variables

@@ -1,16 +1,30 @@
+terraform {
+  required_version = ">= 0.13"
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "0.6.3"
+    }
+  }
+}
+
+locals {
+  vm_count = var.xscs_server_count + var.app_server_count
+}
+
 resource "libvirt_volume" "netweaver_image_disk" {
-  count            = var.netweaver_count
-  name             = "${terraform.workspace}-${var.name}-${count.index + 1}-main-disk"
+  count            = local.vm_count
+  name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${terraform.workspace}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
   memory     = var.memory
   vcpu       = var.vcpu
-  count      = var.netweaver_count
+  count      = local.vm_count
   qemu_agent = true
 
   dynamic "disk" {
@@ -21,7 +35,7 @@ resource "libvirt_domain" "netweaver_domain" {
       {
         "vol_id" = var.shared_disk_id
       },
-    ], 0, var.ha_enabled ? 2 : 1)
+    ], 0, var.common_variables["hana"]["ha_enabled"] ? 2 : 1)
     content {
       volume_id = disk.value.vol_id
     }
@@ -79,7 +93,7 @@ output "output_data" {
 
 module "netweaver_on_destroy" {
   source       = "../../../generic_modules/on_destroy"
-  node_count   = var.netweaver_count
+  node_count   = local.vm_count
   instance_ids = libvirt_domain.netweaver_domain.*.id
   user         = "root"
   password     = "linux"

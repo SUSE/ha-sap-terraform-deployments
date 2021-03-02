@@ -41,7 +41,7 @@ hana_inst_directory:
 
 {{ download_from_google_storage(
   grains['gcp_credentials_file'],
-  grains['sap_hana_deployment_bucket'],
+  grains['hana_inst_master'],
   grains['hana_inst_folder']) }}
 
 {% endif %}

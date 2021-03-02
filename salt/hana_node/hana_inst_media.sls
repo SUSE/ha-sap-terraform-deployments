@@ -12,7 +12,7 @@ hana_inst_directory:
   {% if grains['provider'] == 'libvirt' %}
   mount.mounted:
     - name: {{ grains['hana_inst_folder'] }}
-    - device: {{ grains['hana_inst_media'] }}
+    - device: {{ grains['hana_inst_master'] }}
     - fstype: nfs
     - mkmnt: True
     - persist: True

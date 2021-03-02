@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "az_region" {
   type    = string
   default = "westeurope"
@@ -12,10 +18,6 @@ variable "resource_group_name" {
 }
 
 variable "network_subnet_id" {
-  type = string
-}
-
-variable "sec_group_id" {
   type = string
 }
 
@@ -34,14 +36,8 @@ variable "name" {
 }
 
 variable "hana_instance_number" {
-  description = "HANA database instance number"
+  description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
   type        = string
-  default     = "00"
-}
-
-variable "scenario_type" {
-  description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
-  default     = "performance-optimized"
 }
 
 variable "storage_account_name" {
@@ -68,60 +64,14 @@ variable "sles4sap_uri" {
   default = ""
 }
 
-variable "hana_public_publisher" {
-  type = string
-}
-
-variable "hana_public_offer" {
-  type = string
-}
-
-variable "hana_public_sku" {
-  type = string
-}
-
-variable "hana_public_version" {
-  type = string
+variable "os_image" {
+  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
 }
 
 variable "vm_size" {
   type    = string
   default = "Standard_E4s_v3"
-}
-
-variable "admin_user" {
-  type    = string
-  default = "azadmin"
-}
-
-variable "bastion_enabled" {
-  description = "Use a bastion machine to create the ssh connections"
-  type        = bool
-  default     = true
-}
-
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Path to a SSH private key used to connect to the bastion. It must be provided if bastion is enabled"
-  type        = string
-  default     = ""
-}
-
-variable "sbd_enabled" {
-  description = "Enable sbd usage in the HA cluster"
-  type        = bool
-  default     = true
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
@@ -137,68 +87,6 @@ variable "cluster_ssh_pub" {
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-}
-
-variable "hwcct" {
-  description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
-  type        = bool
-  default     = false
-}
-
-variable "hana_inst_master" {
-  type = string
-}
-
-variable "hana_inst_folder" {
-  type    = string
-  default = "/sapmedia/HANA"
-}
-
-variable "hana_platform_folder" {
-  description = "Path to the hana platform media, relative to the 'hana_inst_master' mounting point"
-  type        = string
-  default     = ""
-}
-
-variable "hana_sapcar_exe" {
-  description = "Path to the sapcar executable, relative to the 'hana_inst_master' mounting point"
-  type        = string
-  default     = ""
-}
-
-variable "hana_archive_file" {
-  description = "Path to the HANA database server installation SAR archive or HANA platform archive file in zip or rar format, relative to the 'hana_inst_master' mounting point. Use this parameter if the hana media archive is not already extracted"
-  type        = string
-  default     = ""
-}
-
-variable "hana_extract_dir" {
-  description = "Absolute path to folder where SAP HANA archive will be extracted"
-  type        = string
-  default     = "/sapmedia/HANA"
-}
-
-variable "hana_fstype" {
-  description = "Filesystem type to use for HANA"
-  type        = string
-  default     = "xfs"
-}
-
-variable "hana_cluster_vip" {
-  description = "Virtual ip for the hana cluster"
-  type        = string
-}
-
-variable "hana_cluster_vip_secondary" {
-  description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode"
-  type        = string
-  default     = ""
-}
-
-variable "ha_enabled" {
-  description = "Enable HA cluster in top of HANA system replication"
-  type        = bool
-  default     = true
 }
 
 variable "hana_data_disks_configuration" {
