@@ -47,6 +47,7 @@ locals {
   monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
   drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
   netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
 }
 
 module "common_variables" {
@@ -62,6 +63,9 @@ module "common_variables" {
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
   authorized_user                     = "root"
+  bastion_enabled                     = var.bastion_enabled
+  bastion_public_key                  = var.bastion_public_key
+  bastion_private_key                 = var.bastion_private_key
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored
@@ -121,6 +125,7 @@ module "common_variables" {
 module "drbd_node" {
   source               = "./modules/drbd_node"
   common_variables     = module.common_variables.configuration
+  bastion_host         = module.bastion.public_ip
   drbd_count           = var.drbd_enabled == true ? 2 : 0
   machine_type         = var.drbd_machine_type
   compute_zones        = data.google_compute_zones.available.names
@@ -148,6 +153,7 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
+  bastion_host              = module.bastion.public_ip
   xscs_server_count         = local.netweaver_xscs_server_count
   app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   machine_type              = var.netweaver_machine_type
@@ -171,6 +177,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  bastion_host          = module.bastion.public_ip
   hana_count            = var.hana_count
   machine_type          = var.machine_type
   compute_zones         = data.google_compute_zones.available.names
@@ -187,13 +194,15 @@ module "hana_node" {
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
-    google_compute_firewall.ha_firewall_allow_tcp
+    google_compute_firewall.ha_firewall_allow_tcp,
+    google_compute_router_nat.nat
   ]
 }
 
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   compute_zones       = data.google_compute_zones.available.names
   network_subnet_name = local.subnet_name
@@ -203,13 +212,15 @@ module "monitoring" {
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
-    google_compute_firewall.ha_firewall_allow_tcp
+    google_compute_firewall.ha_firewall_allow_tcp,
+    google_compute_router_nat.nat
   ]
 }
 
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled == true ? 1 : 0
   machine_type        = var.machine_type_iscsi_server
   compute_zones       = data.google_compute_zones.available.names

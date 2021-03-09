@@ -124,6 +124,21 @@ pre_deployment = true
 # true or false (default)
 #hwcct = false
 
+##########################
+# Bastion (jumpbox) machine variables
+##########################
+
+# Enable bastion usage. This option configures the deployment to only create a unique public ip address that is attached to the bastion machine
+#bastion_enabled = true
+
+# Bastion SSH keys. If they are not set the public_key and private_key are used
+#bastion_public_key  = "/home/myuser/.ssh/id_rsa_bastion.pub"
+#bastion_private_key = "/home/myuser/.ssh/id_rsa_bastion"
+
+# Bastion machine os image. If it is not provided, the os_image variable data is used
+# BYOS example
+# bastion_os_image = ""suse-byos-cloud/sles-15-sp2-sap-byos"
+
 #########################
 # HANA machines variables
 #########################

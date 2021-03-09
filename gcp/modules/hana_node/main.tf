@@ -1,7 +1,9 @@
 # HANA deployment in GCP
 
 locals {
-  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  create_ha_infra        = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? google_compute_instance.clusternodes.*.network_interface.0.network_ip : google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
@@ -63,8 +65,12 @@ resource "google_compute_instance" "clusternodes" {
     subnetwork = var.network_subnet_name
     network_ip = element(var.host_ips, count.index)
 
-    access_config {
-      nat_ip = ""
+    # Set public IP address. Only if the bastion is not used
+    dynamic "access_config" {
+      for_each = local.bastion_enabled ? [] : [1]
+      content {
+        nat_ip = ""
+      }
     }
   }
 
@@ -101,7 +107,7 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   metadata = {
-    sshKeys = "root:${var.common_variables["public_key"]}"
+    sshKeys = "${var.common_variables["authorized_user"]}:${var.common_variables["public_key"]}"
   }
 
   service_account {
@@ -113,8 +119,10 @@ module "hana_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.hana_count
   instance_ids         = google_compute_instance.clusternodes.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   dependencies         = var.on_destroy_dependencies
 }

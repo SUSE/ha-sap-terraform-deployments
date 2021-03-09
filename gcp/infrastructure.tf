@@ -29,6 +29,8 @@ locals {
   vpc_name             = var.vpc_name == "" ? google_compute_network.ha_network.0.name : var.vpc_name
   subnet_name          = var.subnet_name == "" ? google_compute_subnetwork.ha_subnet.0.name : var.subnet_name
   subnet_address_range = var.subnet_name == "" ? var.ip_cidr_range : (var.ip_cidr_range == "" ? data.google_compute_subnetwork.current-subnet.0.ip_cidr_range : var.ip_cidr_range)
+
+  create_firewall = ! var.bastion_enabled && var.create_firewall_rules ? 1 : 0
 }
 
 # Network resources: Network, Subnet
@@ -68,7 +70,7 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
-  count   = var.create_firewall_rules ? 1 : 0
+  count   = local.create_firewall
   name    = "${local.deployment_name}-fw-icmp"
   network = local.vpc_name
 
@@ -78,7 +80,7 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
-  count   = var.create_firewall_rules ? 1 : 0
+  count   = local.create_firewall
   name    = "${local.deployment_name}-fw-tcp"
   network = local.vpc_name
 
@@ -86,4 +88,43 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
     protocol = "tcp"
     ports    = ["22", "80", "443", "3000", "7630", "9668", "9100", "9664", "9090"]
   }
+}
+
+# Bastion
+
+module "bastion" {
+  source             = "./modules/bastion"
+  common_variables   = module.common_variables.configuration
+  region             = var.region
+  os_image           = local.bastion_os_image
+  vm_size            = "custom-1-2048"
+  compute_zones      = data.google_compute_zones.available.names
+  network_link       = local.network_link
+  snet_address_range = cidrsubnet(cidrsubnet(local.subnet_address_range, -4, 0), 4, 2)
+}
+
+# Create NAT service to provide external connection to the VMs without public ip address
+# This is just a basic NAT, more advanced configuration is possible
+resource "google_compute_router" "router" {
+  count   = var.bastion_enabled ? 1 : 0
+  name    = "${local.deployment_name}-router"
+  region  = var.region
+  network = local.network_link
+}
+
+resource "google_compute_router_nat" "nat" {
+  count  = var.bastion_enabled ? 1 : 0
+  name   = "${local.deployment_name}-nat"
+  router = google_compute_router.router.*.name[0]
+  region = var.region
+
+  nat_ip_allocate_option = "AUTO_ONLY"
+
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+  subnetwork {
+    name                    = google_compute_subnetwork.ha_subnet.*.self_link[0]
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+  }
+
+  min_ports_per_vm = 160
 }
