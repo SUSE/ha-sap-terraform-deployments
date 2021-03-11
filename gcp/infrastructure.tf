@@ -105,6 +105,7 @@ module "bastion" {
 
 # Create NAT service to provide external connection to the VMs without public ip address
 # This is just a basic NAT, more advanced configuration is possible
+# Based on: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-dm-deployment-sles#setting-up-a-nat-gateway
 resource "google_compute_router" "router" {
   count   = var.bastion_enabled ? 1 : 0
   name    = "${local.deployment_name}-router"
