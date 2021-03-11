@@ -54,81 +54,31 @@ resource "google_compute_route" "hana-route-secondary" {
 }
 
 # GCP load balancer resource
-# Based on: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-vip-migration-sles
-# And: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-config-sles
+
 resource "google_compute_instance_group" "hana-primary-group" {
   name      = "${var.common_variables["deployment_name"]}-hana-primary-group"
-  count     = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
   zone      = element(var.compute_zones, 0)
   instances = [google_compute_instance.clusternodes.0.id]
 }
 
 resource "google_compute_instance_group" "hana-secondary-group" {
   name      = "${var.common_variables["deployment_name"]}-hana-secondary-group"
-  count     = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
   zone      = element(var.compute_zones, 1)
   instances = [google_compute_instance.clusternodes.1.id]
 }
 
-resource "google_compute_health_check" "hana-health-check" {
-  name  = "${var.common_variables["deployment_name"]}-hana-health-check"
-  count = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
-
-  timeout_sec         = 10
-  check_interval_sec  = 10
-  unhealthy_threshold = 2
-  healthy_threshold   = 2
-
-  tcp_health_check {
-    port = tonumber("625${var.common_variables["hana"]["instance_number"]}")
-  }
-}
-
-resource "google_compute_firewall" "hana-load-balancer-firewall" {
-  count         = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
-  name          = "${var.common_variables["deployment_name"]}-hana-load-balancer-firewall"
-  network       = var.network_name
-  source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]
-  target_tags   = ["hana-group"]
-
-  allow {
-    protocol = "tcp"
-    ports    = [tonumber("625${var.common_variables["hana"]["instance_number"]}")]
-  }
-}
-
-resource "google_compute_region_backend_service" "hana-backend-service" {
-  name                  = "${var.common_variables["deployment_name"]}-hana-backend-service"
+module "hana-load-balancer" {
   count                 = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
+  source                = "../../modules/load_balancer"
+  name                  = "${var.common_variables["deployment_name"]}-hana"
   region                = var.common_variables["region"]
-  load_balancing_scheme = "INTERNAL"
-  health_checks         = [google_compute_health_check.hana-health-check.*.id[0]]
-
-  backend {
-    group = google_compute_instance_group.hana-primary-group.*.id[0]
-  }
-
-  backend {
-    group    = google_compute_instance_group.hana-secondary-group.*.id[0]
-    failover = true
-  }
-
-  failover_policy {
-    disable_connection_drain_on_failover = true
-    drop_traffic_if_unhealthy            = true
-    failover_ratio                       = 1
-  }
-}
-
-resource "google_compute_forwarding_rule" "hana-load-balancer-forwarding-rule" {
-  name                  = "${var.common_variables["deployment_name"]}-hana-load-balancer-forwarding-rule"
-  count                 = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
-  region                = var.common_variables["region"]
-  load_balancing_scheme = "INTERNAL"
-  subnetwork            = var.network_subnet_name
+  network_name          = var.network_name
+  network_subnet_name   = var.network_subnet_name
+  primary_node_group    = google_compute_instance_group.hana-primary-group.id
+  secondary_node_group  = google_compute_instance_group.hana-secondary-group.id
+  tcp_health_check_port = tonumber("625${var.common_variables["hana"]["instance_number"]}")
+  target_tags           = ["hana-group"]
   ip_address            = var.common_variables["hana"]["cluster_vip"]
-  backend_service       = google_compute_region_backend_service.hana-backend-service.0.id
-  all_ports             = true
 }
 
 resource "google_compute_instance" "clusternodes" {
