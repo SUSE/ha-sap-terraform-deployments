@@ -1,6 +1,11 @@
 # drbd deployment in GCP to host a HA NFS share for SAP Netweaver
 # disclaimer: only supports a single NW installation
 
+locals {
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? google_compute_instance.drbd.*.network_interface.0.network_ip : google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
+}
+
 resource "google_compute_disk" "data" {
   count = var.drbd_count
   name  = "${var.common_variables["deployment_name"]}-disk-drbd-${count.index}"
@@ -32,8 +37,12 @@ resource "google_compute_instance" "drbd" {
     subnetwork = var.network_subnet_name
     network_ip = element(var.host_ips, count.index)
 
-    access_config {
-      nat_ip = ""
+    # Set public IP address. Only if the bastion is not used
+    dynamic "access_config" {
+      for_each = local.bastion_enabled ? [] : [1]
+      content {
+        nat_ip = ""
+      }
     }
   }
 
@@ -58,7 +67,7 @@ resource "google_compute_instance" "drbd" {
   }
 
   metadata = {
-    sshKeys = "root:${var.common_variables["public_key"]}"
+    sshKeys = "${var.common_variables["authorized_user"]}:${var.common_variables["public_key"]}"
   }
 
   service_account {
@@ -70,8 +79,10 @@ module "drbd_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.drbd_count
   instance_ids         = google_compute_instance.drbd.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   dependencies         = var.on_destroy_dependencies
 }
