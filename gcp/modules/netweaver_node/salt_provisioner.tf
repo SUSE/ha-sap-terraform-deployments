@@ -44,8 +44,9 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 netweaver_software_bucket: ${var.netweaver_software_bucket}
 netweaver_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.netweaver.*.attached_disk.0.device_name, count.index))}
 vpc_network_name: ${var.network_name}
-ascs_route_name: ${google_compute_route.nw-ascs-route[0].name}
-ers_route_name: ${google_compute_route.nw-ers-route[0].name}
+ascs_route_name: ${join(",", google_compute_route.nw-ascs-route.*.name)}
+ers_route_name: ${join(",", google_compute_route.nw-ers-route.*.name)}
+app_server_count: ${var.app_server_count}
 
 EOF
     destination = "/tmp/grains"
