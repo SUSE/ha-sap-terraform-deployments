@@ -16,6 +16,7 @@ locals {
 output "configuration" {
   value = {
     provider_type               = var.provider_type
+    region                      = var.region
     deployment_name             = var.deployment_name
     reg_code                    = var.reg_code
     reg_email                   = var.reg_email
@@ -56,6 +57,7 @@ output "configuration" {
       client_archive_file            = var.hana_client_archive_file
       client_extract_dir             = var.hana_client_extract_dir
       scenario_type                  = var.hana_scenario_type
+      cluster_vip_mechanism          = var.hana_cluster_vip_mechanism
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
       ha_enabled                     = var.hana_ha_enabled
@@ -120,6 +122,7 @@ hana_extract_dir: ${var.hana_extract_dir}
 hana_client_folder: ${var.hana_client_folder}
 hana_client_archive_file: ${var.hana_client_archive_file}
 hana_client_extract_dir: ${var.hana_client_extract_dir}
+hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 scenario_type: ${var.hana_scenario_type}

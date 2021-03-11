@@ -168,6 +168,11 @@ pre_deployment = true
 # Disk size for HANA backup in GB
 #hana_backup_disk_size = "128" # 128GB
 
+# HANA cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
+# Warning: The load-balancer option only works in Active/Passive scenario by now. To use Active/Active scenario "route" option must be used
+# Options: "load-balancer" (default), "route"
+#hana_cluster_vip_mechanism = "load-balancer"
+
 # HANA cluster vip
 #hana_cluster_vip = "10.0.1.200"
 
