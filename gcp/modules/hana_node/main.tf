@@ -81,6 +81,21 @@ module "hana-load-balancer" {
   ip_address            = var.common_variables["hana"]["cluster_vip"]
 }
 
+# Load balancer for Active/Active setup
+module "hana-secondary-load-balancer" {
+  count                 = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_mechanism"] == "load-balancer" && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
+  source                = "../../modules/load_balancer"
+  name                  = "${var.common_variables["deployment_name"]}-hana-secondary"
+  region                = var.common_variables["region"]
+  network_name          = var.network_name
+  network_subnet_name   = var.network_subnet_name
+  primary_node_group    = google_compute_instance_group.hana-secondary-group.id
+  secondary_node_group  = google_compute_instance_group.hana-primary-group.id
+  tcp_health_check_port = tonumber("626${var.common_variables["hana"]["instance_number"]}")
+  target_tags           = ["hana-group"]
+  ip_address            = var.common_variables["hana"]["cluster_vip_secondary"]
+}
+
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
   name         = "${var.common_variables["deployment_name"]}-hana0${count.index + 1}"
