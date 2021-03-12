@@ -92,6 +92,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
+  hana_cluster_vip_mechanism          = ""
   hana_cluster_vip                    = var.hana_ha_enabled ? local.hana_cluster_vip : ""
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
