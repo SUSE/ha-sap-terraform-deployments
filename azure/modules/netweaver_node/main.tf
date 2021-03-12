@@ -89,7 +89,7 @@ resource "azurerm_lb_backend_address_pool" "netweaver-backend-pool" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "netweaver-nodes" {
-  count                   = var.xscs_server_count
+  count                   = local.create_ha_infra == 1 ? var.xscs_server_count : 0
   network_interface_id    = element(azurerm_network_interface.netweaver.*.id, count.index)
   ip_configuration_name   = "ipconf-primary"
   backend_address_pool_id = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
