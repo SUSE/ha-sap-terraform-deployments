@@ -234,10 +234,15 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
+
+# IP address used to configure the hana cluster floating IP. It must go in the same subnet than the hana machines
 #hana_cluster_vip = "10.74.1.13"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
+
+# HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed it hana_active_active is set to true
+#hana_cluster_vip_secondary = "10.74.1.14"
 
 # HANA instance configuration
 # Find some references about the variables in:
