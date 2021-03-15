@@ -63,9 +63,11 @@ install_salt_minion () {
 
       # Register the modules accordingly with the SLE version.
       if [[ $VERSION_ID =~ ^12\.? ]]; then
-        SUSEConnect -p sle-module-adv-systems-management/12/x86_64
+        # shellcheck disable=SC2046
+        SUSEConnect -p sle-module-adv-systems-management/12/$(uname -m)
       elif [[ $VERSION_ID =~ ^15\.? ]]; then
-        SUSEConnect -p sle-module-basesystem/${VERSION_ID:+"$VERSION_ID"}/x86_64
+        # shellcheck disable=SC2046
+        SUSEConnect -p sle-module-basesystem/${VERSION_ID:+"$VERSION_ID"}/$(uname -m)
       else
         log_error "SLE Product version not supported by this script. Please, use version 12 or higher."
       fi
