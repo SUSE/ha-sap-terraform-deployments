@@ -46,10 +46,6 @@ resource "null_resource" "provision" {
     user        = var.user
     password    = var.password
     private_key = var.private_key != "" ? var.private_key : ""
-
-    bastion_host        = var.bastion_host
-    bastion_user        = var.user
-    bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : ""
   }
 
   provisioner "file" {
@@ -70,7 +66,7 @@ resource "null_resource" "provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "${var.reboot} && [ -f /var/run/reboot-needed ] && echo \"Rebooting the machine...\" && (nohup sudo sh -c 'systemctl stop sshd;/sbin/reboot' &) && sleep 5",
+      "${var.reboot} && echo \"Rebooting the machine...\" && (nohup sudo sh -c 'systemctl stop sshd;/sbin/reboot' &) && sleep 5",
     ]
     on_failure = continue
   }
