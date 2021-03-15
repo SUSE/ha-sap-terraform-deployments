@@ -63,6 +63,7 @@ default_sle_module_public_cloud_registration:
 # If it is a PAYG image, it will force a new registration before refreshing.
 # Also the pure refresh will not be executed as salt will still report failure.
 # See: https://github.com/saltstack/salt/issues/16291
+{% if grains['provider'] in ['gcp', 'aws', 'azure'] %}
 workaround_payg_cleanup:
   cmd.run:
     - name: |
@@ -79,5 +80,6 @@ workaround_payg_new_register:
         attempts: 3
         interval: 15
     - onlyif: 'test -e /usr/sbin/registercloudguest'
+{% endif %}
 
 {% endif %}
