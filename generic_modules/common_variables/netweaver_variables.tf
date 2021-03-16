@@ -18,9 +18,9 @@ variable "netweaver_sid" {
   type        = string
   validation {
     condition = (
-      can(regex("^[A-Za-z][a-zA-Z0-9]{2}$", var.netweaver_sid))
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.netweaver_sid))
     )
-    error_message = "The Netweaver system identifier must be composed by 3 chars/digits string starting always with a character (there are some restricted option)."
+    error_message = "The Netweaver system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
   }
 }
 
@@ -129,6 +129,12 @@ variable "netweaver_hana_ip" {
 variable "netweaver_hana_sid" {
   description = "System identifier of the HANA system (e.g.: HA1 or PRD)"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.netweaver_hana_sid))
+    )
+    error_message = "The HANA system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
+  }
 }
 
 variable "netweaver_hana_instance_number" {

@@ -3,9 +3,9 @@ variable "hana_sid" {
   type        = string
   validation {
     condition = (
-      can(regex("^[A-Za-z][a-zA-Z0-9]{2}$", var.hana_sid))
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.hana_sid))
     )
-    error_message = "The HANA system identifier must be composed by 3 chars/digits string starting always with a character (there are some restricted option)."
+    error_message = "The HANA system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
   }
 }
 
@@ -14,9 +14,9 @@ variable "hana_cost_optimized_sid" {
   type        = string
   validation {
     condition = (
-      can(regex("^[A-Za-z][a-zA-Z0-9]{2}$", var.hana_cost_optimized_sid))
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.hana_cost_optimized_sid))
     )
-    error_message = "The HANA system identifier must be composed by 3 chars/digits string starting always with a character (there are some restricted option)."
+    error_message = "The HANA system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
   }
 }
 
