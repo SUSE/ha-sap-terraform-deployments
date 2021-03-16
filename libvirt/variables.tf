@@ -538,6 +538,7 @@ variable "netweaver_pas_instance_number" {
 variable "netweaver_master_password" {
   description = "Master password for the Netweaver system (sidadm user included)"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_cluster_fencing_mechanism" {
