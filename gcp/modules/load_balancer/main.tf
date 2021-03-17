@@ -1,6 +1,6 @@
 # GCP load balancer resource
-# Based on: https://cloud.google.com/solutions/sap/docs/sap-ha-vip-migration-sles
-# And: https://cloud.google.com/solutions/sap/docs/sap-ha-config-sles
+# Based on: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-vip-migration-sles
+# And: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-config-sles
 
 resource "google_compute_health_check" "health-check" {
   name  = "${var.name}-health-check"
@@ -15,6 +15,8 @@ resource "google_compute_health_check" "health-check" {
   }
 }
 
+# More information about the load balancer firewall
+# https://cloud.google.com/load-balancing/docs/health-checks#fw-rule
 resource "google_compute_firewall" "load-balancer-firewall" {
   name          = "${var.name}-load-balancer-firewall"
   network       = var.network_name

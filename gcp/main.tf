@@ -22,11 +22,11 @@ locals {
   hana_ip_start = 10
   hana_ips      = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
 
-  # Virtual IP addresses if a load balancer is used. In this case the virtual ip address goes in the same subnet than the machines
+  # Virtual IP addresses if a load balancer is used. In this case the virtual ip address belongs to the same subnet than the machines
   hana_cluster_vip_lb           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count)
   hana_cluster_vip_secondary_lb = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count + 1)
 
-  # Virtual IP addresses if a route is used. In this case the virtual ip address goes in a different subnet than the machines
+  # Virtual IP addresses if a route is used. In this case the virtual ip address belongs to a different subnet than the machines
   hana_cluster_vip_route           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
   hana_cluster_vip_secondary_route = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
 

@@ -34,7 +34,7 @@ variable "tcp_health_check_port" {
 }
 
 variable "target_tags" {
-  description = "List of tags that the load balancer forwards the traffic"
+  description = "List of tags applied to the virtual machines which are used by the load balancer firewall rule"
   type        = list(string)
 }
 
