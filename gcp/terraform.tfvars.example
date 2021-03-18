@@ -168,7 +168,14 @@ pre_deployment = true
 # Disk size for HANA backup in GB
 #hana_backup_disk_size = "128" # 128GB
 
+# HANA cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
+# Options: "load-balancer" (default), "route"
+#hana_cluster_vip_mechanism = "load-balancer"
+
 # HANA cluster vip
+# If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
+#hana_cluster_vip = "10.0.0.200"
+# If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
 #hana_cluster_vip = "10.0.1.200"
 
 # Enable system replication and HA cluster
@@ -180,6 +187,12 @@ pre_deployment = true
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
+
+# HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed if hana_active_active is set to true
+# If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
+#hana_cluster_vip_secondary = "10.0.0.201"
+# If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
+#hana_cluster_vip_secondary = "10.0.1.201"
 
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a GCP storage bucket

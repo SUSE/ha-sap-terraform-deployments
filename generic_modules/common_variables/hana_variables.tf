@@ -93,6 +93,11 @@ variable "hana_scenario_type" {
   type        = string
 }
 
+variable "hana_cluster_vip_mechanism" {
+  description = "Mechanism used to manage the virtual IP address in the hana cluster."
+  type        = string
+}
+
 variable "hana_cluster_vip" {
   description = "IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!"
   type        = string
