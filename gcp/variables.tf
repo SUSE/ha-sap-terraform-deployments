@@ -344,6 +344,12 @@ variable "hana_cluster_vip_mechanism" {
   description = "Mechanism used to manage the virtual IP address in the hana cluster. Options: load-balancer, route"
   type        = string
   default     = "load-balancer"
+  validation {
+    condition = (
+      can(regex("^(load-balancer|route)$", var.hana_cluster_vip_mechanism))
+    )
+    error_message = "Invalid HANA cluster vip mechanism. Options: load-balancer|route ."
+  }
 }
 
 variable "hana_cluster_vip" {
