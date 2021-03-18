@@ -8,7 +8,6 @@ cluster:
   interface: eth0
   {% endif %}
   unicast: True
-  wait_for_initialization: 120
   join_timeout: 180
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
