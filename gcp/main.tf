@@ -19,10 +19,20 @@ locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
 
-  hana_ip_start              = 10
-  hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
-  hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
-  hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
+  hana_ip_start = 10
+  hana_ips      = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+
+  # Virtual IP addresses if a load balancer is used. In this case the virtual ip address belongs to the same subnet than the machines
+  hana_cluster_vip_lb           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary_lb = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count + 1)
+
+  # Virtual IP addresses if a route is used. In this case the virtual ip address belongs to a different subnet than the machines
+  hana_cluster_vip_route           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary_route = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
+
+  # Select the final virtual ip address
+  hana_cluster_vip           = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_lb : local.hana_cluster_vip_route
+  hana_cluster_vip_secondary = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_secondary_lb : local.hana_cluster_vip_secondary_route
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
   drbd_ip_start    = 20
@@ -59,6 +69,7 @@ locals {
 module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "gcp"
+  region                              = var.region
   deployment_name                     = local.deployment_name
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
@@ -99,6 +110,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
+  hana_cluster_vip_mechanism          = var.hana_cluster_vip_mechanism
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled

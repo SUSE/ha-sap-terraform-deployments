@@ -9,6 +9,12 @@ variable "provider_type" {
   }
 }
 
+variable "region" {
+  description = "Region where the machines are created"
+  type        = string
+  default     = ""
+}
+
 variable "deployment_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string

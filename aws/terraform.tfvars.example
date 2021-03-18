@@ -201,7 +201,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Device used by node where HANA will be installed
 #hana_disk_device = "/dev/xvdd"
 
-# IP address used to configure the hana cluster floating IP. It must be in other subnet than the machines!
+# IP address used to configure the hana cluster floating IP. It must belong to the same subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
 
 # Select HANA cluster fencing mechanism. 'native' by default
@@ -210,6 +210,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
+
+# HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed if hana_active_active is set to true
+#hana_cluster_vip_secondary = "192.168.1.11"
 
 # Each host IP address (sequential order). The first ip must be in 10.0.0.0/24 subnet and the second in 10.0.1.0/24 subnet
 #hana_ips = ["10.0.0.5", "10.0.1.6"]
