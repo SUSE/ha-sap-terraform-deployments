@@ -32,7 +32,7 @@ default_sle_module_public_cloud_registration:
         attempts: 3
         interval: 15
 
-{% elif grains['osmajorrelease'] == 15 and grains['provider'] in ['gcp', 'aws', 'azure'] %}
+{% elif grains['osmajorrelease'] == 15 and grains['provider'] in ['gcp', 'aws', 'azure', 'openstack'] %}
 default_sle_module_public_cloud_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -p sle-module-public-cloud/{{ grains['osrelease'] }}/{{ arch }} -r $reg_code

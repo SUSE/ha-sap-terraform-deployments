@@ -1,5 +1,5 @@
 include:
-  {% if grains['provider'] in ['aws', 'azure', 'gcp'] %}
+  {% if grains['provider'] in ['aws', 'azure', 'gcp', 'openstack'] %}
   - cluster_node.ha.network
   {% endif %}
   - cluster_node.ha.packages
