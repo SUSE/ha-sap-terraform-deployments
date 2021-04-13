@@ -71,3 +71,19 @@ Example based on `192.168.135.0/24` address range:
 | DRBD cluster vip | `drbd_cluster_vip` | `192.168.135.22` ||
 | Netweaver ips | `netweaver_ips` | `192.168.135.30`, `192.168.135.31`, `192.168.135.32`, `192.168.135.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
 | Netweaver virtual ips | `netweaver_virtual_ips` | `192.168.135.34`, `192.168.135.35`, `192.168.135.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+
+## Openstack
+
+Example based on `10.0.0.0/24` address range.
+
+| Name | Substituted variable | Addresses | Comments |
+| :---: | :---: | :----: | :---: |
+| Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
+| Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
+| Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
+| Hana cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA |
+| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.0.13` | Only used if the Active/Active setup is used |
+| DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` ||
+| DRBD cluster vip | `drbd_cluster_vip` | `10.0.0.22` ||
+| Netweaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.0.34`, `10.0.0.35`, `10.0.0.36`, `10.0.0.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |

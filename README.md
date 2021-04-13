@@ -10,6 +10,7 @@ ___
 - [azure](azure)
 - [google cloud](gcp)
 - [aws](aws)
+- [OpenStack](openstack)
 
 
 ## Major features
