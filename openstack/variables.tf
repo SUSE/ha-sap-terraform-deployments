@@ -104,6 +104,18 @@ variable "bastion_flavor" {
   default     = "2C-2GB-40GB"
 }
 
+variable "bastion_data_disk_type" {
+  description = "Disk type of the disks used to serve as NFS server"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_data_disk_size" {
+  description = "Disk Size of the disks used to serve as NFS server"
+  type        = string
+  default     = "50"
+}
+
 variable "bastion_os_image" {
   description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string

@@ -36,6 +36,8 @@ resource "null_resource" "bastion_provisioner" {
     content     = <<EOF
 role: bastion
 ${var.common_variables["grains_output"]}
+data_disk_type: ${var.bastion_data_disk_type}
+data_disk_device: /dev/sdb
 EOF
     destination = "/tmp/grains"
   }

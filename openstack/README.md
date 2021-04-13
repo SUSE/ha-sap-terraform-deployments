@@ -54,6 +54,12 @@ Add the NFS paths to `terraform.tfvars`.
 
 - **Note:** Find some help in [SAP software documentation](../doc/sap_software.md)
 
+- **Optional:** enable NFS server on bastion host (see `terraform.tfvars`) and provision it before everything else. After that, copy files and proceed as usual.
+```
+terraform apply -target="module.bastion"
+rsync -avPc --delete -e "ssh -l {admin_user} -i {private_key_location}" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ {bastion_ip}:/mnt_permanent/sapinst/
+```
+
 6) **Deploy**
 
 ```

@@ -17,6 +17,16 @@ variable "bastion_flavor" {
   default = "2C-2GB-40GB"
 }
 
+variable "bastion_data_disk_type" {
+  description = "Disk type of the disks used to serve as NFS server"
+  type    = string
+}
+
+variable "bastion_data_disk_size" {
+  description = "Disk Size of the disks used to serve as NFS server"
+  type    = string
+}
+
 variable "network_name" {
   description = "Network to attach the static route (temporary solution)"
   type        = string

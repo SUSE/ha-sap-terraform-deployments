@@ -150,6 +150,16 @@ bastion_enabled = true
 bastion_flavor = "2C-2GB-40GB"
 bastion_srv_ip       = "10.0.0.250"
 
+# Enable a NFS server on the bastion to serve installation files (off by default)
+# Use epemeral or volume storage
+bastion_data_disk_type = ""
+# or
+#bastion_data_disk_type = "ephemeral"
+# or
+#bastion_data_disk_type = "volume"
+# Disk size for NFS server volume on the bastion (only used for volume, not ephemeral)
+#bastion_data_disk_size = "60"
+
 #########################
 # HANA machines variables
 #########################

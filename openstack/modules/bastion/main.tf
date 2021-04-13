@@ -2,6 +2,7 @@ locals {
   bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   private_ip_address = var.bastion_srv_ip
   bastion_public_key = var.common_variables["bastion_public_key"] != "" ? var.common_variables["bastion_public_key"] : var.common_variables["public_key"]
+  create_data_volumes        = var.common_variables["bastion_enabled"] && var.bastion_data_disk_type == "volume" ? true : false
 }
 
 resource "openstack_networking_floatingip_v2" "bastion" {
@@ -62,6 +63,21 @@ runcmd:
   # echo "any command"
 
 CLOUDCONFIG
+}
+
+resource "openstack_blockstorage_volume_v3" "data" {
+  # only deploy if bastion_data_disk_type is not empty
+  count             = local.create_data_volumes ? 1 : 0
+  name              = "${var.common_variables["deployment_name"]}-bastion-data-${count.index}"
+  size              = var.bastion_data_disk_size
+  availability_zone = var.region
+  enable_online_resize = true
+}
+
+resource "openstack_compute_volume_attach_v2" "data_attached" {
+  count       = local.create_data_volumes ? 1 : 0
+  instance_id = openstack_compute_instance_v2.bastion.*.id[count.index]
+  volume_id   = openstack_blockstorage_volume_v3.data.*.id[count.index]
 }
 
 resource "openstack_compute_instance_v2" "bastion" {
