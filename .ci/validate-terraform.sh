@@ -23,7 +23,6 @@ for provider in $(find * -maxdepth 0 -type d | grep -Ev 'salt|pillar_examples|do
   echo "--------------------------"
   /tmp/terraform fmt -check ;
   rm -f remote-state.tf ;
-  if [[ "$provider" == "libvirt" ]]; then continue ; fi ;
   echo "--------------------------"
   echo "** PASSED ** "
   echo "--------------------------"
