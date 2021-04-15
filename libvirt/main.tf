@@ -105,7 +105,7 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
-  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
+  netweaver_nfs_share                 = var.shared_storage_enabled && var.shared_storage_type == "drbd" ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   netweaver_sapmnt_path               = var.netweaver_sapmnt_path
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
@@ -191,7 +191,7 @@ module "monitoring" {
   isolated_network_name = local.internal_network_name
   monitoring_srv_ip     = local.monitoring_srv_ip
   hana_targets          = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets          = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets          = var.shared_storage_enabled && var.shared_storage_type == "drbd" ? local.drbd_ips : []
   netweaver_targets     = local.netweaver_virtual_ips
 }
 
@@ -214,4 +214,28 @@ module "netweaver_node" {
   shared_disk_id        = module.netweaver_shared_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   netweaver_inst_media  = var.netweaver_inst_media
+}
+
+module "shared_storage" {
+  source                         = "./modules/shared_storage"
+  common_variables               = module.common_variables.configuration
+  name                           = "shared-storage"
+  source_image                   = var.drbd_source_image
+  volume_name                    = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
+  drbd_count                     = var.shared_storage_enabled && var.shared_storage_type == "drbd" ? 2 : 0
+  drbd_node_vcpu                 = var.drbd_node_vcpu
+  drbd_node_memory               = var.drbd_node_memory
+  bridge                         = "br0"
+  drbd_ips                       = local.drbd_ips
+  drbd_cluster_vip               = local.drbd_cluster_vip
+  drbd_disk_size                 = var.drbd_disk_size
+  drbd_cluster_fencing_mechanism = var.drbd_cluster_fencing_mechanism
+  sbd_storage_type               = var.sbd_storage_type
+  drbd_sbd_disk_id               = module.drbd_sbd_disk.id
+  iscsi_srv_ip                   = module.iscsi_server.output_data.private_addresses.0
+  isolated_network_id            = local.internal_network_id
+  isolated_network_name          = local.internal_network_name
+  storage_pool                   = var.storage_pool
+  nfs_mounting_point             = var.nfs_mounting_point
+  nfs_export_name                = var.nfs_export_name
 }

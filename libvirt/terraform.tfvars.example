@@ -205,13 +205,16 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #monitoring_srv_ip = "192.168.XXX.Y+7"
 
 ########################
-# DRBD related variables
+# Storage related variables
 ########################
 
-# Enable the DRBD cluster for nfs
-#drbd_enabled = true
+# Enable the shared storage system which is required for storing part of the data in SAP applications. This can be a NFS server or DRBD provided NFS storage
+#shared_storage_enabled = true
 
-# IP of DRBD cluster
+# Select the type of storage. Current options are drbd or nfs
+#shared_storage_type = "drbd"
+
+# IP of DRBD cluster, if using drbd for storage
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
 
 # NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder

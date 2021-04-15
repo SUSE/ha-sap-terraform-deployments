@@ -554,7 +554,7 @@ variable "netweaver_cluster_fencing_mechanism" {
 }
 
 variable "netweaver_nfs_share" {
-  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd is used for storage, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
   type        = string
   default     = ""
 }
@@ -625,14 +625,26 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
+
+#
+# Shared Storage variables
+#
+
+variable "shared_storage_enabled" {
+  description = "Enable the shared storage system which is required for storing part of the data in SAP applications"
+  type        = bool
+  default     = true
+}
+
+variable "shared_storage_type" {
+  description = "Select the type of storage. Current options: drbd or nfs"
+  type        = string
+  default     = ""
+}
+
 #
 # DRBD related variables
 #
-variable "drbd_enabled" {
-  description = "Enable the drbd cluster for nfs"
-  type        = bool
-  default     = false
-}
 
 variable "drbd_source_image" {
   description = "Source image used to bot the drbd machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
@@ -695,6 +707,52 @@ variable "drbd_cluster_fencing_mechanism" {
 }
 
 variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
+#
+# NFS server variables
+#
+
+variable "nfs_server_enabled" {
+  description = "Enable the drbd cluster for nfs"
+  type        = bool
+  default     = false
+}
+
+variable "nfs_server_source_image" {
+  description = "Source image used to boot the nfs server machine (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
+  type        = string
+  default     = ""
+}
+
+variable "nfs_server_volume_name" {
+  description = "Already existing volume name boot to create the nfs server machine. It must be in the same storage pool. It's only used if nfs_server_source_image is not provided"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_server_vcpu" {
+  description = "Number of CPUs for the nfs server machine"
+  type        = number
+  default     = 1
+}
+
+variable "nfs_server_memory" {
+  description = "Memory (in MBs) for the nfs server machine"
+  type        = number
+  default     = 1024
+}
+
+variable "nfs_server_disk_size" {
+  description = "Disk size (in bytes) for the nfs server machine"
+  type        = number
+  default     = 10737418240
+}
+
+variable "nfs_mounting_point" {
   description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
   type        = string
   default     = "/mnt_permanent/sapdata"
