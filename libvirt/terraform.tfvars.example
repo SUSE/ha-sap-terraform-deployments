@@ -32,7 +32,7 @@ iprange = "192.168.XXX.Y/24"
 # Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
-# deployment_name "mydeployment"
+# deployment_name = "mydeployment"
 
 # SUSE Customer Center Registration parameters.
 #reg_code = "<<REG_CODE>>"
@@ -177,7 +177,7 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #hana_secondary_site = "Site2"
 
 # Cost optimized scenario
-#scenario_type: "cost-optimized"
+#scenario_type = "cost-optimized"
 
 #######################
 # SBD related variables
