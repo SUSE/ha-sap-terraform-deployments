@@ -38,7 +38,7 @@ primitive fs_{{ res.name }} ocf:heartbeat:Filesystem \
   options=noatime,nodiratime \
   op monitor interval="20" timeout="40s"
 
-{%- if cloud_provider not in ["amazon-web-services", "google-cloud-platform", "openstack"] %}
+{%- if cloud_provider not in ["amazon-web-services", "google-cloud-platform"] %}
 {%- set cidr_netmask = "cidr_netmask="~data.virtual_ip_mask|default("32") %}
 {%- set nic = "nic="~pillar.cluster.interface|json if pillar.cluster.interface is defined else "" %}
 
