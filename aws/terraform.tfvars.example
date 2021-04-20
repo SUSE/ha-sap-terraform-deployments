@@ -27,7 +27,7 @@ aws_region = "eu-central-1"
 # Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
-# deployment_name "mydeployment"
+# deployment_name = "mydeployment"
 
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
@@ -102,7 +102,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #provisioning_output_colored = false
 
 # Enable pre deployment steps (disabled by default)
-pre_deployment = true
+#pre_deployment = true
 
 # To disable the provisioning process
 #provisioner = ""
@@ -232,7 +232,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #hana_secondary_site = "Site2"
 
 # Cost optimized scenario
-#scenario_type: "cost-optimized"
+#scenario_type = "cost-optimized"
 
 #######################
 # SBD related variables
@@ -283,7 +283,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 #drbd_data_disk_size = 15
 
-#drbd_data_disk_type = gp2
+#drbd_data_disk_type = "gp2"
 
 # Each drbd cluster host IP address (sequential order).
 #drbd_ips = ["10.0.5.20", "10.0.6.21"]
