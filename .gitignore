@@ -5,6 +5,7 @@ azure/terraform/provision/node0_id_rsa
 azure/terraform/provision/node0_id_rsa.pub
 azure/terraform/provision/node1_id_rsa
 azure/terraform/provision/node1_id_rsa.pub
+**/id_rsa*
 
 salt/sshkeys
 pillar/hana/*
@@ -19,3 +20,7 @@ pillar/netweaver/*
 **/*.swp
 **/*.swo
 **/*~
+shell.nix
+venv
+**/.envrc
+**/.direnv
