@@ -1,4 +1,4 @@
-{% if grains['provider'] == 'libvirt' or grains['provider'] == 'openstack' %}
+{% if grains.get('provider') in ['libvirt', 'openstack'] %}
 mount_swpm:
   mount.mounted:
     - name: {{ grains['netweaver_inst_folder'] }}
