@@ -1,3 +1,17 @@
+# ephemeral devices will be automatically mounted on openstack
+# syncing the drbd device will fail in this case
+{% if grains['provider'] == 'openstack' %}
+not_in_fstab:
+  mount.fstab_absent:
+    - name: {{ grains['drbd_disk_device'] }}
+    - fs_file: /mnt
+
+not_mounted:
+  mount.unmounted:
+    - name: /mnt
+    - device: {{ grains['drbd_disk_device'] }}
+{% endif %}
+
 mklabel_drbd:
   module.run:
     - partition.mklabel:
