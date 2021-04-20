@@ -13,6 +13,11 @@ matrix:
         - unzip /tmp/terraform -d /tmp
         - chmod +x /tmp/terraform
         - /tmp/terraform -version
+        # install terraform-proivder-libvirt
+        - echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/systemsmanagement:terraform.list
+        - curl -fsSL https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/systemsmanagement_terraform.gpg > /dev/null
+        - sudo apt-get update
+        - sudo apt-get -y install terraform-provider-libvirt
       script:
         - .ci/validate-terraform.sh
         - shellcheck salt/provision.sh
