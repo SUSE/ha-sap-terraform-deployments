@@ -4,6 +4,7 @@ include:
   - os_setup.repos
   - os_setup.minion_configuration
   - os_setup.packages
+  - os_setup.requirements
   {% if grains['provider'] == 'libvirt' %}
   - os_setup.ip_workaround
   {% endif %}

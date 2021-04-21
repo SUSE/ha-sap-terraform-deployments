@@ -11,6 +11,9 @@ locals {
 
   bastion_private_key = var.bastion_private_key != "" ? (fileexists(var.bastion_private_key) ? file(var.bastion_private_key) : var.bastion_private_key) : local.private_key
   bastion_public_key  = var.bastion_public_key != "" ? (fileexists(var.bastion_public_key) ? file(var.bastion_public_key) : var.bastion_public_key) : local.public_key
+
+  requirements_file = "${path.module}/../../requirements.txt"
+  requirements      = fileexists(local.requirements_file) ? formatlist("'%s'", compact(split("\n", trimspace(file(local.requirements_file))))) : []
 }
 
 output "configuration" {
@@ -102,6 +105,7 @@ monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
+pkg_requirements: [${join(", ", local.requirements)}]
 EOF
     hana_grains_output      = <<EOF
 hana_sid: ${var.hana_sid}
