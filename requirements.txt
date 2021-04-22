@@ -1,1 +1,5 @@
-python3-shaptools: 0.3.12+git.1619007514.1951d23
+hana_node:
+  python3-shaptools: 0.3.12+git.1619007514.1951d23
+  salt-shaptools:
+iscsi_srv:
+  iscsi-formula: 1.1.1
