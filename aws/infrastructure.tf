@@ -249,6 +249,17 @@ resource "aws_security_group_rule" "prometheus_server" {
   security_group_id = local.security_group_id
 }
 
+resource "aws_security_group_rule" "alertmanagerWebUI" {
+  count       = local.create_security_group_monitoring
+  type        = "ingress"
+  from_port   = 9030
+  to_port     = 9030
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = local.security_group_id
+}  
+  
 resource "aws_security_group_rule" "grafana_server" {
   count       = local.create_security_group_monitoring
   type        = "ingress"
