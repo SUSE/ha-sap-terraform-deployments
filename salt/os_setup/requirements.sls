@@ -1,4 +1,4 @@
-{% if grains['pkg_requirements'] %}
+{% if grains['pkg_requirements'] and not grains['ha_sap_deployment_repo'] %}
 {% for role, packages in grains['pkg_requirements'].items() if role == grains['role'] %}
 install_package_requirements_{{ role }}:
   pkg.installed:
@@ -6,6 +6,7 @@ install_package_requirements_{{ role }}:
       {% for pkg, version in packages.items() %}
       - {{ pkg }}{% if version %}: {{ version }} {% endif %}
       {% endfor %}
+    - resolve_capabilities: true
     - retry:
         attempts: 3
         interval: 15
