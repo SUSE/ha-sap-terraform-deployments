@@ -386,7 +386,7 @@ variable "iscsi_volume_name" {
 }
 
 variable "iscsi_srv_ip" {
-  description = "iSCSI server address (only used if shared_storage_type is iscsi)"
+  description = "iSCSI server address"
   type        = string
   default     = ""
   validation {
