@@ -77,6 +77,12 @@ install_salt_minion () {
     zypper --non-interactive --gpg-auto-import-keys refresh --force --services
     zypper --non-interactive install salt-minion
 
+    # Salt may fail on minion_configuration if an older python is installed
+    if [[ $VERSION_ID =~ ^12\.? ]]; then
+      # shellcheck disable=SC2046
+      zypper --non-interactive update python
+    fi
+
     # deregister
     if [[ $reg_code != "" ]]; then
        SUSEConnect -d
