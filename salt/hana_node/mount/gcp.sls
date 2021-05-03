@@ -23,25 +23,25 @@ hana_lvm_lvcreate_data:
   lvm.lv_present:
     - name: lv_data
     - vgname: vg_hana
-    - extents: 60%FREE
+    - extents: 60%VG
 
 hana_lvm_lvcreate_log:
   lvm.lv_present:
     - name: lv_log
     - vgname: vg_hana
-    - extents: 10%FREE
+    - extents: 10%VG
 
 hana_lvm_lvcreate_sap:
   lvm.lv_present:
     - name: lv_sap
     - vgname: vg_hana
-    - extents: 5%FREE
+    - extents: 5%VG
 
 hana_lvm_lvcreate_shared:
   lvm.lv_present:
     - name: lv_shared
     - vgname: vg_hana
-    - extents: 25%FREE
+    - extents: 25%VG
 
 hana_lvm_lvcreate_backup:
   lvm.lv_present:
