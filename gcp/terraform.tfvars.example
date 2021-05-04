@@ -140,6 +140,11 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # BYOS example
 # bastion_os_image = """suse-byos-cloud/sles-15-sp2-sap-byos""
 
+# Minimum ports per VM instance for the NAT router. Decreasing this value can compromise the deployment and make it fail
+# This value is a number between 1 and 1024
+# Find more information at: https://cloud.google.com/nat/docs/ports-and-addresses#port-reservation-procedure
+#bastion_nat_min_ports_per_vm = 1204
+
 #########################
 # HANA machines variables
 #########################

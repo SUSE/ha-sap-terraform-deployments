@@ -85,6 +85,12 @@ variable "bastion_private_key" {
   default     = ""
 }
 
+variable "bastion_nat_min_ports_per_vm" {
+  description = "Minimum ports per VM instance for the NAT router. Decreasing this value can compromise the deployment and make it fail"
+  type        = number
+  default     = 1024
+}
+
 # Deployment variables
 
 variable "deployment_name" {
