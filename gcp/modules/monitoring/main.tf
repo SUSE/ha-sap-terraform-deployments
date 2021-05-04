@@ -1,6 +1,11 @@
 # monitoring deployment in GCP to host Prometheus/Grafana server
 # to monitor the various components of the HA SAP cluster
 
+locals {
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? google_compute_instance.monitoring.*.network_interface.0.network_ip : google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
+}
+
 resource "google_compute_disk" "monitoring_data" {
   count = var.monitoring_enabled == true ? 1 : 0
   name  = "${var.common_variables["deployment_name"]}-monitoring-data"
@@ -24,8 +29,12 @@ resource "google_compute_instance" "monitoring" {
     subnetwork = var.network_subnet_name
     network_ip = var.monitoring_srv_ip
 
-    access_config {
-      nat_ip = ""
+    # Set public IP address. Only if the bastion is not used
+    dynamic "access_config" {
+      for_each = local.bastion_enabled ? [] : [1]
+      content {
+        nat_ip = ""
+      }
     }
   }
 
@@ -50,7 +59,7 @@ resource "google_compute_instance" "monitoring" {
   }
 
   metadata = {
-    sshKeys = "root:${var.common_variables["public_key"]}"
+    sshKeys = "${var.common_variables["authorized_user"]}:${var.common_variables["public_key"]}"
   }
 }
 
@@ -58,8 +67,10 @@ module "monitoring_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.monitoring_enabled ? 1 : 0
   instance_ids         = google_compute_instance.monitoring.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   dependencies         = var.on_destroy_dependencies
 }

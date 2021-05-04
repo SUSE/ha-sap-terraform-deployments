@@ -10,13 +10,14 @@ resource "null_resource" "netweaver_provisioner" {
   }
 
   connection {
-    host = element(
-      google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip,
-      count.index,
-    )
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
-    user        = "root"
+    user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.common_variables["authorized_user"]
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -43,8 +44,9 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 netweaver_software_bucket: ${var.netweaver_software_bucket}
 netweaver_inst_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.netweaver.*.attached_disk.0.device_name, count.index))}
 vpc_network_name: ${var.network_name}
-ascs_route_name: ${google_compute_route.nw-ascs-route[0].name}
-ers_route_name: ${google_compute_route.nw-ers-route[0].name}
+ascs_route_name: ${join(",", google_compute_route.nw-ascs-route.*.name)}
+ers_route_name: ${join(",", google_compute_route.nw-ers-route.*.name)}
+app_server_count: ${var.app_server_count}
 
 EOF
     destination = "/tmp/grains"
@@ -55,8 +57,10 @@ module "netweaver_provision" {
   source               = "../../../generic_modules/salt_provisioner"
   node_count           = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
   instance_ids         = null_resource.netweaver_provisioner.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
 }

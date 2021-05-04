@@ -25,6 +25,7 @@ prometheus_service:
     - name: prometheus
     - enable: True
     - require:
+      - pkg: golang-github-prometheus-prometheus
       - file: prometheus_configuration
       - file: prometheus_alerts
     - watch:
@@ -47,3 +48,16 @@ prometheus-alertmanager:
     - retry:
         attempts: 3
         interval: 15
+
+prometheus-alertmanager_service:
+  service.running:
+    - name: prometheus-alertmanager
+    - enable: True
+    - require:
+      - pkg: golang-github-prometheus-alertmanager
+      - service: prometheus_service
+      - file: prometheus_configuration
+      - file: prometheus_alerts
+    - watch:
+      - file: prometheus_configuration
+      - file: prometheus_alerts

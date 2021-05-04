@@ -32,7 +32,7 @@ az_region = "westeurope"
 # Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
-# deployment_name "mydeployment"
+# deployment_name = "mydeployment"
 
 # Admin user for the created machines
 admin_user = "cloudadmin"
@@ -104,7 +104,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #provisioning_output_colored = false
 
 # Enable pre deployment steps (disabled by default)
-pre_deployment = true
+#pre_deployment = true
 
 # To disable the provisioning process
 #provisioner = ""
@@ -129,7 +129,8 @@ pre_deployment = true
 # Bastion (jumpbox) machine variables
 ##########################
 
-# Enable bastion usage. This option configures the deployment to only create a unique public ip address that is attached to the bastion machine
+# Enable bastion usage. If this option is enabled, it will create a unique public ip address that is attached to the bastion machine.
+# The rest of the machines won't have a public ip address and the SSH connection must be done through the bastion
 #bastion_enabled = true
 
 # Bastion SSH keys. If they are not set the public_key and private_key are used
@@ -233,10 +234,15 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
+
+# IP address used to configure the hana cluster floating IP. It must belong to the same subnet than the hana machines
 #hana_cluster_vip = "10.74.1.13"
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
+
+# HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed if hana_active_active is set to true
+#hana_cluster_vip_secondary = "10.74.1.14"
 
 # HANA instance configuration
 # Find some references about the variables in:
@@ -253,7 +259,7 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #hana_secondary_site = "Site2"
 
 # Cost optimized scenario
-#scenario_type: "cost-optimized"
+#scenario_type = "cost-optimized"
 
 #######################
 # SBD related variables

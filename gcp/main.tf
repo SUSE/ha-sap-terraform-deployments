@@ -19,10 +19,20 @@ locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
 
-  hana_ip_start              = 10
-  hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
-  hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
-  hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
+  hana_ip_start = 10
+  hana_ips      = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+
+  # Virtual IP addresses if a load balancer is used. In this case the virtual ip address belongs to the same subnet than the machines
+  hana_cluster_vip_lb           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary_lb = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count + 1)
+
+  # Virtual IP addresses if a route is used. In this case the virtual ip address belongs to a different subnet than the machines
+  hana_cluster_vip_route           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count)
+  hana_cluster_vip_secondary_route = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.hana_ip_start + var.hana_count + 1)
+
+  # Select the final virtual ip address
+  hana_cluster_vip           = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_lb : local.hana_cluster_vip_route
+  hana_cluster_vip_secondary = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_secondary_lb : local.hana_cluster_vip_secondary_route
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
   drbd_ip_start    = 20
@@ -47,11 +57,19 @@ locals {
   monitoring_os_image = var.monitoring_os_image != "" ? var.monitoring_os_image : var.os_image
   drbd_os_image       = var.drbd_os_image != "" ? var.drbd_os_image : var.os_image
   netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
+
+  # Netweaver password checking
+  # If Netweaver is not enabled, a dummy password is passed to pass the variable validation and not require
+  # a password in this case
+  # Otherwise, the validation will fail unless a correct password is provided
+  netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
 }
 
 module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "gcp"
+  region                              = var.region
   deployment_name                     = local.deployment_name
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
@@ -62,6 +80,9 @@ module "common_variables" {
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
   authorized_user                     = "root"
+  bastion_enabled                     = var.bastion_enabled
+  bastion_public_key                  = var.bastion_public_key
+  bastion_private_key                 = var.bastion_private_key
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored
@@ -89,6 +110,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
+  hana_cluster_vip_mechanism          = var.hana_cluster_vip_mechanism
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
@@ -98,7 +120,7 @@ module "common_variables" {
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
   netweaver_pas_instance_number       = var.netweaver_pas_instance_number
-  netweaver_master_password           = var.netweaver_master_password
+  netweaver_master_password           = local.netweaver_master_password
   netweaver_product_id                = var.netweaver_product_id
   netweaver_inst_folder               = var.netweaver_inst_folder
   netweaver_extract_dir               = var.netweaver_extract_dir
@@ -121,6 +143,7 @@ module "common_variables" {
 module "drbd_node" {
   source               = "./modules/drbd_node"
   common_variables     = module.common_variables.configuration
+  bastion_host         = module.bastion.public_ip
   drbd_count           = var.drbd_enabled == true ? 2 : 0
   machine_type         = var.drbd_machine_type
   compute_zones        = data.google_compute_zones.available.names
@@ -148,6 +171,7 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
+  bastion_host              = module.bastion.public_ip
   xscs_server_count         = local.netweaver_xscs_server_count
   app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   machine_type              = var.netweaver_machine_type
@@ -171,6 +195,7 @@ module "netweaver_node" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  bastion_host          = module.bastion.public_ip
   hana_count            = var.hana_count
   machine_type          = var.machine_type
   compute_zones         = data.google_compute_zones.available.names
@@ -187,13 +212,15 @@ module "hana_node" {
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
-    google_compute_firewall.ha_firewall_allow_tcp
+    google_compute_firewall.ha_firewall_allow_tcp,
+    google_compute_router_nat.nat
   ]
 }
 
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   compute_zones       = data.google_compute_zones.available.names
   network_subnet_name = local.subnet_name
@@ -203,13 +230,15 @@ module "monitoring" {
   drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
   netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
-    google_compute_firewall.ha_firewall_allow_tcp
+    google_compute_firewall.ha_firewall_allow_tcp,
+    google_compute_router_nat.nat
   ]
 }
 
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled == true ? 1 : 0
   machine_type        = var.machine_type_iscsi_server
   compute_zones       = data.google_compute_zones.available.names

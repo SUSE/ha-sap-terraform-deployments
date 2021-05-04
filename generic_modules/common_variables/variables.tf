@@ -1,6 +1,18 @@
 variable "provider_type" {
   description = "Used provider for the deployment"
   type        = string
+  validation {
+    condition = (
+      can(regex("^(aws|azure|gcp|libvirt|openstack)$", var.provider_type))
+    )
+    error_message = "Invalid provider type. Options: aws|azure|gcp|libvirt|openstack ."
+  }
+}
+
+variable "region" {
+  description = "Region where the machines are created"
+  type        = string
+  default     = ""
 }
 
 variable "deployment_name" {
@@ -87,6 +99,12 @@ variable "provisioning_log_level" {
   description = "Provisioning process log level. For salt: https://docs.saltstack.com/en/latest/ref/configuration/logging/index.html"
   type        = string
   default     = "error"
+  validation {
+    condition = (
+      can(regex("^(quiet|critical|error|warning|info|profile|debug|trace|garbage|all)$", var.provisioning_log_level))
+    )
+    error_message = "Invalid salt log level. Options: quiet|critical|error|warning|info|profile|debug|trace|garbage|all ."
+  }
 }
 
 variable "background" {

@@ -29,9 +29,22 @@ restart_shell:
     - require:
       - install_gcloud
 
+# Fix for https://github.com/SUSE/ha-sap-terraform-deployments/issues/669
+# gcloud and gsutil don't support python3.4 usage
+{%- set python3_version = salt['cmd.run']('python3 --version').split(' ')[1] %}
+{%- if salt['pkg.version_cmp'](python3_version, '3.5') < 0 %}
+{%- set use_py2 = true %}
+{%- else %}
+{%- set use_py2 = false %}
+{%- endif %}
+
 configure_gcloud_credentials:
   cmd.run:
     - name: {{ gcloud_bin_dir }}/gcloud auth activate-service-account --key-file {{ credentials_file }}
+    {%- if use_py2 %}
+    - env:
+      - CLOUDSDK_PYTHON: python2.7
+    {%- endif %}
     - require:
       - install_gcloud
 
@@ -44,6 +57,10 @@ download_files_from_gcp:
     - name: {{ gcloud_bin_dir }}/gsutil -m cp -r {{ gs_url }} {{ dest_folder }}
     - output_loglevel: quiet
     - hide_output: True
+    {%- if use_py2 %}
+    - env:
+      - CLOUDSDK_PYTHON: python2.7
+    {%- endif %}
     - require:
       - install_gcloud
 

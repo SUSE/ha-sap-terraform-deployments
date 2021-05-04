@@ -6,10 +6,14 @@ resource "null_resource" "monitoring_provisioner" {
   }
 
   connection {
-    host        = google_compute_instance.monitoring.0.network_interface.0.access_config.0.nat_ip
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
-    user        = "root"
+    user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.common_variables["authorized_user"]
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -20,7 +24,7 @@ name_prefix: ${var.common_variables["deployment_name"]}-monitoring
 hostname: ${var.common_variables["deployment_name"]}-monitoring
 network_domain: "tf.local"
 host_ip: ${var.monitoring_srv_ip}
-public_ip: ${google_compute_instance.monitoring[0].network_interface[0].access_config[0].nat_ip}
+public_ip: ${local.provisioning_addresses[0]}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
 drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
 netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
@@ -33,8 +37,10 @@ module "monitoring_provision" {
   source               = "../../../generic_modules/salt_provisioner"
   node_count           = var.common_variables["provisioner"] == "salt" && var.monitoring_enabled ? 1 : 0
   instance_ids         = null_resource.monitoring_provisioner.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.monitoring.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   background           = var.common_variables["background"]
 }
