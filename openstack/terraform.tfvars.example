@@ -39,7 +39,7 @@ ip_cidr_range = "10.0.0.0/24"
 # Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
-# deployment_name "mydeployment"
+# deployment_name = "mydeployment"
 
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
@@ -112,7 +112,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #provisioning_output_colored = false
 
 # Enable pre deployment steps (disabled by default)
-pre_deployment = true
+#pre_deployment = true
 
 # To disable the provisioning process
 #provisioner = ""
@@ -254,7 +254,7 @@ hana_ips = ["10.0.0.10", "10.0.0.11"]
 # Find some references about the variables in:
 # https://help.sap.com
 # HANA instance system identifier. It's composed of 3 characters string
-#hana_sid = "prd"
+#hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
 # HANA instance master password. It must follow the SAP Password policies
@@ -401,7 +401,7 @@ netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35", "10.0.0.36", "10.0.0.37"]
 
 # Netweaver installation configuration
 # Netweaver system identifier. It's composed of 3 characters string
-#netweaver_sid = "ha1"
+#netweaver_sid = "HA1"
 # Netweaver ASCS instance number. It's composed of 2 integers string
 #netweaver_ascs_instance_number = "00"
 # Netweaver ERS instance number. It's composed of 2 integers string
