@@ -11,11 +11,15 @@ locals {
 
   bastion_private_key = var.bastion_private_key != "" ? (fileexists(var.bastion_private_key) ? file(var.bastion_private_key) : var.bastion_private_key) : local.private_key
   bastion_public_key  = var.bastion_public_key != "" ? (fileexists(var.bastion_public_key) ? file(var.bastion_public_key) : var.bastion_public_key) : local.public_key
+
+  requirements_file = "${path.module}/../../requirements.yml"
+  requirements      = fileexists(local.requirements_file) ? yamlencode({pkg_requirements: yamldecode(trimspace(file(local.requirements_file)))}) : ""
 }
 
 output "configuration" {
   value = {
     provider_type               = var.provider_type
+    region                      = var.region
     deployment_name             = var.deployment_name
     reg_code                    = var.reg_code
     reg_email                   = var.reg_email
@@ -56,6 +60,7 @@ output "configuration" {
       client_archive_file            = var.hana_client_archive_file
       client_extract_dir             = var.hana_client_extract_dir
       scenario_type                  = var.hana_scenario_type
+      cluster_vip_mechanism          = var.hana_cluster_vip_mechanism
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
       ha_enabled                     = var.hana_ha_enabled
@@ -100,6 +105,7 @@ monitoring_srv_ip: ${var.monitoring_srv_ip}
 qa_mode: ${var.qa_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
+${local.requirements}
 EOF
     hana_grains_output      = <<EOF
 hana_sid: ${var.hana_sid}
@@ -120,6 +126,7 @@ hana_extract_dir: ${var.hana_extract_dir}
 hana_client_folder: ${var.hana_client_folder}
 hana_client_archive_file: ${var.hana_client_archive_file}
 hana_client_extract_dir: ${var.hana_client_extract_dir}
+hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 scenario_type: ${var.hana_scenario_type}

@@ -93,3 +93,9 @@ output "netweaver_name" {
 output "netweaver_public_name" {
   value = module.netweaver_node.netweaver_public_name
 }
+
+# bastion
+
+output "bastion_public_ip" {
+  value = module.bastion.public_ip
+}

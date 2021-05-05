@@ -22,6 +22,12 @@ variable "vnet_address_range" {
   description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
   default     = "10.74.0.0/16"
+  validation {
+    condition = (
+      can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.vnet_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
 }
 
 variable "subnet_name" {
@@ -34,6 +40,12 @@ variable "subnet_address_range" {
   description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.subnet_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
 }
 
 variable "admin_user" {
@@ -254,6 +266,12 @@ variable "hana_ips" {
   description = "ip addresses to set to the hana nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
+  validation {
+    condition = (
+      can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "hana_inst_master" {
@@ -316,15 +334,15 @@ variable "hana_fstype" {
 }
 
 variable "hana_sid" {
-  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: PRD, HA1"
   type        = string
-  default     = "prd"
+  default     = "PRD"
 }
 
 variable "hana_cost_optimized_sid" {
-  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
+  description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: PRD, HA1"
   type        = string
-  default     = "qas"
+  default     = "QAS"
 }
 
 variable "hana_instance_number" {
@@ -366,12 +384,24 @@ variable "hana_cluster_vip" {
   description = "Virtual ip for the hana cluster. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.hana_cluster_vip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_cluster_vip))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "hana_cluster_fencing_mechanism" {
   description = "Select the HANA cluster fencing mechanism. Options: sbd"
   type        = string
   default     = "sbd"
+  validation {
+    condition = (
+      can(regex("^(sbd|native)$", var.hana_cluster_fencing_mechanism))
+    )
+    error_message = "Invalid HANA cluster fencing mechanism. Options: sbd|native ."
+  }
 }
 
 variable "hana_ha_enabled" {
@@ -390,6 +420,12 @@ variable "hana_cluster_vip_secondary" {
   description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.hana_cluster_vip_secondary == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_cluster_vip_secondary))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "scenario_type" {
@@ -405,6 +441,12 @@ variable "sbd_storage_type" {
   description = "Choose the SBD storage type. Options: iscsi"
   type        = string
   default     = "iscsi"
+  validation {
+    condition = (
+      can(regex("^(iscsi)$", var.sbd_storage_type))
+    )
+    error_message = "Invalid SBD storage type. Options: iscsi ."
+  }
 }
 
 # If iscsi is selected as sbd_storage_type
@@ -432,6 +474,12 @@ variable "iscsi_srv_ip" {
   description = "iscsi server address. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.iscsi_srv_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.iscsi_srv_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "iscsi_lun_count" {
@@ -475,6 +523,12 @@ variable "monitoring_srv_ip" {
   description = "monitoring server address. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.monitoring_srv_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.monitoring_srv_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 # DRBD related variables
@@ -513,12 +567,24 @@ variable "drbd_cluster_vip" {
   description = "Virtual ip for the drbd cluster. If it's not set the address will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
+  validation {
+    condition = (
+      var.drbd_cluster_vip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.drbd_cluster_vip))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "drbd_cluster_fencing_mechanism" {
   description = "Select the DRBD cluster fencing mechanism. Options: sbd"
   type        = string
   default     = "sbd"
+  validation {
+    condition = (
+      can(regex("^(sbd|native)$", var.drbd_cluster_fencing_mechanism))
+    )
+    error_message = "Invalid DRBD cluster fencing mechanism. Options: sbd|native ."
+  }
 }
 
 variable "drbd_nfs_mounting_point" {
@@ -599,12 +665,24 @@ variable "netweaver_ips" {
   description = "ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
+  validation {
+    condition = (
+      can([for v in var.netweaver_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "netweaver_virtual_ips" {
   description = "Virtual ip addresses to set to the netweaver cluster nodes. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = list(string)
   default     = []
+  validation {
+    condition = (
+      can([for v in var.netweaver_virtual_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 variable "netweaver_sid" {
@@ -634,12 +712,19 @@ variable "netweaver_pas_instance_number" {
 variable "netweaver_master_password" {
   description = "Master password for the Netweaver system (sidadm user included)"
   type        = string
+  default     = ""
 }
 
 variable "netweaver_cluster_fencing_mechanism" {
   description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
   type        = string
   default     = "sbd"
+  validation {
+    condition = (
+      can(regex("^(native|sbd)$", var.netweaver_cluster_fencing_mechanism))
+    )
+    error_message = "Invalid Netweaver cluster fending mechanism. Options: native|sbd ."
+  }
 }
 
 variable "netweaver_nfs_share" {

@@ -52,6 +52,12 @@ locals {
   drbd_os_owner       = var.drbd_os_owner != "" ? var.drbd_os_owner : var.os_owner
   netweaver_os_image  = var.netweaver_os_image != "" ? var.netweaver_os_image : var.os_image
   netweaver_os_owner  = var.netweaver_os_owner != "" ? var.netweaver_os_owner : var.os_owner
+
+  # Netweaver password checking
+  # If Netweaver is not enabled, a dummy password is passed to pass the variable validation and not require
+  # a password in this case
+  # Otherwise, the validation will fail unless a correct password is provided
+  netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
 }
 
 module "common_variables" {
@@ -94,6 +100,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
+  hana_cluster_vip_mechanism          = ""
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
@@ -103,7 +110,7 @@ module "common_variables" {
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
   netweaver_pas_instance_number       = var.netweaver_pas_instance_number
-  netweaver_master_password           = var.netweaver_master_password
+  netweaver_master_password           = local.netweaver_master_password
   netweaver_product_id                = var.netweaver_product_id
   netweaver_inst_folder               = var.netweaver_inst_folder
   netweaver_extract_dir               = var.netweaver_extract_dir

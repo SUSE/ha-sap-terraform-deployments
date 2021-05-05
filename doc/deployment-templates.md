@@ -33,7 +33,6 @@ reg_email = "MY_EMAIL"
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
 # Specific SLE version used in all the created machines
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-shared_storage_type = "shared-disk"
 storage_pool           = "terraform"
 ```
 
@@ -59,7 +58,6 @@ reg_email = "MY_EMAIL"
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
 # Specific SLE version used in all the created machines
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-shared_storage_type = "shared-disk"
 storage_pool           = "terraform"
 ```
 
@@ -78,7 +76,6 @@ reg_email = "MY_EMAIL"
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
 # Specific SLE version used in all the created machines
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-shared_storage_type = "iscsi"
 iscsi_srv_ip = "192.168.110.31"
 iscsi_image = "SLE15 IMAGE"
 storage_pool           = "terraform"
@@ -101,13 +98,11 @@ reg_email = "MY_EMAIL"
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/"
 # Specific SLE version used in all the created machines
 ha_sap_deployment_repo = "http://download.opensuse.org/repositories/network:/ha-clustering:/Factory/SLE_15/"
-shared_storage_type = "shared-disk"
 storage_pool           = "terraform"
 netweaver_inst_media = "PATH INST MEDIA"
 netweaver_nfs_share      = "192.168.110.201:/HA1"
 netweaver_enabled        = true
 drbd_enabled           = true
-drbd_shared_storage_type = "shared-disk"
 drbd_ips               = ["192.168.110.23", "192.168.110.22"]
 nw_ips                 = ["192.168.110.24", "192.168.110.25", "192.168.110.26", "192.168.110.27"]
 nw_virtual_ips          = ["192.168.110.31", "192.168.110.30", "192.168.110.29", "192.168.119.28"]

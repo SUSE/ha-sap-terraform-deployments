@@ -47,7 +47,7 @@ cluster:
       {% endif %}
     method: 'update'
     template:
-      source: salt://drbd_node/files/templates/drbd_cluster.j2
+      source: salt://drbd/templates/habootstrap-formula/cluster_resources_nfs_cloud.j2
       parameters:
         {% if grains['provider'] == 'aws' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
