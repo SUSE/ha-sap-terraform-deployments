@@ -127,5 +127,5 @@ resource "google_compute_router_nat" "nat" {
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 
-  min_ports_per_vm = 160
+  min_ports_per_vm = var.bastion_nat_min_ports_per_vm
 }

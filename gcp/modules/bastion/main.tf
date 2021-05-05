@@ -47,10 +47,6 @@ resource "google_compute_instance" "bastion" {
   machine_type = var.vm_size
   zone         = element(var.compute_zones, 0)
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   network_interface {
     subnetwork = google_compute_subnetwork.bastion_subnet.*.name[0]
     network_ip = local.private_ip_address

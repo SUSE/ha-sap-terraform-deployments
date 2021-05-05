@@ -21,9 +21,7 @@ resource "google_compute_instance" "monitoring" {
   machine_type = "custom-1-2048"
   zone         = element(var.compute_zones, 0)
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  can_ip_forward = true
 
   network_interface {
     subnetwork = var.network_subnet_name
@@ -60,6 +58,10 @@ resource "google_compute_instance" "monitoring" {
 
   metadata = {
     sshKeys = "${var.common_variables["authorized_user"]}:${var.common_variables["public_key"]}"
+  }
+
+  service_account {
+    scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
 }
 
