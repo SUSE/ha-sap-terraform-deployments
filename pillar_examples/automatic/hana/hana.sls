@@ -40,6 +40,10 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
+        {% if grains['hana_ignore_min_mem_check'] %}
+        extra_parameters:
+          ignore: check_min_mem
+        {% endif %}
       {%- if grains.get('ha_enabled') %}
       primary:
         name: {{ grains['hana_primary_site'] }}
@@ -80,6 +84,10 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
+        {% if grains['hana_ignore_min_mem_check'] %}
+        extra_parameters:
+          ignore: check_min_mem
+        {% endif %}
       {%- if grains.get('ha_enabled') %}
       secondary:
         name: {{ grains['hana_secondary_site'] }}
@@ -111,6 +119,10 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_cost_optimized_master_password'] }}
         sapadm_password: {{ grains['hana_cost_optimized_master_password'] }}
+        {% if grains['hana_ignore_min_mem_check'] %}
+        extra_parameters:
+          ignore: check_min_mem
+        {% endif %}
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
         exposition_port: 9669

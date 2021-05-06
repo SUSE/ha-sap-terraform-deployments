@@ -154,6 +154,11 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
 
+# Disable minimal memory checks for HANA. Useful to deploy development clusters.
+# Low memory usage can cause a failed deployment. Be aware that this option does
+# not work with any memory size and will most likely fail with less than 16 GiB
+#hana_ignore_min_mem_check = false
+
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a AWS S3 bucket
 
