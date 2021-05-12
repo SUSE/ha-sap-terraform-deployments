@@ -6,16 +6,13 @@ provider "ibm" {
     zone = var.zone
 }
 
-locals {
-  create_ha_infra             = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-}
-
 ## hana instances
 
 locals {
-  disks_number      = length(split(",", var.hana_data_disks_configuration["disks_size"]))
-  disks_size        = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
-  disks_type        = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  create_shared_infra   = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] && var.common_variables["hana"]["fencing_mechanism"] == "sbd" && var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? 1 : 0
+  disks_number          = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size            = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type            = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
 }
 
 resource "ibm_pi_volume" "ibm_pi_hana_volume"{
@@ -43,7 +40,7 @@ resource "ibm_pi_instance" "ibm_pi_hana" {
   pi_pin_policy         = "none"
   pi_replication_policy = "none"
   pi_health_status      = "OK"
-  pi_volume_ids         = [for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id]
+  pi_volume_ids         = concat([for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id], local.create_shared_infra == 1 ? [var.sbd_disk_id] : [])
   timeouts {
     create = "15m"
     delete = "15m"
