@@ -3,9 +3,9 @@ variable "provider_type" {
   type        = string
   validation {
     condition = (
-      can(regex("^(aws|azure|gcp|libvirt|openstack)$", var.provider_type))
+      can(regex("^(aws|azure|gcp|libvirt|openstack|powervs)$", var.provider_type))
     )
-    error_message = "Invalid provider type. Options: aws|azure|gcp|libvirt|openstack ."
+    error_message = "Invalid provider type. Options: aws|azure|gcp|libvirt|openstack|powervs ."
   }
 }
 
