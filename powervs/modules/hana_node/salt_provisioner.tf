@@ -22,7 +22,10 @@ hostname: ${terraform.workspace}-${var.name}0${count.index + 1}
 host_ips: [${join(",", data.ibm_pi_instance.ibm_pi_hana[*].addresses[0].ip)}]
 network_domain: "tf.local"
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
-hana_data_disks_wwn: {${join(", ", formatlist("'%s': '%s'", join(",", data.ibm_pi_instance.ibm_pi_hana[*].pi_instance_name), lower(join(",", data.ibm_pi_volume.ibm_pi_hana_volume[*].wwn))))}}
+hana_data_disks_wwn: {${join(", ", [for i in range(0, var.hana_count): format("'%s': '%s'", data.ibm_pi_instance.ibm_pi_hana[i].pi_instance_name, lower(join(",", slice(data.ibm_pi_volume.ibm_pi_hana_volume[*].wwn, i * local.disks_number, local.disks_number*(i+1)))))])}}
+sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? format("/dev/disk/by-id/wwn-0x%s", lower(var.sbd_disk_wwn)) : ""}"
+cluster_ssh_pub:  ${var.cluster_ssh_pub}
+cluster_ssh_key: ${var.cluster_ssh_key}
 EOF
     destination = "/tmp/grains"
   }

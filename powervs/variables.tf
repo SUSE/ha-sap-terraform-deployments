@@ -64,6 +64,16 @@ variable "private_key" {
   type        = string
 }
 
+variable "cluster_ssh_pub" {
+  description = "Path to a SSH public key used during the cluster creation. The key must be passwordless"
+  type        = string
+}
+
+variable "cluster_ssh_key" {
+  description = "Path to a SSH private key used during the cluster creation. The key must be passwordless"
+  type        = string
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   type        = string
@@ -251,13 +261,13 @@ variable "hana_fstype" {
 variable "hana_sid" {
   description = "System identifier of the HANA system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
   type        = string
-  default     = "prd"
+  default     = "PRD"
 }
 
 variable "hana_cost_optimized_sid" {
   description = "System identifier of the HANA cost-optimized system. It must be a 3 characters string (check the restrictions in the SAP documentation pages). Examples: prd, ha1"
   type        = string
-  default     = "qas"
+  default     = "QAS"
 }
 
 variable "hana_instance_number" {
@@ -335,9 +345,15 @@ variable "scenario_type" {
 # All the clusters will use the same mechanism
 
 variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
   type        = string
-  default     = "iscsi"
+  default     = "shared-disk"
+}
+
+variable "sbd_disk_size" {
+  description = "Disk size (in GB) for the SBD disk. It's used to create the ISCSI server disk too"
+  type        = number
+  default     = 1
 }
 
 # If iscsi is selected as sbd_storage_type
@@ -370,12 +386,6 @@ variable "iscsi_srv_ip" {
 variable "iscsi_lun_count" {
   description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
   default     = 3
-}
-
-variable "iscsi_disk_size" {
-  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
-  type        = number
-  default     = 10
 }
 
 ## Monitoring related variables

@@ -164,6 +164,6 @@ variable "hana_cluster_fencing_mechanism" {
 }
 
 variable "hana_sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in Libvirt only)"
+  description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in libvirt and powervs)"
   type        = string
 }

@@ -9,6 +9,12 @@ locals {
   drbd_cluster_vip           = ""
   #hana_ips                   = var.hana_ips
 
+  netweaver_count             = 0
+
+  # Check if iscsi server has to be created
+  use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
+  iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
+
   # Obtain machines os_image value
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
 }
@@ -51,6 +57,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
+  hana_cluster_vip_mechanism          = ""
   hana_cluster_vip                    = var.hana_ha_enabled ? local.hana_cluster_vip : ""
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
@@ -95,7 +102,11 @@ module "hana_node" {
 #  storage_account_name          = var.storage_account_name
 #  storage_account_key           = var.storage_account_key
   hana_instance_number          = var.hana_instance_number
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
+  sbd_disk_id                   = module.hana_sbd_disk.id
+  sbd_disk_wwn                  = module.hana_sbd_disk.wwn
   os_image                      = local.hana_os_image
   pi_cloud_instance_id          = var.pi_cloud_instance_id
   pi_sys_type                   = var.pi_sys_type
