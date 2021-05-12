@@ -1,3 +1,8 @@
+locals {
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? google_compute_instance.iscsisrv.*.network_interface.0.network_ip : google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
+}
+
 resource "google_compute_disk" "iscsi_data" {
   count = var.iscsi_count
   name  = "${var.common_variables["deployment_name"]}-iscsi-data-${count.index + 1}"
@@ -13,16 +18,18 @@ resource "google_compute_instance" "iscsisrv" {
   machine_type = var.machine_type
   zone         = element(var.compute_zones, 0)
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  can_ip_forward = true
 
   network_interface {
     subnetwork = var.network_subnet_name
     network_ip = element(var.host_ips, count.index)
 
-    access_config {
-      nat_ip = ""
+    # Set public IP address. Only if the bastion is not used
+    dynamic "access_config" {
+      for_each = local.bastion_enabled ? [] : [1]
+      content {
+        nat_ip = ""
+      }
     }
   }
 
@@ -47,7 +54,11 @@ resource "google_compute_instance" "iscsisrv" {
   }
 
   metadata = {
-    sshKeys = "root:${var.common_variables["public_key"]}"
+    sshKeys = "${var.common_variables["authorized_user"]}:${var.common_variables["public_key"]}"
+  }
+
+  service_account {
+    scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
 }
 
@@ -55,8 +66,10 @@ module "iscsi_on_destroy" {
   source               = "../../../generic_modules/on_destroy"
   node_count           = var.iscsi_count
   instance_ids         = google_compute_instance.iscsisrv.*.id
-  user                 = "root"
+  user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
-  public_ips           = google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
   dependencies         = var.on_destroy_dependencies
 }

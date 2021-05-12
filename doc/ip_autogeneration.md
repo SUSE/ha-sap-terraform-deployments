@@ -47,8 +47,9 @@ Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be 
 | :---: | :---: | :----: | :---: |
 | Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
 | Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
+| Bastion | - | `10.0.2.5` ||
 | Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA |
+| Hana cluster vip | `hana_cluster_vip` | `10.0.1.12` | Only used if HA is enabled in HANA |
 | Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.1.13` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `10.0.1.22` ||

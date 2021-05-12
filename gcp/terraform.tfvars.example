@@ -33,7 +33,7 @@ region = "europe-west1"
 # Deployment name. This variable is used to complement the name of multiple infrastructure resources adding the string as suffix
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
-# deployment_name "mydeployment"
+# deployment_name = "mydeployment"
 
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
@@ -103,7 +103,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #provisioning_output_colored = false
 
 # Enable pre deployment steps (disabled by default)
-pre_deployment = true
+#pre_deployment = true
 
 # To disable the provisioning process
 #provisioner = ""
@@ -123,6 +123,27 @@ pre_deployment = true
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+##########################
+# Bastion (jumpbox) machine variables
+##########################
+
+# Enable bastion usage. If this option is enabled, it will create a unique public ip address that is attached to the bastion machine.
+# The rest of the machines won't have a public ip address and the SSH connection must be done through the bastion
+#bastion_enabled = true
+
+# Bastion SSH keys. If they are not set the public_key and private_key are used
+#bastion_public_key  = "/home/myuser/.ssh/id_rsa_bastion.pub"
+#bastion_private_key = "/home/myuser/.ssh/id_rsa_bastion"
+
+# Bastion machine os image. If it is not provided, the os_image variable data is used
+# BYOS example
+# bastion_os_image = """suse-byos-cloud/sles-15-sp2-sap-byos""
+
+# Minimum ports per VM instance for the NAT router. Decreasing this value can compromise the deployment and make it fail
+# This value is a number between 1 and 1024
+# Find more information at: https://cloud.google.com/nat/docs/ports-and-addresses#port-reservation-procedure
+#bastion_nat_min_ports_per_vm = 1204
 
 #########################
 # HANA machines variables
@@ -152,7 +173,14 @@ pre_deployment = true
 # Disk size for HANA backup in GB
 #hana_backup_disk_size = "128" # 128GB
 
+# HANA cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
+# Options: "load-balancer" (default), "route"
+#hana_cluster_vip_mechanism = "load-balancer"
+
 # HANA cluster vip
+# If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
+#hana_cluster_vip = "10.0.0.200"
+# If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
 #hana_cluster_vip = "10.0.1.200"
 
 # Enable system replication and HA cluster
@@ -164,6 +192,12 @@ pre_deployment = true
 
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
+
+# HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed if hana_active_active is set to true
+# If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
+#hana_cluster_vip_secondary = "10.0.0.201"
+# If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
+#hana_cluster_vip_secondary = "10.0.1.201"
 
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a GCP storage bucket
@@ -227,7 +261,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_secondary_site = "Site2"
 
 # Cost optimized scenario
-#scenario_type: "cost-optimized"
+#scenario_type = "cost-optimized"
 
 #######################
 # SBD related variables
@@ -238,7 +272,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
-#iscsi_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
+#iscsi_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 # iSCSI server address
 #iscsi_srv_ip = "10.0.0.253"
@@ -258,7 +292,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #monitoring_enabled = true
 
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
-#monitoring_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
+#monitoring_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 # IP address of the machine where Prometheus and Grafana are running
 #monitoring_srv_ip = "10.0.0.4"
@@ -270,14 +304,14 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Enable drbd cluster
 #drbd_enabled = true
 
-#drbd_machine_type = n1-standard-4
+#drbd_machine_type = "n1-standard-4"
 
 # DRBD machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#drbd_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
+#drbd_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 #drbd_data_disk_size = 15
 
-#drbd_data_disk_type = pd-standard
+#drbd_data_disk_type = "pd-standard"
 
 # Each drbd cluster host IP address (sequential order).
 #drbd_ips = ["10.0.0.10", "10.0.0.11"]
@@ -303,10 +337,10 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Set to 2 or higher to deploy additional AAS instances in new machines
 #netweaver_app_server_count = 2
 
-#netweaver_machine_type = n1-standard-4
+#netweaver_machine_type = "n1-standard-8"
 
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#netweaver_os_image = suse-byos-cloud/sles-15-sp2-sap-byos
+#netweaver_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 # Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
 # Below are the supported SAP Netweaver product ids if using SWPM version 1.0:

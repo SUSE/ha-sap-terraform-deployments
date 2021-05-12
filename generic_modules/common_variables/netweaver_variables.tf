@@ -16,26 +16,59 @@ variable "netweaver_sbd_storage_type" {
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.netweaver_sid))
+    )
+    error_message = "The Netweaver system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
+  }
 }
 
 variable "netweaver_ascs_instance_number" {
   description = "ASCS instance number"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[0-9]{2}$", var.netweaver_ascs_instance_number))
+    )
+    error_message = "The Netweaver instance number must be composed by 2 digits string."
+  }
 }
 
 variable "netweaver_ers_instance_number" {
   description = "ERS instance number"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[0-9]{2}$", var.netweaver_ers_instance_number))
+    )
+    error_message = "The Netweaver instance number must be composed by 2 digits string."
+  }
 }
 
 variable "netweaver_pas_instance_number" {
   description = "PAS instance number"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[0-9]{2}$", var.netweaver_pas_instance_number))
+    )
+    error_message = "The Netweaver instance number must be composed by 2 digits string."
+  }
 }
 
 variable "netweaver_master_password" {
   description = "Master password for the Netweaver system (sidadm user included)"
   type        = string
+  validation {
+    condition = (
+      can(regex("[0-9]+", var.netweaver_master_password)) &&
+        can(regex("[a-z]+", var.netweaver_master_password)) &&
+        can(regex("[A-Z]+", var.netweaver_master_password)) &&
+        can(regex("^[\\w]{8,}$", var.netweaver_master_password))
+    )
+    error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
+  }
 }
 
 variable "netweaver_product_id" {
@@ -96,14 +129,35 @@ variable "netweaver_hana_ip" {
 variable "netweaver_hana_sid" {
   description = "System identifier of the HANA system (e.g.: HA1 or PRD)"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[A-Z][A-Z0-9]{2}$", var.netweaver_hana_sid))
+    )
+    error_message = "The HANA system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)."
+  }
 }
 
 variable "netweaver_hana_instance_number" {
   description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
   type        = string
+  validation {
+    condition = (
+      can(regex("^[0-9]{2}$", var.netweaver_hana_instance_number))
+    )
+    error_message = "The HANA instance number must be composed by 2 digits string."
+  }
 }
 
 variable "netweaver_hana_master_password" {
   description = "Master password for the HANA system (sidadm user included)"
   type        = string
+  validation {
+    condition = (
+      can(regex("[0-9]+", var.netweaver_hana_master_password)) &&
+        can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
+        can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
+        can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
+    )
+    error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
+  }
 }
