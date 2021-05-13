@@ -43,6 +43,16 @@ variable "memory" {
 #  type        = list(string)
 #}
 
+variable "sbd_disk_id" {
+  description = "SBD id. Only used if sbd_storage_type is shared-disk"
+  type        = string
+}
+
+variable "sbd_disk_wwn" {
+  description = "SBD wwn. Only used if sbd_storage_type is shared-disk"
+  type        = string
+}
+
 variable "os_image" {
   description = "sles4sap image used to create a HANA node."
   type        = string
@@ -50,6 +60,16 @@ variable "os_image" {
 
 variable "hana_instance_number" {
   description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
+  type        = string
+}
+
+variable "cluster_ssh_pub" {
+  description = "path for the public key needed by the cluster"
+  type        = string
+}
+
+variable "cluster_ssh_key" {
+  description = "path for the private key needed by the cluster"
   type        = string
 }
 
