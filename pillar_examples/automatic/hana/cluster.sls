@@ -61,7 +61,7 @@ cluster:
       stonith-timeout: 144s
       {% endif %}
     template:
-      source: salt://hana/templates/scale_up_resources.j2
+      source: salt://hana/templates/cluster_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}

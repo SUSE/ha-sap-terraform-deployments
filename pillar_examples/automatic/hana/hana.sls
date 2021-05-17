@@ -40,6 +40,10 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
+        #extra_parameters:
+        #  org_manager_password: YourPassword1234
+        #  components: server,xs
+        #  xs_domain_name: suse.com
       {%- if grains.get('ha_enabled') %}
       primary:
         name: {{ grains['hana_primary_site'] }}
@@ -80,6 +84,10 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
+        #extra_parameters:
+        #  org_manager_password: YourPassword1234
+        #  components: server,xs
+        #  xs_domain_name: suse.com
       {%- if grains.get('ha_enabled') %}
       secondary:
         name: {{ grains['hana_secondary_site'] }}

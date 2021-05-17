@@ -3,6 +3,10 @@ base:
     - match: grain
     - hana
 
+  'role:majority_maker_node':
+    - match: grain
+    - cluster
+
   'G@role:hana_node and G@ha_enabled:true':
     - match: compound
     - cluster
@@ -51,3 +55,8 @@ predeployment:
   'role:bastion':
     - match: grain
     - bastion
+
+  'role:majority_maker_node':
+    - match: grain
+    - default
+    - cluster_node
