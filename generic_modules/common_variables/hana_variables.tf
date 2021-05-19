@@ -158,6 +158,11 @@ variable "hana_ha_enabled" {
   type        = bool
 }
 
+variable "hana_ignore_min_mem_check" {
+  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
+  type        = bool
+}
+
 variable "hana_cluster_fencing_mechanism" {
   description = "Select the HANA cluster fencing mechanism. Options: sbd"
   type        = string
