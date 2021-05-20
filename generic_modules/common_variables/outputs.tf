@@ -64,6 +64,7 @@ output "configuration" {
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
       ha_enabled                     = var.hana_ha_enabled
+      ignore_min_mem_check           = var.hana_ignore_min_mem_check
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
       sbd_storage_type               = var.hana_sbd_storage_type
     }
@@ -129,6 +130,7 @@ hana_client_extract_dir: ${var.hana_client_extract_dir}
 hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
+hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}
