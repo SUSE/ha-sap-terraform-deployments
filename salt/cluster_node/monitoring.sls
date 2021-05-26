@@ -20,9 +20,9 @@ activate_node_exporter_systemd_collector:
         ARGS="--collector.systemd --no-collector.mdadm"
 
 {%- if grains['osmajorrelease'] > 12 %}
-loki:
+promtail:
   pkg.installed:
-    - name: loki
+    - name: promtail
     - retry:
         attempts: 3
         interval: 15
@@ -40,14 +40,14 @@ loki_systemd_journal_member:
     - addusers:
       - loki
     - require:
-      - pkg: loki
+      - pkg: promtail
 
 promtail_service:
   service.running:
     - name: promtail
     - enable: True
     - require:
-      - pkg: loki
+      - pkg: promtail
       - file: promtail_config
       - group: loki_systemd_journal_member
 {%- endif %}
