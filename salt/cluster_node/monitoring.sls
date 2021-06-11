@@ -27,6 +27,13 @@ loki:
         attempts: 3
         interval: 15
 
+promtail:
+  pkg.installed:
+    - name: promtail
+    - retry:
+        attempts: 3
+        interval: 15
+
 promtail_config:
   file.managed:
     - name: /etc/loki/promtail.yaml
@@ -47,7 +54,7 @@ promtail_service:
     - name: promtail
     - enable: True
     - require:
-      - pkg: loki
+      - pkg: promtail
       - file: promtail_config
       - group: loki_systemd_journal_member
 {%- endif %}
