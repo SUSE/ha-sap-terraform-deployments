@@ -94,7 +94,17 @@ variable "storage_pool" {
 }
 
 variable "hana_targets" {
-  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
+  description = "IPs of HANA hosts you want to monitor."
+  type        = list(string)
+}
+
+variable "hana_targets_ha" {
+  description = "IPs of HANA HA hosts you want to monitor."
+  type        = list(string)
+}
+
+variable "hana_targets_vip" {
+  description = "VIPs of HANA DBs you want to monitor."
   type        = list(string)
 }
 
@@ -104,8 +114,32 @@ variable "drbd_targets" {
   default     = []
 }
 
+variable "drbd_targets_ha" {
+  description = "IPs of DRBD HA hosts you want to monitor"
+  type        = list(string)
+  default     = []
+}
+
+variable "drbd_targets_vip" {
+  description = "VIPs of DRBD NFS services you want to monitor"
+  type        = list(string)
+  default     = []
+}
+
 variable "netweaver_targets" {
-  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
+  description = "IPs of Netweaver hosts you want to monitor."
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_targets_ha" {
+  description = "IPs of Netweaver HA hosts you want to monitor."
+  type        = list(string)
+  default     = []
+}
+
+variable "netweaver_targets_vip" {
+  description = "VIPs of Netweaver Instances you want to monitor."
   type        = list(string)
   default     = []
 }

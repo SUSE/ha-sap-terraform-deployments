@@ -26,8 +26,14 @@ timezone: ${var.timezone}
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${local.bastion_enabled ? data.azurerm_network_interface.monitoring.0.private_ip_address : data.azurerm_public_ip.monitoring.0.ip_address}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
+hana_targets_ha: [${join(", ", formatlist("'%s'", var.hana_targets_ha))}]
+hana_targets_vip: [${join(", ", formatlist("'%s'", var.hana_targets_vip))}]
 drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
+drbd_targets_ha: [${join(", ", formatlist("'%s'", var.drbd_targets_ha))}]
+drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.drbd_targets_vip))}]
 netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
+netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.netweaver_targets_ha))}]
+netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.netweaver_targets_vip))}]
 network_domain: "tf.local"
 EOF
     destination = "/tmp/grains"

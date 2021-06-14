@@ -230,9 +230,15 @@ module "monitoring" {
   network_subnet_name = local.subnet_name
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_srv_ip
-  hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  hana_targets          = local.hana_ips
+  hana_targets_ha       = var.hana_ha_enabled ? local.hana_ips : []
+  hana_targets_vip      = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  drbd_targets          = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets_ha       = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets_vip      = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  netweaver_targets     = var.netweaver_enabled ? local.netweaver_ips : []
+  netweaver_targets_ha  = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  netweaver_targets_vip = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp,
     google_compute_router_nat.nat,

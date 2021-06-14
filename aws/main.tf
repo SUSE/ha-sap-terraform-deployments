@@ -254,22 +254,28 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source             = "./modules/monitoring"
-  common_variables   = module.common_variables.configuration
-  monitoring_enabled = var.monitoring_enabled
-  instance_type      = var.monitor_instancetype
-  key_name           = aws_key_pair.key-pair.key_name
-  security_group_id  = local.security_group_id
-  monitoring_srv_ip  = local.monitoring_ip
-  aws_region         = var.aws_region
-  availability_zones = data.aws_availability_zones.available.names
-  os_image           = local.monitoring_os_image
-  os_owner           = local.monitoring_os_owner
-  subnet_ids         = aws_subnet.infra-subnet.*.id
-  timezone           = var.timezone
-  hana_targets       = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets       = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets  = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  source                = "./modules/monitoring"
+  common_variables      = module.common_variables.configuration
+  monitoring_enabled    = var.monitoring_enabled
+  instance_type         = var.monitor_instancetype
+  key_name              = aws_key_pair.key-pair.key_name
+  security_group_id     = local.security_group_id
+  monitoring_srv_ip     = local.monitoring_ip
+  aws_region            = var.aws_region
+  availability_zones    = data.aws_availability_zones.available.names
+  os_image              = local.monitoring_os_image
+  os_owner              = local.monitoring_os_owner
+  subnet_ids            = aws_subnet.infra-subnet.*.id
+  timezone              = var.timezone
+  hana_targets          = local.hana_ips
+  hana_targets_ha       = var.hana_ha_enabled ? local.hana_ips : []
+  hana_targets_vip      = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  drbd_targets          = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets_ha       = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets_vip      = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  netweaver_targets     = var.netweaver_enabled ? local.netweaver_ips : []
+  netweaver_targets_ha  = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  netweaver_targets_vip = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

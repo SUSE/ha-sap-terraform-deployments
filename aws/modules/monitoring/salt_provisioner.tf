@@ -23,8 +23,14 @@ timezone: ${var.timezone}
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${aws_instance.monitoring[0].public_ip}
 hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
+hana_targets_ha: [${join(", ", formatlist("'%s'", var.hana_targets_ha))}]
+hana_targets_vip: [${join(", ", formatlist("'%s'", var.hana_targets_vip))}]
 drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
+drbd_targets_ha: [${join(", ", formatlist("'%s'", var.drbd_targets_ha))}]
+drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.drbd_targets_vip))}]
 netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
+netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.netweaver_targets_ha))}]
+netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.netweaver_targets_vip))}]
 network_domain: "tf.local"
 EOF
 

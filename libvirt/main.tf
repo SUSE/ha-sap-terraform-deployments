@@ -191,9 +191,16 @@ module "monitoring" {
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   monitoring_srv_ip     = local.monitoring_srv_ip
-  hana_targets          = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  hana_targets          = local.hana_ips
+  hana_targets_ha       = var.hana_ha_enabled ? local.hana_ips : []
+  hana_targets_vip      = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   drbd_targets          = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets     = local.netweaver_virtual_ips
+  drbd_targets_ha       = var.drbd_enabled ? local.drbd_ips : []
+  drbd_targets_vip      = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  netweaver_targets     = var.netweaver_enabled ? local.netweaver_ips : []
+  netweaver_targets_ha  = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  netweaver_targets_vip = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+
 }
 
 module "netweaver_node" {
