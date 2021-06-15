@@ -20,8 +20,8 @@ variable "network_name" {
 
 variable "bridge_device" {
   description = "Devicename of bridge to use."
-  type = string
-  default = "br0"
+  type        = string
+  default     = "br0"
 }
 
 variable "iprange" {
