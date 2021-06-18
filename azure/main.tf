@@ -130,26 +130,30 @@ module "common_variables" {
 }
 
 module "drbd_node" {
-  source              = "./modules/drbd_node"
-  common_variables    = module.common_variables.configuration
-  bastion_host        = module.bastion.public_ip
-  az_region           = var.az_region
-  drbd_count          = var.drbd_enabled == true ? 2 : 0
-  vm_size             = var.drbd_vm_size
-  drbd_image_uri      = var.drbd_image_uri
-  os_image            = local.drbd_os_image
-  resource_group_name = local.resource_group_name
-  network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
-  cluster_ssh_pub     = var.cluster_ssh_pub
-  cluster_ssh_key     = var.cluster_ssh_key
-  host_ips            = local.drbd_ips
-  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type    = var.sbd_storage_type
-  iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
-  nfs_mounting_point  = var.drbd_nfs_mounting_point
-  nfs_export_name     = var.netweaver_sid
-  drbd_cluster_vip    = local.drbd_cluster_vip
+  source                    = "./modules/drbd_node"
+  common_variables          = module.common_variables.configuration
+  bastion_host              = module.bastion.public_ip
+  az_region                 = var.az_region
+  drbd_count                = var.drbd_enabled == true ? 2 : 0
+  vm_size                   = var.drbd_vm_size
+  drbd_image_uri            = var.drbd_image_uri
+  os_image                  = local.drbd_os_image
+  resource_group_name       = local.resource_group_name
+  network_subnet_id         = local.subnet_id
+  storage_account           = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  cluster_ssh_pub           = var.cluster_ssh_pub
+  cluster_ssh_key           = var.cluster_ssh_key
+  host_ips                  = local.drbd_ips
+  fencing_mechanism         = var.drbd_cluster_fencing_mechanism
+  sbd_storage_type          = var.sbd_storage_type
+  iscsi_srv_ip              = join("", module.iscsi_server.iscsisrv_ip)
+  nfs_mounting_point        = var.drbd_nfs_mounting_point
+  nfs_export_name           = var.netweaver_sid
+  drbd_cluster_vip          = local.drbd_cluster_vip
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "netweaver_node" {
@@ -181,6 +185,11 @@ module "netweaver_node" {
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
+  fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
+  subscription_id             = data.azurerm_subscription.current.subscription_id
+  tenant_id                   = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id          = var.fence_agent_app_id
+  fence_agent_client_secret   = var.fence_agent_client_secret
 }
 
 module "hana_node" {
@@ -204,6 +213,11 @@ module "hana_node" {
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  fencing_mechanism             = var.hana_cluster_fencing_mechanism
+  subscription_id               = data.azurerm_subscription.current.subscription_id
+  tenant_id                     = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id            = var.fence_agent_app_id
+  fence_agent_client_secret     = var.fence_agent_client_secret
 }
 
 module "monitoring" {

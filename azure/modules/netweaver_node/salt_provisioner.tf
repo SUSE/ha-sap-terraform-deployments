@@ -36,6 +36,11 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 storage_account_path: ${var.storage_account_path}
+subscription_id: ${var.subscription_id}
+tenant_id: ${var.tenant_id}
+resource_group_name: ${var.resource_group_name}
+fence_agent_app_id: ${var.fence_agent_app_id}
+fence_agent_client_secret: ${var.fence_agent_client_secret}
   EOF
     destination = "/tmp/grains"
   }
