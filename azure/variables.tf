@@ -54,7 +54,7 @@ variable "admin_user" {
 }
 
 variable "storage_account_name" {
-  description = "Azure storage account name where HANA insallation software is available"
+  description = "Azure storage account name where HANA installation software is available"
   type        = string
 }
 
@@ -248,7 +248,7 @@ variable "hana_data_disks_configuration" {
     This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
     disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
     "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
-    The number of groups splitted by "#" must match in all of the entries
+    The number of groups split by "#" must match in all of the entries
     names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
     luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
     sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)

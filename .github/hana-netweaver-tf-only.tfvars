@@ -1,4 +1,4 @@
-# the following 2 vars are aquired via ENV
+# the following 2 vars are acquired via ENV
 # qemu_uri            =
 # source_image        =
 
