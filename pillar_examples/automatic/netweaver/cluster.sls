@@ -17,7 +17,6 @@ cluster:
     module: softdog
     device: /dev/watchdog
   {% endif %}
-  wait_for_initialization: 120
   {%- if grains['app_server_count']|default(2) == 0 %}
   # join_timeout must be large as the 1st machine where the cluster is started will host
   # the DB and PAS installation, taking a long time
