@@ -31,6 +31,12 @@ matrix:
         - pip install salt-lint
       script:
         - git ls-files | grep '.sls$' | xargs salt-lint
+    - language: bash
+      install:
+        - curl -L https://github.com/becheran/mlc/releases/download/v0.14.3/mlc -o mlc
+        - chmod +x mlc
+      script:
+        - mlc --ignore-path **/.terraform --ignore-links ./terraform.tvars.example
 
 notifications:
   email: true
