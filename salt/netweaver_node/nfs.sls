@@ -50,6 +50,8 @@ mount_sapmnt_temporary:
     - require:
       - wait_until_nfs_is_ready
       - wait_before_mount_sapmnt_temporary
+    - unless:
+      - grep " {{ grains['netweaver_sapmnt_path'] }} " /proc/mounts
 
 # Add a delay to the folder creation https://github.com/SUSE/ha-sap-terraform-deployments/issues/633
 wait_after_mount_sapmnt_temporary:

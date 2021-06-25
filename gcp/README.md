@@ -23,7 +23,7 @@ mkdir -p ../salt/sshkeys
 ssh-keygen -f ../salt/sshkeys/cluster.id_rsa -q -P ""
 ```
 
-The key files need to have same name as defined in [terraform.tfvars](terraform.tfvars.example)
+The key files need to have same name as defined in [terraform.tfvars](./terraform.tfvars.example)
 
 3) **[Adapt saltstack pillars manually](../pillar_examples/)** or set the `pre_deployment` variable to automatically copy the example pillar files.
 

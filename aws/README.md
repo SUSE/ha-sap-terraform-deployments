@@ -102,7 +102,7 @@ The policy must be attached only to the `IAM` service if it's created manually a
 Here how it should look like your user or group:
 
 
-![AWS policies](./images/policies.png?raw=true)
+![AWS policies](./images/policies.png)
 
 **Warning: If you use the 2nd option, the AWS web panel won't show that the created instances have any role attached, but they have. The limits in the IAM access makes this not visible, that's all**
 

@@ -48,8 +48,6 @@ You should be able to deploy now.
 
 To verify which subscription is the active one, use the command `az account show`.
 
-If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
-
 5) **Deploy**
 
 ```
