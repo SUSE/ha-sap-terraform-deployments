@@ -7,5 +7,5 @@ ignore: |
 rules:
   # 80 chars should be enough, but don't fail if a line is longer
   line-length:
-    max: 165
+    max: 160
     level: warning

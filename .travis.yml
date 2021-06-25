@@ -1,8 +1,9 @@
+---
 dist: focal
 addons:
   apt:
     packages:
-    - shellcheck
+      - shellcheck
 
 matrix:
   include:
