@@ -1,5 +1,5 @@
 hana:
-  # install_packages: false # disable pre defined pacakge installation
+  # install_packages: false # disable pre defined package installation
   saptune_solution: 'HANA'
   nodes:
     - host: 'hana01'
