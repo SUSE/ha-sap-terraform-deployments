@@ -177,6 +177,8 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #hana_secondary_site = "Site2"
 
 # Cost optimized scenario
+#scenario_type = "performance-optimized" # default
+# or
 #scenario_type = "cost-optimized"
 
 #######################
