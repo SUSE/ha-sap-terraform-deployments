@@ -56,6 +56,16 @@ test-jsonlint:
 		err=$$(($$? + err)) ;\
 	done; exit $$err
 
+# test-mlc: @ Run markup link checker
+test-mlc:
+	mkdir -p aws/.terraform # make sure ingore-path exists
+	mlc --throttle 1000 \
+		--ignore-path \
+			**/.terraform \
+		--ignore-links \
+			./terraform.tvars.example \
+			../pillar/*/*
+
 # test-salt-lint: @ Run linting on all salt files
 test-salt-lint:
 	for file in $(shell find salt/ -name '*.sls'); do\

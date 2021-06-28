@@ -95,6 +95,30 @@ jobs:
       - name: jsonlint
         run: make test-jsonlint
 
+  mlc:
+    name: 'markup link checker'
+    runs-on: ubuntu-20.04
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install linting tools
+        run: |
+          mkdir bin
+          curl -L https://github.com/becheran/mlc/releases/download/v0.14.3/mlc-x86_64-linux -o bin/mlc
+          chmod +x bin/mlc
+          echo "$PWD/bin" >> $GITHUB_PATH
+
+      - name: mlc
+        run: make test-mlc
+
   salt-lint:
     name: 'salt linting'
     runs-on: ubuntu-20.04
