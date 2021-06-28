@@ -64,7 +64,9 @@ test-mlc:
 			**/.terraform \
 		--ignore-links \
 			./terraform.tvars.example \
-			../pillar/*/*
+			../pillar/*/* \
+			https://github.com/SUSE/ha-sap-terraform-deployments/actions \
+			https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg
 
 # test-salt-lint: @ Run linting on all salt files
 test-salt-lint:
