@@ -48,8 +48,6 @@ You should be able to deploy now.
 
 To verify which subscription is the active one, use the command `az account show`.
 
-If you use terraform azure in CI see [terraform azure ci](terraform-azure-ci)
-
 5) **Deploy**
 
 ```
@@ -287,7 +285,7 @@ netweaver_app_server_count = 10
 
 ## Terraform Azure CI
 
-To setup the authentification for CI purposes you will need 4 variables:
+To setup the authentication for CI purposes you will need 4 variables:
 
 * Subscription ID
 * Tenant ID
@@ -318,7 +316,7 @@ For the client id and secret, an Azure AD Service Principal is required. If you 
 az ad sp create-for-rbac --name my-terraform-ad-sp --role="Contributor" --scopes="/subscriptions/<HERE GOES THE SUBSCRIPTION ID>"
 ```
 
-This command should output the necesary client id and client secret or password.
+This command should output the necessary client id and client secret or password.
 
 More info in the [Terraform Install Configure document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure) in microsoft.com.
 

@@ -22,8 +22,6 @@ In order to deploy a DRBD environment for NFS, some changes must be executed in 
 
 - Choose the `drbd_cluster_vip` to be used as the drbd cluster floating ip address. This address must be outside of the subnet ip range (gcp only).
 
-- Configure the `drbd_disk_size` for the size of attached DRBD backing device. Modify the `partitions` grain in [salt_provisioner.tf](../libvirt/modules/drbd_node/salt_provisioner.tf) for the layout of the disk for DRBD resouce.
-
-- Modify the [drbd_cluster.j2](../salt/drbd_node/files/templates/drbd_cluster.j2) for the pacemaker resource configuration including *NFS* share mount options. **The default option deploys a NFS share in top of a single DRBD cluster**.
+- Configure the `drbd_disk_size` for the size of attached DRBD backing device. Modify the `partitions` grain in [salt_provisioner.tf](../libvirt/modules/drbd_node/salt_provisioner.tf) for the layout of the disk for DRBD resource.
 
 - Modify the content of [cluster.sls](../pillar/drbd/cluster.sls) and [drbd.sls](../pillar/drbd/drbd.sls). The unique mandatory changes are `promotion` and `resource` in the `drbd.sls` file. Change `res_template` if want to use customized template. These values must match with the environment(hostname, ip, ports, etc...), the current values are just an example.

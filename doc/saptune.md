@@ -4,10 +4,10 @@ You can tune your hana or netweaver nodes with saptune during the deployment pha
 
 Currently we support following features:
 
-- 1) apply a saptune solution during deployement
+- 1) apply a saptune solution during deployment
 
 
-1) Apply a saptune solution during deployement:
+1) Apply a saptune solution during deployment:
 
 In order to apply a saptune solution, you need to adapt the pillars:
 

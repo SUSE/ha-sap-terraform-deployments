@@ -1,6 +1,7 @@
 # Automated SAP/HA Deployments in Public/Private Clouds with Terraform
 
-[![Build Status](https://travis-ci.org/SUSE/ha-sap-terraform-deployments.svg?branch=master)](https://travis-ci.org/SUSE/ha-sap-terraform-deployments)
+[![Build Status](https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg)](https://github.com/SUSE/ha-sap-terraform-deployments/actions)
+
 **Supported terraform version  `0.13.4`**
 ___
 
