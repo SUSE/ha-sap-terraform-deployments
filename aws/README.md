@@ -199,7 +199,7 @@ hana_os_owner = "amazon"
 OS for each module can be configured independently.
 
 
-After an `apply` command, terraform will deploy the insfrastructure to the cloud and ouput the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:
+After an `apply` command, terraform will deploy the insfrastructure to the cloud and output the public IP addresses and names of the iSCSI server and the cluster nodes. Connect using `ssh` as the user `ec2-user`, for example:
 
 ```
 ssh ec2-user@18.196.143.128
@@ -457,7 +457,7 @@ The output of this command should look like this:
 }
 ```
 
-Similar to the `import-image` command, the process stays runing in the background in AWS. You can check its progress with the command:
+Similar to the `import-image` command, the process stays running in the background in AWS. You can check its progress with the command:
 
 ```
 aws ec2 describe-import-snapshot-tasks --import-task-ids import-snap-0fbbe899f2fd4bbdc
@@ -499,7 +499,7 @@ Once the snapshot is completely imported, the next step is to register an AMI wi
 aws ec2 register-image --architecture x86_64 --description "SLES 12-SP4 Beta4 Build 1.1" --name sles-12-sp4-b4-b1.1 --root-device-name "/dev/sda1" --virtualization-type hvm --block-device-mappings "DeviceName=/dev/sda1,Ebs={DeleteOnTermination=true,SnapshotId=snap-0a369f803b17037bb,VolumeSize=40,VolumeType=gp2}"
 ```
 
-Substitute in the above command line the description, name and snapshot id with the apropiate values for your image.
+Substitute in the above command line the description, name and snapshot id with the appropriate values for your image.
 
 The output, should include the image id. This image id (a string starting with `ami-`) should be added to the file [variables.tf](variables.tf) in order to be used in the terraform configuration included here.
 

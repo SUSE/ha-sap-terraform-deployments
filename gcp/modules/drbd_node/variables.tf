@@ -29,7 +29,7 @@ variable "network_subnet_name" {
 }
 
 variable "drbd_count" {
-  description = "Cound of drbd cluster nodes"
+  description = "Count of drbd cluster nodes"
   type        = string
   default     = "2"
 }
