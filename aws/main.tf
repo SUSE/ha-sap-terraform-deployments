@@ -263,19 +263,19 @@ module "hana_node" {
 }
 
 module "monitoring" {
-  source                = "./modules/monitoring"
-  common_variables      = module.common_variables.configuration
-  monitoring_enabled    = var.monitoring_enabled
-  instance_type         = var.monitor_instancetype
-  key_name              = aws_key_pair.key-pair.key_name
-  security_group_id     = local.security_group_id
-  monitoring_srv_ip     = local.monitoring_ip
-  aws_region            = var.aws_region
-  availability_zones    = data.aws_availability_zones.available.names
-  os_image              = local.monitoring_os_image
-  os_owner              = local.monitoring_os_owner
-  subnet_ids            = aws_subnet.infra-subnet.*.id
-  timezone              = var.timezone
+  source             = "./modules/monitoring"
+  common_variables   = module.common_variables.configuration
+  monitoring_enabled = var.monitoring_enabled
+  instance_type      = var.monitor_instancetype
+  key_name           = aws_key_pair.key-pair.key_name
+  security_group_id  = local.security_group_id
+  monitoring_srv_ip  = local.monitoring_ip
+  aws_region         = var.aws_region
+  availability_zones = data.aws_availability_zones.available.names
+  os_image           = local.monitoring_os_image
+  os_owner           = local.monitoring_os_owner
+  subnet_ids         = aws_subnet.infra-subnet.*.id
+  timezone           = var.timezone
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,
