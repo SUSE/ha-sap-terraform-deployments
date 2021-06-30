@@ -8,8 +8,8 @@ cluster:
   interface: eth1
   {%- else %}
   interface: eth0
-  unicast: True
   {%- endif %}
+  unicast: True
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
