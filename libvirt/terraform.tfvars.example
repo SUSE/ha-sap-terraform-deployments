@@ -9,6 +9,9 @@ qemu_uri = "qemu:///system"
 # Use already existing network
 #network_name = "my-network"
 
+# Use bridge device on hypervisor
+#bridge_device = "br0"
+
 # Due to some internal limitations, the iprange of the existing network must be defined
 # The iprange must be defined for already existing network and to create a new one
 iprange = "192.168.XXX.Y/24"

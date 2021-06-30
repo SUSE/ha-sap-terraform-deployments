@@ -125,7 +125,7 @@ module "iscsi_server" {
   volume_name           = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
   vcpu                  = var.iscsi_vcpu
   memory                = var.iscsi_memory
-  bridge                = "br0"
+  bridge                = var.bridge_device
   storage_pool          = var.storage_pool
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
@@ -143,7 +143,7 @@ module "hana_node" {
   hana_count            = var.hana_count
   vcpu                  = var.hana_node_vcpu
   memory                = var.hana_node_memory
-  bridge                = "br0"
+  bridge                = var.bridge_device
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
@@ -162,7 +162,7 @@ module "drbd_node" {
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   vcpu                  = var.drbd_node_vcpu
   memory                = var.drbd_node_memory
-  bridge                = "br0"
+  bridge                = var.bridge_device
   host_ips              = local.drbd_ips
   drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_disk_size        = var.drbd_disk_size
@@ -186,7 +186,7 @@ module "monitoring" {
   volume_name           = var.monitoring_source_image != "" ? "" : (var.monitoring_volume_name != "" ? var.monitoring_volume_name : local.generic_volume_name)
   vcpu                  = var.monitoring_vcpu
   memory                = var.monitoring_memory
-  bridge                = "br0"
+  bridge                = var.bridge_device
   storage_pool          = var.storage_pool
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
@@ -206,7 +206,7 @@ module "netweaver_node" {
   volume_name           = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
   vcpu                  = var.netweaver_node_vcpu
   memory                = var.netweaver_node_memory
-  bridge                = "br0"
+  bridge                = var.bridge_device
   storage_pool          = var.storage_pool
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name

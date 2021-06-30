@@ -18,6 +18,12 @@ variable "network_name" {
   default     = ""
 }
 
+variable "bridge_device" {
+  description = "Devicename of bridge to use."
+  type        = string
+  default     = "br0"
+}
+
 variable "iprange" {
   description = "IP range of the isolated network (it must be provided even when the network_name is given, due to terraform-libvirt-provider limitations we cannot get the current network data)"
   type        = string
