@@ -298,5 +298,7 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# Netweaver master password. It must follow the SAP Password policies such as having 8 characters at least combining upper and lower case characters and numbers. It cannot start with special characters.
+# NetWeaver or S/4HANA master password. 
+# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
+# It cannot start with special characters and must contain a combination of upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
