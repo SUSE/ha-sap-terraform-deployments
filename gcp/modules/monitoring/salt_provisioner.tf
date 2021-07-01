@@ -20,14 +20,12 @@ resource "null_resource" "monitoring_provisioner" {
     content     = <<EOF
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
+${var.common_variables["monitoring_grains_output"]}
 name_prefix: ${var.common_variables["deployment_name"]}-monitoring
 hostname: ${var.common_variables["deployment_name"]}-monitoring
 network_domain: "tf.local"
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${local.provisioning_addresses[0]}
-hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
-drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
-netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
 EOF
     destination = "/tmp/grains"
   }

@@ -24,11 +24,15 @@ scrape_configs:
     scrape_timeout: 30s
     static_configs:
       - targets:
-        {%- for ip in grains['hana_targets'][0:2] %}
+        {%- for ip in grains['hana_targets'] %}
         - "{{ ip }}:9100" # node_exporter
+        {%- endfor %}
+        {%- for ip in grains['hana_targets_ha'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
         {%- endfor %}
-        - "{{ grains['hana_targets'][-1] }}:9668" # hanadb_exporter
+        {%- for ip in grains['hana_targets_vip'] %}
+        - "{{ ip }}:9668" # hanadb_exporter
+        {%- endfor %}
   {%- endif %}
 
   {%- if grains.get('drbd_targets', [])|length > 0 %}
@@ -37,6 +41,8 @@ scrape_configs:
       - targets:
         {%- for ip in grains['drbd_targets'] %}
         - "{{ ip }}:9100" # node_exporter
+        {%- endfor %}
+        {%- for ip in grains['drbd_targets_ha'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
         {%- endfor %}
   {%- endif %}
@@ -47,9 +53,11 @@ scrape_configs:
       - targets:
         {%- for ip in grains['netweaver_targets'] %}
         - "{{ ip }}:9100" # node_exporter
-        - "{{ ip }}:9680" # sap_host_exporter
         {%- endfor %}
-        {%- for ip in grains['netweaver_targets'][0:2] %}
+        {%- for ip in grains['netweaver_targets_ha'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
+        {%- endfor %}
+        {%- for ip in grains['netweaver_targets_vip'] %}
+        - "{{ ip }}:9680" # sap_host_exporter
         {%- endfor %}
   {%- endif %}
