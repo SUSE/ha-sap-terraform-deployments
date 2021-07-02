@@ -393,7 +393,7 @@ variable "hana_cluster_vip" {
 }
 
 variable "hana_cluster_fencing_mechanism" {
-  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  description = "Select the HANA cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -582,7 +582,7 @@ variable "drbd_cluster_vip" {
 }
 
 variable "drbd_cluster_fencing_mechanism" {
-  description = "Select the DRBD cluster fencing mechanism. Options: sbd"
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -722,7 +722,7 @@ variable "netweaver_master_password" {
 }
 
 variable "netweaver_cluster_fencing_mechanism" {
-  description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -837,4 +837,15 @@ variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
   type        = bool
   default     = false
+}
+
+# native fencing
+variable "fence_agent_app_id" {
+  description = "ID of the azure service principal / application that is used for native fencing."
+  type        = string
+}
+
+variable "fence_agent_client_secret" {
+  description = "Secret for the azure service principal / application that is used for native fencing."
+  type        = string
 }

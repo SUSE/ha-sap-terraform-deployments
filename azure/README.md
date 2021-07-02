@@ -477,5 +477,23 @@ az storage blob delete --name SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vh
 
 Will delete blob `SLES12-SP4-SAP-Azure-BYOS.x86_64-0.9.0-Build2.1.vhd` from storage container `MyStorageContainer`.
 
+## Use native fencing instead of SBD
+
+SUSE's recommendation is to use SBD (e.g. via iSCSI) to fence cluster nodes.
+
+However using the cloud's native fencing mechanisms is also possible.
+
+In the azure implementation this is the "Azure Fence Agent" called `stonith:fence_azure_arm`.
+
+Please read the Microsoft Azure documentation [Create Azure Fence agent STONITH device](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-pacemaker#create-azure-fence-agent-stonith-device) for the detailed steps that are needed in azure.
+
+Native fencing can be set per cluster type in `terraform.tfvars`:
+
+```
+hana_cluster_fencing_mechanism = "native"
+drbd_cluster_fencing_mechanism = "native"
+netweaver_cluster_fencing_mechanism = "native"
+```
+
 ## Extra info
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).

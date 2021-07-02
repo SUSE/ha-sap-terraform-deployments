@@ -125,6 +125,13 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # true or false (default)
 #hwcct = false
 
+# Variables used with native fencing (azure fence agent)
+# Make sure to check out the documentation:
+# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-pacemaker#create-azure-fence-agent-stonith-device
+# The fencing mechanism has to be defined on a per cluster basis.
+# fence_agent_app_id = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"       # login
+# fence_agent_client_secret = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # password
+
 ##########################
 # Bastion (jumpbox) machine variables
 ##########################
@@ -266,6 +273,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Cost optimized scenario
 #scenario_type = "cost-optimized"
 
+# fencing mechanism for HANA cluster (Options: sbd [default], native)
+# hana_cluster_fencing_mechanism = "sbd"
+
 #######################
 # SBD related variables
 #######################
@@ -324,6 +334,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
 #drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
+# fencing mechanism for DRBD cluster (Options: sbd [default], native)
+# drbd_cluster_fencing_mechanism = "sbd"
+
 #############################
 # Netweaver related variables
 #############################
@@ -366,6 +379,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # VM sizes
 #netweaver_xscs_vm_size = Standard_D2s_v3
 #netweaver_app_vm_size = Standard_D2s_v3
+
+# fencing mechanism for Neteaver cluster (Options: sbd [default], native)
+# netweaver_cluster_fencing_mechanism = "sbd"
 
 # Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
 # Below are the supported SAP Netweaver product ids if using SWPM version 1.0:

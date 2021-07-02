@@ -63,7 +63,7 @@ variable "network_domain" {
 }
 
 variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd"
+  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
   type        = string
 }
 
@@ -100,5 +100,25 @@ variable "nfs_mounting_point" {
 
 variable "nfs_export_name" {
   description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
+  type        = string
+}
+
+variable "subscription_id" {
+  description = "ID of the azure subscription."
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "ID of the azure tenant."
+  type        = string
+}
+
+variable "fence_agent_app_id" {
+  description = "ID of the azure service principal / application that is used for native fencing."
+  type        = string
+}
+
+variable "fence_agent_client_secret" {
+  description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
 }
