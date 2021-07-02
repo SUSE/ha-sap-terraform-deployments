@@ -10,8 +10,8 @@ cluster:
   interface: eth1
   {% else %}
   interface: eth0
-  unicast: True
   {% endif %}
+  unicast: True
   join_timeout: 500
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
