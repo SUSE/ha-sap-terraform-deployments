@@ -49,23 +49,6 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "hana_targets" {
-  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
-  type        = list(string)
-}
-
-variable "drbd_targets" {
-  description = "IPs of DRBD hosts you want to monitor"
-  type        = list(string)
-  default     = []
-}
-
-variable "netweaver_targets" {
-  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
-  type        = list(string)
-  default     = []
-}
-
 variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any

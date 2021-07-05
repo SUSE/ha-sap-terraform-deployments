@@ -216,10 +216,21 @@ resource "azurerm_network_security_group" "mysecgroup" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+    name                       = "SAPHostExporter"
+    priority                   = 1008
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9680"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
   security_rule {
     name                       = "prometheus"
-    priority                   = 1008
+    priority                   = 1009
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -231,7 +242,7 @@ resource "azurerm_network_security_group" "mysecgroup" {
 
   security_rule {
     name                       = "grafana"
-    priority                   = 1009
+    priority                   = 1010
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"

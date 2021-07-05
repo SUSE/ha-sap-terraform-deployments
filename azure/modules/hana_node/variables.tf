@@ -35,6 +35,11 @@ variable "name" {
   default = "hana"
 }
 
+variable "fencing_mechanism" {
+  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
+  type        = string
+}
+
 variable "hana_instance_number" {
   description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
   type        = string
@@ -112,4 +117,24 @@ variable "hana_data_disks_configuration" {
     sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100)
     paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
   EOF
+}
+
+variable "subscription_id" {
+  description = "ID of the azure subscription."
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "ID of the azure tenant."
+  type        = string
+}
+
+variable "fence_agent_app_id" {
+  description = "ID of the azure service principal / application that is used for native fencing."
+  type        = string
+}
+
+variable "fence_agent_client_secret" {
+  description = "Secret for the azure service principal / application that is used for native fencing."
+  type        = string
 }

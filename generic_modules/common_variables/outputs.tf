@@ -92,6 +92,17 @@ output "configuration" {
       hana_instance_number = var.netweaver_hana_instance_number
       hana_master_password = var.netweaver_hana_master_password
     }
+    monitoring = {
+      hana_targets          = var.monitoring_hana_targets
+      hana_targets_ha       = var.monitoring_hana_targets_ha
+      hana_targets_vip      = var.monitoring_hana_targets_vip
+      drbd_targets          = var.monitoring_drbd_targets
+      drbd_targets_ha       = var.monitoring_drbd_targets_ha
+      drbd_targets_vip      = var.monitoring_drbd_targets_vip
+      netweaver_targets     = var.monitoring_netweaver_targets
+      netweaver_targets_ha  = var.monitoring_netweaver_targets_ha
+      netweaver_targets_vip = var.monitoring_netweaver_targets_vip
+    }
     grains_output           = <<EOF
 provider: ${var.provider_type}
 reg_code: ${var.reg_code}
@@ -160,6 +171,17 @@ hana_ip: ${var.netweaver_hana_ip}
 hana_sid: ${var.netweaver_hana_sid}
 hana_instance_number: ${var.netweaver_hana_instance_number}
 hana_master_password: ${var.netweaver_hana_master_password}
+EOF
+    monitoring_grains_output = <<EOF
+hana_targets: [${join(", ", formatlist("'%s'", var.monitoring_hana_targets))}]
+hana_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_hana_targets_ha))}]
+hana_targets_vip: [${join(", ", formatlist("'%s'", var.monitoring_hana_targets_vip))}]
+drbd_targets: [${join(", ", formatlist("'%s'", var.monitoring_drbd_targets))}]
+drbd_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_drbd_targets_ha))}]
+drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.monitoring_drbd_targets_vip))}]
+netweaver_targets: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets))}]
+netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_ha))}]
+netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_vip))}]
 EOF
   }
 }

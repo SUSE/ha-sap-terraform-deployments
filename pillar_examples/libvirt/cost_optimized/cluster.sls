@@ -2,6 +2,7 @@ cluster:
   name: 'hana_cluster'
   init: 'hana01'
   interface: 'eth1'
+  unicast: True
   watchdog:
     module: softdog
     device: /dev/watchdog

@@ -238,6 +238,17 @@ resource "aws_security_group_rule" "ha_exporter" {
   security_group_id = local.security_group_id
 }
 
+resource "aws_security_group_rule" "saphost_exporter" {
+  count       = local.create_security_group_monitoring
+  type        = "ingress"
+  from_port   = 9680
+  to_port     = 9680
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = local.security_group_id
+}
+
 resource "aws_security_group_rule" "prometheus_server" {
   count       = local.create_security_group_monitoring
   type        = "ingress"

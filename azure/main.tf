@@ -127,6 +127,15 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  monitoring_hana_targets             = local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
+  monitoring_netweaver_targets_ha     = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "drbd_node" {
@@ -150,6 +159,11 @@ module "drbd_node" {
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
   drbd_cluster_vip    = local.drbd_cluster_vip
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "netweaver_node" {
@@ -181,6 +195,12 @@ module "netweaver_node" {
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
+  fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_node" {
@@ -204,6 +224,12 @@ module "hana_node" {
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  fencing_mechanism             = var.hana_cluster_fencing_mechanism
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "monitoring" {
@@ -219,9 +245,6 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
-  hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "iscsi_server" {

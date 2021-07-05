@@ -86,7 +86,7 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "443", "3000", "7630", "9668", "9100", "9664", "9090"]
+    ports    = ["22", "80", "443", "3000", "7630", "9668", "9100", "9664", "9090", "9680"]
   }
 }
 

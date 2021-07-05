@@ -14,14 +14,16 @@ locals {
     "81${var.ascs_instance_number}",
     "5${var.ascs_instance_number}13",
     "5${var.ascs_instance_number}14",
-    "5${var.ascs_instance_number}16"
+    "5${var.ascs_instance_number}16",
+    "9680" # monitoring - sap_host_exporter
   ]) : toset([])
   ers_lb_rules_ports     = local.create_ha_infra == 1 ? toset([
     "32${var.ers_instance_number}",
     "33${var.ers_instance_number}",
     "5${var.ers_instance_number}13",
     "5${var.ers_instance_number}14",
-    "5${var.ers_instance_number}16"
+    "5${var.ers_instance_number}16",
+    "9680" # monitoring - sap_host_exporter
   ]) : toset([])
 }
 

@@ -129,6 +129,15 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  monitoring_hana_targets             = local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
+  monitoring_netweaver_targets_ha     = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "drbd_node" {
@@ -267,9 +276,6 @@ module "monitoring" {
   os_owner           = local.monitoring_os_owner
   subnet_ids         = aws_subnet.infra-subnet.*.id
   timezone           = var.timezone
-  hana_targets       = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets       = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets  = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

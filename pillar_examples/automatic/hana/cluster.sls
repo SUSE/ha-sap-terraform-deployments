@@ -10,8 +10,8 @@ cluster:
   interface: eth1
   {% else %}
   interface: eth0
-  unicast: True
   {% endif %}
+  unicast: True
   join_timeout: 500
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
@@ -86,6 +86,16 @@ cluster:
         virtual_ip_secondary: {{ grains['hana_cluster_vip_secondary'] }}
         {% endif %}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
+        {% if grains['fencing_mechanism'] == 'native' %}
+        {% if grains['provider'] == 'azure' %}
+        # only used by azure fence agent (native fencing)
+        azure_subscription_id: {{ grains['subscription_id'] }}
+        azure_resource_group_name: {{ grains['resource_group_name'] }}
+        azure_tenant_id: {{ grains['tenant_id'] }}
+        azure_fence_agent_app_id: {{ grains['fence_agent_app_id'] }}
+        azure_fence_agent_client_secret: {{ grains['fence_agent_client_secret'] }}
+        {% endif %}
+        {% endif %}
         {% if grains['scenario_type'] == 'cost-optimized' %}
         prefer_takeover: false
         {% else %}
