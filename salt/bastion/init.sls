@@ -1,4 +1,4 @@
-{# 'rootdisk' is used for nfs server on openstack #}
+{# NFS server used for '/sapinst' on bastion is only available on openstack. #}
 {% if grains.get('monitoring_enabled', False) or grains.get('data_disk_type') in ['rootdisk', 'ephemeral', 'volume'] %}
 include:
 {% if grains.get('monitoring_enabled', False) %}

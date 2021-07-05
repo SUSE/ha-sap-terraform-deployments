@@ -10,7 +10,8 @@ nfs-kernel-server:
         attempts: 3
         interval: 15
 
-{# don't run for 'rootdisk', used by openstack #}
+{# NFS server used for '/sapinst' on bastion is only available on openstack. #}
+{# don't run filesystem creation for 'rootdisk' #}
 {% if grains.get('data_disk_type') in ['ephemeral', 'volume'] %}
 sapinst_fs:
   cmd.run:
@@ -28,7 +29,7 @@ sapinst_folder:
    - user: root
    - mode: "0755"
    - makedirs: True
-{# don't run for 'rootdisk', used by openstack #}
+{# don't mount for 'rootdisk' #}
 {% if grains.get('data_disk_type') in ['ephemeral', 'volume'] %}
   mount.mounted:
     - name: /mnt_permanent/sapinst
