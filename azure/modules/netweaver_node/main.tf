@@ -210,10 +210,70 @@ resource "azurerm_network_interface" "netweaver" {
 
   ip_configuration {
     name                          = "ipconf-primary"
+    primary                       = true
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
     public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
+  }
+
+  # virtual IPs for PAS and AAS instances (if not configured on load-balancer)
+  #
+  # HA use case - PAS instance on additional machine
+  # create_ha_infra = 1
+  # xscs_server_count = 2 # ASCS+ERS
+  # app_server_count = 1..X # PAS and APPX additional machines
+  dynamic "ip_configuration" {
+    # on HA, deploy not on ASCS+ERS (count.index(0|1) >= var.xscs_server_count(2))
+    for_each = local.create_ha_infra == 1 ? (count.index >= var.xscs_server_count ? [1] : []) : []
+    content {
+      name                          = "ipconf-vip-ha-as"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index)
+    }
+  }
+  # HA use case - PAS instance on same machine as the ASCS
+  # create_ha_infra = 1
+  # xscs_server_count = 2 # ASCS+ERS
+  # app_server_count = 0 # no PAS on additional machine
+  dynamic "ip_configuration" {
+    # on HA, test for PAS on ASCS scenario (app_server_count=0 && count.index=0[ASCS])
+    for_each = local.create_ha_infra == 1 ? (var.app_server_count == 0 ? (count.index == 0 ? [1] : []) : []) : []
+    content {
+      name                          = "ipconf-vip-ha-pas-on-ascs"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index + var.xscs_server_count)
+    }
+  }
+  # non-HA use case - PAS instance on additional machine 
+  # create_ha_infra = 0
+  # xscs_server_count = 1 # ASCS
+  # app_server_count = 1..X # PAS and APPX on additional machines
+  dynamic "ip_configuration" {
+    # on non-HA, deploy ASCS,PAS,APPX VIPs
+    for_each = local.create_ha_infra == 0 ? [1] : []
+    content {
+      name                          = "ipconf-vip-non-ha-as"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index)
+    }
+  }
+  # non-HA use case - PAS instance on same machine as the ASCS
+  # create_ha_infra = 0
+  # xscs_server_count = 1 # ASCS
+  # app_server_count = 0..X # no PAS on additional machine AND PAS on additional machines
+  dynamic "ip_configuration" {
+    # on non-HA, test for PAS on ASCS scenario (app_server_count=0 && count.index=0[ASCS])
+    for_each = local.create_ha_infra == 0 ? (var.app_server_count == 0 ? (count.index == 0 ? [1] : []) : []) : []
+    content {
+      name                          = "ipconf-vip-non-ha-pas-on-ascs"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index + var.xscs_server_count)
+    }
   }
 
   tags = {
