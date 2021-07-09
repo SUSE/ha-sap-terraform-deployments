@@ -4,9 +4,11 @@ module "local_execution" {
 }
 
 locals {
-  hana_cluster_vip           = ""
+  hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : ""
   hana_cluster_vip_secondary = ""
   drbd_cluster_vip           = ""
+
+  pi_network_ids      = var.bastion_enabled && var.private_pi_network_ids != [] ? var.private_pi_network_ids : var.public_pi_network_ids
   #hana_ips                   = var.hana_ips
 
   netweaver_count             = 0
@@ -17,6 +19,7 @@ locals {
 
   # Obtain machines os_image value
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
 }
 
 module "common_variables" {
@@ -32,6 +35,9 @@ module "common_variables" {
   private_key                         = var.private_key
   authorized_keys                     = []
   authorized_user                     = var.admin_user
+  bastion_enabled                     = var.bastion_enabled
+  bastion_public_key                  = var.bastion_public_key
+  bastion_private_key                 = var.bastion_private_key
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored
@@ -91,6 +97,8 @@ module "common_variables" {
 module "hana_node" {
   source                        = "./modules/hana_node"
   common_variables              = module.common_variables.configuration
+  bastion_host                  = module.bastion.public_ip
+  bastion_private               = module.bastion.private_ip
   ibmcloud_api_key              = var.ibmcloud_api_key
   region                        = var.region
   zone                          = var.zone
@@ -110,6 +118,8 @@ module "hana_node" {
   os_image                      = local.hana_os_image
   pi_cloud_instance_id          = var.pi_cloud_instance_id
   pi_sys_type                   = var.pi_sys_type
-  pi_network_ids                = var.pi_network_ids
+  pi_network_ids                = local.pi_network_ids
+  private_pi_network_names      = var.private_pi_network_names
+  public_pi_network_names       = var.public_pi_network_names
   pi_key_pair_name              = var.pi_key_pair_name
 }
