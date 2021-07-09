@@ -136,7 +136,7 @@ module "common_variables" {
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
-  monitoring_netweaver_targets_ha     = var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  monitoring_netweaver_targets_ha     = var.netweaver_enabled ? (var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []) : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
