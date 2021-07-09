@@ -6,10 +6,14 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   connection {
-  host        = ibm_pi_instance.ibm_pi_hana[count.index].addresses.0.external_ip
+  host        = element(local.provisioning_addresses, count.index)
   type        = "ssh"
   user        = var.common_variables["authorized_user"]
   private_key = var.common_variables["private_key"]
+
+  bastion_host        = var.bastion_host
+  bastion_user        = var.common_variables["authorized_user"]
+  bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -29,6 +33,15 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 EOF
     destination = "/tmp/grains"
   }
+
+  # Sets up instance to use bastion SNAT router - https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-linux#linux-networking
+  provisioner "remote-exec" {
+    inline = var.bastion_enabled ? [
+      "echo 'default '${var.bastion_private}' - -' > /etc/sysconfig/network/ifroute-eth0",
+      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf",
+      "/usr/bin/systemctl restart network"
+    ] : []
+  }
 }
 
 module "hana_provision" {
@@ -37,6 +50,8 @@ module "hana_provision" {
   instance_ids = null_resource.hana_node_provisioner.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["private_key"]
-  public_ips   = ibm_pi_instance.ibm_pi_hana.*.addresses.0.external_ip
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips   = local.provisioning_addresses
   background   = var.common_variables["background"]
 }

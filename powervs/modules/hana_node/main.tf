@@ -9,10 +9,12 @@ provider "ibm" {
 ## hana instances
 
 locals {
+  bastion_enabled       = var.common_variables["bastion_enabled"]
   create_shared_infra   = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] && var.common_variables["hana"]["fencing_mechanism"] == "sbd" && var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? 1 : 0
   disks_number          = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_size            = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
   disks_type            = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  provisioning_addresses      = local.bastion_enabled ? data.ibm_pi_instance_ip.ibm_pi_hana_private.*.ip : data.ibm_pi_instance_ip.ibm_pi_hana_public.*.external_ip
 }
 
 resource "ibm_pi_volume" "ibm_pi_hana_volume"{
