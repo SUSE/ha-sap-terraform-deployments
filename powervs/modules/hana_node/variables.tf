@@ -16,6 +16,24 @@ variable "zone" {
   default = "eu-de-1"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private" {
+  description = "Bastion private host address"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
 variable "hana_count" {
   type    = string
   default = "2"
@@ -111,8 +129,21 @@ variable "pi_sys_type" {
   default     = ""
 }
 
+
 variable "pi_network_ids" {
-  description = "The list of network IDs that you want to assign to the instance."
+description = "The list of network IDs that you want to assign to the instance."
+type        = list(string)
+default     = []
+}
+
+variable "public_pi_network_names" {
+  description = "The list of public network names that you want to assign to an instance."
+  type        = list(string)
+  default     = []
+}
+
+variable "private_pi_network_names" {
+  description = "The list of private network names that you want to assign to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank."
   type        = list(string)
   default     = []
 }
