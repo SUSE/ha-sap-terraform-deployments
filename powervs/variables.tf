@@ -34,10 +34,70 @@ variable "pi_sys_type" {
   default     = ""
 }
 
-variable "pi_network_ids" {
-  description = "The list of network IDs that you want to assign to the instance."
+variable "public_pi_network_ids" {
+  description = "The list of public network IDs that you want to assign to an instance."
   type        = list(string)
   default     = []
+}
+
+variable "public_pi_network_names" {
+  description = "The list of public network names that you want to assign to an instance."
+  type        = list(string)
+  default     = []
+}
+
+variable "private_pi_network_ids" {
+  description = "The list of private network IDs that you want to assign to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank."
+  type        = list(string)
+  default     = []
+}
+
+variable "private_pi_network_names" {
+  description = "The list of private network names that you want to assign to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank."
+  type        = list(string)
+  default     = []
+}
+
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_os_image" {
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_enabled_node_vcpu" {
+  description = "Number of CPUs for the bastion machines"
+  type        = number
+  default     = 2
+}
+
+variable "bastion_node_vcpu" {
+  description = "Number of CPUs for the bastion machine"
+  type        = number
+  default     = 2
+}
+
+variable "bastion_node_memory" {
+  description = "Memory (in GBs) for the bastion machines"
+  type        = number
+  default     = 8
 }
 
 ## Deployment variables
