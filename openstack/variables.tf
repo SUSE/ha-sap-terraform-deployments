@@ -538,7 +538,7 @@ variable "drbd_cluster_vip" {
 variable "drbd_cluster_fencing_mechanism" {
   description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
   type        = string
-  default     = "native"
+  default     = "sbd"
 }
 
 variable "drbd_nfs_mounting_point" {

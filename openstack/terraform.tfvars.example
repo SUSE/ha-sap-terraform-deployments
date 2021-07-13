@@ -157,6 +157,8 @@ bastion_data_disk_type = ""
 #bastion_data_disk_type = "ephemeral"
 # or
 #bastion_data_disk_type = "volume"
+# or
+#bastion_data_disk_type = "rootdisk"
 # Disk size for NFS server volume on the bastion (only used for volume, not ephemeral)
 #bastion_data_disk_size = "60"
 
