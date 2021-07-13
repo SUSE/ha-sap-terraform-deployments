@@ -46,6 +46,10 @@ resource "null_resource" "provision" {
     user        = var.user
     password    = var.password
     private_key = var.private_key != "" ? var.private_key : ""
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.user
+    bastion_private_key = var.bastion_private_key != "" ? var.bastion_private_key : ""
   }
 
   provisioner "file" {
