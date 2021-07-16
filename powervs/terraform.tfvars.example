@@ -82,13 +82,13 @@ pi_sys_type           = "s922"
 # The list of public network IDs that are assigned to an instance.
 public_pi_network_ids = [""]
 
-# The list of public network names that that are assigned to an instance.
+# The list of public network names that are assigned to an instance.
 public_pi_network_names = [""]
 
-# The list of private network IDs that that are assigned to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank.
+# The list of private network IDs that are assigned to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank.
 private_pi_network_ids = [""]
 
-# The list of private network names that that are assigned to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank.
+# The list of private network names that are assigned to an instance.  If bastion_enabled = true then private_pi_network_ids cannot be blank.
 private_pi_network_names = [""]
 
 ##########################
