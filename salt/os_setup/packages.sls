@@ -1,5 +1,5 @@
 # check if iscsi-formula should be installed
-{%- if grains.get('sbd_storage_type') == "iscsi" or grains.get('role') == "iscsi_srv" %}
+{%- if grains.get('role') == "iscsi_srv" %}
 iscsi-formula:
   pkg.installed:
     - retry:
