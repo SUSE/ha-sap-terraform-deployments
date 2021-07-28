@@ -72,6 +72,7 @@ output "configuration" {
       ha_enabled           = var.netweaver_ha_enabled
       fencing_mechanism    = var.netweaver_cluster_fencing_mechanism
       sbd_storage_type     = var.netweaver_sbd_storage_type
+      fstype               = var.netweaver_fstype
       sid                  = var.netweaver_sid
       ascs_instance_number = var.netweaver_ascs_instance_number
       ers_instance_number  = var.netweaver_ers_instance_number
@@ -119,6 +120,10 @@ provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
 ${local.requirements}
 EOF
+    drbd_grains_output = <<EOF
+hana_fstype: ${var.hana_fstype}
+netweaver_fstype: ${var.netweaver_fstype}
+EOF
     hana_grains_output      = <<EOF
 hana_sid: ${var.hana_sid}
 hana_instance_number: ${var.hana_instance_number}
@@ -152,6 +157,7 @@ EOF
 ha_enabled: ${var.netweaver_ha_enabled}
 fencing_mechanism: ${var.netweaver_cluster_fencing_mechanism}
 sbd_storage_type: ${var.netweaver_sbd_storage_type}
+netweaver_fstype: ${var.netweaver_fstype}
 netweaver_sid: ${var.netweaver_sid}
 ascs_instance_number: ${var.netweaver_ascs_instance_number}
 ers_instance_number: ${var.netweaver_ers_instance_number}

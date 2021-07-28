@@ -2,6 +2,7 @@
 
 locals {
   bastion_enabled             = var.common_variables["bastion_enabled"]
+  create_scale_out            = var.hana_count > 1 && var.hana_scale_out_enabled ? 1 : 0
   create_ha_infra             = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses      = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
@@ -24,7 +25,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
   location                    = var.az_region
   resource_group_name         = var.resource_group_name
   managed                     = "true"
-  platform_fault_domain_count = 2
+  platform_fault_domain_count = 2 + local.create_scale_out
 
   tags = {
     workspace = var.common_variables["deployment_name"]

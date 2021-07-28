@@ -13,6 +13,11 @@ variable "netweaver_sbd_storage_type" {
   type        = string
 }
 
+variable "netweaver_fstype" {
+  description = "Filesystem type used by the disk where netweaver is installed"
+  type        = string
+}
+
 variable "netweaver_sid" {
   description = "System identifier of the Netweaver installation (e.g.: HA1 or PRD)"
   type        = string

@@ -2,6 +2,7 @@
 
 drbd:
   promotion: {{ grains['name_prefix'] }}01
+  virtual_ip: {{ grains['drbd_cluster_vip'] }}
 
   ## Resource template for /etc/drbd.d/xxx.res
   #res_template: "res_single_vol_v9.j2"
@@ -69,28 +70,45 @@ drbd:
       split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
 
   resource:
-    - name: "sapdata"
-      device: "/dev/drbd1"
-      {% if grains['provider'] != 'gcp' %}
-      disk: {{ drbd_disk_device }}1
-      {% endif %}
+{%- for vg in grains['drbd_data_disks_configuration_netweaver']['names'].split('#') %}
+    - name: {{ vg }}
+      device: "/dev/drbd{{ loop.index }}"
+      disk: /dev/vg_netweaver_{{ vg }}/lv_netweaver_{{ vg }}
 
-      file_system: "xfs"
-      mount_point: "{{ grains['nfs_mounting_point'] }}/{{ grains['nfs_export_name'] }}"
-      virtual_ip: {{ grains['drbd_cluster_vip'] }}
+      file_system: {{ grains['netweaver_fstype'] }}
+      mount_point: {{ grains['drbd_data_disks_configuration_netweaver']['nfs_paths'].split('#')[loop.index0] }}
 
       nodes:
         - name: {{ grains['name_prefix'] }}01
           ip: {{ grains['host_ips'][0] }}
-          {% if grains['provider'] == 'gcp' %}
-          disk: {{ grains['drbd_disk_device_list'][0] }}-part1
-          {% endif %}
-          port: 7990
+          # disk: /dev/vg_netweaver_{{ vg }}/lv_netweaver_{{ vg }}
+          port: {{ 7990 + loop.index }}
           id: 1
         - name: {{ grains['name_prefix'] }}02
           ip: {{ grains['host_ips'][1] }}
-          {% if grains['provider'] == 'gcp' %}
-          disk: {{ grains['drbd_disk_device_list'][1] }}-part1
-          {% endif %}
-          port: 7990
+          # disk: /dev/vg_netweaver_{{ vg }}/lv_netweaver_{{ vg }}
+          port: {{ 7990 + loop.index }}
           id: 2
+{%- endfor %}
+
+{%- set drbd_data_disks_netweaver_count = grains['drbd_data_disks_configuration_netweaver']['names'].split('#')|length %}
+{%- for vg in grains['drbd_data_disks_configuration_hana']['names'].split('#') %}
+    - name: {{ vg }}
+      device: "/dev/drbd{{ drbd_data_disks_netweaver_count + loop.index }}"
+      disk: /dev/vg_hana_{{ vg }}/lv_hana_{{ vg }}
+
+      file_system: {{ grains['hana_fstype'] }}
+      mount_point: {{ grains['drbd_data_disks_configuration_hana']['nfs_paths'].split('#')[loop.index0] }}
+
+      nodes:
+        - name: {{ grains['name_prefix'] }}01
+          ip: {{ grains['host_ips'][0] }}
+          # disk: /dev/vg_hana_{{ vg }}/lv_hana_{{ vg }}
+          port: {{ drbd_data_disks_netweaver_count + 7990 + loop.index }}
+          id: 1
+        - name: {{ grains['name_prefix'] }}02
+          ip: {{ grains['host_ips'][1] }}
+          # disk: /dev/vg_hana_{{ vg }}/lv_hana_{{ vg }}
+          port: {{ drbd_data_disks_netweaver_count + 7990 + loop.index }}
+          id: 2
+{%- endfor %}

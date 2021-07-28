@@ -136,3 +136,9 @@ variable "provisioning_output_colored" {
   type        = bool
   default     = true
 }
+
+variable "drbd_cluster_vip" {
+  description = "Virtual ip for the drbd cluster. If it's not set the address will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+}

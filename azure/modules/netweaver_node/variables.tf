@@ -164,3 +164,20 @@ variable "fence_agent_client_secret" {
   description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
 }
+
+variable "drbd_data_disks_configuration_netweaver" {
+  type = map
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+  EOF
+}
+
+variable "drbd_cluster_vip" {
+  description = "Virtual ip for the drbd cluster. If it's not set the address will be auto generated from the provided vnet address range"
+  type        = string
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "Storage type to use for Netweaver deployment"
+  type        = string
+}

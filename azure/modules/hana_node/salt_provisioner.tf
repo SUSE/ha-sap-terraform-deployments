@@ -25,7 +25,6 @@ name_prefix: vm${var.name}
 hostname: vm${var.name}0${count.index + 1}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
-hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 sbd_lun_index: 0
@@ -37,6 +36,14 @@ tenant_id: ${var.tenant_id}
 resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
+hana_scale_out_enabled: ${var.hana_scale_out_enabled}
+hana_scale_out_site_01: [${join(", ", formatlist("'%s'", var.hana_scale_out_site_01))}]
+hana_scale_out_site_02: [${join(", ", formatlist("'%s'", var.hana_scale_out_site_02))}]
+hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
+hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
+drbd_cluster_vip: ${var.drbd_cluster_vip}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
+drbd_data_disks_configuration_hana: {${join(", ", formatlist("'%s': '%s'", keys(var.drbd_data_disks_configuration_hana), values(var.drbd_data_disks_configuration_hana), ), )}}
 EOF
     destination = "/tmp/grains"
   }

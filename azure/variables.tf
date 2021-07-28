@@ -239,10 +239,10 @@ variable "hana_data_disks_configuration" {
     caching          = "None,None,None,None,None,None,None"
     writeaccelerator = "false,false,false,false,false,false,false"
     # The next variables are used during the provisioning
-    luns     = "0,1#2,3#4#5#6"
-    names    = "data#log#shared#usrsap#backup"
-    lv_sizes = "100#100#100#100#100"
-    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+    luns        = "0,1#2,3#4#5#6"
+    names       = "data#log#shared#usrsap#backup"
+    lv_sizes    = "100#100#100#100#100"
+    mount_paths = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
   }
   description = <<EOF
     This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
@@ -252,7 +252,7 @@ variable "hana_data_disks_configuration" {
     names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
     luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
     sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
-    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+    mount_paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
   EOF
 }
 
@@ -408,6 +408,12 @@ variable "hana_ha_enabled" {
   description = "Enable HA cluster in top of HANA system replication"
   type        = bool
   default     = true
+}
+
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
 }
 
 variable "hana_active_active" {
@@ -593,10 +599,16 @@ variable "drbd_cluster_fencing_mechanism" {
   }
 }
 
-variable "drbd_nfs_mounting_point" {
-  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+variable "drbd_nfs_mounting_point_netweaver" {
+  description = "Mounting point of the Netweaver NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
   type        = string
   default     = "/mnt_permanent/sapdata"
+}
+
+variable "drbd_nfs_mounting_point_hana" {
+  description = "Mounting point of the HANA NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/hana"
 }
 
 # Netweaver related variables
@@ -617,6 +629,12 @@ variable "netweaver_os_image" {
   description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
   default     = ""
+}
+
+variable "netweaver_fstype" {
+  description = "Filesystem type used by the disk where netweaver is installed"
+  type        = string
+  default     = "xfs"
 }
 
 variable "netweaver_image_uri" {
@@ -850,4 +868,99 @@ variable "fence_agent_client_secret" {
   description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
   default     = ""
+}
+
+variable "drbd_data_disks_configuration_netweaver" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS"
+    disks_size       = "10"
+    caching          = "None"
+    writeaccelerator = "false"
+    # The next variables are used during the provisioning
+    luns      = "0"
+    names     = "sapdata"
+    lv_sizes  = "10"
+    nfs_paths = "/mnt_permanent/sapdata" # use same as in drbd_nfs_mounting_point_netweaver
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups split by "#" must match in all of the entries
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
+    nfs_paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
+}
+
+variable "drbd_data_disks_configuration_hana" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+    disks_size       = "128,128,128,128,128"
+    caching          = "None,None,None,None,None"
+    writeaccelerator = "false,false,false,false,false"
+    # The next variables are used during the provisioning
+    luns        = "1,2#3,4#5"
+    names       = "data#log#backup"
+    lv_sizes    = "100#100#100"
+    nfs_paths   = "/mnt_permanent/hana/data#/mnt_permanent/hana/log#/mnt_permanent/hana/backup" # use same as in drbd_nfs_mounting_point_hana
+    mount_paths = "/hana/data#/hana/log#/hana/backup"                                           # use same as in drbd_nfs_mounting_point_hana
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups split by "#" must match in all of the entries
+    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
+    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
+    nfs_paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+    mount_paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(drbd|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: drbd|anf."
+  }
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(drbd|anf|afs)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf|afs."
+  }
+}
+
+variable "hana_scale_out_site_01" {
+  description = "Definition of Site 01 for HANA scale out"
+  type        = list(string)
+  default     = []
+}
+
+variable "hana_scale_out_site_02" {
+  description = "Definition of Site 02 for HANA scale out"
+  type        = list(string)
+  default     = []
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
 }

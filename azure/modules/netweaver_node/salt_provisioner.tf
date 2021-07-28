@@ -41,6 +41,9 @@ tenant_id: ${var.tenant_id}
 resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
+netweaver_shared_storage_type: ${var.netweaver_shared_storage_type}
+drbd_cluster_vip: ${var.drbd_cluster_vip}
+drbd_data_disks_configuration_hana: {${join(", ", formatlist("'%s': '%s'", keys(var.drbd_data_disks_configuration_hana), values(var.drbd_data_disks_configuration_hana), ), )}}
   EOF
     destination = "/tmp/grains"
   }

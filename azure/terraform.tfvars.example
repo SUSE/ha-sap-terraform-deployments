@@ -158,7 +158,27 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #hana_vm_size = "Standard_E4s_v3"
 
 # Number of nodes in the cluster
-#hana_count = "2"
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
+# enable HANA scale-out
+# hana_scale_out_enabled             = false
+# hana_scale_out_shared_storage_type = "drbd" # only drbd supported at the moment
+
+# define which hosts are assigned to which HANA scale-out site
+# hana_scale_out_site_01 = ["vmhana01", "vmhana03", "vmhana05"]
+# hana_scale_out_site_02 = ["vmhana02", "vmhana04", "vmhana06"]
+
+# HANA scale-out role assignments
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+# hana_scale_out_addhosts = {
+#   vmhana01 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#   vmhana02 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+# }
+#
+# mm_vm_size =  "Standard_D2s_v3"
+# mm_ip =  "10.74.0.9"
 
 # Instance number for the HANA database. 00 by default.
 #hana_instance_number = "00"
@@ -166,7 +186,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Network options
 #hana_enable_accelerated_networking = false
 
-# Disk configuration
+# local Disk configuration
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
 #  disks_size       = "512,512,512,512,64,1024"
@@ -177,6 +197,36 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #  lv_sizes         = "70,100#100#100#100"
 #  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
 #}
+
+# local Disk configuration - scale-out example
+# on scale-out we need shared storage for data/log/shared and no local disks
+# hana_data_disks_configuration = {
+#   disks_type       = "Premium_LRS"
+#   disks_size       = "10"
+#   caching          = "None"
+#   writeaccelerator = "false"
+#   # The next variables are used during the provisioning
+#   luns        = "0"
+#   names       = "usrsap"
+#   lv_sizes    = "100"
+#   mount_paths = "/usr/sap"
+# }
+
+# shared DRBD Disk configuration - scale-out example
+# on scale-out we need shared storage for data/log/shared for both HANA sites
+# drbd_data_disks_configuration_hana = {
+#   disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+#   disks_size       = "128,128,128,128,256,40,128,128,128,128,256,40"
+#   caching          = "None,None,None,None,None,None,None,None,None,None,None,None"
+#   writeaccelerator = "false,false,false,false,false,false,false,false,false,false"
+#   # The next variables are used during the provisioning
+#   luns        = "1,2#3,4#5#6#7,8#9,10#11#12" # be sure to never name a lun twice, also for other DRBD resources, e.g. netweaver
+#   names       = "data01#log01#backup01#shared01#data02#log02#backup02#shared02"
+#   lv_sizes    = "100#100#100#100#100#100#100#100"
+#   site        = "vmhana01#vmhana01#vmhana01#vmhana01#vmhana02#vmhana02#vmhana02#vmhana02" # use first node of each site as site name
+#   nfs_paths   = "/mnt_permanent/hana/data01#/mnt_permanent/hana/log01#/mnt_permanent/hana/backup01#/mnt_permanent/hana/shared01#/mnt_permanent/hana/data02#/mnt_permanent/hana/log02#/mnt_permanent/hana/backup02#/mnt_permanent/hana/shared02" # path on NFS server
+#   mount_paths = "/hana/data#/hana/log#/hana/backup#/hana/shared#/hana/data#/hana/log#/hana/backup#/hana/shared"                                                                                                                                 # path on HANA server
+# }
 
 # SLES4SAP image information
 # If custom uris are enabled public information will be omitted
@@ -322,6 +372,8 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Public image usage for the DRBD machines. BYOS example
 #drbd_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
+# DRBD vm_size has to be changed if more disks are assigned (e.g. HANA scale-out)
+# drbd_vm_size = "Standard_DS3_v2"
 # Enable drbd cluster
 #drbd_enabled = true
 
@@ -397,6 +449,22 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
+
+netweaver_shared_storage_type = "drbd" # only drbd supported at the moment
+
+# shared DRBD Disk configuration - netweaver example
+# on netweaver we need shared storage
+# drbd_data_disks_configuration_netweaver = {
+#   disks_type       = "Premium_LRS"
+#   disks_size       = "10"
+#   caching          = "None"
+#   writeaccelerator = "false"
+#   # The next variables are used during the provisioning
+#   luns      = "0" # be sure to never name a lun twice, also for other DRBD resources, e.g. HANA scale-out
+#   names     = "sapdata"
+#   lv_sizes  = "100"
+#   nfs_paths = "/mnt_permanent/sapdata" # path on NFS server
+# }
 
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"

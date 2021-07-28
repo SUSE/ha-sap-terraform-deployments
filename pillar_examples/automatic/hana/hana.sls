@@ -44,6 +44,10 @@ hana:
         extra_parameters:
           ignore: check_min_mem
         {% endif %}
+        {% if grains['hana_scale_out_addhosts'] != "" %}
+        extra_parameters:
+          addhosts: {{ grains['hana_scale_out_addhosts']['vmhana01'] }}
+        {% endif %}
       {%- if grains.get('ha_enabled') %}
       primary:
         name: {{ grains['hana_primary_site'] }}
@@ -87,6 +91,10 @@ hana:
         {% if grains['hana_ignore_min_mem_check'] %}
         extra_parameters:
           ignore: check_min_mem
+        {% endif %}
+        {% if grains['hana_scale_out_addhosts'] != "" %}
+        extra_parameters:
+          addhosts: {{ grains['hana_scale_out_addhosts']['vmhana02'] }}
         {% endif %}
       {%- if grains.get('ha_enabled') %}
       secondary:

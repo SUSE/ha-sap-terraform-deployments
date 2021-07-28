@@ -105,7 +105,7 @@ variable "hana_data_disks_configuration" {
     luns     = "0,1#2,3#4#5#6"
     names    = "data#log#shared#usrsap#backup"
     lv_sizes = "100#100#100#100#100"
-    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+    mount_paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
   }
   description = <<EOF
     This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
@@ -115,7 +115,7 @@ variable "hana_data_disks_configuration" {
     names -> The names of the volume groups (example datalog#shared#usrsap#backup)
     luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5)
     sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100)
-    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
+    mount_paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
   EOF
 }
 
@@ -137,4 +137,43 @@ variable "fence_agent_app_id" {
 variable "fence_agent_client_secret" {
   description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
+}
+
+variable "drbd_data_disks_configuration_hana" {
+  type = map
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+  EOF
+}
+
+variable "drbd_cluster_vip" {
+  description = "Virtual ip for the drbd cluster. If it's not set the address will be auto generated from the provided vnet address range"
+  type        = string
+}
+
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+}
+
+variable "hana_scale_out_site_01" {
+  description = "Definition of Site 01 for HANA scale out"
+  type        = list(string)
+}
+
+variable "hana_scale_out_site_02" {
+  description = "Definition of Site 02 for HANA scale out"
+  type        = list(string)
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+}
+
+variable "hana_scale_out_addhosts" {
+  type = map
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
 }

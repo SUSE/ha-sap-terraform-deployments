@@ -139,6 +139,7 @@ For example, the disks configuration for the HANA database is a crucial step in 
 #### Demo
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_E4s_v3"
 hana_enable_accelerated_networking = false
 hana_data_disks_configuration = {
@@ -149,13 +150,14 @@ hana_data_disks_configuration = {
   luns             = "0,1#2,3#4#5#6#7"
   names            = "data#log#shared#usrsap#backup"
   lv_sizes         = "100#100#100#100#100"
-  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  mount_paths      = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 }
 ```
 
 #### Small
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_E64s_v3"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -166,13 +168,14 @@ hana_data_disks_configuration = {
   luns             = "0,1,2#3#4#5"
   names            = "datalog#shared#usrsap#backup"
   lv_sizes         = "70,100#100#100#100"
-  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  mount_paths      = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
 }
 ```
 
 #### Medium
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_M64s"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -183,13 +186,14 @@ hana_data_disks_configuration = {
   luns             = "0,1,2,3#4,5#6#7#8,9"
   names            = "data#log#shared#usrsap#backup"
   lv_sizes         = "100#100#100#100#100"
-  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  mount_paths      = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 }
 ```
 
 #### Large
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_M128s"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -200,7 +204,47 @@ hana_data_disks_configuration = {
   luns             = "0,1,2#3,4#5#6#7,8"
   names            = "data#log#shared#usrsap#backup"
   lv_sizes         = "100#100#100#100#100"
-  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  mount_paths      = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+}
+```
+
+#### Scale-Out Demo
+
+```
+hana_count = "6"
+hana_vm_size = "Standard_E4s_v3"
+hana_enable_accelerated_networking = true
+hana_scale_out_enabled = true
+hana_scale_out_shared_storage_type = "drbd"
+hana_scale_out_site_01 = ["vmhana01", "vmhana03", "vmhana05"]
+hana_scale_out_site_02 = ["vmhana02", "vmhana04", "vmhana06"]
+hana_scale_out_addhosts = {
+  vmhana01 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+  vmhana02 = "vmhana04:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+}
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "10"
+  caching          = "None"
+  writeaccelerator = "false"
+  # The next variables are used during the provisioning
+  luns        = "0"
+  names       = "usrsap"
+  lv_sizes    = "100"
+  mount_paths = "/usr/sap"
+}
+drbd_data_disks_configuration_hana = {
+  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+  disks_size       = "128,128,128,128,256,40,128,128,128,128,256,40"
+  caching          = "None,None,None,None,None,None,None,None,None,None,None,None"
+  writeaccelerator = "false,false,false,false,false,false,false,false,false,false"
+  # The next variables are used during the provisioning
+  luns        = "1,2#3,4#5#6#7,8#9,10#11#12" # be sure to never name a lun twice, also for other DRBD resources, e.g. netweaver
+  names       = "data01#log01#backup01#shared01#data02#log02#backup02#shared02"
+  lv_sizes    = "100#100#100#100#100#100#100#100"
+  site        = "vmhana01#vmhana01#vmhana01#vmhana01#vmhana02#vmhana02#vmhana02#vmhana02" # use first node of each site as site name
+  nfs_paths   = "/mnt_permanent/hana/data01#/mnt_permanent/hana/log01#/mnt_permanent/hana/backup01#/mnt_permanent/hana/shared01#/mnt_permanent/hana/data02#/mnt_permanent/hana/log02#/mnt_permanent/hana/backup02#/mnt_permanent/hana/shared02" # path on NFS server
+  mount_paths = "/hana/data#/hana/log#/hana/backup#/hana/shared#/hana/data#/hana/log#/hana/backup#/hana/shared"                                                                                                                                 # path on HANA server
 }
 ```
 
@@ -240,6 +284,18 @@ netweaver_data_disk_caching = ""ReadWrite""
 netweaver_xscs_accelerated_networking = false
 netweaver_app_accelerated_networking = false
 netweaver_app_server_count = 2
+netweaver_shared_storage_type = "drbd" # only drbd supported at the moment
+drbd_data_disks_configuration_netweaver = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "10"
+  caching          = "None"
+  writeaccelerator = "false"
+  # The next variables are used during the provisioning
+  luns      = "0" # be sure to never name a lun twice, also for other DRBD resources, e.g. HANA scale-out
+  names     = "sapdata"
+  lv_sizes  = "100"
+  nfs_paths = "/mnt_permanent/sapdata" # path on NFS server
+}
 ```
 
 #### Small
@@ -253,6 +309,18 @@ netweaver_data_disk_caching = ""ReadWrite""
 netweaver_xscs_accelerated_networking = false
 netweaver_app_accelerated_networking = true
 netweaver_app_server_count = 5
+netweaver_shared_storage_type = "drbd" # only drbd supported at the moment
+drbd_data_disks_configuration_netweaver = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "20"
+  caching          = "None"
+  writeaccelerator = "false"
+  # The next variables are used during the provisioning
+  luns      = "0" # be sure to never name a lun twice, also for other DRBD resources, e.g. HANA scale-out
+  names     = "sapdata"
+  lv_sizes  = "100"
+  nfs_paths = "/mnt_permanent/sapdata" # path on NFS server
+}
 ```
 
 #### Medium
@@ -266,6 +334,17 @@ netweaver_data_disk_caching = "ReadWrite"
 netweaver_xscs_accelerated_networking = false
 netweaver_app_accelerated_networking = true
 netweaver_app_server_count = 5
+netweaver_shared_storage_type = "drbd" # only drbd supported at the moment
+drbd_data_disks_configuration_netweaver = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "50"
+  caching          = "None"
+  writeaccelerator = "false"
+  luns      = "0"
+  names     = "sapdata"
+  lv_sizes  = "100"
+  nfs_paths = "/mnt_permanent/sapdata" # path on NFS server
+}
 ```
 
 #### Large
@@ -279,6 +358,17 @@ netweaver_data_disk_caching = "ReadWrite"
 netweaver_xscs_accelerated_networking = false
 netweaver_app_accelerated_networking = true
 netweaver_app_server_count = 10
+netweaver_shared_storage_type = "drbd" # only drbd supported at the moment
+drbd_data_disks_configuration_netweaver = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "100"
+  caching          = "None"
+  writeaccelerator = "false"
+  luns      = "0"
+  names     = "sapdata"
+  lv_sizes  = "100"
+  nfs_paths = "/mnt_permanent/sapdata" # path on NFS server
+}
 ```
 
 # Advanced usage

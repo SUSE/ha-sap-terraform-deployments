@@ -172,6 +172,22 @@ module "os_image_reference" {
   os_image = var.os_image
 }
 
+locals {
+  disks_number_netweaver           = length(split(",", var.drbd_data_disks_configuration_netweaver["disks_size"]))
+  disks_size_netweaver             = [for disk_size in split(",", var.drbd_data_disks_configuration_netweaver["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type_netweaver             = [for disk_type in split(",", var.drbd_data_disks_configuration_netweaver["disks_type"]) : trimspace(disk_type)]
+  disks_caching_netweaver          = [for caching in split(",", var.drbd_data_disks_configuration_netweaver["caching"]) : trimspace(caching)]
+  disks_writeaccelerator_netweaver = [for writeaccelerator in split(",", var.drbd_data_disks_configuration_netweaver["writeaccelerator"]) : tobool(trimspace(writeaccelerator))]
+  disks_luns_netweaver             = flatten([ [for lun1 in split(",", var.drbd_data_disks_configuration_netweaver["luns"]) : [ for lun2 in split("#", lun1) : tonumber(trimspace(lun2))]] ])
+
+  disks_number_hana           = length(split(",", var.drbd_data_disks_configuration_hana["disks_size"]))
+  disks_size_hana             = [for disk_size in split(",", var.drbd_data_disks_configuration_hana["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type_hana             = [for disk_type in split(",", var.drbd_data_disks_configuration_hana["disks_type"]) : trimspace(disk_type)]
+  disks_caching_hana          = [for caching in split(",", var.drbd_data_disks_configuration_hana["caching"]) : trimspace(caching)]
+  disks_writeaccelerator_hana = [for writeaccelerator in split(",", var.drbd_data_disks_configuration_hana["writeaccelerator"]) : tobool(trimspace(writeaccelerator))]
+  disks_luns_hana             = flatten([ [for lun1 in split(",", var.drbd_data_disks_configuration_hana["luns"]) : [ for lun2 in split("#", lun1) : tonumber(trimspace(lun2))]] ])
+}
+
 resource "azurerm_virtual_machine" "drbd" {
   count                            = var.drbd_count
   name                             = "vm${var.name}0${count.index + 1}"
@@ -198,13 +214,32 @@ resource "azurerm_virtual_machine" "drbd" {
     version   = var.drbd_image_uri != "" ? "" : module.os_image_reference.version
   }
 
-  storage_data_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Data01"
-    caching           = "ReadWrite"
-    create_option     = "Empty"
-    disk_size_gb      = "10"
-    lun               = "0"
-    managed_disk_type = "Standard_LRS"
+  # block devices for Netweaver Cluster
+  dynamic "storage_data_disk" {
+    for_each = [for v in range(local.disks_number_netweaver) : { index = v }]
+    content {
+      name                      = "disk-${var.name}0${count.index + 1}-Data-DRBD-Netweaver-0${storage_data_disk.value.index + 1}"
+      managed_disk_type         = element(local.disks_type_netweaver, storage_data_disk.value.index)
+      create_option             = "Empty"
+      lun                       = element(local.disks_luns_netweaver, storage_data_disk.value.index)
+      disk_size_gb              = element(local.disks_size_netweaver, storage_data_disk.value.index)
+      caching                   = element(local.disks_caching_netweaver, storage_data_disk.value.index)
+      write_accelerator_enabled = element(local.disks_writeaccelerator_netweaver, storage_data_disk.value.index)
+    }
+  }
+
+  # block devices for HANA Cluster
+  dynamic "storage_data_disk" {
+    for_each = [for v in range(local.disks_number_hana) : { index = v }]
+    content {
+      name                      = "disk-${var.name}0${count.index + 1}-Data-DRBD-HANA-0${storage_data_disk.value.index + 1}"
+      managed_disk_type         = element(local.disks_type_hana, storage_data_disk.value.index)
+      create_option             = "Empty"
+      lun                       = element(local.disks_luns_hana, storage_data_disk.value.index)
+      disk_size_gb              = element(local.disks_size_hana, storage_data_disk.value.index)
+      caching                   = element(local.disks_caching_hana, storage_data_disk.value.index)
+      write_accelerator_enabled = element(local.disks_writeaccelerator_hana, storage_data_disk.value.index)
+    }
   }
 
   os_profile {
