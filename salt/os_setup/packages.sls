@@ -1,3 +1,5 @@
+# check if iscsi-formula should be installed
+{%- if grains.get('role') == "iscsi_srv" %}
 iscsi-formula:
   pkg.installed:
     - retry:
@@ -19,3 +21,4 @@ kernel-default:
   # install kernel-default if kernel-default-base is installed, do not touch otherwise
   - require:
     - pkg: kernel-default-base
+{%- endif %}
