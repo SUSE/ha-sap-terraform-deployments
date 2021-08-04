@@ -161,19 +161,19 @@ The parameter `disks_size` will select the size of each disk in GB. Also you can
 
 The disks will be counted from left to right beginning with **0**. This number is called LUN. A Logical Unit Number (LUN) is a scsi concept for logical abstraction targeting physical drives. If you have 5 disks you count **0,1,2,3,4**.
 
-Now we have described the physical disks, we can declare the logical volumes using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look wired because of the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for seperation of volume groups. Think about the `#` sign as a column seperator in a table then it will look like:
+Now as we have described the physical disks, we can declare the logical volumes using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look wired because of the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for seperation of volume groups. Think about the `#` sign as a column seperator in a table then it will look like:
 
 
- | Parameter | VG1        | VG2       | VG3          | VG4      | VG5          
- | --------- | ---        | ---       | ---          | ---      | ---          |
- | names     | data       | log       | shared       | usrsap   | backup       |
- | luns      | 0,1        | 2,3       | 4            | 5        | 6            |
- | lv_sizes  | 100        | 100       | 1000         | 100      | 100          |
- | paths     | /hana/data | /hana/log | /hana/shared | /usr/sap | /hana/backup |
+ | Parameter     | VG1        | VG2       | VG3          | VG4      | VG5          |
+ | ---------     | ---        | ---       | ---          | ---      | ---          |
+ | **names**     | data       | log       | shared       | usrsap   | backup       |
+ | **luns**      | 0,1        | 2,3       | 4            | 5        | 6            |
+ | **lv_sizes**  | 100        | 100       | 1000         | 100      | 100          |
+ | **paths**     | /hana/data | /hana/log | /hana/shared | /usr/sap | /hana/backup |
 
 As you see we use 5 volume groups. Each volume group will get its name. It is set with parameter `names`.  The parameter `luns` will assign one LUN or a combination of several LUNs to a volume group. In the example above `data` will use disk **0** and **1**, but `backup` will only use disk **6**. A LUN can only assigned to one volume group.
 
-In the example above we use two physical disks for the `data` volume group.  They will be used as physical volume (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes will share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` will use **100%** of this volume group. The logical volume will be mounted at mountpoint ~/hana/data~.
+In the example above we use two physical disks for the `data` volume group.  They will be used as physical volume (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes will share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` will use **100%** of this volume group. The logical volume will be mounted at mountpoint `/hana/data`.
 
 
 ### HANA data disks configuration example setups
@@ -183,14 +183,14 @@ The database configuration may vary depending on the expected performance. In or
 For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. By default the **demo** option is deployed.
 **Use other values only if you know what you are doing**.
 
-The *demo* and *small* sizes are targeted for non-production systems. The *medium* and *large* sizes can be used for production systems.
+The **Demo** and **Small** sizes are targeted for non-production systems. The **Medium** and **Large** sizes can be used for production systems.
 
- |        | /hana/data          | /hana/log          | /hana/shared | /usr/sap ¹  | /hana/backup     | /sapmnt ²    |
- | ----   | ----------          | ---------          | ------------ | --------    | ------------     | -------------|
- | demo   | 2x128GB LUN 0,1     | 2x128GB LUN 2,3    | 128GB  LUN 4 | 128GB LUN 5 | 128GB    LUN 6   | 128GB LUN 7  |
- | small  | 3x512GB LUN 0,1,2   | ← shared with data | 512GB  LUN 3 | 64GB  LUN 4 | 1024GB   LUN 5   | 64GB  LUN 6  |
- | medium | 4x512GB LUN 0,1,2,3 | 2x512GB ³ LUN 4,5  | 1024GB LUN 6 | 64GB  LUN 7 | 2x1024GB LUN 8,9 | 64GB  LUN 10 |
- | large  | 3x1024GB LUN 0,1,2  | 2x512GB ³ LUN 3,4  | 1024GB LUN 5 | 64GB  LUN 6 | 2x2048GB LUN 7,8 | 64GB  LUN 9  |
+ |            | /hana/data          | /hana/log          | /hana/shared | /usr/sap ¹  | /hana/backup     | /sapmnt ²    |
+ | --------   | ----------          | ---------          | ------------ | --------    | ------------     | -------------|
+ | **Demo**   | 2x128GB LUN 0,1     | 2x128GB LUN 2,3    | 128GB  LUN 4 | 128GB LUN 5 | 128GB    LUN 6   | 128GB LUN 7  |
+ | **Small**  | 3x512GB LUN 0,1,2   | ← shared with data | 512GB  LUN 3 | 64GB  LUN 4 | 1024GB   LUN 5   | 64GB  LUN 6  |
+ | **Medium** | 4x512GB LUN 0,1,2,3 | 2x512GB ³ LUN 4,5  | 1024GB LUN 6 | 64GB  LUN 7 | 2x1024GB LUN 8,9 | 64GB  LUN 10 |
+ | **Large**  | 3x1024GB LUN 0,1,2  | 2x512GB ³ LUN 3,4  | 1024GB LUN 5 | 64GB  LUN 6 | 2x2048GB LUN 7,8 | 64GB  LUN 9  |
 
   ¹ APP server machines use an additional 128 GB disk for /usr/sap/<SID>
 
