@@ -186,7 +186,7 @@ For example, the disks configuration for the HANA database is a crucial step in 
 The *demo* and *small* sizes are targeted for non-production systems. The *medium* and *large* sizes can be used for production systems.
 
  |        | /hana/data          | /hana/log          | /hana/shared | /usr/sap ¹  | /hana/backup     | /sapmnt ²    |
- |--------+---------------------+--------------------+--------------+-------------+------------------+--------------|
+ | ----   | ----------          | ---------          | ------------ | --------    | ------------     | -------------|
  | demo   | 2x128GB LUN 0,1     | 2x128GB LUN 2,3    | 128GB  LUN 4 | 128GB LUN 5 | 128GB    LUN 6   | 128GB LUN 7  |
  | small  | 3x512GB LUN 0,1,2   | ← shared with data | 512GB  LUN 3 | 64GB  LUN 4 | 1024GB   LUN 5   | 64GB  LUN 6  |
  | medium | 4x512GB LUN 0,1,2,3 | 2x512GB ³ LUN 4,5  | 1024GB LUN 6 | 64GB  LUN 7 | 2x1024GB LUN 8,9 | 64GB  LUN 10 |
