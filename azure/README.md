@@ -131,6 +131,8 @@ Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
 
 ## HANA configuration
 
+### HANA data disks configuration
+
 The whole disk configuration is made in on variable named `hana_data_disks_configuration` by defining a map. It looks overwhelming at first because it encapsulates hard disk selection, logical volumes and data destinations. During deployment the HANA VM will expect a standard set of directories for its data `/hana/data`, `/hana/log`, `/hana/shared`, `/usr/sap` and `/hana/backup`. Some systems also use `/sapmnt`. We will go through it step by step.
 
 ```
@@ -154,7 +156,7 @@ A HANA VM typically uses 5 to 10 disks according to usage scenario. These will b
 
 The first four parameters `disks_type`, `disks_size`, `caching` and `writeaccelerator` will select disk storage. Here you can select the type, size and parameters.  One disk will use one entry. Every further disk will be added by appending more comma seperated entries to each parameter.
 
-In Detail: `disks_type` will select the sort of SSD with bandwith and reduncy options. You will find possible selections and costs at [https://azure.microsoft.com/en-us/pricing/details/managed-disks/](Azure – Managed Disks ).
+In Detail: `disks_type` will select the sort of SSD with bandwith and reduncy options. You will find possible selections and costs at [Azure – Managed Disks](https://azure.microsoft.com/en-us/pricing/details/managed-disks/).
 The parameter `disks_size` will select the size of each disk in GB. Also you can decide if `caching` or the `writeaccelerator` will be active.
 
 The disks will be counted from left to right beginning with **0**. This number is called LUN. A Logical Unit Number (LUN) is a scsi concept for logical abstraction targeting physical drives. If you have 5 disks you count **0,1,2,3,4**.
@@ -174,7 +176,7 @@ As you see we use 5 volume groups. Each volume group will get its name. It is se
 In the example above we use two physical disks for the `data` volume group.  They will be used as physical volume (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes will share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` will use **100%** of this volume group. The logical volume will be mounted at mountpoint ~/hana/data~.
 
 
-### HANA configuration example setups
+### HANA data disks configuration example setups
 
 The database configuration may vary depending on the expected performance. In order to have different options, the virtual machine size, disks, network configuration, etc must be configured differently. Here some predefined options that might help in the configuration.
 
