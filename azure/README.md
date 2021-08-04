@@ -131,10 +131,71 @@ Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
 
 ## HANA configuration
 
+The whole disk configuration is made in on variable named `hana_data_disks_configuration` by defining a map. It looks overwhelming at first because it encapsulates hard disk selection, logical volumes and data destinations. During deployment the HANA VM will expect a standard set of directories for its data `/hana/data`, `/hana/log`, `/hana/shared`, `/usr/sap` and `/hana/backup`. Some systems also use `/sapmnt`. We will go through it step by step.
+
+```
+variable "hana_data_disks_configuration" {
+  type = map
+  default = {
+    disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+    disks_size       = "128,128,128,128,128,128,128"
+    caching          = "None,None,None,None,None,None,None"
+    writeaccelerator = "false,false,false,false,false,false,false"
+
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+}
+```
+
+A HANA VM typically uses 5 to 10 disks according to usage scenario. These will be combined to logical volumes. At last the data locations of the standard mountpoints will be assigned to these logical volumes.
+
+The first four parameters `disks_type`, `disks_size`, `caching` and `writeaccelerator` will select disk storage. Here you can select the type, size and parameters.  One disk will use one entry. Every further disk will be added by appending more comma seperated entries to each parameter.
+
+In Detail: `disks_type` will select the sort of SSD with bandwith and reduncy options. You will find possible selections and costs at [https://azure.microsoft.com/en-us/pricing/details/managed-disks/](Azure – Managed Disks ).
+The parameter `disks_size` will select the size of each disk in GB. Also you can decide if `caching` or the `writeaccelerator` will be active.
+
+The disks will be counted from left to right beginning with **0**. This number is called LUN. A Logical Unit Number (LUN) is a scsi concept for logical abstraction targeting physical drives. If you have 5 disks you count **0,1,2,3,4**.
+
+Now we have described the physical disks, we can declare the logical volumes using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look wired because of the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for seperation of volume groups. Think about the `#` sign as a column seperator in a table then it will look like:
+
+
+ | Parameter | VG1        | VG2       | VG3          | VG4      | VG5          
+ | --------- | ---        | ---       | ---          | ---      | ---          |
+ | names     | data       | log       | shared       | usrsap   | backup       |
+ | luns      | 0,1        | 2,3       | 4            | 5        | 6            |
+ | lv_sizes  | 100        | 100       | 1000         | 100      | 100          |
+ | paths     | /hana/data | /hana/log | /hana/shared | /usr/sap | /hana/backup |
+
+As you see we use 5 volume groups. Each volume group will get its name. It is set with parameter `names`.  The parameter `luns` will assign one LUN or a combination of several LUNs to a volume group. In the example above `data` will use disk **0** and **1**, but `backup` will only use disk **6**. A LUN can only assigned to one volume group.
+
+In the example above we use two physical disks for the `data` volume group.  They will be used as physical volume (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes will share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` will use **100%** of this volume group. The logical volume will be mounted at mountpoint ~/hana/data~.
+
+
+### HANA configuration example setups
+
 The database configuration may vary depending on the expected performance. In order to have different options, the virtual machine size, disks, network configuration, etc must be configured differently. Here some predefined options that might help in the configuration.
 
 For example, the disks configuration for the HANA database is a crucial step in order to deploy a functional database. The configuration creates multiple logical volumes to get the best performance of the database. Here listed some of the configurations that can be deployed to have difference experiences. Update your `terraform.tfvars` with these values. By default the **demo** option is deployed.
 **Use other values only if you know what you are doing**.
+
+The *demo* and *small* sizes are targeted for non-production systems. The *medium* and *large* sizes can be used for production systems.
+
+ |        | /hana/data          | /hana/log          | /hana/shared | /usr/sap ¹  | /hana/backup     | /sapmnt ²    |
+ |--------+---------------------+--------------------+--------------+-------------+------------------+--------------|
+ | demo   | 2x128GB LUN 0,1     | 2x128GB LUN 2,3    | 128GB  LUN 4 | 128GB LUN 5 | 128GB    LUN 6   | 128GB LUN 7  |
+ | small  | 3x512GB LUN 0,1,2   | ← shared with data | 512GB  LUN 3 | 64GB  LUN 4 | 1024GB   LUN 5   | 64GB  LUN 6  |
+ | medium | 4x512GB LUN 0,1,2,3 | 2x512GB ³ LUN 4,5  | 1024GB LUN 6 | 64GB  LUN 7 | 2x1024GB LUN 8,9 | 64GB  LUN 10 |
+ | large  | 3x1024GB LUN 0,1,2  | 2x512GB ³ LUN 3,4  | 1024GB LUN 5 | 64GB  LUN 6 | 2x2048GB LUN 7,8 | 64GB  LUN 9  |
+
+  ¹ APP server machines use an additional 128 GB disk for /usr/sap/<SID>
+
+  ² if deployed on one Server
+
+  ³ use Azure feature "writeAccelerator" if deployed on several VMs
+
 
 #### Demo
 
