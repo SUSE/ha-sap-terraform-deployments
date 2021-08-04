@@ -154,14 +154,14 @@ variable "hana_data_disks_configuration" {
 
 A HANA VM typically uses 5 to 10 disks according to usage scenario. These will be combined to logical volumes. At last the data locations of the standard mountpoints will be assigned to these logical volumes.
 
-The first four parameters `disks_type`, `disks_size`, `caching` and `writeaccelerator` will select disk storage. Here you can select the type, size and parameters.  One disk will use one entry. Every further disk will be added by appending more comma seperated entries to each parameter.
+The first four parameters `disks_type`, `disks_size`, `caching` and `writeaccelerator` will select disk storage. Here you can select the type, size and parameters.  One disk will use one entry. Every further disk will be added by appending more comma separated entries to each parameter.
 
-In Detail: `disks_type` will select the sort of SSD with bandwith and reduncy options. You will find possible selections and costs at [Azure – Managed Disks](https://azure.microsoft.com/en-us/pricing/details/managed-disks/).
+In Detail: `disks_type` will select the sort of SSD with bandwidth and reduncy options. You will find possible selections and costs at [Azure – Managed Disks](https://azure.microsoft.com/en-us/pricing/details/managed-disks/).
 The parameter `disks_size` will select the size of each disk in GB. Also you can decide if `caching` or the `writeaccelerator` will be active.
 
 The disks will be counted from left to right beginning with **0**. This number is called LUN. A Logical Unit Number (LUN) is a scsi concept for logical abstraction targeting physical drives. If you have 5 disks you count **0,1,2,3,4**.
 
-Now as we have described the physical disks, we can declare the logical volumes using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look wired because of the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for seperation of volume groups. Think about the `#` sign as a column seperator in a table then it will look like:
+Now as we have described the physical disks, we can declare the logical volumes using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look wired because of the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for separation of volume groups. Think about the `#` sign as a column separator in a table then it will look like:
 
  | Parameter     | VG1        | VG2       | VG3          | VG4      | VG5          |
  | ---------     | ---        | ---       | ---          | ---      | ---          |
@@ -183,7 +183,7 @@ It is also possible to deploy several logical volumes to one volume group. For e
  | **lv_sizes**  | 75,25                |
  | **paths**     | /hana/data,/hana/log |
 
-If both disk have a size of 512GB, a first virtual volume with name `vg_hana_datalog_0` and size of 768GB and a second virtual volume with name `vg_hana_datalog_1` and size 256GB will be created. Both will be in volume group `vg_hana_datalog`. The first will be mounted at `/hana/data` and the second at `/hana/log`.
+If both disks have a size of 512GB, a first virtual volume with name `vg_hana_datalog_0` and size of 768GB and a second virtual volume with name `vg_hana_datalog_1` and size 256GB will be created. Both will be in volume group `vg_hana_datalog`. The first will be mounted at `/hana/data` and the second at `/hana/log`.
 
 
 ### HANA data disks configuration example setups
