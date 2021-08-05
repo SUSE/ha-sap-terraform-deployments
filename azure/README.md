@@ -40,7 +40,7 @@ Setup Azure account:
 
 * Check that the account has subscriptions with `az account list`. It should show you an entry for the tenant, and at least an entry for a subscription.
 
-Then set the default subscription with the command `az account set`, for example, we are using the **"SUSE R&D General"** subscription, so we define that as the default subscription with:
+Then set the default subscription with the command `az account set`, for example, if using the **"SUSE R&D General"** subscription, the default subscription is defined with:
 
 ```
 az account set --subscription "SUSE R&D General"
@@ -303,7 +303,8 @@ netweaver_cluster_sbd_enabled = true
 drbd_enabled = true
 ```
 
-Besides that, we need to define the expected performance setting the vm sizes, networking and disk different options. Here some different options (by default the **demo** option is deployed):
+Besides that, the expected performance setting the vm sizes, networking and disk different options need to be defined. Here are some suggested options (by default the **demo** option is deployed):
+
 
 ### Example netweaver configurations
 
@@ -419,7 +420,7 @@ export ARM_ACCESS_KEY=access_key
 
 ## How to upload a custom image
 
-In the terraform configuration we are using a custom images which are defined in the main.tf files of terraform modules (under the `storage_image_reference` block) and referenced as `azurerm_image.iscsi_srv.*.id` and `azurerm_image.sles4sap.*.id`.
+In the terraform configuration custom images are used which are defined in the main.tf files of terraform modules (under the `storage_image_reference` block) and referenced as `azurerm_image.iscsi_srv.*.id` and `azurerm_image.sles4sap.*.id`.
 
 This custom images need to be already uploaded to Azure before attempting to use it with terraform, as terraform does not have a mechanism to upload images as of yet.
 
@@ -456,9 +457,9 @@ If using a public image, skip to the [how to use section](#how-to-use).
 
 ### Upload custom image
 
-In order to upload a custom image, we require a valid resource group, with a storage account and a storage container.
+In order to upload a custom image, a valid resource group, with a storage account and a storage container, is required.
 
-To list the resource groups available to your account, run the command `az group list`. If there is a need to create a new resource group, run:
+To list the resource groups available to your account, run command `az group list`. If there is a need to create a new resource group, run:
 
 ```
 az group create --location westeurope --name MyResourceGroup
