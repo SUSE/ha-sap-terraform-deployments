@@ -160,6 +160,11 @@ variable "reg_additional_modules" {
   default     = {}
 }
 
+variable "additional_packages" {
+  description = "Extra packages to be installed"
+  default     = []
+}
+
 # Repository url used to install development versions of HA/SAP deployment packages
 # The latest RPM packages can be found at:
 # https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/{YOUR SLE VERSION}
@@ -168,11 +173,6 @@ variable "ha_sap_deployment_repo" {
   description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
   default     = ""
-}
-
-variable "additional_packages" {
-  description = "Extra packages to be installed"
-  default     = []
 }
 
 variable "provisioner" {
