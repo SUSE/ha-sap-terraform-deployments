@@ -142,7 +142,7 @@ Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
 
 ### HANA data disks configuration
 
-The whole disk configuration is made by configuring a variable named `hana_data_disks_configuration`. It looks complex, because it encapsulates hard disk selection, logical volumes and data destinations in a compact form. This section describes all parameters line by line. 
+The whole disk configuration is made by configuring a variable named `hana_data_disks_configuration`. It encapsulates hard disk selection, logical volumes and data destinations in a compact form. This section describes all parameters line by line.
 
 ```
 variable "hana_data_disks_configuration" {
@@ -168,7 +168,7 @@ The parameter `disks_size` selects the size of each disk in GB. Also you can dec
 
 The disks are counted from left to right beginning with **0**. This number is called LUN. A Logical Unit Number (LUN) is a SCSI concept for logical abstraction targeting physical drives. If you have 5 disks you count **0,1,2,3,4**.
 
-After describing the physical disks, the logical volumes can be specified using the parameters `luns`, `names`, `lv_sizes` and `paths`. These lines look confusing, caused by the usage of the `#` signs and commas. The comma combines several values into one value and the `#` sign is used for separation of volume groups. Think about the `#` sign as a column separator in a table then it will look like:
+After describing the physical disks, the logical volumes can be specified using the parameters `luns`, `names`, `lv_sizes` and `paths`. The comma combines several values into one value and the `#` sign is used for separation of volume groups. Think about the `#` sign as a column separator in a table then it will look like:
 
  | Parameter     | VG1        | VG2       | VG3          | VG4      | VG5          |
  | ---------     | ---        | ---       | ---          | ---      | ---          |
@@ -177,9 +177,9 @@ After describing the physical disks, the logical volumes can be specified using 
  | **lv_sizes**  | 100        | 100       | 1000         | 100      | 100          |
  | **paths**     | /hana/data | /hana/log | /hana/shared | /usr/sap | /hana/backup |
 
-As you see, there are 5 volume groups specified. Each volume group has it own name. It is set with parameter `names`.  The parameter `luns` assigns one LUN or a combination of several LUNs to a volume group. In the example above `data` is uses disk with LUN **0** and **1**, but `backup` only uses disk with LUN **6**. A LUN can only assigned to one volume group.
+As you see, there are 5 volume groups specified. Each volume group has its own name. It is set with parameter `names`.  The parameter `luns` assigns one LUN or a combination of several LUNs to a volume group. In the example above `data` uses disk with LUN **0** and **1**, but `backup` only uses disk with LUN **6**. A LUN can only be assigned to one volume group.
 
-Using the example above for volume group `data` again to show how a HANA VM is effected. As said the `data` volume group uses two physical disks. They are used as physical volume (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` allocates **100%** of this volume group. The logical volume name is generated from the volume group name. The logical volume is mounted at mount point `/hana/data`.
+Using the example above for volume group `data` again to show how a HANA VM is affected. As said the `data` volume group uses two physical disks. They are used as physical volumes (i. e. `/dev/sdc` and `/dev/sdd` resp. LUN **0** and **1**). Both physical volumes share the same volume group named `vg_hana_data`. A logical volume named `lv_hana_data_0` allocates **100%** of this volume group. The logical volume name is generated from the volume group name. The logical volume is mounted at mount point `/hana/data`.
 
 It is also possible to deploy several logical volumes to one volume group. For example:
 
