@@ -195,14 +195,14 @@ hana_data_disks_configuration = {
 # hana_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
 # The next variables define how the HANA installation software is obtained.
-# The installation software must be located in a IBM Cloud storage account
+# The installation software must be located in IBM Cloud Object Storage
 
 # IBM Cloud storage account name
 #storage_account_name = "YOUR_STORAGE_ACCOUNT_NAME"
 # IBM Cloud storage account secret key (key1 or key2)
 #storage_account_key = "YOUR_STORAGE_ACCOUNT_KEY"
 
-# 'hana_inst_master' is a IBM Cloud Storage account share where HANA installation files (extracted or not) are stored
+# 'hana_inst_master' is a IBM Cloud Object Storage location where HANA installation files (extracted or not) are stored
 # `hana_inst_master` must be used always! It is used as the reference path to the other variables
 
 # Local folder where HANA installation master will be mounted
@@ -212,7 +212,7 @@ hana_inst_folder = "/sapmedia/HANA"
 # 1. Use an already extracted HANA Platform folder structure.
 # The last numbered folder is the HANA Platform folder with the extracted files with
 # something like `HDB:HANA:2.0:LINUX_X86_64:SAP HANA PLATFORM EDITION 2.0::XXXXXX` in the LABEL.ASC file
-hana_inst_master = "192.168.139.2:/sapmedia"
+hana_inst_master = "https://s3.eu-gb.cloud-object-storage.appdomain.cloud/hana-media"
 
 # 2. Combine the `hana_inst_master` with `hana_platform_folder` variable.
 #hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sap_inst_media"

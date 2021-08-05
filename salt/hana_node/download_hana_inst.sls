@@ -44,6 +44,36 @@ hana_inst_directory:
   grains['hana_inst_master'],
   grains['hana_inst_folder']) }}
 
+{% elif grains['provider'] == 'powervs' %}
+
+{% set headers = {"Accept":"application/json","Content-Type":"application/x-www-form-urlencoded"} %}
+{% set data = {"response_type":"cloud_iam","grant_type":"urn:ibm:params:oauth:grant-type:apikey", "apikey": grains["ibmcloud_api_key"]} %}
+{% set cos_access_response = salt['http.query'](url="https://iam.cloud.ibm.com/oidc/token", method="POST", header_dict=headers, data=data).body | load_json %}
+{% set cos_access_token = cos_access_response.access_token %}
+
+hana_inst_directory:
+  file.directory:
+    - name: {{ grains['hana_inst_folder'] }}
+    - user: root
+    - mode: "0755"
+    - makedirs: True
+
+download_sapcar_from_ibm_cloud:
+  cmd.run:
+    - name: 'curl -L -o {{ grains['hana_inst_folder'] }}/{{ grains['hana_sapcar_exe'] }} {{ grains['hana_inst_master'] }}/{{ grains['hana_sapcar_exe'] }} -H "Content-Type:application/octet-stream" -H "Authorization:bearer $access_token"'
+    - env:
+      - access_token: {{ cos_access_token }}
+    - output_loglevel: quiet
+    - hide_output: True
+
+download_hana_archive_from_ibm_cloud:
+  cmd.run:
+    - name: 'curl -L -o {{ grains['hana_inst_folder'] }}/{{ grains['hana_archive_file'] }} {{ grains['hana_inst_master'] }}/{{ grains['hana_archive_file'] }} -H "Content-Type:application/octet-stream" -H "Authorization:bearer $access_token"'
+    - env:
+      - access_token: {{ cos_access_token }}
+    - output_loglevel: quiet
+    - hide_output: True
+
 {% endif %}
 
 {{ grains['hana_inst_folder'] }}:

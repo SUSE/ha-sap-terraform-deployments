@@ -30,6 +30,7 @@ hana_data_disks_wwn: {${join(", ", [for i in range(0, var.hana_count): format("'
 sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? format("/dev/disk/by-id/wwn-0x%s", lower(var.sbd_disk_wwn)) : ""}"
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+ibmcloud_api_key: ${var.ibmcloud_api_key}
 EOF
     destination = "/tmp/grains"
   }
