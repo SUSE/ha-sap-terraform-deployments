@@ -1,5 +1,5 @@
 include:
-  {% if grains['provider'] in ('aws', 'gcp',) %}
+  {% if grains['provider'] in ('aws', 'gcp', 'powervs') %}
   - hana_node.download_hana_inst
   {% else %}
   - hana_node.hana_inst_media

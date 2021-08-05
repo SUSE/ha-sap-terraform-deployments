@@ -9,7 +9,7 @@ hana_inst_directory:
     - name: {{ grains['hana_inst_folder'] }}
     - mode: "0755"
     - makedirs: True
-  {% if (grains['provider'] == 'libvirt') or (grains['provider'] == 'powervs') %}
+  {% if (grains['provider'] == 'libvirt') %}
   mount.mounted:
     - name: {{ grains['hana_inst_folder'] }}
     - device: {{ grains['hana_inst_master'] }}
