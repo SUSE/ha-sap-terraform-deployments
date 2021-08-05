@@ -34,15 +34,6 @@ ibmcloud_api_key: ${var.ibmcloud_api_key}
 EOF
     destination = "/tmp/grains"
   }
-
-  # Sets up instance to use bastion SNAT router - https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-linux#linux-networking
-  provisioner "remote-exec" {
-    inline = var.bastion_enabled ? [
-      "echo 'default '${var.bastion_private}' - -' > /etc/sysconfig/network/ifroute-eth0",
-      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf",
-      "/usr/bin/systemctl restart network"
-    ] : []
-  }
 }
 
 module "hana_provision" {

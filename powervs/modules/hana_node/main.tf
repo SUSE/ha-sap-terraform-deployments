@@ -15,6 +15,23 @@ locals {
   disks_size            = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
   disks_type            = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
   provisioning_addresses      = local.bastion_enabled ? data.ibm_pi_instance_ip.ibm_pi_hana_private.*.ip : data.ibm_pi_instance_ip.ibm_pi_hana_public.*.external_ip
+
+  # Sets up bastion SNAT router - https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-linux#linux-networking
+  # and https://test.cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-rhel-within-the-power-systems-virtual-server-service
+  # This assumes eth0 is on a private subnet
+  userdata_hana = <<CLOUDCONFIG
+#cloud-config
+
+runcmd:
+- |
+  echo 'default '${var.bastion_private}' - -' > /etc/sysconfig/network/ifroute-eth0
+  sed -i 's/^NETCONFIG_DNS_STATIC_SERVERS=\"/NETCONFIG_DNS_STATIC_SERVERS=\"8.8.8.8/' /etc/sysconfig/network/config
+  sed -i '/^MTU=/cMTU=1450' /etc/sysconfig/network/ifcfg-eth0
+  grep -q '^ETHTOOL_OPTIONS=' /etc/sysconfig/network/ifcfg-eth0 && sed -i "s/^ETHTOOL_OPTIONS=/ETHTOOL_OPTIONS='-K eth0 rx off'" /etc/sysconfig/network/ifcfg-eth0 || echo "ETHTOOL_OPTIONS='-K eth0 rx off'" >> /etc/sysconfig/network/ifcfg-eth0
+  rm -rf /etc/resolv.conf
+  /usr/bin/systemctl restart network
+
+CLOUDCONFIG
 }
 
 resource "ibm_pi_volume" "ibm_pi_hana_volume"{
@@ -41,6 +58,7 @@ resource "ibm_pi_instance" "ibm_pi_hana" {
   pi_replication_scheme = "suffix"
   pi_pin_policy         = "none"
   pi_replication_policy = "none"
+  pi_user_data          = local.bastion_enabled ? base64encode(local.userdata_hana) : ""
   pi_health_status      = "OK"
   pi_volume_ids         = concat([for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id], local.create_shared_infra == 1 ? [var.sbd_disk_id] : [])
   timeouts {

@@ -7,6 +7,24 @@ provider "ibm" {
 locals {
   bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   #private_ip_address = cidrhost(var.snet_address_range, 5)
+
+  # Sets up bastion SNAT router - https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-linux#linux-networking
+  # and https://test.cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-rhel-within-the-power-systems-virtual-server-service
+  # This assumes eth0 is on a public subnet and eth1 is on a private subnet
+  userdata_bastion    = <<CLOUDCONFIG
+#cloud-config
+
+runcmd:
+- |
+  echo 'net.ipv4.ip_forward = 1' > /etc/sysctl.d/powervs-snat.conf
+  /sbin/sysctl --system
+  grep -q '^iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE$' /etc/init.d/after.local || echo 'iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE' >> /etc/init.d/after.local
+  /usr/sbin/iptables -t nat -C POSTROUTING -o eth0 -j MASQUERADE >/dev/null 2>&1 || /usr/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+  sed -i '/^MTU=/cMTU=1450' /etc/sysconfig/network/ifcfg-eth1
+  grep -q '^ETHTOOL_OPTIONS=' /etc/sysconfig/network/ifcfg-eth1 && sed -i "s/^ETHTOOL_OPTIONS=/ETHTOOL_OPTIONS='-K eth1 rx off'" /etc/sysconfig/network/ifcfg-eth1 || echo "ETHTOOL_OPTIONS='-K eth1 rx off'" >> /etc/sysconfig/network/ifcfg-eth1
+  /usr/bin/systemctl restart network
+
+CLOUDCONFIG
 }
 
 # 2021-06-30 Adding a volume is a workaround so the bastion instance will be created
@@ -14,6 +32,7 @@ locals {
 #   The need for an extra volume can be removed once https://github.com/IBM-Cloud/terraform-provider-ibm/pull/2797
 #   is released.
 resource "ibm_pi_volume" "bastion_volume"{
+  count                = local.bastion_count
   pi_volume_size       = 10
   pi_volume_name       = "bastion-volume"
   pi_volume_type       = "tier1"
@@ -32,9 +51,10 @@ resource "ibm_pi_volume" "bastion_volume"{
     pi_memory             = var.memory
     pi_processors         = var.vcpu
     pi_network_ids        = var.pi_network_ids
-    pi_volume_ids         = [ibm_pi_volume.bastion_volume.volume_id]
+    pi_volume_ids         = [ibm_pi_volume.bastion_volume[count.index].volume_id]
     pi_replicants         = 1
     pi_replication_scheme = "suffix"
+    pi_user_data          = base64encode(local.userdata_bastion)
     pi_pin_policy         = "none"
     pi_replication_policy = "none"
     pi_health_status      = "OK"
