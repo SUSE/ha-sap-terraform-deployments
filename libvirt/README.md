@@ -20,6 +20,8 @@
 
    You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider](https://github.com/dmacvicar/terraform-provider-libvirt))
 
+   You need the xslt processor `xsltproc` installed on the system. With it terraform is able to process xsl files.
+
 2. You need to fulfill the system requirements provided by SAP for each Application. At least 15 GB of free disk space and 512 MiB of free memory per node.
 
 # Quickstart
