@@ -12,7 +12,8 @@ locals {
     "3${var.hana_instance_number}41",
     "3${var.hana_instance_number}42",
     "3${var.hana_instance_number}15",
-    "3${var.hana_instance_number}17"
+    "3${var.hana_instance_number}17",
+    "5${var.hana_instance_number}13" # S4HANA DB import checks sapctrl port
   ]) : toset([])
 
   hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
