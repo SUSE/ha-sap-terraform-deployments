@@ -4,13 +4,17 @@
 
 - [Requirements](#requirements)
 - [Howto](#quickstart)
-- [Monitoring](../doc/monitoring.md)
-- [Netweaver](../doc/netweaver.md)
-- [DRBD](../doc/drbd.md)
-- [QA](../doc/qa.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
+
+For detailed documentation see:
+
+- [Monitoring](../doc/monitoring.md)
+- [S/4HANA and NetWeaver](../doc/netweaver.md)
+- [DRBD](../doc/drbd.md)
+- [QA](../doc/qa.md)
+
 
 # Requirements
 

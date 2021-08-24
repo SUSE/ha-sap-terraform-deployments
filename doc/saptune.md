@@ -1,6 +1,6 @@
 # Saptune deployment configuration
 
-You can tune your hana or netweaver nodes with saptune during the deployment phase.
+You can tune your hana or S/4HANA and NetWeaver nodes with saptune during the deployment phase.
 
 Currently we support following features:
 
@@ -15,7 +15,7 @@ In order to apply a saptune solution, you need to adapt the pillars:
 saptune_solution: 'HANA'
 ```
 
-By default the pillars are configured to apply HANA for hana nodes and NETWEAVER solution for netweavers.
+By default the pillars are configured to apply HANA for hana nodes and NETWEAVER solution for NetWeavers.
 
-For further information refer to the saphanaboostrap-formula or netweaver.
+For further information refer to the saphanaboostrap-formula or NetWeaver.
 The code for the module is implemented in https://github.com/SUSE/salt-shaptools

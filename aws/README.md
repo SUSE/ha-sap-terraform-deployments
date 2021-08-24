@@ -166,7 +166,7 @@ There are some fixed values used throughout the terraform configuration:
 - The iSCSI server has a second disk volume that is being used as a shared device.
 - Salt is partitioning this device in 5 x 1MB partitions and then configuring just the LUN 0 for iSCSI (improvement is needed in iscsi-formula to create more than one device). **Until this improvement is added, an iscsi config file (/etc/target/saveconfig.json) is loaded when the qa_mode is set to true to configure 5 more LUN, mandatory for other tests like DRBD.**
 - iSCSI LUN 0 is being used in the cluster as SBD device.
-- The cluster nodes have a second disk volume that is being used for Hana installation.
+- The cluster nodes have a second disk volume that is being used for HANA installation.
 
 # Advanced Usage
 # notes:
