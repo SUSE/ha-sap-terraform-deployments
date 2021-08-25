@@ -11,6 +11,10 @@ base:
     - match: compound
     - hana.cluster
 
+  'role:mm_node':
+    - match: grain
+    - hana.cluster
+
   'role:drbd_node':
     - match: grain
     - drbd.drbd

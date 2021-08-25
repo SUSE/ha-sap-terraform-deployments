@@ -8,6 +8,7 @@ locals {
   sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  provisioning_address_mm    = local.bastion_enabled ? data.azurerm_network_interface.mm.*.private_ip_address : data.azurerm_public_ip.mm.*.ip_address
   hana_lb_rules_ports        = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
     "3${var.hana_instance_number}14",
@@ -174,9 +175,42 @@ resource "azurerm_network_interface" "hana" {
   }
 }
 
+resource "azurerm_network_interface" "mm" {
+  count                         = local.create_scale_out
+  name                          = "nic-${var.name}mm"
+  location                      = var.az_region
+  resource_group_name           = var.resource_group_name
+  enable_accelerated_networking = var.enable_accelerated_networking
+
+  ip_configuration {
+    name                          = "ipconf-primary"
+    subnet_id                     = var.network_subnet_id
+    private_ip_address_allocation = "static"
+    private_ip_address            = var.mm_ip
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.mm.*.id, count.index)
+  }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+  }
+}
+
 resource "azurerm_public_ip" "hana" {
   count                   = local.bastion_enabled ? 0 : var.hana_count
   name                    = "pip-${var.name}${format("%02d", count.index + 1)}"
+  location                = var.az_region
+  resource_group_name     = var.resource_group_name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+  }
+}
+
+resource "azurerm_public_ip" "mm" {
+  count                   = local.create_scale_out
+  name                    = "pip-${var.name}mm"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -425,7 +459,57 @@ resource "azurerm_virtual_machine" "hana" {
   }
 }
 
+resource "azurerm_virtual_machine" "mm" {
+  count                            = local.create_scale_out
+  name                             = "vm${var.name}mm"
+  location                         = var.az_region
+  resource_group_name              = var.resource_group_name
+  network_interface_ids            = [element(azurerm_network_interface.mm.*.id, count.index)]
+  availability_set_id              = var.common_variables["hana"]["ha_enabled"] ? azurerm_availability_set.hana-availability-set[0].id : null
+  vm_size                          = var.mm_vm_size
+  delete_os_disk_on_termination    = true
+
+  storage_os_disk {
+    name              = "disk-${var.name}mm-Os"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+  }
+
+  storage_image_reference {
+    id        = var.sles4sap_uri != "" ? join(",", azurerm_image.sles4sap.*.id) : ""
+    publisher = var.sles4sap_uri != "" ? "" : module.os_image_reference.publisher
+    offer     = var.sles4sap_uri != "" ? "" : module.os_image_reference.offer
+    sku       = var.sles4sap_uri != "" ? "" : module.os_image_reference.sku
+    version   = var.sles4sap_uri != "" ? "" : module.os_image_reference.version
+  }
+
+  os_profile {
+    computer_name  = "vm${var.name}mm"
+    admin_username = var.common_variables["authorized_user"]
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+
+    ssh_keys {
+      path     = "/home/${var.common_variables["authorized_user"]}/.ssh/authorized_keys"
+      key_data = var.common_variables["public_key"]
+    }
+  }
+
+  boot_diagnostics {
+    enabled     = "true"
+    storage_uri = var.storage_account
+  }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+  }
+}
+
 module "hana_on_destroy" {
+<<<<<<< HEAD
   source              = "../../../generic_modules/on_destroy"
   node_count          = var.hana_count
   instance_ids        = azurerm_virtual_machine.hana.*.id
@@ -435,4 +519,15 @@ module "hana_on_destroy" {
   bastion_private_key = var.common_variables["bastion_private_key"]
   public_ips          = local.provisioning_addresses
   dependencies        = [data.azurerm_public_ip.hana]
+=======
+  source               = "../../../generic_modules/on_destroy"
+  node_count           = var.hana_count
+  instance_ids         = concat(azurerm_virtual_machine.hana.*.id, azurerm_virtual_machine.mm.*.id)
+  user                 = var.common_variables["authorized_user"]
+  private_key          = var.common_variables["private_key"]
+  bastion_host         = var.bastion_host
+  bastion_private_key  = var.common_variables["bastion_private_key"]
+  public_ips           = local.provisioning_addresses
+  dependencies         = [data.azurerm_public_ip.hana, data.azurerm_public_ip.mm]
+>>>>>>> e2d1c07 (add majority maker to HANA scale-out)
 }

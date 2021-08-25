@@ -279,6 +279,12 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
+variable "mm_vm_size" {
+  description = "VM size for the mm machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
 variable "hana_data_disks_configuration" {
   type = map
   default = {
@@ -317,6 +323,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "mm_ip" {
+  description = "ip address to set to the mm node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.mm_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.mm_ip))
     )
     error_message = "Invalid IP address format."
   }
