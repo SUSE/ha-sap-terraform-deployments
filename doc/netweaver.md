@@ -13,7 +13,7 @@ Besides the standard installation, an additional HA cluster might be added in to
 
 More details in the official Suse documentation: 
 
-[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP_NW740_SLE15_SetupGuide/index.html)
+[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP_NW740_SLE15_SetupGuide/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP_NW740_SLE15_SetupGuide_color_en.pdf)
 
 [SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide](https://documentation.suse.com/sbp/all/html/SAP_S4HA10_SetupGuide-SLE15/index.html)
 
@@ -44,6 +44,6 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - Add the `netweaver_nfs_share` variable to the `terraform.tfvars` with the address to the NFS share containing the `sapmnt` and `usrsapsys` folders. Following the current example this would be `nfs_address:/sapdata/HA1`.
 
-- Modify the content of [cluster.sls](../pillar/netweaver/cluster.sls) and [netweaver.sls](../pillar/netweaver/netweaver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `sap_inst_media`, the current values are just an example.
+- Modify the content of `cluster.sls` and `netweaver.sls` in directory `../pillar/netweaver/`. The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. Example files can be found in the [example directory](../pillar_examples/automatic/netweaver/). These values must match with the folder of your `sap_inst_media`, the current values are just an example.
 
 - If the [netweaver.sls](../pillar_examples/automatic/netweaver/netweaver.sls) pillar file from `pillar_examples/automatic/netweaver` is used, the parameters `netweaver_swpm_folder`, `netweaver_sapexe_folder` and `netweaver_additional_dvds` must be set in the `tfvars` file with the same data explained in the previous points.
