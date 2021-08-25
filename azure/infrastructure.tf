@@ -58,16 +58,18 @@ resource "azurerm_storage_account" "mytfstorageacc" {
 # Plain Network (in case network_topology=plain)
 
 module "network_plain" {
-  count                = var.network_topology == "plain" ? 1 : 0
-  source               = "./modules/network_plain"
-  common_variables     = module.common_variables.configuration
-  deployment_name      = lower(local.deployment_name)
-  az_region            = var.az_region
-  resource_group_name  = local.resource_group_name
-  vnet_name            = var.vnet_name
-  vnet_address_range   = var.vnet_address_range
-  subnet_name          = var.subnet_name
-  subnet_address_range = var.subnet_address_range
+  count                       = var.network_topology == "plain" ? 1 : 0
+  source                      = "./modules/network_plain"
+  common_variables            = module.common_variables.configuration
+  deployment_name             = lower(local.deployment_name)
+  az_region                   = var.az_region
+  resource_group_name         = local.resource_group_name
+  vnet_name                   = var.vnet_name
+  vnet_address_range          = var.vnet_address_range
+  subnet_name                 = var.subnet_name
+  subnet_address_range        = var.subnet_address_range
+  subnet_netapp_name          = var.subnet_netapp_name
+  subnet_netapp_address_range = var.subnet_address_range
 }
 
 # Hub Network (in case network_topology=hub_spoke && vnet_hub_create=true)
@@ -106,6 +108,8 @@ module "network_spoke" {
   vnet_address_range            = var.vnet_address_range
   subnet_workload_name          = var.subnet_workload_name
   subnet_workload_address_range = var.subnet_workload_address_range
+  subnet_netapp_name            = var.subnet_netapp_name
+  subnet_netapp_address_range   = var.subnet_address_range
   depends_on                    = [module.network_hub.0.subnet_hub_vnet_gateway]
 }
 

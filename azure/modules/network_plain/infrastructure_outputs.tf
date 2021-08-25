@@ -13,3 +13,11 @@ output "subnet_plain_workload_id" {
 output "subnet_plain_workload_address_range" {
   value = local.subnet_address_range
 }
+
+output "subnet_plain_netapp_id" {
+  value = local.subnet_netapp_id
+}
+
+output "subnet_plain_netapp_address_range" {
+  value = local.subnet_netapp_address_range
+}

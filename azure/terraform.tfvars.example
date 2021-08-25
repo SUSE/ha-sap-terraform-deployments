@@ -9,6 +9,27 @@ az_region = "westeurope"
 # Use an already existing resource group
 #resource_group_name = "my-resource-group"
 
+# Use an already existing virtual network
+#vnet_name = "my-vnet"
+
+# Use an already existing subnet in this virtual network
+#subnet_name = "my-subnet"
+
+# Use an already existing subnet for Netapp in this virtual network (optional, will be created otherwise)
+# subnet_netapp_name = "my-netapp-subnet"
+
+# vnet address range in CIDR notation
+# Only used if the vnet is created by terraform or the user doesn't have read permissions in this
+# resource. To use the current vnet address range set the value to an empty string
+# To define custom ranges
+#vnet_address_range = "10.74.0.0/16"
+#subnet_address_range = "10.74.1.0/24"
+#subnet_netapp_address_range = "10.74.3.0/24"
+# Or to use already existing address ranges
+#vnet_address_range = ""
+#subnet_address_range = ""
+#subnet_netapp_address_range = ""
+
 #################################
 # General configuration variables
 #################################
