@@ -37,6 +37,11 @@ tenant_id: ${var.tenant_id}
 resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
+anf_mount_ip:
+  data: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-data.*.mount_ip_addresses.0)} ]
+  log: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-log.*.mount_ip_addresses.0)} ]
+  backup: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-backup.*.mount_ip_addresses.0)} ]
+  shared: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-shared.*.mount_ip_addresses.0)} ]
 EOF
     destination = "/tmp/grains"
   }

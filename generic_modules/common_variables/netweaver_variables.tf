@@ -161,3 +161,14 @@ variable "netweaver_hana_master_password" {
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }
 }
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}

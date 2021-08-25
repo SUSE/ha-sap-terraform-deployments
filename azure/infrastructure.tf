@@ -31,10 +31,17 @@ locals {
   vnet_name           = var.vnet_name == "" ? azurerm_virtual_network.mynet.0.name : var.vnet_name
   subnet_id = var.subnet_name == "" ? azurerm_subnet.mysubnet.0.id : format(
   "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, var.vnet_name, var.subnet_name)
+  subnet_netapp_id = (var.hana_scale_out_shared_storage_type == "anf" || var.netweaver_shared_storage_type == "anf") && var.subnet_netapp_name == "" ? azurerm_subnet.mysubnet-netapp.0.id : format(
+  "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, var.vnet_name, var.subnet_netapp_name)
   # If vnet_name is not defined, a new vnet is created
   # If vnet_name is defined, and the vnet_address_range is empty, it will try to get the ip range from the real vnet using the data source. If vnet_address_range is defined it will use it
-  vnet_address_range   = var.vnet_name == "" ? var.vnet_address_range : (var.vnet_address_range == "" ? data.azurerm_virtual_network.mynet.0.address_space.0 : var.vnet_address_range)
-  subnet_address_range = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
+  vnet_address_range          = var.vnet_name == "" ? var.vnet_address_range : (var.vnet_address_range == "" ? data.azurerm_virtual_network.mynet.0.address_space.0 : var.vnet_address_range)
+  subnet_address_range        = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
+  subnet_netapp_address_range = var.subnet_netapp_name == "" ? (var.subnet_netapp_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 3) : var.subnet_netapp_address_range) : (var.subnet_netapp_address_range == "" ? data.azurerm_subnet.mysubnet-netapp.0.address_prefix : var.subnet_netapp_address_range)
+  shared_storage_anf          = (var.hana_scale_out_shared_storage_type == "anf" || var.netweaver_shared_storage_type == "anf") ? 1 : 0
+  anf_account_name            = var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name
+  anf_pool_name               = var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name
+  anf_pool_service_level      = var.anf_pool_service_level == "" ? azurerm_netapp_pool.mynetapp-pool.0.service_level : var.anf_pool_service_level
 }
 
 # Azure resource group and storage account resources
@@ -56,7 +63,7 @@ resource "azurerm_storage_account" "mytfstorageacc" {
   }
 }
 
-# Network resources: Virtual Network, Subnet
+# Network resources: Virtual Network, Subnet, Netapp Subnet
 resource "azurerm_virtual_network" "mynet" {
   count               = var.vnet_name == "" ? 1 : 0
   name                = "vnet-${lower(local.deployment_name)}"
@@ -103,6 +110,49 @@ resource "azurerm_route_table" "myroutes" {
   tags = {
     workspace = local.deployment_name
   }
+}
+
+# Azure Netapp Files resources (see README for ANF setup)
+data "azurerm_subnet" "mysubnet-netapp" {
+  count                = var.subnet_netapp_name != "" && var.subnet_netapp_address_range == "" ? 1 : 0
+  name                 = var.subnet_netapp_name
+  virtual_network_name = local.vnet_name
+  resource_group_name  = local.resource_group_name
+}
+
+resource "azurerm_subnet" "mysubnet-netapp" {
+
+  count                = var.subnet_netapp_name == "" ? local.shared_storage_anf : 0
+  name                 = "snet-netapp-${lower(local.deployment_name)}"
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefixes     = [local.subnet_netapp_address_range]
+
+  delegation {
+    name = "netapp"
+
+    service_delegation {
+      name    = "Microsoft.Netapp/volumes"
+      actions = ["Microsoft.Network/networkinterfaces/*", "Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}
+
+resource "azurerm_netapp_account" "mynetapp-acc" {
+  count               = local.shared_storage_anf
+  name                = "netapp-acc-${lower(local.deployment_name)}"
+  resource_group_name = local.resource_group_name
+  location            = var.az_region
+}
+
+resource "azurerm_netapp_pool" "mynetapp-pool" {
+  count               = local.shared_storage_anf
+  name                = "netapp-pool-${lower(local.deployment_name)}"
+  account_name        = local.anf_account_name
+  location            = var.az_region
+  resource_group_name = local.resource_group_name
+  service_level       = var.anf_pool_service_level
+  size_in_tb          = var.anf_pool_size
 }
 
 # Security group

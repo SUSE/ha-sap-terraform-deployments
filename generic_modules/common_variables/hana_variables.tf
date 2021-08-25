@@ -172,3 +172,14 @@ variable "hana_sbd_storage_type" {
   description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in Libvirt only)"
   type        = string
 }
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
