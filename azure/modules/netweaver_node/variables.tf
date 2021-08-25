@@ -21,6 +21,10 @@ variable "network_subnet_id" {
   type = string
 }
 
+variable "network_subnet_netapp_id" {
+  type = string
+}
+
 variable "storage_account" {
   type = string
 }
@@ -168,4 +172,30 @@ variable "fence_agent_app_id" {
 variable "fence_agent_client_secret" {
   description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
+}
+
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+}
+
+variable "anf_pool_service_level" {
+  description = "service level for ANF shared Storage"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
+    )
+    error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
+  }
+}
+
+variable "netweaver_anf_quota_data" {
+  description = "Quota for ANF shared storage volume Netweaver"
+  type        = number
 }

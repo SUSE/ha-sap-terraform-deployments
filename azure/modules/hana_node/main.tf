@@ -1,8 +1,10 @@
-# Availability set for the hana VMs
+ # Availabilityset for the hana VMs
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
+  shared_storage_anf         = var.common_variables["hana"]["scale_out_shared_storage_type"] == "anf" ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
   hana_lb_rules_ports = local.create_ha_infra == 1 ? toset([
@@ -201,6 +203,148 @@ resource "azurerm_image" "sles4sap" {
     workspace = var.common_variables["deployment_name"]
   }
 }
+
+# ANF volumes
+resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
+  count               = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-data-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = var.anf_account_name
+  pool_name           = var.anf_pool_name
+  volume_path         = "${var.name}-data-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_data
+
+  export_policy_rule {
+    rule_index = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients = ["0.0.0.0/0"]
+    unix_read_write = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
+  count               = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-log-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-log-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_log
+
+  export_policy_rule {
+    rule_index = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients = ["0.0.0.0/0"]
+    unix_read_write = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
+  count               = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-backup-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-backup-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_backup
+
+  export_policy_rule {
+    rule_index = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients = ["0.0.0.0/0"]
+    unix_read_write = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
+  count               = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-shared-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-shared-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_shared
+
+  export_policy_rule {
+    rule_index = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients = ["0.0.0.0/0"]
+    unix_read_write = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
 
 # hana instances
 

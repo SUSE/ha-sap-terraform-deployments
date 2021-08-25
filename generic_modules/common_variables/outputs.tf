@@ -68,6 +68,7 @@ output "configuration" {
       ignore_min_mem_check           = var.hana_ignore_min_mem_check
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
       sbd_storage_type               = var.hana_sbd_storage_type
+      scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
     }
     netweaver = {
       ha_enabled           = var.netweaver_ha_enabled
@@ -92,6 +93,7 @@ output "configuration" {
       hana_sid             = var.netweaver_hana_sid
       hana_instance_number = var.netweaver_hana_instance_number
       hana_master_password = var.netweaver_hana_master_password
+      shared_storage_type  = var.netweaver_shared_storage_type
     }
     monitoring = {
       hana_targets          = var.monitoring_hana_targets
@@ -143,6 +145,7 @@ hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
+hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}
@@ -168,6 +171,7 @@ netweaver_sapexe_folder: ${var.netweaver_sapexe_folder}
 netweaver_additional_dvds: [${join(", ", formatlist("'%s'", var.netweaver_additional_dvds))}]
 netweaver_nfs_share: "${var.netweaver_nfs_share}"
 netweaver_sapmnt_path: ${var.netweaver_sapmnt_path}
+netweaver_shared_storage_type: ${var.netweaver_shared_storage_type}
 hana_ip: ${var.netweaver_hana_ip}
 hana_sid: ${var.netweaver_hana_sid}
 hana_instance_number: ${var.netweaver_hana_instance_number}

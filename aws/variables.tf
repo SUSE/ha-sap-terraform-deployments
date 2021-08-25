@@ -425,6 +425,18 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: none."
+  }
+}
+
 # DRBD related variables
 
 variable "drbd_name" {
@@ -831,6 +843,18 @@ variable "netweaver_ha_enabled" {
   description = "Enable HA cluster in top of Netweaver ASCS and ERS instances"
   type        = bool
   default     = true
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment - not supported yet for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: none."
+  }
 }
 
 # Specific QA variables

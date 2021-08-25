@@ -48,6 +48,24 @@ variable "subnet_address_range" {
   }
 }
 
+variable "subnet_netapp_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_netapp_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_netapp_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_netapp_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
 variable "admin_user" {
   description = "Administration user used to create the machines"
   type        = string
@@ -929,3 +947,88 @@ variable "fence_agent_client_secret" {
   type        = string
   default     = ""
 }
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
+
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_size" {
+  description = "pool size for ANF shared Storage. Must be >=4 TB"
+  type        = number
+  default     = "4"
+}
+
+variable "anf_pool_service_level" {
+  description = "service level for ANF shared Storage"
+  type        = string
+  default     = "Ultra"
+  validation {
+    condition = (
+      can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
+    )
+    error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
+  }
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}
+
+variable "netweaver_anf_quota_data" {
+  description = "Quota for ANF shared storage volume Netweaver"
+  type        = number
+  default     = "1000"
+}
+
+variable "hana_scale_out_anf_quota_data" {
+  description = "Quota for ANF shared storage volume HANA scale-out data"
+  type        = number
+  default     = "2000"
+}
+
+variable "hana_scale_out_anf_quota_log" {
+  description = "Quota for ANF shared storage volume HANA scale-out log"
+  type        = number
+  default     = "2000"
+}
+
+variable "hana_scale_out_anf_quota_backup" {
+  description = "Quota for ANF shared storage volume HANA scale-out backup"
+  type        = number
+  default     = "1000"
+}
+
+variable "hana_scale_out_anf_quota_shared" {
+  description = "Quota for ANF shared storage volume HANA scale-out shared"
+  type        = number
+  default     = "2000"
+}
+

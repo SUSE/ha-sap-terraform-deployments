@@ -118,6 +118,7 @@ module "common_variables" {
   hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
+  hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -140,6 +141,7 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  netweaver_shared_storage_type       = var.netweaver_shared_storage_type
   monitoring_hana_targets             = local.hana_ips
   monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
