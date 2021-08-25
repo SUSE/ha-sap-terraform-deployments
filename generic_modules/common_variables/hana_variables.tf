@@ -188,3 +188,15 @@ variable "hana_scale_out_shared_storage_type" {
     error_message = "Invalid HANA scale out storage type. Options: anf."
   }
 }
+
+variable "hana_scale_out_addhosts" {
+  type        = map
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+}

@@ -11,9 +11,14 @@ cluster:
   {% else %}
   interface: eth0
   {% endif %}
-  wait_for_initialization: 120
   unicast: True
+  {% if grains['hana_scale_out_enabled']|default(False) %}
+  wait_for_initialization: 300
+  join_timeout: 3600
+  {% else %}
+  wait_for_initialization: 120
   join_timeout: 500
+  {% endif %}
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
@@ -21,10 +26,19 @@ cluster:
     configure_resource:
       params:
         pcmk_delay_max: 15
+        {% if grains['hana_scale_out_enabled']|default(False) %}
+        pcmk_action_limit: "-1"
+        {% endif %}
       op:
         monitor:
           timeout: 15
           interval: 15
+    {% else %}
+    {% if grains['hana_scale_out_enabled']|default(False) %}
+    configure_resource:
+      params:
+        pcmk_action_limit: "-1"
+    {% endif %}
     {% endif %}
   watchdog:
     module: softdog
@@ -36,10 +50,8 @@ cluster:
     overwrite: true
     password: linux
   {% endif %}
-  resource_agents:
-    - SAPHanaSR
-  {% if grains['provider'] == 'azure' %}
   corosync:
+  {% if grains['provider'] == 'azure' %}
     totem:
       token: 30000
       token_retransmits_before_loss_const: 10
@@ -47,11 +59,14 @@ cluster:
       consensus: 36000
       max_messages: 20
   {% elif grains['provider'] == 'gcp' %}
-  corosync:
     totem:
       secauth: 'off'
       token: 20000
       consensus: 24000
+  {% endif %}
+  {% if grains['hana_scale_out_enabled']|default(False) %}
+    quorum:
+      wait_for_all: 1
   {% endif %}
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   configure:
@@ -60,11 +75,16 @@ cluster:
       {% if grains['provider'] == 'azure' %}
       stonith-timeout: 144s
       {% endif %}
+      {% if grains['hana_scale_out_enabled']|default(False) %}
+      concurrent-fencing: true
+      no-quorum-policy: "freeze"
+      {% endif %}
     template:
-      source: salt://hana/templates/scale_up_resources.j2
+      source: salt://hana/templates/cluster_resources.j2
       parameters:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
+        scale_out: {{ grains['hana_scale_out_enabled']|default(False) }}
         {% if grains['provider'] == 'aws' %}
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}

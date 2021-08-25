@@ -70,6 +70,8 @@ output "configuration" {
       sbd_storage_type               = var.hana_sbd_storage_type
       scale_out_enabled              = var.hana_scale_out_enabled
       scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+      scale_out_addhosts             = var.hana_scale_out_addhosts
+      scale_out_standby_count        = var.hana_scale_out_standby_count
     }
     netweaver = {
       ha_enabled           = var.netweaver_ha_enabled
@@ -148,6 +150,8 @@ hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
 hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
+hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
+hana_scale_out_standby_count: ${var.hana_scale_out_standby_count}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}

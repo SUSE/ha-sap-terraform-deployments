@@ -487,6 +487,38 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism
@@ -913,6 +945,18 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}
+
 # Specific QA variables
 
 variable "qa_mode" {
@@ -966,6 +1010,7 @@ variable "hana_scale_out_shared_storage_type" {
   }
 }
 
+# ANF shared storage
 variable "anf_account_name" {
   description = "Name of ANF Accounts"
   type        = string
@@ -993,18 +1038,6 @@ variable "anf_pool_service_level" {
       can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
     )
     error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
-  }
-}
-
-variable "netweaver_shared_storage_type" {
-  description = "shared Storage type to use for Netweaver deployment"
-  type        = string
-  default     = "drbd"
-  validation {
-    condition = (
-      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
-    )
-    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
   }
 }
 

@@ -42,6 +42,7 @@ anf_mount_ip:
   log: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-log.*.mount_ip_addresses.0) : ""} ]
   backup: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-backup.*.mount_ip_addresses.0) : ""} ]
   shared: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-shared.*.mount_ip_addresses.0) : ""} ]
+node_count: ${var.hana_count + local.create_scale_out}
 EOF
     destination = "/tmp/grains"
   }
