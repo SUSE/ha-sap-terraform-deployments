@@ -157,6 +157,29 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # bastion_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
 
 #########################
+# shared storage variables
+# Needed if Netweaver is deployed HA or HANA is deployed in scale-out scenario
+# see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
+# for reference and minimum requirements
+#########################
+#netweaver_shared_storage_type      = "drbd"  # drbd,anf supported at the moment (default: "drbd")
+#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+#anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
+#anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
+# min requirements Premium
+#netweaver_anf_quota_data           = "2000"  # deployed 1x
+#hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
+#hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+# min requirements Ultra
+#netweaver_anf_quota_data           = "1000"  # deployed 1x
+#hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
+
+#########################
 # HANA machines variables
 # This example shows the demo option values.Find more options in the README file
 #########################

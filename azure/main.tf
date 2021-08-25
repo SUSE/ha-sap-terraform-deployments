@@ -251,10 +251,10 @@ module "hana_node" {
   hana_scale_out_anf_quota_backup = var.hana_scale_out_anf_quota_backup
   hana_scale_out_anf_quota_shared = var.hana_scale_out_anf_quota_shared
   # only used by azure fence agent (native fencing)
-  subscription_id           = data.azurerm_subscription.current.subscription_id
-  tenant_id                 = data.azurerm_subscription.current.tenant_id
-  fence_agent_app_id        = var.fence_agent_app_id
-  fence_agent_client_secret = var.fence_agent_client_secret
+  subscription_id                 = data.azurerm_subscription.current.subscription_id
+  tenant_id                       = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id              = var.fence_agent_app_id
+  fence_agent_client_secret       = var.fence_agent_client_secret
 }
 
 module "monitoring" {
