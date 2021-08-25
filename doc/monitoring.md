@@ -68,9 +68,9 @@ This will add a `job` label in all the Prometheus metrics, in this example `job=
 We leverage this to implement a cluster selector switch at the top of the Multi-Cluster Grafana dashboard.
 
 
-### DRBD and Netweaver monitoring
+### DRBD and NetWeaver monitoring
 
-If DRBD or Netweaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
+If DRBD or NetWeaver clusters are enabled setting the values `drbd_enabled` or `netweaver_enabled` to `true`, new clusters entries will be added to the dashboard automatically with the data of these 2 deployments (as far as `monitoring_enabled` is set to `true`).
 
 
 ### DRBD split-brain detection

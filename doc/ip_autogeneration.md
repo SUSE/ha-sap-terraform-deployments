@@ -14,13 +14,14 @@ Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.
 | :---: | :---: | :----: | :---: |
 | Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
 | Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
-| Hana ips | `hana_ips` | `10.0.1.10`, `10.0.2.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `192.168.1.10` | Only used if HA is enabled in HANA |
-| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.1.11` | Only used if the Active/Active setup is used |
+| HANA ips | `hana_ips` | `10.0.1.10`, `10.0.2.11` ||
+| HANA cluster vip | `hana_cluster_vip` | `192.168.1.10` | Only used if HA is enabled in HANA |
+| HANA cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.1.11` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `10.0.5.20`, `10.0.6.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `192.168.1.20` ||
-| Netweaver ips | `netweaver_ips` | `10.0.3.30`, `10.0.4.31`, `10.0.3.32`, `10.0.4.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
-| Netweaver virtual ips | `netweaver_virtual_ips` | `192.168.1.30`, `192.168.1.31`, `192.168.1.32`, `192.168.1.33` | The last number of the address will match with the regular address |
+| S/4HANA or NetWeaver ips | `netweaver_ips` | `10.0.3.30`, `10.0.4.31`, `10.0.3.32`, `10.0.4.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| S/4HANA or NetWeaver virtual ips | `netweaver_virtual_ips` | `192.168.1.30`, `192.168.1.31`, `192.168.1.32`, `192.168.1.33` | The last number of the address will match with the regular address |
+
 
 ## Azure
 
@@ -30,13 +31,13 @@ Example based on `10.74.0.0/16` vnet address range and `10.74.0.0/24` subnet add
 | :---: | :---: | :----: | :---: |
 | Iscsi server | `iscsi_srv_ip` | `10.74.0.4` ||
 | Monitoring | `monitoring_srv_ip` | `10.74.0.5` ||
-| Hana ips | `hana_ips` | `10.74.0.10`, `10.74.0.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `10.74.0.12` | Only used if HA is enabled in HANA |
-| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.74.0.13` | Only used if the Active/Active setup is used |
+| HANA ips | `hana_ips` | `10.74.0.10`, `10.74.0.11` ||
+| HANA cluster vip | `hana_cluster_vip` | `10.74.0.12` | Only used if HA is enabled in HANA |
+| HANA cluster vip secondary | `hana_cluster_vip_secondary` | `10.74.0.13` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `10.74.0.20`, `10.74.0.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `10.74.0.22` ||
-| Netweaver ips | `netweaver_ips` | `10.74.0.30`, `10.74.0.31`, `10.74.0.32`, `10.74.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
-| Netweaver virtual ips | `netweaver_virtual_ips` | `10.74.0.34`, `10.74.0.35`, `10.74.0.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+| S/4HANA or NetWeaver ips | `netweaver_ips` | `10.74.0.30`, `10.74.0.31`, `10.74.0.32`, `10.74.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| S/4HANA or NetWeaver virtual ips | `netweaver_virtual_ips` | `10.74.0.34`, `10.74.0.35`, `10.74.0.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular S/4HANA or NetWeaver addresses |
 
 
 ## GCP
@@ -48,16 +49,16 @@ Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be 
 | Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
 | Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
 | Bastion | - | `10.0.2.5` ||
-| Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `10.0.1.12` | Only used if HA is enabled in HANA |
-| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.1.13` | Only used if the Active/Active setup is used |
+| HANA ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
+| HANA cluster vip | `hana_cluster_vip` | `10.0.1.12` | Only used if HA is enabled in HANA |
+| HANA cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.1.13` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `10.0.1.22` ||
-| Netweaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
-| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.1.34`, `10.0.1.35`, `10.0.1.36`, `10.0.1.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+| S/4HANA or NetWeaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| S/4HANA or NetWeaver virtual ips | `netweaver_virtual_ips` | `10.0.1.34`, `10.0.1.35`, `10.0.1.36`, `10.0.1.37` | The 1st virtual address will be the next in the sequence of the regular S/4HANA or NetWeaver addresses |
+
 
 ## Libvirt
-
 
 Example based on `192.168.135.0/24` address range:
 
@@ -65,13 +66,13 @@ Example based on `192.168.135.0/24` address range:
 | :---: | :---: | :----: | :---: |
 | Iscsi server | `iscsi_srv_ip` | `192.168.135.4` ||
 | Monitoring | `monitoring_srv_ip` | `192.168.135.5` ||
-| Hana ips | `hana_ips` | `192.168.135.10`, `192.168.135.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `192.168.135.12` | Only used if HA is enabled in HANA |
-| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.135.13` | Only used if the Active/Active setup is used |
+| HANA ips | `hana_ips` | `192.168.135.10`, `192.168.135.11` ||
+| HANA cluster vip | `hana_cluster_vip` | `192.168.135.12` | Only used if HA is enabled in HANA |
+| HANA cluster vip secondary | `hana_cluster_vip_secondary` | `192.168.135.13` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `192.168.135.20`, `192.168.135.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `192.168.135.22` ||
-| Netweaver ips | `netweaver_ips` | `192.168.135.30`, `192.168.135.31`, `192.168.135.32`, `192.168.135.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
-| Netweaver virtual ips | `netweaver_virtual_ips` | `192.168.135.34`, `192.168.135.35`, `192.168.135.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+| S/4HANA or NetWeaver ips | `netweaver_ips` | `192.168.135.30`, `192.168.135.31`, `192.168.135.32`, `192.168.135.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| S/4HANA or NetWeaver virtual ips | `netweaver_virtual_ips` | `192.168.135.34`, `192.168.135.35`, `192.168.135.36`, `192.168.135.37` | The 1st virtual address will be the next in the sequence of the regular S/4HANA or NetWeaver addresses |
 
 ## Openstack
 
@@ -81,10 +82,10 @@ Example based on `10.0.0.0/24` address range.
 | :---: | :---: | :----: | :---: |
 | Iscsi server | `iscsi_srv_ip` | `10.0.0.4` ||
 | Monitoring | `monitoring_srv_ip` | `10.0.0.5` ||
-| Hana ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
-| Hana cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA |
-| Hana cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.0.13` | Only used if the Active/Active setup is used |
+| HANA ips | `hana_ips` | `10.0.0.10`, `10.0.0.11` ||
+| HANA cluster vip | `hana_cluster_vip` | `10.0.2.12` | Only used if HA is enabled in HANA |
+| HANA cluster vip secondary | `hana_cluster_vip_secondary` | `10.0.0.13` | Only used if the Active/Active setup is used |
 | DRBD ips | `drbd_ips` | `10.0.0.20`, `10.0.0.21` ||
 | DRBD cluster vip | `drbd_cluster_vip` | `10.0.0.22` ||
-| Netweaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
-| Netweaver virtual ips | `netweaver_virtual_ips` | `10.0.0.34`, `10.0.0.35`, `10.0.0.36`, `10.0.0.37` | The 1st virtual address will be the next in the sequence of the regular Netweaver addresses |
+| S/4HANA or NetWeaver ips | `netweaver_ips` | `10.0.0.30`, `10.0.0.31`, `10.0.0.32`, `10.0.0.33` | Addresses for the ASCS, ERS, PAS and AAS. The sequence will continue if there are more AAS machines |
+| S/4HANA or NetWeaver virtual ips | `netweaver_virtual_ips` | `10.0.0.34`, `10.0.0.35`, `10.0.0.36`, `10.0.0.37` | The 1st virtual address will be the next in the sequence of the regular S/4HANA or NetWeaver addresses |

@@ -6,7 +6,7 @@ To run an initial deployment without specific customization the usage of the pil
 The usage of the pillar files is really simple. Basically, copy the content of the examples directories in the next locations.
 - `pillar/hana` for HANA configuration.
 - `pillar/drbd` for DRBD configuration.
-- `pillar/netweaver` for NETWEAVER configuration.
+- `pillar/netweaver` for S/4HANA or NetWeaver configuration.
 
 The next commands can be used for that:
 
@@ -25,9 +25,9 @@ For more advanced options, continue reading.
 ---
 - [SAP HANA and HA cluster](#sap-hana-and-ha-cluster)
 - [DRBD cluster](#drbd-cluster-for-nfs)
-- [SAP NETWEAVER and HA cluster](#sap-netweaver-and-ha-cluster)
-
+- [SAP NetWeaver and HA cluster](#sap-netweaver-and-ha-cluster)
 ---
+
 # Advanced pillar configuration
 
 The salt execution formulas are implemented in different projects. You can find all of the pillar options in each of them.
@@ -35,7 +35,7 @@ The salt execution formulas are implemented in different projects. You can find 
 - https://github.com/SUSE/saphanabootstrap-formula (HANA configuration)
 - https://github.com/SUSE/habootstrap-formula (HA cluster configuration)
 - https://github.com/SUSE/drbd-formula (DRBD configuration)
-- https://github.com/SUSE/sapnwbootstrap-formula (NETWEAVER or S4/HANA configuration)
+- https://github.com/SUSE/sapnwbootstrap-formula (SAP NetWeaver or S/4HANA configuration)
 
 
 # Pillar encryption

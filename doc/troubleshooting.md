@@ -19,9 +19,9 @@ Besides the `terraform` execution output, more logs are stored within the create
 - `/var/log/salt-deployment.log`: this is the log file where the formulas salt execution is logged. (salt-formulas are not part of the github deployments project).
 
 
-# Netweaver debugging
+# S/4HANA and NetWeaver debugging
 
-- `/tmp/swpm_unnattended/sapinst.log` is the best first entry point to look at when debugging netweaver failures.
+- `/tmp/swpm_unnattended/sapinst.log` is the best first entry point to look at when debugging NetWeaver failures.
 
 
 # Misc

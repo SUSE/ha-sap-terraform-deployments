@@ -10,7 +10,7 @@ Find here a guideline to know how to configure your storage.
 Here are the things that the user must implement/have before using the project. **They are not executed by the project**:
 
 - Download and structure the SAP installation software in the correct storage option for each provider.
-- Check the compatibility between the SAP software and tools (HANA database version with S/4HANA version, and SWPM version with desired Netweaver/S4HANA version, for example).
+- Check the compatibility between the SAP software and tools (HANA database version with S/4HANA version, and SWPM version with desired SAP S/4HANA or NetWeaver version, for example).
 - Check if the files are properly uploaded or structured. If they are not, the project execution fails, sometimes being really difficult to find the root cause.
 
 ## SAP HANA
@@ -25,19 +25,19 @@ To install the SAP HANA database, the HANA installation software must be availab
 
   Example: `IMDB_SERVER_2_00_037_05.SAR` and `SAPCAR_1311_80000935.EXE`
 
-## SAP Netweaver or S/4HANA
+## SAP S/4HANA or NetWeaver
 
-SAP Netweaver or S/4HANA are installed using the SAP Software Provisioning Manager (SWPM). The SWPM tool has different versions (1.0 and 2.0 major versions) and each version of this tool supports installation of only compatible Netweaver or S/4 HANA versions. **Note:** It is important to check and use the right versions to avoid issues during SAP installation. To install NW750 and S4HANA 1709 versions, SWPM version 1.0 is needed. Beyond S4HANA 1809 SWPM version 2.0 is needed.
+SAP S/4HANA and NetWeaver are installed using the SAP Software Provisioning Manager (SWPM). The SWPM tool has different versions (1.0 and 2.0 major versions) and each version of this tool supports installation of only compatible S/4HANA resp. NetWeaver versions. **Note:** It is important to check and use the right versions to avoid issues during SAP installation. To install NW750 and S/4HANA 1709 versions, SWPM version 1.0 is needed. Beyond S/4HANA 1809 SWPM version 2.0 is needed.
 
 ### SWPM version 1.0
 
-To install Netweaver versions based on SWPM version 1, the next files are required. **They can be uploaded without any predefined structure, as long as all of them are available during the installation.**
+To install NetWeaver versions based on SWPM version 1, the next files are required. **They can be uploaded without any predefined structure, as long as all of them are available during the installation.**
 
 1. `SWPM` archive. This usually comes compressed as a `.SAR` file and requires the SAP `SAPCAR` utility to get extracted. It contains a `LABEL.ASC` such as `IND:SLTOOLSET:1.0:SWPM:*:LINUX_X86_64:*`.
 
   Example: `SWPM10SP28_5-20009701.SAR`
 
-2. Netweaver export files. Usually, it consists of a group of `.exe` and `.rar` files. The extracted folder has a `LABEL.ASC` such as `SAP:S4HANA:1709:DVD_EXPORT:S4HANA OP 102 Installation Export DVD 1/1:BD51052190` or `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`. This folder can be uploaded to the storage uploading all the files or the already extracted version.
+2. NetWeaver export files. Usually, it consists of a group of `.exe` and `.rar` files. The extracted folder has a `LABEL.ASC` such as `SAP:S4HANA:1709:DVD_EXPORT:S4HANA OP 102 Installation Export DVD 1/1:BD51052190` or `SAP:NETWEAVER:750:DVD_EXPORT:SAP NetWeaver 750 Installation Export DVD 1/1:D51050829_2`. This folder can be uploaded to the storage uploading all the files or the already extracted version.
 
 3. HANA client. This can be either the HANA platform used in the HANA installation or the HANA client. The HANA client comes usually as `IMDB_CLIENT.SAR`.
 
@@ -69,13 +69,13 @@ netweaver_additional_dvds = ["51050829_part1.exe", "IMDB_CLIENT20_005_111-800020
 
 ### SWPM version 2.0
 
-To install S4HANA 1809 and beyond based on SWPM version 2, the next files are required. **This version requires to have all of the files in the same folder (except the SWPM archive, that can be stored elsewhere), so create a folder in the storage (`download_basket` for example) and upload all of the required files there.**
+To install SAP S/4HANA 1809 and beyond based on SWPM version 2, the next files are required. **This version requires to have all of the files in the same folder (except the SWPM archive, that can be stored elsewhere), so create a folder in the storage (`download_basket` for example) and upload all of the required files there.**
 
 1. `SWPM` archive. This usually comes compressed as a `.SAR` file, so the `SAPCAR` utility is required too. It will contain a `LABEL.ASC` such as `IND:SLTOOLSET:2.0:SWPM:*:LINUX_X86_64:*`.
 
   Example: `SWPM20SP05_5-80003424.SAR`
 
-2. S4HANA export files. Usually, it consist on a group of `.zip` files. They have to be uploaded as they are, without uncompressing them.
+2. S/4HANA export files. Usually, it consist on a group of `.zip` files. They have to be uploaded as they are, without uncompressing them.
 
   Example: `S4CORE104_INST_EXPORT_1.zip`, `S4CORE104_INST_EXPORT_2.zip`, etc
 

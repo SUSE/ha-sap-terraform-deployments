@@ -19,7 +19,7 @@ ___
 - HA Clusters and HANA deployment
 - [Preparing SAP software](doc/sap_software.md)
 - [Monitoring of cluster](doc/monitoring.md)
-- [Netweaver](doc/netweaver.md)
+- [S/4HANA and NetWeaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)
 - [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
