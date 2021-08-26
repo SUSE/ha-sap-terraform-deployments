@@ -22,7 +22,7 @@ role: netweaver_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["netweaver_grains_output"]}
 name_prefix: vmnetweaver
-hostname: vmnetweaver0${count.index + 1}
+hostname: vmnetweaver${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]

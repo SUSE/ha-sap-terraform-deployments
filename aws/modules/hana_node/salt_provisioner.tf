@@ -30,7 +30,7 @@ aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
 name_prefix: ${var.name}
-hostname: ${var.name}0${count.index + 1}
+hostname: ${var.name}${format("%02d", count.index + 1)}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 sbd_lun_index: 0

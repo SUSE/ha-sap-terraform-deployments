@@ -24,7 +24,7 @@ ${var.common_variables["grains_output"]}
 ${var.common_variables["netweaver_grains_output"]}
 region: ${var.aws_region}
 name_prefix: ${var.name}
-hostname: ${var.name}0${count.index + 1}
+hostname: ${var.name}${format("%02d", count.index + 1)}
 aws_cluster_profile: Cluster
 aws_instance_tag: ${var.common_variables["deployment_name"]}-cluster
 aws_credentials_file: /tmp/credentials

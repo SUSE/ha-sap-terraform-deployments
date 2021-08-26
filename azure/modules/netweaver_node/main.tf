@@ -190,7 +190,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
 
 resource "azurerm_public_ip" "netweaver" {
   count                   = local.bastion_enabled ? 0 : local.vm_count
-  name                    = "pip-netweaver0${count.index + 1}"
+  name                    = "pip-netweaver${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -203,7 +203,7 @@ resource "azurerm_public_ip" "netweaver" {
 
 resource "azurerm_network_interface" "netweaver" {
   count                         = local.vm_count
-  name                          = "nic-netweaver0${count.index + 1}"
+  name                          = "nic-netweaver${format("%02d", count.index + 1)}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = count.index < var.xscs_server_count ? var.xscs_accelerated_networking : var.app_accelerated_networking
@@ -245,7 +245,7 @@ resource "azurerm_image" "netweaver-image" {
 
 resource "azurerm_managed_disk" "app_server_disk" {
   count                = var.app_server_count
-  name                 = "disk-netweaver0${count.index + 1}-App"
+  name                 = "disk-netweaver${format("%02d", count.index + 1)}-App"
   location             = var.az_region
   resource_group_name  = var.resource_group_name
   storage_account_type = var.data_disk_type
@@ -270,7 +270,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "netweaver" {
   count                            = local.vm_count
-  name                             = "vmnetweaver0${count.index + 1}"
+  name                             = "vmnetweaver${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.netweaver.*.id, count.index)]
@@ -280,7 +280,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-netweaver0${count.index + 1}-Os"
+    name              = "disk-netweaver${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -295,7 +295,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   }
 
   os_profile {
-    computer_name  = "vmnetweaver0${count.index + 1}"
+    computer_name  = "vmnetweaver${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

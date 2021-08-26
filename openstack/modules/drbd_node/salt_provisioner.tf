@@ -49,7 +49,7 @@ resource "null_resource" "drbd_node_provisioner" {
 role: drbd_node
 ${var.common_variables["grains_output"]}
 name_prefix: ${var.common_variables["deployment_name"]}-drbd
-hostname: ${var.common_variables["deployment_name"]}-drbd0${count.index + 1}
+hostname: ${var.common_variables["deployment_name"]}-drbd${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}

@@ -28,7 +28,7 @@ aws_instance_tag: ${var.common_variables["deployment_name"]}-cluster
 aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
-hostname: ${var.name}0${count.index + 1}
+hostname: ${var.name}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}

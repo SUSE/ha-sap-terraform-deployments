@@ -21,7 +21,7 @@ resource "null_resource" "drbd_provisioner" {
 role: drbd_node
 ${var.common_variables["grains_output"]}
 name_prefix: vm${var.name}
-hostname: vm${var.name}0${count.index + 1}
+hostname: vm${var.name}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}

@@ -20,7 +20,7 @@ role: netweaver_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["netweaver_grains_output"]}
 name_prefix: ${var.name}
-hostname: ${var.name}0${count.index + 1}
+hostname: ${var.name}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]

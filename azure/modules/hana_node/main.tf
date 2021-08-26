@@ -152,7 +152,7 @@ resource "azurerm_lb_rule" "hanadb_exporter" {
 
 resource "azurerm_network_interface" "hana" {
   count                         = var.hana_count
-  name                          = "nic-${var.name}0${count.index + 1}"
+  name                          = "nic-${var.name}${format("%02d", count.index + 1)}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = var.enable_accelerated_networking
@@ -172,7 +172,7 @@ resource "azurerm_network_interface" "hana" {
 
 resource "azurerm_public_ip" "hana" {
   count                   = local.bastion_enabled ? 0 : var.hana_count
-  name                    = "pip-${var.name}0${count.index + 1}"
+  name                    = "pip-${var.name}${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -218,7 +218,7 @@ locals {
 
 resource "azurerm_virtual_machine" "hana" {
   count                            = var.hana_count
-  name                             = "vm${var.name}0${count.index + 1}"
+  name                             = "vm${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.hana.*.id, count.index)]
@@ -228,7 +228,7 @@ resource "azurerm_virtual_machine" "hana" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Os"
+    name              = "disk-${var.name}${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -245,7 +245,7 @@ resource "azurerm_virtual_machine" "hana" {
   dynamic "storage_data_disk" {
     for_each = [for v in range(local.disks_number) : { index = v }]
     content {
-      name                      = "disk-${var.name}0${count.index + 1}-Data0${storage_data_disk.value.index + 1}"
+      name                      = "disk-${var.name}${format("%02d", count.index + 1)}-Data${format("%02d", storage_data_disk.value.index + 1)}"
       managed_disk_type         = element(local.disks_type, storage_data_disk.value.index)
       create_option             = "Empty"
       lun                       = storage_data_disk.value.index
@@ -256,7 +256,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   os_profile {
-    computer_name  = "vm${var.name}0${count.index + 1}"
+    computer_name  = "vm${var.name}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

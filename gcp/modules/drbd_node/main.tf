@@ -27,7 +27,7 @@ resource "google_compute_route" "drbd-route" {
 
 resource "google_compute_instance" "drbd" {
   machine_type = var.machine_type
-  name         = "${var.common_variables["deployment_name"]}-drbd0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-drbd${format("%02d", count.index + 1)}"
   count        = var.drbd_count
   zone         = element(var.compute_zones, count.index)
 
