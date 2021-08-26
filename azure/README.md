@@ -426,6 +426,14 @@ hana_data_disks_configuration = {
 }
 ```
 
+#### terraform parallelism
+
+When deploying many scale-out nodes, e.g. 8 or 10, you should must pass the [`-nparallelism=n`](https://www.terraform.io/docs/cli/commands/apply.html#parallelism-n) parameter to `terraform apply` operations.
+
+It "limit[s] the number of concurrent operation as Terraform walks the graph."
+
+The default value of `10` is not sufficient because not all HANA cluster nodes will get provisioned at the same. A value of e.g. `30` should not hurt for most use-cases.
+
 
 # Advanced usage
 
