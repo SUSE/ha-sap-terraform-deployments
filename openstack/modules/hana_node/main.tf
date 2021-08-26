@@ -2,6 +2,7 @@
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
+  create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   create_data_volumes        = var.hana_count > 1 && var.hana_data_disk_type != "ephemeral" ? true : false
   create_backup_volumes      = var.hana_count > 1 && var.hana_backup_disk_type != "ephemeral" ? true : false

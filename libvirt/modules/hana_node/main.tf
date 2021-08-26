@@ -10,6 +10,7 @@ terraform {
 
 locals {
   hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  create_scale_out = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
 }
 
 resource "libvirt_volume" "hana_image_disk" {
