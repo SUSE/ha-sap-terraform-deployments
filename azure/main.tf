@@ -13,8 +13,8 @@ module "local_execution" {
 # Hana cluster vip secondary: 10.74.0.13
 # DRBD ips: 10.74.0.20, 10.74.0.21
 # DRBD cluster vip: 10.74.0.22
-# Netweaver ips: 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33
-# Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
+# Netweaver ips: 10.74.0.60, 10.74.0.61, 10.74.0.62, 10.74.0.63
+# Netweaver virtual ips: 10.74.0.64, 10.74.0.65, 10.74.0.66, 10.74.0.67
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
@@ -34,7 +34,7 @@ locals {
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
   netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
 
-  netweaver_ip_start    = 30
+  netweaver_ip_start    = 60
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_virtual_ips_count, local.netweaver_ip_start + (local.netweaver_virtual_ips_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
