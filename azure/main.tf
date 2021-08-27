@@ -11,8 +11,8 @@ module "local_execution" {
 # MM ip: 10.74.0.9
 # Hana cluster vip: 10.74.0.12
 # Hana cluster vip secondary: 10.74.0.13
-# DRBD ips: 10.74.0.20, 10.74.0.21
-# DRBD cluster vip: 10.74.0.22
+# DRBD ips: 10.74.0.6, 10.74.0.7
+# DRBD cluster vip: 10.74.0.8
 # Netweaver ips: 10.74.0.60, 10.74.0.61, 10.74.0.62, 10.74.0.63
 # Netweaver virtual ips: 10.74.0.64, 10.74.0.65, 10.74.0.66, 10.74.0.67
 # If the addresses are provided by the user will always have preference
@@ -26,7 +26,7 @@ locals {
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start + 1)
 
-  drbd_ip_start    = 20
+  drbd_ip_start    = 6
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
 
