@@ -18,7 +18,7 @@ mount_swpm:
     - mkmnt: True
     - persist: True
     - opts:
-      - vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0777,file_mode=0777,sec=ntlmssp
+      - vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0755,file_mode=0755,sec=ntlmssp
 
 {% elif grains['provider'] in ['gcp', 'aws'] %}
 {% set netweaver_inst_disk_device = salt['cmd.run']('realpath '~grains['netweaver_inst_disk_device']) %}
