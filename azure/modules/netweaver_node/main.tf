@@ -281,25 +281,23 @@ resource "azurerm_image" "netweaver-image" {
 }
 
 # ANF volumes
-resource "azurerm_netapp_volume" "netweaver-netapp-volume-data" {
+resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
   count               = local.shared_storage_anf
 
   lifecycle {
     prevent_destroy = false
   }
 
-  name                = "netweaver-netapp-volume-data"
+  name                = "netweaver-netapp-volume-sapmnt"
   location            = var.az_region
   resource_group_name = var.resource_group_name
-  # account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
-  # pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
   account_name        = var.anf_account_name
   pool_name           = var.anf_pool_name
-  volume_path         = "netweaver-data"
+  volume_path         = "netweaver-sapmnt"
   service_level       = var.anf_pool_service_level
   subnet_id           = var.network_subnet_netapp_id
   protocols           = ["NFSv4.1"]
-  storage_quota_in_gb = var.netweaver_anf_quota_data
+  storage_quota_in_gb = var.netweaver_anf_quota_sapmnt
 
   export_policy_rule {
     rule_index = 1

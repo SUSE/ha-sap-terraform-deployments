@@ -205,10 +205,10 @@ module "netweaver_node" {
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
   fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
   # ANF specific
-  anf_account_name         = local.anf_account_name
-  anf_pool_name            = local.anf_pool_name
-  anf_pool_service_level   = local.anf_pool_service_level
-  netweaver_anf_quota_data = var.netweaver_anf_quota_data
+  anf_account_name           = local.anf_account_name
+  anf_pool_name              = local.anf_pool_name
+  anf_pool_service_level     = local.anf_pool_service_level
+  netweaver_anf_quota_sapmnt = var.netweaver_anf_quota_sapmnt
   # only used by azure fence agent (native fencing)
   subscription_id           = data.azurerm_subscription.current.subscription_id
   tenant_id                 = data.azurerm_subscription.current.tenant_id

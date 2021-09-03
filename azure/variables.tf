@@ -1002,7 +1002,7 @@ variable "netweaver_shared_storage_type" {
   }
 }
 
-variable "netweaver_anf_quota_data" {
+variable "netweaver_anf_quota_sapmnt" {
   description = "Quota for ANF shared storage volume Netweaver"
   type        = number
   default     = "1000"

@@ -66,9 +66,9 @@ cluster:
         ers_device: {{ netweaver.netweaver.nodes[1].shared_disk_dev }}3
         ers_fstype: xfs
         {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
-        ascs_device: {{ grains['anf_mount_ip']['data'][0] }}:/netweaver-data/ASCS
+        ascs_device: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
         ascs_fstype: nfs4
-        ers_device: {{ grains['anf_mount_ip']['data'][0] }}:/netweaver-data/ERS
+        ers_device: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
         ers_fstype: nfs4
         {%- else %}
         ascs_device: {{ grains['netweaver_nfs_share'] }}/ASCS
