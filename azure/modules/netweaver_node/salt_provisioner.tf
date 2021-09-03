@@ -42,8 +42,7 @@ resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
 anf_mount_ip:
-  data: [ ${join(", ", azurerm_netapp_volume.netweaver-netapp-volume-data.*.mount_ip_addresses.0)} ]
-
+  sapmnt: [ ${join(", ", azurerm_netapp_volume.netweaver-netapp-volume-sapmnt.*.mount_ip_addresses.0)} ]
   EOF
     destination = "/tmp/grains"
   }

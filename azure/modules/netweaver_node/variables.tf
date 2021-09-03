@@ -190,7 +190,7 @@ variable "anf_pool_service_level" {
   }
 }
 
-variable "netweaver_anf_quota_data" {
+variable "netweaver_anf_quota_sapmnt" {
   description = "Quota for ANF shared storage volume Netweaver"
   type        = number
 }

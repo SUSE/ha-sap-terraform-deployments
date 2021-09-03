@@ -434,9 +434,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra -> only set once for Netweaver+HANA
 #anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra -> only set once for Netweaver+HANA
 # min requirements Premium
-#netweaver_anf_quota_data           = "2000"  # deployed 1x
+#netweaver_anf_quota_sapmnt         = "2000"  # deployed 1x
 # min requirements Ultra
-#netweaver_anf_quota_data           = "1000"  # deployed 1x
+#netweaver_anf_quota_sapmnt         = "1000"  # deployed 1x
 
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
