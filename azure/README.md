@@ -374,7 +374,7 @@ netweaver_app_server_count = 10
 netweaver_shared_storage_type = "anf"
 anf_pool_size                 = 15        # align with HANA scale-out
 anf_pool_service_level        = "Ultra"   # align with HANA scale-out
-netweaver_anf_quota_data      = "2000"    # see azure documentation about quota sizes and throughput
+netweaver_anf_quota_sapmnt    = "2000"    # see azure documentation about quota sizes and throughput
 ```
 
 ### HANA Scale-Out scenario
@@ -407,7 +407,7 @@ hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
 
 # to also deploy NetWeaver on ANF (recommended)
 netweaver_shared_storage_type      = "anf"
-netweaver_anf_quota_data           = "2000"  # deployed 1x
+netweaver_anf_quota_sapmnt         = "2000"  # deployed 1x
 ```
 
 A single local disk is also needed and can be configured like this (or use the defaults):
