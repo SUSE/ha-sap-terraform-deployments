@@ -46,8 +46,8 @@ variable "monitoring_netweaver_targets_ha" {
   default     = []
 }
 
-variable "monitoring_netweaver_targets_vip" {
-  description = "VIPs of Netweaver Instances you want to monitor."
+variable "monitoring_netweaver_targets_app" {
+  description = "App IPs of Netweaver Instances you want to monitor."
   type        = list(string)
   default     = []
 }

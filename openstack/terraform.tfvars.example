@@ -404,7 +404,7 @@ netweaver_flavor = "4C-8GB-40GB"
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
 
 netweaver_ips         = ["10.0.0.30", "10.0.0.31", "10.0.0.32", "10.0.0.33"]
-netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35", "10.0.0.36", "10.0.0.37"]
+netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35"]
 
 # Netweaver installation configuration
 # Netweaver system identifier. It's composed of 3 characters string

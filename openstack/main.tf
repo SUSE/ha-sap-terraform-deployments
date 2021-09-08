@@ -13,7 +13,7 @@ module "local_execution" {
 # DRBD ips: 10.0.0.20, 10.0.0.21
 # DRBD cluster vip: 10.0.0.22
 # Netweaver ips: 10.0.0.30, 10.0.0.31, 10.0.0.32, 10.0.0.33
-# Netweaver virtual ips: 10.0.0.34, 10.0.0.35, 10.0.0.36, 10.0.0.37
+# Netweaver virtual ips: 10.0.0.34, 10.0.0.35 (no vips for PAS/AAS)
 # If the addresses are provided by the user they will always have preference
 locals {
   bastion_srv_ip    = var.bastion_srv_ip != "" ? var.bastion_srv_ip : cidrhost(local.subnet_address_range, 3)
@@ -32,11 +32,12 @@ locals {
 
   netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
-  netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
+  netweaver_virtual_ips_count = var.netweaver_ha_enabled ? 2 : 1 # We need 2 virtual ips if ERS is enabled. Otherwise only ASCS gets 1 virtual ip.
 
   netweaver_ip_start    = 30
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)] # virtual IPs (not for PAS/AAS)
+  netweaver_app_ips     = [for ip_index in range(local.netweaver_ip_start + local.netweaver_xscs_server_count, local.netweaver_ip_start + local.netweaver_xscs_server_count + var.netweaver_app_server_count) : cidrhost(local.subnet_address_range, ip_index)]                              # IPs of PAS/AAS
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -172,7 +173,7 @@ module "common_variables" {
   monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
-  monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  monitoring_netweaver_targets_app    = var.netweaver_enabled ? concat(local.netweaver_virtual_ips, local.netweaver_app_ips) : []
 }
 
 module "drbd_node" {

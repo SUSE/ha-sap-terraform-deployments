@@ -101,7 +101,7 @@ output "configuration" {
       drbd_targets_vip      = var.monitoring_drbd_targets_vip
       netweaver_targets     = var.monitoring_netweaver_targets
       netweaver_targets_ha  = var.monitoring_netweaver_targets_ha
-      netweaver_targets_vip = var.monitoring_netweaver_targets_vip
+      netweaver_targets_app = var.monitoring_netweaver_targets_app
     }
     grains_output           = <<EOF
 provider: ${var.provider_type}
@@ -181,7 +181,7 @@ drbd_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_drbd_targets_ha
 drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.monitoring_drbd_targets_vip))}]
 netweaver_targets: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets))}]
 netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_ha))}]
-netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_vip))}]
+netweaver_targets_app: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_app))}]
 EOF
   }
 }

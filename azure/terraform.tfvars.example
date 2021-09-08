@@ -357,7 +357,7 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # If the addresses are not set they will be auto generated from the provided vnet address range
 #netweaver_ips = ["10.74.1.30", "10.74.1.31", "10.74.1.32", "10.74.1.33"]
-#netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
+#netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36"]
 
 # Netweaver installation configuration
 # Netweaver system identifier. It's composed of 3 characters string

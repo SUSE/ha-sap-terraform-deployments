@@ -290,7 +290,7 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 
 # IP addresses of the machines hosting Netweaver instances
 #netweaver_ips = ["192.168.XXX.Y+2", "192.168.XXX.Y+3", "192.168.XXX.Y+4", "192.168.XXX.Y+5"]
-#netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7", "192.168.XXX.Y+8", "192.168.XXX.Y+9"]
+#netweaver_virtual_ips = ["192.168.XXX.Y+6", "192.168.XXX.Y+7"]
 
 # Netweaver installation configuration
 # Netweaver system identifier. It's composed of 3 characters string

@@ -57,7 +57,7 @@ scrape_configs:
         {%- for ip in grains['netweaver_targets_ha'] %}
         - "{{ ip }}:9664" # ha_cluster_exporter
         {%- endfor %}
-        {%- for ip in grains['netweaver_targets_vip'] %}
+        {%- for ip in grains['netweaver_targets_app'] %}
         - "{{ ip }}:9680" # sap_host_exporter
         {%- endfor %}
   {%- endif %}
