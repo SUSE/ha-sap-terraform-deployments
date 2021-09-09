@@ -259,11 +259,11 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
-# HANA instance system identifier. It's composed of 3 characters string
-#hana_sid = "prd"
+# HANA instance system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options).
+#hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. It must follow the SAP Password policies
+# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -360,17 +360,18 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
 
 # Netweaver installation configuration
-# Netweaver system identifier. It's composed of 3 characters string
-#netweaver_sid = "ha1"
+# Netweaver system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)
+#netweaver_sid = "HA1"
 # Netweaver ASCS instance number. It's composed of 2 integers string
 #netweaver_ascs_instance_number = "00"
 # Netweaver ERS instance number. It's composed of 2 integers string
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# NetWeaver or S/4HANA master password.
+# NetWeaver or S/4HANA master password. 
 # It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
-# It cannot start with special characters and must contain a combination of upper and lower case characters and numbers (Invalid characters are backslash and double quote).
+# It cannot start with special characters and must contain a combination of
+# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster
