@@ -107,6 +107,7 @@ module "common_variables" {
   hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
+  hana_scale_out_enabled              = var.hana_scale_out_enabled
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number

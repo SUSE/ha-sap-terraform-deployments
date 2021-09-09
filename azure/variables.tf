@@ -870,6 +870,12 @@ variable "fence_agent_client_secret" {
   default     = ""
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment"
   type        = string
