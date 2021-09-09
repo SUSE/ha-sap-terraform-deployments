@@ -68,6 +68,7 @@ output "configuration" {
       ignore_min_mem_check           = var.hana_ignore_min_mem_check
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
       sbd_storage_type               = var.hana_sbd_storage_type
+      scale_out_enabled              = var.hana_scale_out_enabled
       scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
     }
     netweaver = {
@@ -145,6 +146,7 @@ hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
+hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}

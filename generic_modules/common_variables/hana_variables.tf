@@ -173,6 +173,11 @@ variable "hana_sbd_storage_type" {
   type        = string
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+}
+
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment"
   type        = string

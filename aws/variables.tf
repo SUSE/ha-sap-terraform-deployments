@@ -425,6 +425,12 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
   type        = string
