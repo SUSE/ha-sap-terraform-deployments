@@ -303,6 +303,6 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #netweaver_pas_instance_number = "01"
 # NetWeaver or S/4HANA master password. 
 # It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
-# It cannot start with special characters and must contain a combination of upper and lower case characters and numbers (Invalid characters are backslash and double quote).
-# terraform requirements: comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
+# It cannot start with special characters and must contain a combination of
+# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
