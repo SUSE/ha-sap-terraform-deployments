@@ -7,7 +7,7 @@ base:
     - match: compound
     - cluster
 
-  'role:mm_node':
+  'role:majority_maker_node':
     - match: grain
     - cluster
 
@@ -33,11 +33,11 @@ predeployment:
     - cluster_node
     - hana_node
 
-  'role:mm_node':
+  'role:majority_maker_node':
     - match: grain
     - default
     - cluster_node
-    - mm_node
+    - majority_maker_node
 
   'role:netweaver_node':
     - match: grain

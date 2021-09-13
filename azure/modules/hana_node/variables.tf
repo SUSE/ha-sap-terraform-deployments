@@ -88,13 +88,13 @@ variable "network_domain" {
   type        = string
 }
 
-variable "mm_vm_size" {
+variable "majority_maker_vm_size" {
   type    = string
   default = "Standard_D2s_v3"
 }
 
-variable "mm_ip" {
-  description = "mm server address"
+variable "majority_maker_ip" {
+  description = "Majority Maker server address"
   type        = string
 }
 

@@ -188,8 +188,8 @@ hana_count = "2"
 # Number of standby nodes per site
 #hana_scale_out_standby_count = 1 # default: 1
 
-# mm_vm_size =  "Standard_D2s_v3"
-# mm_ip =  "10.74.0.9"
+# majority_maker_vm_size =  "Standard_D2s_v3"
+# majority_maker_ip =  "10.74.0.9"
 
 # Instance number for the HANA database. 00 by default.
 #hana_instance_number = "00"

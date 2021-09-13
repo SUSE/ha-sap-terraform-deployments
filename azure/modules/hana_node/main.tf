@@ -1,15 +1,15 @@
 # Availabilityset for the hana VMs
 
 locals {
-  bastion_enabled            = var.common_variables["bastion_enabled"]
-  shared_storage_anf         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "anf" ? 1 : 0
-  create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
-  create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
-  create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
-  provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
-  provisioning_address_mm    = local.bastion_enabled ? data.azurerm_network_interface.mm.*.private_ip_address : data.azurerm_public_ip.mm.*.ip_address
-  hana_lb_rules_ports        = local.create_ha_infra == 1 ? toset([
+  bastion_enabled                      = var.common_variables["bastion_enabled"]
+  shared_storage_anf                   = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "anf" ? 1 : 0
+  create_scale_out                     = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  create_ha_infra                      = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  sites                                = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
+  create_active_active_infra           = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
+  provisioning_addresses               = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  provisioning_address_majority_maker  = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
+  hana_lb_rules_ports                  = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
     "3${var.hana_instance_number}14",
     "3${var.hana_instance_number}40",
@@ -175,9 +175,9 @@ resource "azurerm_network_interface" "hana" {
   }
 }
 
-resource "azurerm_network_interface" "mm" {
+resource "azurerm_network_interface" "majority_maker" {
   count                         = local.create_scale_out
-  name                          = "nic-${var.name}mm"
+  name                          = "nic-${var.name}majority_maker"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = var.enable_accelerated_networking
@@ -186,8 +186,8 @@ resource "azurerm_network_interface" "mm" {
     name                          = "ipconf-primary"
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
-    private_ip_address            = var.mm_ip
-    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.mm.*.id, count.index)
+    private_ip_address            = var.majority_maker_ip
+    public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.majority_maker.*.id, count.index)
   }
 
   tags = {
@@ -208,9 +208,9 @@ resource "azurerm_public_ip" "hana" {
   }
 }
 
-resource "azurerm_public_ip" "mm" {
+resource "azurerm_public_ip" "majority_maker" {
   count                   = local.create_scale_out
-  name                    = "pip-${var.name}mm"
+  name                    = "pip-${var.name}majority_maker"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -459,18 +459,18 @@ resource "azurerm_virtual_machine" "hana" {
   }
 }
 
-resource "azurerm_virtual_machine" "mm" {
+resource "azurerm_virtual_machine" "majority_maker" {
   count                            = local.create_scale_out
-  name                             = "vm${var.name}mm"
+  name                             = "vm${var.name}majoritymaker"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
-  network_interface_ids            = [element(azurerm_network_interface.mm.*.id, count.index)]
+  network_interface_ids            = [element(azurerm_network_interface.majority_maker.*.id, count.index)]
   availability_set_id              = var.common_variables["hana"]["ha_enabled"] ? azurerm_availability_set.hana-availability-set[0].id : null
-  vm_size                          = var.mm_vm_size
+  vm_size                          = var.majority_maker_vm_size
   delete_os_disk_on_termination    = true
 
   storage_os_disk {
-    name              = "disk-${var.name}mm-Os"
+    name              = "disk-${var.name}majority_maker-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -485,7 +485,7 @@ resource "azurerm_virtual_machine" "mm" {
   }
 
   os_profile {
-    computer_name  = "vm${var.name}mm"
+    computer_name  = "vm${var.name}majoritymaker"
     admin_username = var.common_variables["authorized_user"]
   }
 
@@ -509,25 +509,13 @@ resource "azurerm_virtual_machine" "mm" {
 }
 
 module "hana_on_destroy" {
-<<<<<<< HEAD
   source              = "../../../generic_modules/on_destroy"
   node_count          = var.hana_count
-  instance_ids        = azurerm_virtual_machine.hana.*.id
+  instance_ids        = concat(azurerm_virtual_machine.hana.*.id, azurerm_virtual_machine.majority_maker.*.id)
   user                = var.common_variables["authorized_user"]
   private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
   public_ips          = local.provisioning_addresses
-  dependencies        = [data.azurerm_public_ip.hana]
-=======
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.hana_count
-  instance_ids         = concat(azurerm_virtual_machine.hana.*.id, azurerm_virtual_machine.mm.*.id)
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = [data.azurerm_public_ip.hana, data.azurerm_public_ip.mm]
->>>>>>> e2d1c07 (add majority maker to HANA scale-out)
+  dependencies         = [data.azurerm_public_ip.hana, data.azurerm_public_ip.majority_maker]
 }

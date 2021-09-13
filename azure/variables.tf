@@ -279,8 +279,8 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
-variable "mm_vm_size" {
-  description = "VM size for the mm machine"
+variable "majority_maker_vm_size" {
+  description = "VM size for the Majority Maker machine"
   type        = string
   default     = "Standard_D2s_v3"
 }
@@ -328,13 +328,13 @@ variable "hana_ips" {
   }
 }
 
-variable "mm_ip" {
-  description = "ip address to set to the mm node. If it's not set the addresses will be auto generated from the provided vnet address range"
+variable "majority_maker_ip" {
+  description = "ip address to set to the Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
   validation {
     condition = (
-      var.mm_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.mm_ip))
+      var.majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }

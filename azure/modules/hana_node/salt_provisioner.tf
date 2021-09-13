@@ -43,7 +43,7 @@ anf_mount_ip:
   backup: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-backup.*.mount_ip_addresses.0) : ""} ]
   shared: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-shared.*.mount_ip_addresses.0) : ""} ]
 node_count: ${var.hana_count + local.create_scale_out}
-mm_node: ${azurerm_virtual_machine.mm.0.name}
+majority_maker_node: ${azurerm_virtual_machine.majority_maker.0.name}
 EOF
     destination = "/tmp/grains"
   }
@@ -61,15 +61,15 @@ module "hana_provision" {
   background          = var.common_variables["background"]
 }
 
-resource "null_resource" "mm_provisioner" {
+resource "null_resource" "majority_maker_provisioner" {
   count = var.common_variables["provisioner"] == "salt" ? local.create_scale_out : 0
 
   triggers = {
-    cluster_instance_ids = join(",", azurerm_virtual_machine.mm.*.id)
+    cluster_instance_ids = join(",", azurerm_virtual_machine.majority_maker.*.id)
   }
 
   connection {
-    host        = element(local.provisioning_address_mm, count.index)
+    host        = element(local.provisioning_address_majority_maker, count.index)
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
@@ -81,11 +81,11 @@ resource "null_resource" "mm_provisioner" {
 
   provisioner "file" {
     content     = <<EOF
-role: mm_node
+role: majority_maker_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
 name_prefix: vm${var.name}
-hostname: vm${var.name}mm
+hostname: vm${var.name}majoritymaker
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 storage_account_name: ${var.storage_account_name}
@@ -100,20 +100,20 @@ resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
 node_count: ${var.hana_count + local.create_scale_out}
-mm_node: ${azurerm_virtual_machine.mm.0.name}
+majority_maker_node: ${azurerm_virtual_machine.majority_maker.0.name}
 EOF
     destination = "/tmp/grains"
   }
 }
 
-module "mm_provision" {
+module "majority_maker_provision" {
   source               = "../../../generic_modules/salt_provisioner"
   node_count           = var.common_variables["provisioner"] == "salt" ? local.create_scale_out : 0
-  instance_ids         = null_resource.mm_provisioner.*.id
+  instance_ids         = null_resource.majority_maker_provisioner.*.id
   user                 = var.common_variables["authorized_user"]
   private_key          = var.common_variables["private_key"]
   bastion_host         = var.bastion_host
   bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_address_mm
+  public_ips           = local.provisioning_address_majority_maker
   background           = var.common_variables["background"]
 }

@@ -85,7 +85,7 @@ cluster:
         sid: {{ hana.hana.nodes[0].sid }}
         instance: {{ hana.hana.nodes[0].instance }}
         scale_out: {{ grains['hana_scale_out_enabled']|default(False) }}
-        majority_maker: {{ grains['mm_node'] }}
+        majority_maker: {{ grains['majority_maker_node'] }}
         {% if grains['provider'] == 'aws' %}
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}

@@ -11,7 +11,7 @@ base:
     - match: compound
     - hana.cluster
 
-  'role:mm_node':
+  'role:majority_maker_node':
     - match: grain
     - hana.cluster
 

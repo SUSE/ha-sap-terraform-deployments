@@ -6,12 +6,12 @@ data "azurerm_public_ip" "hana" {
   depends_on = [azurerm_virtual_machine.hana]
 }
 
-data "azurerm_public_ip" "mm" {
+data "azurerm_public_ip" "majority_maker" {
   count               = local.bastion_enabled ? 0 : local.create_scale_out
-  name                = element(azurerm_public_ip.mm.*.name, count.index)
-  resource_group_name = element(azurerm_virtual_machine.mm.*.resource_group_name, count.index)
+  name                = element(azurerm_public_ip.majority_maker.*.name, count.index)
+  resource_group_name = element(azurerm_virtual_machine.majority_maker.*.resource_group_name, count.index)
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.mm]
+  depends_on          = [azurerm_virtual_machine.majority_maker]
 }
 
 data "azurerm_network_interface" "hana" {
@@ -22,26 +22,26 @@ data "azurerm_network_interface" "hana" {
   depends_on = [azurerm_virtual_machine.hana]
 }
 
-data "azurerm_network_interface" "mm" {
+data "azurerm_network_interface" "majority_maker" {
   count               = local.create_scale_out
-  name                = element(azurerm_network_interface.mm.*.name, count.index)
-  resource_group_name = element(azurerm_virtual_machine.mm.*.resource_group_name, count.index)
+  name                = element(azurerm_network_interface.majority_maker.*.name, count.index)
+  resource_group_name = element(azurerm_virtual_machine.majority_maker.*.resource_group_name, count.index)
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.mm]
+  depends_on          = [azurerm_virtual_machine.majority_maker]
 }
 
 output "cluster_nodes_ip" {
-  value = [data.azurerm_network_interface.hana.*.private_ip_address, data.azurerm_network_interface.mm.*.private_ip_address]
+  value = [data.azurerm_network_interface.hana.*.private_ip_address, data.azurerm_network_interface.majority_maker.*.private_ip_address]
 }
 
 output "cluster_nodes_public_ip" {
-  value = [data.azurerm_public_ip.hana.*.ip_address, data.azurerm_public_ip.mm.*.ip_address]
+  value = [data.azurerm_public_ip.hana.*.ip_address, data.azurerm_public_ip.majority_maker.*.ip_address]
 }
 
 output "cluster_nodes_name" {
-  value = [azurerm_virtual_machine.hana.*.name, azurerm_virtual_machine.mm.*.name]
+  value = [azurerm_virtual_machine.hana.*.name, azurerm_virtual_machine.majority_maker.*.name]
 }
 
 output "cluster_nodes_public_name" {
-  value = [data.azurerm_public_ip.hana.*.fqdn, data.azurerm_public_ip.mm.*.fqdn]
+  value = [data.azurerm_public_ip.hana.*.fqdn, data.azurerm_public_ip.majority_maker.*.fqdn]
 }

@@ -8,7 +8,7 @@ module "local_execution" {
 # Iscsi server: 10.74.0.4
 # Monitoring: 10.74.0.5
 # Hana ips: 10.74.0.10, 10.74.0.11
-# MM ip: 10.74.0.9
+# Majority Maker ip: 10.74.0.9
 # Hana cluster vip: 10.74.0.12
 # Hana cluster vip secondary: 10.74.0.13
 # DRBD ips: 10.74.0.6, 10.74.0.7
@@ -22,7 +22,7 @@ locals {
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
-  mm_ip                      = var.mm_ip != "" ? var.mm_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
+  majority_maker_ip          = var.majority_maker_ip != "" ? var.majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start + 1)
 
@@ -230,9 +230,9 @@ module "hana_node" {
   az_region                     = var.az_region
   hana_count                    = var.hana_count
   vm_size                       = var.hana_vm_size
-  mm_vm_size                    = var.mm_vm_size
+  majority_maker_vm_size        = var.majority_maker_vm_size
   host_ips                      = local.hana_ips
-  mm_ip                         = local.mm_ip
+  majority_maker_ip             = local.majority_maker_ip
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
   network_subnet_netapp_id      = local.subnet_netapp_id
