@@ -279,8 +279,8 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
-variable "majority_maker_vm_size" {
-  description = "VM size for the Majority Maker machine"
+variable "hana_majority_maker_vm_size" {
+  description = "VM size for the HANA Majority Maker machine"
   type        = string
   default     = "Standard_D2s_v3"
 }
@@ -328,13 +328,13 @@ variable "hana_ips" {
   }
 }
 
-variable "majority_maker_ip" {
-  description = "ip address to set to the Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
   type        = string
   default     = ""
   validation {
     condition = (
-      var.majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.majority_maker_ip))
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -1008,24 +1008,6 @@ variable "fence_agent_client_secret" {
   description = "Secret for the azure service principal / application that is used for native fencing."
   type        = string
   default     = ""
-}
-
-variable "hana_scale_out_enabled" {
-  description = "Enable HANA scale out deployment"
-  type        = bool
-  default     = false
-}
-
-variable "hana_scale_out_shared_storage_type" {
-  description = "Storage type to use for HANA scale out deployment"
-  type        = string
-  default     = ""
-  validation {
-    condition = (
-      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
-    )
-    error_message = "Invalid HANA scale out storage type. Options: anf."
-  }
 }
 
 # ANF shared storage

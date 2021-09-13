@@ -199,3 +199,11 @@ variable "hana_scale_out_anf_quota_shared" {
   type        = number
 }
 
+variable "majority_maker_vm_size" {
+  type    = string
+}
+
+variable "majority_maker_ip" {
+  description = "Majority Maker server address"
+  type        = string
+}

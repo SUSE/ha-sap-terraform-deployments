@@ -22,7 +22,7 @@ locals {
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
-  majority_maker_ip          = var.majority_maker_ip != "" ? var.majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
+  hana_majority_maker_ip     = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start + 1)
 
@@ -135,8 +135,8 @@ module "common_variables" {
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
-  monitoring_hana_targets             = local.hana_ips
-  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
@@ -230,9 +230,7 @@ module "hana_node" {
   az_region                     = var.az_region
   hana_count                    = var.hana_count
   vm_size                       = var.hana_vm_size
-  majority_maker_vm_size        = var.majority_maker_vm_size
   host_ips                      = local.hana_ips
-  majority_maker_ip             = local.majority_maker_ip
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
   network_subnet_netapp_id      = local.subnet_netapp_id
@@ -261,6 +259,9 @@ module "hana_node" {
   tenant_id                       = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id              = var.fence_agent_app_id
   fence_agent_client_secret       = var.fence_agent_client_secret
+  # passed to majority_maker module
+  majority_maker_vm_size          = var.hana_majority_maker_vm_size
+  majority_maker_ip               = local.hana_majority_maker_ip
 }
 
 module "monitoring" {
