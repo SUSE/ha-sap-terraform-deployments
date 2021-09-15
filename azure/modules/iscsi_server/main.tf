@@ -7,7 +7,7 @@ locals {
 
 resource "azurerm_network_interface" "iscsisrv" {
   count                     = var.iscsi_count
-  name                      = "nic-iscsisrv0${count.index + 1}"
+  name                      = "nic-iscsisrv${format("%02d", count.index + 1)}"
   location                  = var.az_region
   resource_group_name       = var.resource_group_name
 
@@ -26,7 +26,7 @@ resource "azurerm_network_interface" "iscsisrv" {
 
 resource "azurerm_public_ip" "iscsisrv" {
   count                   = local.bastion_enabled ? 0 : var.iscsi_count
-  name                    = "pip-iscsisrv0${count.index + 1}"
+  name                    = "pip-iscsisrv${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -66,7 +66,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "iscsisrv" {
   count                            = var.iscsi_count
-  name                             = "vmiscsisrv0${count.index + 1}"
+  name                             = "vmiscsisrv${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.iscsisrv.*.id, count.index)]
@@ -75,7 +75,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-iscsisrv0${count.index + 1}-Os"
+    name              = "disk-iscsisrv${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -90,7 +90,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
   }
 
   storage_data_disk {
-    name              = "disk-iscsisrv0${count.index + 1}-Data01"
+    name              = "disk-iscsisrv${format("%02d", count.index + 1)}-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = var.iscsi_disk_size

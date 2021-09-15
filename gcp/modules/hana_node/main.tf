@@ -98,7 +98,7 @@ module "hana-secondary-load-balancer" {
 
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
-  name         = "${var.common_variables["deployment_name"]}-hana0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-hana${format("%02d", count.index + 1)}"
   count        = var.hana_count
   zone         = element(var.compute_zones, count.index)
 
