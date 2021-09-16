@@ -5,6 +5,7 @@ locals {
   vm_count               = var.xscs_server_count + var.app_server_count
   bastion_enabled        = var.common_variables["bastion_enabled"]
   create_ha_infra        = var.xscs_server_count > 0 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index        = local.create_ha_infra == 1 ? 2 : 1
   additional_lun_number  = "0"
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
   ascs_lb_rules_ports = local.create_ha_infra == 1 ? toset([
@@ -208,10 +209,46 @@ resource "azurerm_network_interface" "netweaver" {
 
   ip_configuration {
     name                          = "ipconf-primary"
+    primary                       = true
     subnet_id                     = var.network_subnet_id
     private_ip_address_allocation = "static"
     private_ip_address            = element(var.host_ips, count.index)
     public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
+  }
+
+  # deploy if non-HA AS
+  dynamic "ip_configuration" {
+    for_each = local.create_ha_infra == 0 && count.index == 0 ? [0] : []
+    content {
+      name                          = "ipconf-vip-as-${format("%02d", count.index + 1)}"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index)
+    }
+  }
+
+  # deploy if only PAS
+  dynamic "ip_configuration" {
+    # if no additional app servers and first node
+    for_each = var.app_server_count == 0 && count.index == 0 ? [0] : []
+    content {
+      name                          = "ipconf-vip-pas-${format("%02d", count.index + 1)}"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index + local.app_start_index)
+    }
+  }
+
+  # deploy if PAS and AAS
+  dynamic "ip_configuration" {
+    # if additional app servers
+    for_each = var.app_server_count > 0 && count.index >= local.app_start_index ? [0] : []
+    content {
+      name                          = "ipconf-vip-app-${format("%02d", count.index + 1)}"
+      subnet_id                     = var.network_subnet_id
+      private_ip_address_allocation = "static"
+      private_ip_address            = element(var.virtual_host_ips, count.index)
+    }
   }
 
   tags = {
