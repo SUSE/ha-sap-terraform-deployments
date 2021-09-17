@@ -32,6 +32,7 @@
 {%- endif %}
 
 hana:
+  {%- set node_count = grains['node_count']|default(2) %}
   {% if grains.get('qa_mode') %}
   install_packages: false
   {% endif %}
@@ -145,6 +146,12 @@ hana:
         {% endif %}
         primary_timeout: 3000
       {% endif %}
+      {% if grains.get('monitoring_enabled', False) %}
+      exporter:
+        exposition_port: 9668
+        user: SYSTEM
+        password: {{ grains['hana_master_password'] }}
+      {% endif %}
     {% if grains['scenario_type'] == 'cost-optimized' %}
     - host: {{ grains['name_prefix'] }}02
       sid: {{ grains['hana_cost_optimized_sid'].lower() }}
@@ -173,4 +180,19 @@ hana:
         user: SYSTEM
         password: {{ grains['hana_cost_optimized_master_password'] }}
       {% endif %}
+    {% endif %}
+
+    {% if grains['hana_scale_out_enabled'] %}
+    {% for index in range(3, node_count) %}
+    - host: {{ grains['name_prefix'] }}{{ '%02d' % index }}
+      sid: {{ grains['hana_sid'].lower() }}
+      instance: "{{ grains['hana_instance_number'] }}"
+      password: {{ grains['hana_master_password'] }}
+      {% if grains.get('monitoring_enabled', False) %}
+      exporter:
+        exposition_port: 9668
+        user: SYSTEM
+        password: {{ grains['hana_master_password'] }}
+      {% endif %}
+    {% endfor %}
     {% endif %}
