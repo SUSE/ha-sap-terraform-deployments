@@ -38,7 +38,7 @@ resource "google_compute_route" "nw-ers-route" {
   priority               = 1000
 }
 
-# deploy if only PAS
+# deploy if PAS on same machine as ASCS
 resource "google_compute_route" "nw-pas-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-pas-route-${format("%02d", 1)}"
   count                  = var.app_server_count == 0 ? 1 : 0
@@ -49,7 +49,7 @@ resource "google_compute_route" "nw-pas-route" {
   priority               = 1000
 }
 
-# deploy if PAS and AAS
+# deploy if PAS and AAS on seperate hosts
 resource "google_compute_route" "nw-app-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-appoute-${format("%02d", local.app_start_index + count.index + 1)}"
   count                  = var.app_server_count
