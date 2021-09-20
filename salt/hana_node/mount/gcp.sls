@@ -49,98 +49,45 @@ hana_lvm_lvcreate_backup:
     - vgname: vg_hanabackup
     - extents: 100%FREE
 
-# Format lv
-hana_format_lv:
+{% for vg in ['hana', 'hanabackup'] %}
+
+{% if vg == 'hana' %}
+  {% set lvs = ['data', 'log', 'sap', 'shared'] %}
+{% elif vg == 'hanabackup' %}
+  {% set lvs = ['backup'] %}
+{% endif %}
+
+{% for lv in lvs %}
+{% if lv == 'sap' %}
+  {% set basedir = '/usr' %}
+{% else %}
+  {% set basedir = '/hana' %}
+{% endif %}
+
+# Format lvs
+hana_format_lv_vg_{{ vg }}_lv_{{ lv }}:
   cmd.run:
     - name: |
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hana/lv_data && \
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hana/lv_log && \
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hana/lv_sap && \
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hana/lv_shared && \
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_hanabackup/lv_backup
+        /sbin/mkfs -t {{ grains['hana_fstype'] }} /dev/vg_{{ vg }}/lv_{{ lv }}
+    - unless: blkid /dev/mapper/vg_{{ vg }}-lv_{{ lv }}
 
-# Mount lv
-hana_data_directory_mount:
+# Mount lvs
+hana_{{ lv }}_directory_mount:
   file.directory:
-    - name: /hana/data
+    - name: {{ basedir }}/{{ lv }}
     - user: root
     - mode: "0755"
     - makedirs: True
   mount.mounted:
-    - name: /hana/data
-    - device: /dev/vg_hana/lv_data
+    - name: {{ basedir }}/{{ lv }}
+    - device: /dev/vg_{{ vg }}/lv_{{ lv }}
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
     - opts: defaults,nofail
     - pass_num: 2
     - require:
-      - cmd: hana_format_lv
+      - cmd: hana_format_lv_vg_{{ vg }}_lv_{{ lv }}
 
-hana_log_directory_mount:
-  file.directory:
-    - name: /hana/log
-    - user: root
-    - mode: "0755"
-    - makedirs: True
-  mount.mounted:
-    - name: /hana/log
-    - device: /dev/vg_hana/lv_log
-    - fstype: {{ grains['hana_fstype'] }}
-    - mkmnt: True
-    - persist: True
-    - opts: defaults,nofail
-    - pass_num: 2
-    - require:
-      - cmd: hana_format_lv
-
-hana_sap_directory_mount:
-  file.directory:
-    - name: /usr/sap
-    - user: root
-    - mode: "0755"
-    - makedirs: True
-  mount.mounted:
-    - name: /usr/sap
-    - device: /dev/vg_hana/lv_sap
-    - fstype: {{ grains['hana_fstype'] }}
-    - mkmnt: True
-    - persist: True
-    - opts: defaults,nofail
-    - pass_num: 2
-    - require:
-      - cmd: hana_format_lv
-
-hana_shared_directory_mount:
-  file.directory:
-    - name: /hana/shared
-    - user: root
-    - mode: "0755"
-    - makedirs: True
-  mount.mounted:
-    - name: /hana/shared
-    - device: /dev/vg_hana/lv_shared
-    - fstype: {{ grains['hana_fstype'] }}
-    - mkmnt: True
-    - persist: True
-    - opts: defaults,nofail
-    - pass_num: 2
-    - require:
-      - cmd: hana_format_lv
-
-hana_backup_directory_mount:
-  file.directory:
-    - name: /hana/backup
-    - user: root
-    - mode: "0755"
-    - makedirs: True
-  mount.mounted:
-    - name: /hana/backup
-    - device: /dev/vg_hanabackup/lv_backup
-    - fstype: {{ grains['hana_fstype'] }}
-    - mkmnt: True
-    - persist: True
-    - opts: defaults,nofail
-    - pass_num: 2
-    - require:
-      - cmd: hana_format_lv
+{% endfor %}
+{% endfor %}
