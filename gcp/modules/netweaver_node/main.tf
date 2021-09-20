@@ -51,7 +51,7 @@ resource "google_compute_route" "nw-pas-route" {
 
 # deploy if PAS and AAS on seperate hosts
 resource "google_compute_route" "nw-app-route" {
-  name                   = "${var.common_variables["deployment_name"]}-nw-appoute-${format("%02d", local.app_start_index + count.index + 1)}"
+  name                   = "${var.common_variables["deployment_name"]}-nw-app-route-${format("%02d", local.app_start_index + count.index + 1)}"
   count                  = var.app_server_count
   dest_range             = "${element(var.virtual_host_ips, local.app_start_index + count.index)}/32"
   network                = var.network_name
