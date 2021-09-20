@@ -216,7 +216,7 @@ resource "azurerm_network_interface" "netweaver" {
     public_ip_address_id          = local.bastion_enabled ? null : element(azurerm_public_ip.netweaver.*.id, count.index)
   }
 
-  # deploy if non-HA AS
+  # deploy if ASCS is non-HA
   dynamic "ip_configuration" {
     for_each = local.create_ha_infra == 0 && count.index == 0 ? [0] : []
     content {
@@ -227,7 +227,7 @@ resource "azurerm_network_interface" "netweaver" {
     }
   }
 
-  # deploy if only PAS
+  # deploy if PAS on same machine as ASCS
   dynamic "ip_configuration" {
     # if no additional app servers and first node
     for_each = var.app_server_count == 0 && count.index == 0 ? [0] : []
@@ -239,7 +239,7 @@ resource "azurerm_network_interface" "netweaver" {
     }
   }
 
-  # deploy if PAS and AAS
+  # deploy if PAS and AAS on seperate hosts
   dynamic "ip_configuration" {
     # if additional app servers
     for_each = var.app_server_count > 0 && count.index >= local.app_start_index ? [0] : []

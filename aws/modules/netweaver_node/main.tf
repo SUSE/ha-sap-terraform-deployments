@@ -37,7 +37,7 @@ resource "aws_route" "nw-ers-route" {
   instance_id            = aws_instance.netweaver.1.id
 }
 
-# deploy if only PAS
+# deploy if PAS on same machine as ASCS
 resource "aws_route" "nw-pas-route" {
   count                  = var.app_server_count == 0 ? 1 : 0
   route_table_id         = var.route_table_id
@@ -45,7 +45,7 @@ resource "aws_route" "nw-pas-route" {
   instance_id            = aws_instance.netweaver.0.id
 }
 
-# deploy if PAS and AAS
+# deploy if PAS and AAS on seperate hosts
 resource "aws_route" "nw-app-route" {
   count                  = var.app_server_count
   route_table_id         = var.route_table_id
