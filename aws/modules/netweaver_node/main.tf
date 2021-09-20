@@ -1,6 +1,7 @@
 locals {
   vm_count        = var.xscs_server_count + var.app_server_count
   create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index = local.create_ha_infra == 1 ? 2 : 1
 }
 
 # Network resources: subnets, routes, etc
@@ -22,18 +23,34 @@ resource "aws_route_table_association" "netweaver-subnet-route-association" {
   route_table_id = var.route_table_id
 }
 
-resource "aws_route" "ascs-cluster-vip" {
-  count                  = local.create_ha_infra
+resource "aws_route" "nw-ascs-route" {
+  count                  = local.vm_count > 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 0)}/32"
   instance_id            = aws_instance.netweaver.0.id
 }
 
-resource "aws_route" "ers-cluster-vip" {
+resource "aws_route" "nw-ers-route" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 1)}/32"
   instance_id            = aws_instance.netweaver.1.id
+}
+
+# deploy if PAS on same machine as ASCS
+resource "aws_route" "nw-pas-route" {
+  count                  = var.app_server_count == 0 ? 1 : 0
+  route_table_id         = var.route_table_id
+  destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index)}/32"
+  instance_id            = aws_instance.netweaver.0.id
+}
+
+# deploy if PAS and AAS on seperate hosts
+resource "aws_route" "nw-app-route" {
+  count                  = var.app_server_count
+  route_table_id         = var.route_table_id
+  destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index + count.index)}/32"
+  instance_id            = aws_instance.netweaver[local.app_start_index + count.index].id
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
