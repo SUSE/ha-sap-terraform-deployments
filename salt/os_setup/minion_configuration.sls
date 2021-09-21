@@ -1,3 +1,5 @@
+# The base environment should already come with the salt-standalone-formulas-configuration >= 3002.2-46.1 rpm.
+# We set it here anyway to be more resilient.
 /etc/salt/minion.d/environment_base.conf:
   file.managed:
     - contents: |
@@ -20,6 +22,7 @@
     - contents: |
         top_file_merging_strategy: same
 
+# Old module.run style will be deprecated after sodium release
 /etc/salt/minion.d/use_superseded.conf:
   file.managed:
     - contents: |
