@@ -66,8 +66,7 @@ test-mlc:
 			./terraform.tvars.example \
 			../pillar/*/* \
 			https://github.com/SUSE/ha-sap-terraform-deployments/actions \
-			https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg \
-			http://www.linux-ha.org/wiki/SBD_Fencing
+			https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg
 
 # test-salt-lint: @ Run linting on all salt files
 test-salt-lint:
