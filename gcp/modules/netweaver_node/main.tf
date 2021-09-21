@@ -49,7 +49,7 @@ resource "google_compute_route" "nw-pas-route" {
   priority               = 1000
 }
 
-# deploy if PAS and AAS on seperate hosts
+# deploy if PAS and AAS on separate hosts
 resource "google_compute_route" "nw-app-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-app-route-${format("%02d", local.app_start_index + count.index + 1)}"
   count                  = var.app_server_count
