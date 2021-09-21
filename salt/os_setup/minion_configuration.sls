@@ -14,6 +14,12 @@
             - /srv/salt
             - /usr/share/salt-formulas/states
 
+# prevent "[WARNING ] top_file_merging_strategy is set to 'merge' and multiple top files were found."
+/etc/salt/minion.d/top_file_merging_strategy.conf:
+  file.managed:
+    - contents: |
+        top_file_merging_strategy: same
+
 backup_salt_configuration:
   file.copy:
     - name: /etc/salt/minion.backup
