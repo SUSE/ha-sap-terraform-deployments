@@ -14,7 +14,6 @@ SBD (Storage Based Death) uses a shared disk among the nodes to halt the nodes.
 
 Find more information in:
 - https://wiki.clusterlabs.org/wiki/Using_SBD_with_Pacemaker
-- http://www.linux-ha.org/wiki/SBD_Fencing
 
 The next options are available to use SBD as the cluster fencing mechanism.
 
