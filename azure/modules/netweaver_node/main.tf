@@ -241,7 +241,7 @@ resource "azurerm_network_interface" "netweaver" {
     }
   }
 
-  # deploy if PAS and AAS on seperate hosts
+  # deploy if PAS and AAS on separate hosts
   dynamic "ip_configuration" {
     # if additional app servers
     for_each = var.app_server_count > 0 && count.index >= local.app_start_index ? [0] : []
