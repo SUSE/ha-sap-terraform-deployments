@@ -1,19 +1,23 @@
-backup_salt_configuration:
-  file.copy:
-    - name: /etc/salt/minion.backup
-    - source: /etc/salt/minion
-
-configure_file_roots:
-  file.append:
-    - name: /etc/salt/minion
-    - text: |
+/etc/salt/minion.d/environment_base.conf:
+  file.managed:
+    - contents: |
         file_roots:
           base:
             - /srv/salt
             - /usr/share/salt-formulas/states
+
+/etc/salt/minion.d/environment_predeployment.conf:
+  file.managed:
+    - contents: |
+        file_roots:
           predeployment:
             - /srv/salt
             - /usr/share/salt-formulas/states
+
+backup_salt_configuration:
+  file.copy:
+    - name: /etc/salt/minion.backup
+    - source: /etc/salt/minion
 
 # Old module.run style will be deprecated after sodium release
 upgrade_module_run:
