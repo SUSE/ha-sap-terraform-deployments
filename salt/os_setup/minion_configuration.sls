@@ -20,18 +20,11 @@
     - contents: |
         top_file_merging_strategy: same
 
-backup_salt_configuration:
-  file.copy:
-    - name: /etc/salt/minion.backup
-    - source: /etc/salt/minion
-
-# Old module.run style will be deprecated after sodium release
-upgrade_module_run:
-  file.append:
-    - name: /etc/salt/minion
-    - text:
-      - 'use_superseded:'
-      - '- module.run'
+/etc/salt/minion.d/use_superseded.conf:
+  file.managed:
+    - contents: |
+        use_superseded:
+          - module.run
 
 minion_service:
   service.dead:
