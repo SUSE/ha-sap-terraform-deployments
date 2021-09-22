@@ -34,9 +34,20 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "network_topology" {
+  description = "Network topolgy to use."
+  type        = string
+}
+
 variable "vnet_name" {
   description = "Virtual network where the bastion subnet will be created"
   type        = string
+}
+
+variable "snet_id" {
+  description = "Existing Virtual subnet ID where the bastion subnet will be created"
+  type        = string
+  default = ""
 }
 
 variable "snet_address_range" {

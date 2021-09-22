@@ -6,7 +6,7 @@ locals {
 
 
 resource "azurerm_subnet" "bastion" {
-  count                = local.bastion_count
+  count                = local.bastion_count == 1 && var.network_topology == "plain" ? 1 : 0
   name                 = "snet-bastion"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
@@ -14,7 +14,7 @@ resource "azurerm_subnet" "bastion" {
 }
 
 resource "azurerm_network_security_group" "bastion" {
-  count               = local.bastion_count
+  count               = local.bastion_count == 1 && var.network_topology == "plain"? 1 : 0
   name                = "nsg-bastion"
   location            = var.az_region
   resource_group_name = var.resource_group_name
@@ -45,7 +45,7 @@ resource "azurerm_network_security_group" "bastion" {
 }
 
 resource "azurerm_network_security_rule" "grafana" {
-  count                       = var.common_variables["monitoring_enabled"] ? local.bastion_count : 0
+  count                       = var.common_variables["monitoring_enabled"] && var.network_topology == "plain" ? local.bastion_count : 0
   name                        = "Grafana"
   priority                    = 110
   direction                   = "Inbound"
@@ -60,7 +60,7 @@ resource "azurerm_network_security_rule" "grafana" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
-  count                     = local.bastion_count
+  count               = local.bastion_count == 1 && var.network_topology == "plain"? 1 : 0
   subnet_id                 = azurerm_subnet.bastion[0].id
   network_security_group_id = azurerm_network_security_group.bastion[0].id
 }
@@ -73,7 +73,7 @@ resource "azurerm_network_interface" "bastion" {
 
   ip_configuration {
     name                          = "ipconf-primary"
-    subnet_id                     = azurerm_subnet.bastion[0].id
+    subnet_id                     = var.snet_id == "" ? azurerm_subnet.bastion[0].id : var.snet_id
     private_ip_address_allocation = "static"
     private_ip_address            = local.private_ip_address
     public_ip_address_id          = azurerm_public_ip.bastion[0].id

@@ -648,6 +648,40 @@ drbd_cluster_fencing_mechanism = "native"
 netweaver_cluster_fencing_mechanism = "native"
 ```
 
+## Use Hub/Spoke network architecture
+
+First of all, please get familiar with [Microsoft Azure's Hub/Spoke Architecture](https://docs.microsoft.com/en-us/azure/developer/terraform/hub-spoke-introduction).
+
+
+### Use an existing Hub network and bastion host
+
+To use an existing Hub network and bastion host and only deploy the Spoke network, set this in `terraform.tfvars`:
+
+```
+network_topology = "hub_spoke"                        # set network topology
+bastion_enabled = false                               # disable deployment of bastion host
+bastion_host = "X.X.X.X"                              # public IP of existing bastion host in hub network
+bastion_private_key = "/full/path/to/hub_id_rsa"      # ssh key to use to connect to bastion
+
+resource_group_name = "myresourcegroup"               # name of existing resource group
+vnet_hub_name = "myhubnet"                            # name of existing hub vnet
+vnet_hub_create = false                               # do not create hub vnet
+spoke_name = "sap-1"                                  # name for spoke to create
+```
+
+### Create Hub and Spoke networks
+
+To create both Hub/Spoke networks and a bastion host, set this in `terraform.tfvars`:
+
+```
+network_topology = "hub_spoke"                        # set network topology
+bastion_enabled = true                                # deployment of bastion host
+
+resource_group_name = "myresourcegroup"               # name of existing resource group
+vnet_hub_create = true                                # create hub vnet
+spoke_name = "sap-1"                                  # name for spoke to create
+```
+
 ## Extra info
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
 

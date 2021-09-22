@@ -97,5 +97,5 @@ output "netweaver_public_name" {
 # bastion
 
 output "bastion_public_ip" {
-  value = module.bastion.public_ip
+  value = var.bastion_enabled ? module.bastion.0.public_ip : ""
 }

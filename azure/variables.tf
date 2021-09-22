@@ -18,6 +18,18 @@ variable "vnet_name" {
   default     = ""
 }
 
+variable "vnet_hub_address_range" {
+  description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = "10.73.0.0/16"
+  validation {
+    condition = (
+      can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.vnet_hub_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
 variable "vnet_address_range" {
   description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
@@ -48,10 +60,28 @@ variable "subnet_address_range" {
   }
 }
 
+variable "subnet_mgmt_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
 variable "subnet_netapp_name" {
   description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
+}
+
+variable "subnet_mgmt_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_mgmt_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_mgmt_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
 }
 
 variable "subnet_netapp_address_range" {
@@ -61,6 +91,60 @@ variable "subnet_netapp_address_range" {
   validation {
     condition = (
       var.subnet_netapp_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_netapp_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
+variable "subnet_hub_gateway_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_hub_gateway_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_hub_gateway_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_hub_gateway_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
+variable "subnet_hub_mgmt_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_hub_mgmt_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_hub_mgmt_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_hub_mgmt_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
+variable "subnet_workload_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_workload_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_workload_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_workload_address_range))
     )
     error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
   }
@@ -129,6 +213,12 @@ variable "bastion_public_key" {
 
 variable "bastion_private_key" {
   description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_host" {
+  description = "Bastion host address"
   type        = string
   default     = ""
 }
@@ -509,18 +599,6 @@ variable "hana_scale_out_enabled" {
   description = "Enable HANA scale out deployment"
   type        = bool
   default     = false
-}
-
-variable "hana_scale_out_shared_storage_type" {
-  description = "Storage type to use for HANA scale out deployment"
-  type        = string
-  default     = ""
-  validation {
-    condition = (
-      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
-    )
-    error_message = "Invalid HANA scale out storage type. Options: anf."
-  }
 }
 
 variable "hana_scale_out_addhosts" {
@@ -963,18 +1041,6 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
-variable "netweaver_shared_storage_type" {
-  description = "shared Storage type to use for Netweaver deployment"
-  type        = string
-  default     = "drbd"
-  validation {
-    condition = (
-      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
-    )
-    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
-  }
-}
-
 # Testing and QA
 
 # Disable extra package installation (sap, ha pattern etc).
@@ -1014,7 +1080,65 @@ variable "fence_agent_client_secret" {
   default     = ""
 }
 
-# ANF shared storage
+# network topolgy related varibales
+
+variable "network_topology" {
+  description = "Network topolgy to use."
+  type        = string
+  default     = "plain"
+  validation {
+    condition = (
+      can(regex("^(hub_spoke|plain)$", var.network_topology))
+    )
+    error_message = "Invalid network topology. Options: plain|hub_spoke ."
+  }
+}
+
+variable "vnet_hub_create" {
+  description = "Create Hub Network"
+  type        = bool
+  default     = false
+}
+
+variable "vnet_hub_name" {
+  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "spoke_name" {
+  description = "Name of Spoke Network to create (will be used in vnet and other resources)."
+  type        = string
+  default     = ""
+}
+
+# storage related varibales
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}
+
+## ANF shared storage
 variable "anf_account_name" {
   description = "Name of ANF Accounts"
   type        = string
@@ -1074,4 +1198,3 @@ variable "hana_scale_out_anf_quota_shared" {
   type        = number
   default     = "2000"
 }
-
