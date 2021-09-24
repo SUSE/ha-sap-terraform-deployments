@@ -15,7 +15,7 @@ data "ibm_pi_volume" "ibm_pi_hana_volume" {
 }
 
 data "ibm_pi_instance_ip" "ibm_pi_hana_private" {
-count                 = var.hana_count
+count                 = local.bastion_enabled ? var.hana_count : 0
 pi_instance_name      = "${terraform.workspace}-${var.name}0${count.index + 1}"
 pi_network_name      = join(", ", var.private_pi_network_names)
 pi_cloud_instance_id  = var.pi_cloud_instance_id
@@ -24,7 +24,7 @@ depends_on            = [ibm_pi_instance.ibm_pi_hana]
 }
 
 data "ibm_pi_instance_ip" "ibm_pi_hana_public" {
-count                 = var.hana_count
+count                 = local.bastion_enabled == false ? var.hana_count : 0
 pi_instance_name      = "${terraform.workspace}-${var.name}0${count.index + 1}"
 pi_network_name      = join(", ", var.public_pi_network_names)
 pi_cloud_instance_id  = var.pi_cloud_instance_id

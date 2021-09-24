@@ -91,9 +91,9 @@ Now, terraform.tfvars must be configured to define the deployment.
 - bastion_enabled
   - Set this to true
 - bastion_public_key
-  - Use the public ssh keypair defined by private_key configuration option
+  - Use the public ssh key pair defined by private_key configuration option
 - bastion_private_key
-  - Use the private ssh keypair defined by private_key configuration option
+  - Use the private ssh key pair defined by private_key configuration option
 - bastion_os_image
   - This option is option unless would like to use a different image for the bastion instance
 - bastion_node_vcpu

@@ -1,6 +1,7 @@
 locals {
   bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   #private_ip_address = cidrhost(var.snet_address_range, 5)
+  userdata_bastion   = templatefile("${path.module}/userdata_bastion.tpl", {})
 }
 
 # 2021-06-30 Adding a volume is a workaround so the bastion instance will be created
@@ -8,6 +9,7 @@ locals {
 #   The need for an extra volume can be removed once https://github.com/IBM-Cloud/terraform-provider-ibm/pull/2797
 #   is released.
 resource "ibm_pi_volume" "bastion_volume"{
+  count                = local.bastion_count
   pi_volume_size       = 10
   pi_volume_name       = "bastion-volume"
   pi_volume_type       = "tier1"
@@ -26,9 +28,10 @@ resource "ibm_pi_volume" "bastion_volume"{
     pi_memory             = var.memory
     pi_processors         = var.vcpu
     pi_network_ids        = var.pi_network_ids
-    pi_volume_ids         = [ibm_pi_volume.bastion_volume.volume_id]
+    pi_volume_ids         = [ibm_pi_volume.bastion_volume[count.index].volume_id]
     pi_replicants         = 1
     pi_replication_scheme = "suffix"
+    pi_user_data          = base64encode(local.userdata_bastion)
     pi_pin_policy         = "none"
     pi_replication_policy = "none"
     pi_health_status      = "OK"
