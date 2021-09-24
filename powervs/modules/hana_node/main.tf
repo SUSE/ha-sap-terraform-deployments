@@ -8,6 +8,7 @@ locals {
   disks_size            = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
   disks_type            = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
   provisioning_addresses      = local.bastion_enabled ? data.ibm_pi_instance_ip.ibm_pi_hana_private.*.ip : data.ibm_pi_instance_ip.ibm_pi_hana_public.*.external_ip
+  userdata_hana         = templatefile("${path.module}/userdata_hana.tpl", { bastion_private = var.bastion_private })
 }
 
 resource "ibm_pi_volume" "ibm_pi_hana_volume"{
@@ -34,6 +35,7 @@ resource "ibm_pi_instance" "ibm_pi_hana" {
   pi_replication_scheme = "suffix"
   pi_pin_policy         = "none"
   pi_replication_policy = "none"
+  pi_user_data          = local.bastion_enabled ? base64encode(local.userdata_hana) : ""
   pi_health_status      = "OK"
   pi_volume_ids         = concat([for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id], local.create_shared_infra == 1 ? [var.sbd_disk_id] : [])
   timeouts {
