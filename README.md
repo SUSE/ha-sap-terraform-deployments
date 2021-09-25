@@ -11,6 +11,7 @@ ___
 - [google cloud](gcp)
 - [aws](aws)
 - [OpenStack](openstack)
+- [IBM Power Systems Virtual Server](powervs)
 
 
 ## Major features
