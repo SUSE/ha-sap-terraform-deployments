@@ -17,6 +17,7 @@ locals {
   ]) : toset([])
 
   hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
+  hostname                      = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -218,7 +219,7 @@ locals {
 
 resource "azurerm_virtual_machine" "hana" {
   count                            = var.hana_count
-  name                             = "vm${var.name}${format("%02d", count.index + 1)}"
+  name                             = "${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.hana.*.id, count.index)]
@@ -256,7 +257,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   os_profile {
-    computer_name  = "vm${var.name}${format("%02d", count.index + 1)}"
+    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

@@ -30,12 +30,6 @@ variable "drbd_count" {
   default = "2"
 }
 
-variable "name" {
-  description = "hostname, without the domain part"
-  type        = string
-  default     = "drbd"
-}
-
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
@@ -52,14 +46,19 @@ variable "os_image" {
   type        = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "vm_size" {
   type    = string
   default = "Standard_D2s_v3"
 }
 
 variable "network_domain" {
-  type    = string
-  default = "tf.local"
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "fencing_mechanism" {

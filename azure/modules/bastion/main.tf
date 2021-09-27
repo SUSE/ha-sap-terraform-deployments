@@ -1,6 +1,7 @@
 locals {
   bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   private_ip_address = cidrhost(var.snet_address_range, 5)
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 
@@ -103,7 +104,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "bastion" {
   count                            = local.bastion_count
-  name                             = "vmbastion"
+  name                             = var.name
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [azurerm_network_interface.bastion[0].id]
@@ -126,7 +127,7 @@ resource "azurerm_virtual_machine" "bastion" {
   }
 
   os_profile {
-    computer_name  = "vmbastion"
+    computer_name  = local.hostname
     admin_username = var.common_variables["authorized_user"]
   }
 

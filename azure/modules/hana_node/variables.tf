@@ -30,11 +30,6 @@ variable "hana_count" {
   default = "2"
 }
 
-variable "name" {
-  type    = string
-  default = "hana"
-}
-
 variable "fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
   type        = string
@@ -74,9 +69,19 @@ variable "os_image" {
   type        = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "vm_size" {
   type    = string
   default = "Standard_E4s_v3"
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {

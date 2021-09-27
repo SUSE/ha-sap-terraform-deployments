@@ -21,12 +21,12 @@ resource "null_resource" "monitoring_provisioner" {
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
 ${var.common_variables["monitoring_grains_output"]}
-name_prefix: vmmonitoring
-hostname: vmmonitoring
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}
+network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${local.bastion_enabled ? data.azurerm_network_interface.monitoring.0.private_ip_address : data.azurerm_public_ip.monitoring.0.ip_address}
-network_domain: "tf.local"
 EOF
     destination = "/tmp/grains"
   }

@@ -34,6 +34,9 @@ az_region = "westeurope"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = false
+
 # Admin user for the created machines
 admin_user = "cloudadmin"
 
@@ -152,6 +155,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # HANA machines variables
 # This example shows the demo option values.Find more options in the README file
 #########################
+
+# Hostname, without the domain part
+#hana_name = "vmhana"
 
 # HANA configuration ()
 # VM size to use for the cluster nodes
@@ -283,6 +289,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
 
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
+
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
 
@@ -309,6 +318,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
+
 # IP address of the machine where Prometheus and Grafana are running. If it's not set the address will be auto generated from the provided vnet address range
 #monitoring_srv_ip = "10.74.1.13"
 
@@ -316,14 +328,17 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # DRBD related variables
 ########################
 
+# Enable drbd cluster
+#drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
+
 # Custom drbd nodes image
 #drbd_image_uri = "/path/to/your/monitoring/image"
 
 # Public image usage for the DRBD machines. BYOS example
 #drbd_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
-
-# Enable drbd cluster
-#drbd_enabled = true
 
 # Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #drbd_ips = ["10.74.1.21", "10.74.1.22"]
@@ -342,6 +357,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #############################
 
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)

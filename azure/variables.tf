@@ -79,6 +79,18 @@ variable "authorized_keys" {
   default     = []
 }
 
+variable "bastion_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmbastion"
+}
+
+variable "bastion_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "bastion_enabled" {
   description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
   type        = bool
@@ -109,6 +121,18 @@ variable "deployment_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
   default     = ""
+}
+
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+  default     = false
+}
+
+variable "network_domain" {
+  description = "hostname's network domain for all hosts. Can be overwritten by modules."
+  type        = string
+  default     = "tf.local"
 }
 
 variable "os_image" {
@@ -198,10 +222,16 @@ variable "provisioning_output_colored" {
 
 # Hana related variables
 
-variable "name" {
+variable "hana_name" {
   description = "hostname, without the domain part"
   type        = string
-  default     = "hana"
+  default     = "vmhana"
+}
+
+variable "hana_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
 }
 
 variable "hana_count" {
@@ -458,6 +488,18 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
+variable "iscsi_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmiscsi"
+}
+
+variable "iscsi_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "iscsi_os_image" {
   description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
@@ -501,6 +543,18 @@ variable "iscsi_disk_size" {
 
 # Monitoring related variables
 
+variable "monitoring_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmmonitoring"
+}
+
+variable "monitoring_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -538,6 +592,18 @@ variable "monitoring_srv_ip" {
 }
 
 # DRBD related variables
+
+variable "drbd_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmdrbd"
+}
+
+variable "drbd_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "drbd_enabled" {
   description = "Enable the DRBD cluster for nfs"
@@ -600,6 +666,18 @@ variable "drbd_nfs_mounting_point" {
 }
 
 # Netweaver related variables
+
+variable "netweaver_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnetweaver"
+}
+
+variable "netweaver_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"

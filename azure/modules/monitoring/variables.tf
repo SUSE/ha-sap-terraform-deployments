@@ -23,9 +23,19 @@ variable "resource_group_name" {
   type = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "vm_size" {
   type    = string
   default = "Standard_D2s_v3"
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "network_subnet_id" {
