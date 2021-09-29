@@ -38,7 +38,7 @@ include:
   # role+provider section
   {% if grains['role'] == "netweaver_node" %}
     # globally set netweaver nfs variables
-    {% if grains['netweaver_nfs_share'] %}
+    {% if grains['netweaver_nfs_share'] != "" %}
       # define IPs and share
       {% set nfs_server_ip = grains['netweaver_nfs_share'].split(':')[0] %}
       {% set nfs_share = grains['netweaver_nfs_share'] %}

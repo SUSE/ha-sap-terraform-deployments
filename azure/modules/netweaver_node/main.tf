@@ -6,7 +6,7 @@ locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   create_ha_infra        = var.xscs_server_count > 0 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   app_start_index        = local.create_ha_infra == 1 ? 2 : 1
-  shared_storage_anf     = local.create_ha_infra == 1 && var.common_variables["netweaver"]["shared_storage_type"] == "anf" ? 1 : 0
+  shared_storage_anf     = var.common_variables["netweaver"]["shared_storage_type"] == "anf" ? 1 : 0
   additional_lun_number  = "0"
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
   ascs_lb_rules_ports = local.create_ha_infra == 1 ? toset([
