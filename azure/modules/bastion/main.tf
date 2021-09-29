@@ -147,6 +147,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "bastion"
   }
 }
 

@@ -229,6 +229,7 @@ resource "azurerm_virtual_machine" "drbd" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 

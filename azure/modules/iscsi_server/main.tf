@@ -120,6 +120,7 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "iscsi_srv"
   }
 }
 
