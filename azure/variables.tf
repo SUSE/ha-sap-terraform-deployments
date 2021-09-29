@@ -473,7 +473,7 @@ variable "iscsi_srv_uri" {
 variable "iscsi_vm_size" {
   description = "VM size for the iscsi server machine"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_DS1_v2"
 }
 
 variable "iscsi_srv_ip" {
