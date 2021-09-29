@@ -15,8 +15,8 @@ resource "null_resource" "monitoring_provisioner" {
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
 ${var.common_variables["monitoring_grains_output"]}
-name_prefix: ${var.common_variables["deployment_name"]}-${var.name}
-hostname: ${var.common_variables["deployment_name"]}-${var.name}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}
 timezone: ${var.timezone}
 network_domain: ${var.network_domain}
 host_ip: ${var.monitoring_srv_ip}

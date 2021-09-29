@@ -2,9 +2,19 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "host_ips" {
   description = "List of ip addresses to set to the machines"
   type        = list(string)
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "lun_count" {

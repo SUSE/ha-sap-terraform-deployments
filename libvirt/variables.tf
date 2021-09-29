@@ -67,6 +67,18 @@ variable "deployment_name" {
   default     = ""
 }
 
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+  default     = true
+}
+
+variable "network_domain" {
+  description = "hostname's network domain for all hosts. Can be overwritten by modules."
+  type        = string
+  default     = "tf.local"
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -132,6 +144,18 @@ variable "provisioning_output_colored" {
 
 #
 # Hana related variables
+
+variable "hana_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmhana"
+}
+
+variable "hana_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "hana_count" {
   description = "Number of hana nodes"
@@ -362,6 +386,18 @@ variable "sbd_storage_type" {
   }
 }
 
+variable "iscsi_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmiscsi"
+}
+
+variable "iscsi_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "iscsi_vcpu" {
   description = "Number of CPUs for the iSCSI server"
   type        = number
@@ -412,6 +448,18 @@ variable "iscsi_srv_ip" {
 #
 # Monitoring related variables
 #
+variable "monitoring_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmmonitoring"
+}
+
+variable "monitoring_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -457,6 +505,18 @@ variable "monitoring_srv_ip" {
 #
 # Netweaver related variables
 #
+variable "netweaver_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnetweaver"
+}
+
+variable "netweaver_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver deployment"
   type        = bool
@@ -640,6 +700,18 @@ variable "netweaver_ha_enabled" {
 #
 # DRBD related variables
 #
+variable "drbd_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmdrbd"
+}
+
+variable "drbd_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "drbd_enabled" {
   description = "Enable the drbd cluster for nfs"
   type        = bool

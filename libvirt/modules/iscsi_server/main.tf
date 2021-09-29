@@ -8,6 +8,10 @@ terraform {
   }
 }
 
+locals {
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+}
+
 resource "libvirt_volume" "iscsi_image_disk" {
   count            = var.iscsi_count
   name             = format("%s-iscsi-disk-%s", var.common_variables["deployment_name"], count.index + 1)
@@ -24,7 +28,7 @@ resource "libvirt_volume" "iscsi_dev_disk" {
 }
 
 resource "libvirt_domain" "iscsisrv" {
-  name       = format("%s-iscsi-%s", var.common_variables["deployment_name"], count.index + 1)
+  name       = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.iscsi_count

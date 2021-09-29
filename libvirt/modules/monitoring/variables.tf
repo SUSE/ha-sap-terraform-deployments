@@ -2,6 +2,11 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "monitoring_image" {
   description = "monitoring server base image"
   type        = string
@@ -13,14 +18,9 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "name" {
-  description = "hostname, without the domain part"
-  default     = "grafana"
-}
-
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
 }
 
 variable "network_name" {

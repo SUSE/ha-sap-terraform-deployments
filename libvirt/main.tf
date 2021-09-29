@@ -52,6 +52,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "libvirt"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -129,6 +130,8 @@ module "common_variables" {
 module "iscsi_server" {
   source                = "./modules/iscsi_server"
   common_variables      = module.common_variables.configuration
+  name                  = var.iscsi_name
+  network_domain        = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   iscsi_count           = local.iscsi_enabled == true ? 1 : 0
   source_image          = var.iscsi_source_image
   volume_name           = var.iscsi_source_image != "" ? "" : (var.iscsi_volume_name != "" ? var.iscsi_volume_name : local.generic_volume_name)
@@ -146,7 +149,8 @@ module "iscsi_server" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
-  name                  = "hana"
+  name                  = var.hana_name
+  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   source_image          = var.hana_source_image
   volume_name           = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
   hana_count            = var.hana_count
@@ -165,7 +169,8 @@ module "hana_node" {
 module "drbd_node" {
   source                = "./modules/drbd_node"
   common_variables      = module.common_variables.configuration
-  name                  = "drbd"
+  name                  = var.drbd_name
+  network_domain        = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   source_image          = var.drbd_source_image
   volume_name           = var.drbd_source_image != "" ? "" : (var.drbd_volume_name != "" ? var.drbd_volume_name : local.generic_volume_name)
   drbd_count            = var.drbd_enabled == true ? 2 : 0
@@ -189,7 +194,8 @@ module "drbd_node" {
 module "monitoring" {
   source                = "./modules/monitoring"
   common_variables      = module.common_variables.configuration
-  name                  = "monitoring"
+  name                  = var.monitoring_name
+  network_domain        = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   monitoring_enabled    = var.monitoring_enabled
   source_image          = var.monitoring_source_image
   volume_name           = var.monitoring_source_image != "" ? "" : (var.monitoring_volume_name != "" ? var.monitoring_volume_name : local.generic_volume_name)
@@ -205,9 +211,10 @@ module "monitoring" {
 module "netweaver_node" {
   source                = "./modules/netweaver_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.netweaver_name
+  network_domain        = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   xscs_server_count     = local.netweaver_xscs_server_count
   app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
-  name                  = "netweaver"
   source_image          = var.netweaver_source_image
   volume_name           = var.netweaver_source_image != "" ? "" : (var.netweaver_volume_name != "" ? var.netweaver_volume_name : local.generic_volume_name)
   vcpu                  = var.netweaver_node_vcpu

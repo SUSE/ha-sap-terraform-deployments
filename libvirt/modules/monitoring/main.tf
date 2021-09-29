@@ -8,6 +8,10 @@ terraform {
   }
 }
 
+locals {
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+}
+
 resource "libvirt_volume" "monitoring_image_disk" {
   count            = var.monitoring_enabled == true ? 1 : 0
   name             = format("%s-monitoring-disk", var.common_variables["deployment_name"])

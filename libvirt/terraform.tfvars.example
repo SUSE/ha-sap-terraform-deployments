@@ -37,6 +37,9 @@ iprange = "192.168.XXX.Y/24"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
+
 # SUSE Customer Center Registration parameters.
 #reg_code = "<<REG_CODE>>"
 #reg_email = "<<your email>>"
@@ -97,6 +100,9 @@ ha_sap_deployment_repo = ""
 #########################
 # HANA machines variables
 #########################
+
+# Hostname, without the domain part
+#hana_name = "vmhana"
 
 # Set specific image for HANA (it's the same for iscsi, monitoring, netweaver and drbd)
 # This option has preference over base image options
@@ -194,6 +200,10 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #######################
 
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
+
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
+
 # Choose the sbd storage option. Options: iscsi, shared-disk
 #sbd_storage_type = "iscsi"
 #iscsi_srv_ip = "192.168.XXX.Y+6"
@@ -211,6 +221,9 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
+
 # IP address of the machine where prometheus and grafana are running
 #monitoring_srv_ip = "192.168.XXX.Y+7"
 
@@ -220,6 +233,9 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 
 # Enable the DRBD cluster for nfs
 #drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 # IP of DRBD cluster
 #drbd_ips = ["192.168.XXX.Y+8", "192.168.XXX.Y+9"]
@@ -234,6 +250,9 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 
 # Enable/disable Netweaver deployment
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)

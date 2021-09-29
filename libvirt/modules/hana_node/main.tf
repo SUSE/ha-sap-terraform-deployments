@@ -8,6 +8,10 @@ terraform {
   }
 }
 
+locals {
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+}
+
 resource "libvirt_volume" "hana_image_disk" {
   count            = var.hana_count
   name             = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-main-disk"
@@ -24,7 +28,7 @@ resource "libvirt_volume" "hana_data_disk" {
 }
 
 resource "libvirt_domain" "hana_domain" {
-  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.hana_count
