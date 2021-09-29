@@ -89,6 +89,18 @@ variable "deployment_name" {
   default     = ""
 }
 
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+  default     = true
+}
+
+variable "network_domain" {
+  description = "hostname's network domain for all hosts. Can be overwritten by modules."
+  type        = string
+  default     = "tf.local"
+}
+
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
@@ -182,9 +194,16 @@ variable "provisioning_output_colored" {
 
 # Hana related variables
 
-variable "name" {
+variable "hana_name" {
   description = "hostname, without the domain part"
   type        = string
+  default     = "vmhana"
+}
+
+variable "hana_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
 }
 
 variable "hana_count" {
@@ -408,6 +427,18 @@ variable "scenario_type" {
 
 # DRBD related variables
 
+variable "drbd_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmdrbd"
+}
+
+variable "drbd_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "drbd_enabled" {
   description = "Enable the DRBD cluster for nfs"
   type        = bool
@@ -511,6 +542,18 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
+variable "iscsi_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmiscsi"
+}
+
+variable "iscsi_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "iscsi_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
@@ -554,6 +597,18 @@ variable "iscsi_disk_size" {
 
 # Monitoring related variables
 
+variable "monitoring_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmmonitoring"
+}
+
+variable "monitoring_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
   type        = string
@@ -591,6 +646,18 @@ variable "monitoring_enabled" {
 }
 
 # Netweaver related variables
+
+variable "netweaver_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnetweaver"
+}
+
+variable "netweaver_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"

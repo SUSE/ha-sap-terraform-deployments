@@ -2,6 +2,7 @@ locals {
   vm_count        = var.xscs_server_count + var.app_server_count
   create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   app_start_index = local.create_ha_infra == 1 ? 2 : 1
+  hostname        = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 # Network resources: subnets, routes, etc
@@ -106,7 +107,7 @@ resource "aws_instance" "netweaver" {
   }
 
   tags = {
-    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}${format("%02d", count.index + 1)}"
+    Name                                                 = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
     Workspace                                            = var.common_variables["deployment_name"]
     "${var.common_variables["deployment_name"]}-cluster" = "${var.name}${format("%02d", count.index + 1)}"
   }

@@ -18,7 +18,12 @@ variable "instance_type" {
 }
 
 variable "name" {
-  description = "prefix of the machines names"
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
   type        = string
 }
 
@@ -83,11 +88,6 @@ variable "aws_secret_access_key" {
 variable "s3_bucket" {
   description = "S3 bucket where Netwaever installation files are stored"
   type        = string
-}
-
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
 }
 
 variable "host_ips" {

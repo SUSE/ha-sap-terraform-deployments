@@ -2,6 +2,7 @@
 
 locals {
   iscsi_device_name = "/dev/xvdd"
+  hostname          = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 module "get_os_image" {
@@ -33,11 +34,11 @@ resource "aws_instance" "iscsisrv" {
   }
 
   volume_tags = {
-    Name = "${var.common_variables["deployment_name"]}-iscsi-${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   }
 
   tags = {
-    Name      = "${var.common_variables["deployment_name"]} - iSCSI Server - ${count.index + 1}"
+    Name      = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
     Workspace = var.common_variables["deployment_name"]
   }
 }

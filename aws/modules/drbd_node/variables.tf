@@ -5,7 +5,11 @@ variable "common_variables" {
 variable "name" {
   description = "hostname, without the domain part"
   type        = string
-  default     = "drbd"
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "drbd_count" {
@@ -93,11 +97,6 @@ variable "drbd_data_disk_type" {
   description = "Disk type of the disks used to store drbd content"
   type        = string
   default     = "gp2"
-}
-
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
 }
 
 variable "cluster_ssh_pub" {

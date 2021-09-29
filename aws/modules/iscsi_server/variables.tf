@@ -17,6 +17,16 @@ variable "subnet_ids" {
   description = "Subnet ids to attach the machines network interface"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "iscsi_count" {
   type        = number
   description = "Number of iscsi machines to deploy"
