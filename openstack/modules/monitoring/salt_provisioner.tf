@@ -52,9 +52,9 @@ resource "null_resource" "monitoring_node_provisioner" {
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
 ${var.common_variables["monitoring_grains_output"]}
-name_prefix: ${var.common_variables["deployment_name"]}-monitoring
-hostname: ${var.common_variables["deployment_name"]}-monitoring
-network_domain: "tf.local"
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}
+network_domain: ${var.network_domain}
 host_ip: ${element(var.host_ips, count.index)}
 public_ip: ${var.monitoring_srv_ip}
 EOF

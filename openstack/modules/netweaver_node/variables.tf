@@ -17,6 +17,16 @@ variable "flavor" {
   default = "2C-2GB-40GB"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "network_name" {
   description = "Network to attach the static route (temporary solution)"
   type        = string
@@ -62,11 +72,6 @@ variable "host_ips" {
 variable "firewall_internal" {
   description = "Internal firewall to attach VM to"
   type        = string
-}
-
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
 }
 
 variable "fencing_mechanism" {

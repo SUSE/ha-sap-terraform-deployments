@@ -7,6 +7,7 @@ locals {
   create_backup_volumes      = var.hana_count > 1 && var.hana_backup_disk_type != "ephemeral" ? true : false
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
+  hostname                   = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "openstack_blockstorage_volume_v3" "data" {
@@ -60,7 +61,7 @@ resource "openstack_networking_port_v2" "hana" {
 
 resource "openstack_compute_instance_v2" "hana" {
   count        = var.hana_count
-  name         = "${var.common_variables["deployment_name"]}-hana-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   flavor_name  = var.flavor
   image_id     = var.os_image
   config_drive = true

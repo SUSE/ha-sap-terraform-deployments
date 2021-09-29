@@ -47,6 +47,9 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}
 iscsidev: /dev/sdb
 ${yamlencode(

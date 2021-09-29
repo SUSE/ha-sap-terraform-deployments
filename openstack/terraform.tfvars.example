@@ -41,6 +41,9 @@ ip_cidr_range = "10.0.0.0/24"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
+
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
 #reg_code = "<<REG_CODE>>"
@@ -132,7 +135,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
-#
+
 ##########################
 # Bastion (jumpbox) machine variables
 ##########################
@@ -165,6 +168,9 @@ bastion_data_disk_type = ""
 #########################
 # HANA machines variables
 #########################
+
+# Hostname, without the domain part
+#hana_name = "vmhana"
 
 # HANA flavor
 hana_flavor = "8C-32GB-40GB-200GB"
@@ -282,6 +288,9 @@ hana_ips = ["10.0.0.10", "10.0.0.11"]
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
+
 # iSCSI server os_image. This value is used to overwrite the default "os_image".
 # If `openstack` utility is available in your local machine, the next command shows some of the available options
 # openstack image list
@@ -304,6 +313,9 @@ iscsi_flavor = "2C-2GB-40GB"
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#hana_name = "vmmonitoring"
+
 monitoring_flavor = "4C-8GB-40GB"
 
 # Monitoring server os_image. This value is used to overwrite the default "os_image".
@@ -320,6 +332,9 @@ monitoring_flavor = "4C-8GB-40GB"
 
 # Enable drbd cluster
 #drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 drbd_flavor = "8C-32GB-40GB-200GB"
 
@@ -354,6 +369,9 @@ drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
 # Enable netweaver cluster
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
