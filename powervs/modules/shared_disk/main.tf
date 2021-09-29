@@ -1,9 +1,3 @@
-provider "ibm" {
-    ibmcloud_api_key = var.ibmcloud_api_key
-    region = var.region
-    zone = var.zone
-}
-
 resource "ibm_pi_volume" "ibm_pi_shared_disk"{
   count                = var.shared_disk_count
   pi_volume_size       = var.shared_disk_size
