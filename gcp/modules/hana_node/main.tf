@@ -4,6 +4,7 @@ locals {
   create_ha_infra        = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.clusternodes.*.network_interface.0.network_ip : google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
@@ -98,7 +99,7 @@ module "hana-secondary-load-balancer" {
 
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
-  name         = "${var.common_variables["deployment_name"]}-hana${format("%02d", count.index + 1)}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   count        = var.hana_count
   zone         = element(var.compute_zones, count.index)
 

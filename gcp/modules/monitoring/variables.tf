@@ -8,6 +8,11 @@ variable "bastion_host" {
   default     = ""
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -26,6 +31,11 @@ variable "network_subnet_name" {
 
 variable "os_image" {
   description = "Image used to create the machine"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
   type        = string
 }
 
