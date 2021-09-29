@@ -1,9 +1,3 @@
-provider "ibm" {
-    ibmcloud_api_key = var.ibmcloud_api_key
-    region = var.region
-    zone = var.zone
-}
-
 locals {
   bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
   #private_ip_address = cidrhost(var.snet_address_range, 5)
