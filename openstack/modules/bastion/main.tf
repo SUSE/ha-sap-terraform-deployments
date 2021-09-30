@@ -33,7 +33,6 @@ resource "openstack_networking_port_v2" "bastion" {
 resource "openstack_compute_keypair_v2" "key_terraform_bastion" {
   name       = "terraform_bastion"
   public_key = local.bastion_public_key
-  # public_key = var.bastion_public_key
 }
 
 data "template_file" "userdata" {
