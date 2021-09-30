@@ -6,7 +6,7 @@
 
 # Extract and execute HWCCT
 
-typeset -r HWCCTCONFIG=/srv/salt/qa_mode/files/hwcct/hwcct_config.json
+typeset -r HWCCTCONFIG=/srv/salt/hwcct/files/hwcct/hwcct_config.json
 
 # Extracting HWCCT tool
 /usr/sap/{{ sid }}/HDB{{ instance }}/exe/SAPCAR -xf {{ hana_inst_folder }}/DATA_UNITS/SAP_HANA_HWCCT_LINUX_X86_64/HWCCT.SAR

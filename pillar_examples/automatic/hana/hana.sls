@@ -1,5 +1,5 @@
 hana:
-  {% if grains.get('qa_mode') %}
+  {% if grains.get('offline_mode') %}
   install_packages: false
   {% endif %}
   {%- if grains.get('hana_platform_folder', False) %}

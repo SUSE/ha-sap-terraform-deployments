@@ -130,10 +130,12 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "qa_mode" {
-  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
-  type        = bool
-  default     = false
+# Tune deployment
+
+variable "offline_mode" {
+   description = "Prevent installation of extra packages not coming with image"
+   type        = bool
+   default     = false
 }
 
 variable "provisioning_output_colored" {

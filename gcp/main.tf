@@ -90,7 +90,7 @@ module "common_variables" {
   background                          = var.background
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_srv_ip : ""
-  qa_mode                             = var.qa_mode
+  offline_mode                        = var.offline_mode
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number

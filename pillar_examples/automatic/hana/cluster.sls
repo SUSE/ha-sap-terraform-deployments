@@ -1,7 +1,7 @@
 {% import_yaml "/srv/pillar/hana/hana.sls" as hana %}
 
 cluster:
-  {% if grains.get('qa_mode') %}
+  {% if grains.get('offline_mode') %}
   install_packages: false
   {% endif %}
   name: hana_cluster

@@ -1,6 +1,6 @@
 {% if grains['os_family'] == 'Suse' %}
 
-{% if grains['reg_code'] and (not grains.get('qa_mode') or '_node' not in grains.get('role')) %}
+{% if grains['reg_code'] and (not grains.get('offline_mode') or '_node' not in grains.get('role')) %}
 {% set reg_code = grains['reg_code'] %}
 {% set arch = grains['osarch'] %}
 register_system:
