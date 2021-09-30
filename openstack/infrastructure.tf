@@ -126,6 +126,7 @@ module "bastion" {
   firewall_internal      = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image               = local.bastion_os_image
   bastion_srv_ip         = var.bastion_srv_ip
+  bastion_data_disk_name = var.bastion_data_disk_name
   bastion_data_disk_type = var.bastion_data_disk_type
   bastion_data_disk_size = var.bastion_data_disk_size
   floatingip_pool        = var.floatingip_pool

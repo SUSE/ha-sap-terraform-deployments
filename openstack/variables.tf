@@ -104,6 +104,12 @@ variable "bastion_flavor" {
   default     = "2C-2GB-40GB"
 }
 
+variable "bastion_data_disk_name" {
+  description = "Use existing volume to mount on bastion for NFS server"
+  type        = string
+  default     = ""
+}
+
 variable "bastion_data_disk_type" {
   description = "Disk type of the disks used to serve as NFS server"
   type        = string
