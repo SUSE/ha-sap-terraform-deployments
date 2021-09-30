@@ -12,8 +12,7 @@ resource "null_resource" "wait_after_cloud_init" {
   }
   depends_on = [openstack_compute_instance_v2.iscsisrv]
   connection {
-    #host        = element(local.provisioning_addresses, count.index)
-    host        = var.iscsi_srv_ip
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
