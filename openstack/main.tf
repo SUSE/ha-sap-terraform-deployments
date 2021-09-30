@@ -63,33 +63,10 @@ resource "openstack_compute_keypair_v2" "key_terraform" {
 }
 
 data "template_file" "userdata" {
-  template = <<CLOUDCONFIG
-#cloud-config
-
-cloud_config_modules:
-  - resolv_conf
-
-manage_resolv_conf: true
-
-resolv_conf:
-  nameservers: ['8.8.4.4', '8.8.8.8']
-
-users:
-  - name: sles
-    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
-    shell: /bin/bash
-    # you could set a password here, default is just key login
-    # lock_passwd: false
-    # plain_text_passwd: 'SecurePassword'
-    ssh-authorized-keys:
-    - ${file(var.public_key)}
-
-runcmd:
-- |
-  # add any command here
-  # echo "any command"
-
-CLOUDCONFIG
+  template = file("${path.root}/cloud-config.tpl")
+  vars = {
+    public_key = file(var.public_key)
+  }
 }
 
 module "common_variables" {

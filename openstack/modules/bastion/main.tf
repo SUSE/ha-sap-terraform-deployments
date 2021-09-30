@@ -36,34 +36,11 @@ resource "openstack_compute_keypair_v2" "key_terraform_bastion" {
   # public_key = var.bastion_public_key
 }
 
-data "template_file" "userdata_bastion" {
-  template = <<CLOUDCONFIG
-#cloud-config
-
-cloud_config_modules:
-  - resolv_conf
-
-manage_resolv_conf: true
-
-resolv_conf:
-  nameservers: ['8.8.4.4', '8.8.8.8']
-
-users:
-  - name: sles
-    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
-    shell: /bin/bash
-    # you could set a password here, default is just key login
-    # lock_passwd: false
-    # plain_text_passwd: 'SecurePassword'
-    ssh-authorized-keys:
-    - ${local.bastion_public_key}
-
-runcmd:
-- |
-  # add any command here
-  # echo "any command"
-
-CLOUDCONFIG
+data "template_file" "userdata" {
+  template = file("${path.root}/cloud-config.tpl")
+  vars = {
+    public_key = local.bastion_public_key
+  }
 }
 
 resource "openstack_blockstorage_volume_v3" "data" {
@@ -92,7 +69,7 @@ resource "openstack_compute_instance_v2" "bastion" {
   flavor_name  = var.bastion_flavor
   image_id     = var.os_image
   config_drive = true
-  user_data    = data.template_file.userdata_bastion.rendered
+  user_data    = data.template_file.userdata.rendered
   key_pair     = "terraform_bastion"
   depends_on   = [openstack_networking_port_v2.bastion]
   network {
