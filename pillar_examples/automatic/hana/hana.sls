@@ -33,7 +33,7 @@
 
 hana:
   {%- set node_count = grains['node_count']|default(2) %}
-  {% if grains.get('qa_mode') %}
+  {% if grains.get('offline_mode') %}
   install_packages: false
   {% endif %}
   scale_out: {{ grains['hana_scale_out_enabled']|default(False) }}

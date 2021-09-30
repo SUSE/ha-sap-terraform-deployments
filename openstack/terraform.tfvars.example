@@ -129,10 +129,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
-#qa_mode = false
+#offline_mode = false
 
 # Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
 

@@ -13,8 +13,6 @@ For detailed documentation see:
 - [Monitoring](../doc/monitoring.md)
 - [S/4HANA and NetWeaver](../doc/netweaver.md)
 - [DRBD](../doc/drbd.md)
-- [QA](../doc/qa.md)
-
 
 # Requirements
 
@@ -56,7 +54,7 @@ In order to deploy the environment, different configurations are available throu
 
 ## QA deployment
 
-The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. Find more information [here](../doc/qa.md).
+The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. The mode is selected by setting the variable offline_mode to true.
 
 ## Pillar files configuration
 
