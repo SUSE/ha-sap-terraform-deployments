@@ -5,6 +5,7 @@ iscsi-formula:
     - retry:
         attempts: 3
         interval: 15
+{%- endif %}
 
 # iscsi kernel modules are not available in kernel-default-base
 kernel-default-base:
@@ -21,4 +22,3 @@ kernel-default:
   # install kernel-default if kernel-default-base is installed, do not touch otherwise
   - require:
     - pkg: kernel-default-base
-{%- endif %}
