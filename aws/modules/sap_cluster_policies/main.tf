@@ -21,9 +21,9 @@ resource "aws_iam_role_policy" "data-provider-policy" {
 }
 
 resource "aws_iam_role_policy" "stonith-policy" {
-  count  = var.enabled ? 1 : 0
-  name   = "${var.common_variables["deployment_name"]}-${var.name}-stonith-policy"
-  role   = aws_iam_role.cluster-role[0].id
+  count = var.enabled ? 1 : 0
+  name  = "${var.common_variables["deployment_name"]}-${var.name}-stonith-policy"
+  role  = aws_iam_role.cluster-role[0].id
   policy = templatefile(
     "${path.module}/templates/aws_stonith_policy.tpl",
     {
@@ -35,15 +35,15 @@ resource "aws_iam_role_policy" "stonith-policy" {
 }
 
 resource "aws_iam_role_policy" "ip-agent-policy" {
-  count  = var.enabled ? 1 : 0
-  name   = "${var.common_variables["deployment_name"]}-${var.name}-ip-agent-policy"
-  role   = aws_iam_role.cluster-role[0].id
+  count = var.enabled ? 1 : 0
+  name  = "${var.common_variables["deployment_name"]}-${var.name}-ip-agent-policy"
+  role  = aws_iam_role.cluster-role[0].id
   policy = templatefile(
     "${path.module}/templates/aws_ip_agent_policy.tpl",
     {
-    region         = var.aws_region
-    aws_account_id = data.aws_caller_identity.current.account_id
-    route_table    = var.route_table_id
+      region         = var.aws_region
+      aws_account_id = data.aws_caller_identity.current.account_id
+      route_table    = var.route_table_id
     }
   )
 }

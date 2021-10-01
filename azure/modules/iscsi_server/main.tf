@@ -6,10 +6,10 @@ locals {
 }
 
 resource "azurerm_network_interface" "iscsisrv" {
-  count                     = var.iscsi_count
-  name                      = "nic-iscsisrv${format("%02d", count.index + 1)}"
-  location                  = var.az_region
-  resource_group_name       = var.resource_group_name
+  count               = var.iscsi_count
+  name                = "nic-iscsisrv${format("%02d", count.index + 1)}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
 
   ip_configuration {
     name                          = "ipconf-primary"
@@ -123,13 +123,13 @@ resource "azurerm_virtual_machine" "iscsisrv" {
 }
 
 module "iscsi_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.iscsi_count
-  instance_ids         = azurerm_virtual_machine.iscsisrv.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = [data.azurerm_public_ip.iscsisrv]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.iscsi_count
+  instance_ids        = azurerm_virtual_machine.iscsisrv.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  dependencies        = [data.azurerm_public_ip.iscsisrv]
 }

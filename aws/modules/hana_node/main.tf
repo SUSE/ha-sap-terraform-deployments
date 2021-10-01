@@ -91,12 +91,12 @@ resource "aws_instance" "clusternodes" {
 }
 
 module "hana_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.hana_count
-  instance_ids         = aws_instance.clusternodes.*.id
-  user                 = "ec2-user"
-  private_key          = var.common_variables["private_key"]
-  public_ips           = aws_instance.clusternodes.*.public_ip
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.hana_count
+  instance_ids = aws_instance.clusternodes.*.id
+  user         = "ec2-user"
+  private_key  = var.common_variables["private_key"]
+  public_ips   = aws_instance.clusternodes.*.public_ip
   dependencies = concat(
     [aws_route_table_association.hana-subnet-route-association],
     var.on_destroy_dependencies

@@ -17,21 +17,21 @@ resource "null_resource" "bastion_provisioner" {
   }
 
   provisioner "file" {
-    content = <<EOF
+    content     = <<EOF
 role: bastion
 ${var.common_variables["grains_output"]}
 EOF
     destination = "/tmp/grains"
-}
+  }
 }
 
 module "bastion_provision" {
-  source               = "../../../generic_modules/salt_provisioner"
-  node_count           = local.node_count
-  instance_ids         = null_resource.bastion_provisioner.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["bastion_private_key"]
-  public_ips           = google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip
-  background           = var.common_variables["background"]
-  reboot               = false
+  source       = "../../../generic_modules/salt_provisioner"
+  node_count   = local.node_count
+  instance_ids = null_resource.bastion_provisioner.*.id
+  user         = var.common_variables["authorized_user"]
+  private_key  = var.common_variables["bastion_private_key"]
+  public_ips   = google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip
+  background   = var.common_variables["background"]
+  reboot       = false
 }

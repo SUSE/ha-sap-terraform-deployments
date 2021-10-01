@@ -81,7 +81,7 @@ test-terraform-format:
 	for cloud_provider in aws azure gcp libvirt openstack ; do\
 	    cd $${cloud_provider} >/dev/null ;\
 	    echo $${cloud_provider} ;\
-	    terraform fmt -check=true -diff=true ;\
+	    terraform fmt -check=true -diff=true -recursive ;\
 	    err=$$(($$? + err)) ;\
 	    cd - >/dev/null ;\
 	done; exit $$err

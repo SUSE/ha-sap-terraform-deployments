@@ -1,6 +1,6 @@
 locals {
-  bastion_enabled    = var.common_variables["bastion_enabled"]
-  provisioning_addresses     = openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
 }
 
 
@@ -18,10 +18,10 @@ resource "openstack_networking_port_v2" "iscsisrv" {
 }
 
 resource "openstack_blockstorage_volume_v3" "iscsisrv_sbd" {
-  count             = var.iscsi_count
-  name              = format("%s-iscsi-disk-%s", var.common_variables["deployment_name"], count.index + 1)
-  size              = 1
-  availability_zone = var.region
+  count                = var.iscsi_count
+  name                 = format("%s-iscsi-disk-%s", var.common_variables["deployment_name"], count.index + 1)
+  size                 = 1
+  availability_zone    = var.region
   enable_online_resize = true
 }
 

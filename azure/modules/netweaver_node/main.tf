@@ -8,7 +8,7 @@ locals {
   app_start_index        = local.create_ha_infra == 1 ? 2 : 1
   additional_lun_number  = "0"
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
-  ascs_lb_rules_ports    = local.create_ha_infra == 1 ? toset([
+  ascs_lb_rules_ports = local.create_ha_infra == 1 ? toset([
     "32${var.ascs_instance_number}",
     "36${var.ascs_instance_number}",
     "39${var.ascs_instance_number}",
@@ -18,7 +18,7 @@ locals {
     "5${var.ascs_instance_number}16",
     "9680" # monitoring - sap_host_exporter
   ]) : toset([])
-  ers_lb_rules_ports     = local.create_ha_infra == 1 ? toset([
+  ers_lb_rules_ports = local.create_ha_infra == 1 ? toset([
     "32${var.ers_instance_number}",
     "33${var.ers_instance_number}",
     "5${var.ers_instance_number}13",
@@ -356,13 +356,13 @@ resource "azurerm_virtual_machine" "netweaver" {
 }
 
 module "netweaver_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = local.vm_count
-  instance_ids         = azurerm_virtual_machine.netweaver.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = [data.azurerm_public_ip.netweaver]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = local.vm_count
+  instance_ids        = azurerm_virtual_machine.netweaver.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  dependencies        = [data.azurerm_public_ip.netweaver]
 }

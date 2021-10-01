@@ -4,8 +4,8 @@ variable "common_variables" {
 
 variable "az_region" {
   description = "Azure region where the deployment machines will be created"
-  type    = string
-  default = "westeurope"
+  type        = string
+  default     = "westeurope"
 }
 
 variable "os_image" {
@@ -35,5 +35,5 @@ variable "snet_address_range" {
 
 variable "storage_account" {
   description = "Storage account where the boot diagnostics will be stored"
-  type = string
+  type        = string
 }

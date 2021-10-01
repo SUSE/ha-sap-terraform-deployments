@@ -6,10 +6,10 @@ locals {
 }
 
 resource "azurerm_network_interface" "monitoring" {
-  name                      = "nic-monitoring"
-  count                     = var.monitoring_enabled == true ? 1 : 0
-  location                  = var.az_region
-  resource_group_name       = var.resource_group_name
+  name                = "nic-monitoring"
+  count               = var.monitoring_enabled == true ? 1 : 0
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
 
   ip_configuration {
     name                          = "ipconf-primary"
@@ -123,13 +123,13 @@ resource "azurerm_virtual_machine" "monitoring" {
 }
 
 module "monitoring_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.monitoring_enabled ? 1 : 0
-  instance_ids         = azurerm_virtual_machine.monitoring.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = [data.azurerm_public_ip.monitoring]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.monitoring_enabled ? 1 : 0
+  instance_ids        = azurerm_virtual_machine.monitoring.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  dependencies        = [data.azurerm_public_ip.monitoring]
 }
