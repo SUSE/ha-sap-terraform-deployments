@@ -5,20 +5,23 @@ iscsi-formula:
     - retry:
         attempts: 3
         interval: 15
+{%- endif %}
 
 # iscsi kernel modules are not available in kernel-default-base
-kernel-default-base:
-  pkg.removed:
-  - retry:
-      attempts: 3
-      interval: 15
+# There is not reliable way to switch kernels directly with salt as dependency resolution is not yet implemented.
+kernel-default-install:
+  cmd.run:
+    - name: zypper -n install --force-resolution kernel-default
+    # install kernel-default if kernel-default-base is installed, do not touch otherwise
+    - only_if:
+      - rpm -q kernel-default-base
 
-kernel-default:
-  pkg.installed:
-  - retry:
-      attempts: 3
-      interval: 15
-  # install kernel-default if kernel-default-base is installed, do not touch otherwise
-  - require:
-    - pkg: kernel-default-base
-{%- endif %}
+kernel-default-base-remove:
+  pkg.removed:
+    - name: kernel-default-base
+    - retry:
+        attempts: 3
+        interval: 15
+    - require:
+      - cmd: kernel-default-install
+
