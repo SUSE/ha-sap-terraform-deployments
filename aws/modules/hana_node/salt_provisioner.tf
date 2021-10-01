@@ -44,11 +44,11 @@ EOF
 }
 
 module "hana_provision" {
-  source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
-  instance_ids         = null_resource.hana_node_provisioner.*.id
-  user                 = "ec2-user"
-  private_key          = var.common_variables["private_key"]
-  public_ips           = aws_instance.clusternodes.*.public_ip
-  background           = var.common_variables["background"]
+  source       = "../../../generic_modules/salt_provisioner"
+  node_count   = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
+  instance_ids = null_resource.hana_node_provisioner.*.id
+  user         = "ec2-user"
+  private_key  = var.common_variables["private_key"]
+  public_ips   = aws_instance.clusternodes.*.public_ip
+  background   = var.common_variables["background"]
 }

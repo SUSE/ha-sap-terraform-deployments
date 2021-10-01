@@ -2,9 +2,9 @@
 # official documentation: https://cloud.google.com/solutions/sap/docs/netweaver-ha-planning-guide
 
 locals {
-  vm_count        = var.xscs_server_count + var.app_server_count
-  create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
-  app_start_index = local.create_ha_infra == 1 ? 2 : 1
+  vm_count               = var.xscs_server_count + var.app_server_count
+  create_ha_infra        = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index        = local.create_ha_infra == 1 ? 2 : 1
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.netweaver.*.network_interface.0.network_ip : google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
 }
@@ -111,13 +111,13 @@ resource "google_compute_instance" "netweaver" {
 }
 
 module "netweaver_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = local.vm_count
-  instance_ids         = google_compute_instance.netweaver.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = var.on_destroy_dependencies
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = local.vm_count
+  instance_ids        = google_compute_instance.netweaver.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  dependencies        = var.on_destroy_dependencies
 }

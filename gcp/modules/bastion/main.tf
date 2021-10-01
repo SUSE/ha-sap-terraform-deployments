@@ -16,10 +16,10 @@ resource "google_compute_subnetwork" "bastion_subnet" {
 
 # Connection to the bastion
 resource "google_compute_firewall" "bastion_ingress_firewall" {
-  count              = local.bastion_count
-  name               = "${local.deployment_name}-bastion-ingress-firewall"
-  network            = var.network_link
-  target_tags        = ["bastion"]
+  count       = local.bastion_count
+  name        = "${local.deployment_name}-bastion-ingress-firewall"
+  network     = var.network_link
+  target_tags = ["bastion"]
 
   allow {
     protocol = "tcp"
@@ -29,10 +29,10 @@ resource "google_compute_firewall" "bastion_ingress_firewall" {
 
 # Connection between bastion and other machines
 resource "google_compute_firewall" "bastion_egress_firewall" {
-  count         = local.bastion_count
-  name          = "${local.deployment_name}-bastion-egress-firewall"
-  network       = var.network_link
-  source_tags   = ["bastion"]
+  count       = local.bastion_count
+  name        = "${local.deployment_name}-bastion-egress-firewall"
+  network     = var.network_link
+  source_tags = ["bastion"]
 
   allow {
     protocol = "tcp"
@@ -78,11 +78,11 @@ resource "google_compute_instance" "bastion" {
 }
 
 module "bastion_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = local.bastion_count
-  instance_ids         = google_compute_instance.bastion.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["bastion_private_key"]
-  public_ips           = google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip
-  dependencies         = var.on_destroy_dependencies
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = local.bastion_count
+  instance_ids = google_compute_instance.bastion.*.id
+  user         = var.common_variables["authorized_user"]
+  private_key  = var.common_variables["bastion_private_key"]
+  public_ips   = google_compute_instance.bastion.*.network_interface.0.access_config.0.nat_ip
+  dependencies = var.on_destroy_dependencies
 }

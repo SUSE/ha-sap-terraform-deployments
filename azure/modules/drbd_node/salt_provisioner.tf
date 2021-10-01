@@ -50,13 +50,13 @@ fence_agent_client_secret: ${var.fence_agent_client_secret}
 }
 
 module "drbd_provision" {
-  source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
-  instance_ids         = null_resource.drbd_provisioner.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  background           = var.common_variables["background"]
+  source              = "../../../generic_modules/salt_provisioner"
+  node_count          = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
+  instance_ids        = null_resource.drbd_provisioner.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  background          = var.common_variables["background"]
 }

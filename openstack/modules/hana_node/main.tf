@@ -11,10 +11,10 @@ locals {
 
 resource "openstack_blockstorage_volume_v3" "data" {
   # only deploy if hana_data_disk_type is not set to ephemeral
-  count             = local.create_data_volumes ? var.hana_count : 0
-  name              = "${var.common_variables["deployment_name"]}-hana-data-${count.index}"
-  size              = var.hana_data_disk_size
-  availability_zone = var.region
+  count                = local.create_data_volumes ? var.hana_count : 0
+  name                 = "${var.common_variables["deployment_name"]}-hana-data-${count.index}"
+  size                 = var.hana_data_disk_size
+  availability_zone    = var.region
   enable_online_resize = true
 }
 
@@ -26,10 +26,10 @@ resource "openstack_compute_volume_attach_v2" "data_attached" {
 
 resource "openstack_blockstorage_volume_v3" "backup" {
   # only deploy if hana_backup_disk_type is not set to ephemeral
-  count             = local.create_backup_volumes ? var.hana_count : 0
-  name              = "${var.common_variables["deployment_name"]}-hana-backup-${count.index}"
-  size              = var.hana_backup_disk_size
-  availability_zone = var.region
+  count                = local.create_backup_volumes ? var.hana_count : 0
+  name                 = "${var.common_variables["deployment_name"]}-hana-backup-${count.index}"
+  size                 = var.hana_backup_disk_size
+  availability_zone    = var.region
   enable_online_resize = true
 }
 
