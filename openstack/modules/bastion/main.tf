@@ -37,9 +37,10 @@ resource "openstack_compute_keypair_v2" "key_terraform_bastion" {
 
 data "template_file" "userdata" {
   template = file("${path.root}/cloud-config.tpl")
-  vars = {
-    public_key = local.bastion_public_key
-  }
+  # You can also pass variables here to further customize config.
+  # vars = {
+  #   name = "value"
+  # }
 }
 
 resource "openstack_blockstorage_volume_v3" "data" {

@@ -64,9 +64,10 @@ resource "openstack_compute_keypair_v2" "key_terraform" {
 
 data "template_file" "userdata" {
   template = file("${path.root}/cloud-config.tpl")
-  vars = {
-    public_key = file(var.public_key)
-  }
+  # You can also pass variables here to further customize config.
+  # vars = {
+  #   name = "value"
+  # }
 }
 
 module "common_variables" {
