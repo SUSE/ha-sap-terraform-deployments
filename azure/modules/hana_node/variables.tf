@@ -88,16 +88,6 @@ variable "network_domain" {
   type        = string
 }
 
-variable "majority_maker_vm_size" {
-  type    = string
-  default = "Standard_D2s_v3"
-}
-
-variable "majority_maker_ip" {
-  description = "Majority Maker server address"
-  type        = string
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string

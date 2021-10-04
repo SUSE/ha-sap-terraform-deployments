@@ -30,8 +30,6 @@ sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 node_count: ${var.hana_count + local.create_scale_out}
-majority_maker_node: ${local.create_scale_out == 1 ? "vm${var.name}mm" : ""}
-majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"
   }

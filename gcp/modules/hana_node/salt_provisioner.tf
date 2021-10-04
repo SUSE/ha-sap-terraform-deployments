@@ -46,8 +46,6 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 node_count: ${var.hana_count + local.create_scale_out}
-majority_maker_node: ${local.create_scale_out == 1 ? "vm${var.name}mm" : ""}
-majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"
   }
