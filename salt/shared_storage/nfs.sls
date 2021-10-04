@@ -18,7 +18,13 @@ netcat-openbsd:
 {% if grains['provider'] == 'azure' %}
 include:
   - provider.azure.nfsv4
-{% set nfs_opts = "rw,hard,rsize=1048576,wsize=1048576,sec=sys,vers=4.1,tcp,_netdev" %}
+  {% set nfs_options = "rw,hard,rsize=1048576,wsize=1048576,sec=sys,vers=4.1,tcp,_netdev" %}
+{%- else %}
+  {% if grains['nfs_options'] is defined %}
+    {% set nfs_options = grains['nfs_options'] %}
+  {%- else %}
+    {% set nfs_options = "defaults,_netdev" %}
+  {%- endif %}
 {%- endif %}
 
 # role variables
@@ -96,7 +102,7 @@ mount_{{ grains['role'] }}_{{ mount }}:
     - fstype: nfs
     - mkmnt: True
     - persist: {{ persist }}
-    - opts: {{ nfs_opts }}
+    - opts: {{ nfs_options }}
     - require:
       - wait_before_mount_{{ grains['role'] }}_{{ mount }}
       {%- if grains['provider'] == 'azure' %}
