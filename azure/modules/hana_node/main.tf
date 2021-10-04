@@ -1,4 +1,4 @@
- # Availabilityset for the hana VMs
+# Availabilityset for the hana VMs
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
@@ -7,7 +7,7 @@ locals {
   sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
-  hana_lb_rules_ports        = local.create_ha_infra == 1 ? toset([
+  hana_lb_rules_ports = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
     "3${var.hana_instance_number}14",
     "3${var.hana_instance_number}40",
@@ -206,7 +206,7 @@ resource "azurerm_image" "sles4sap" {
 
 # ANF volumes
 resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
-  count               = local.shared_storage_anf * local.sites
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -224,10 +224,10 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_data
 
   export_policy_rule {
-    rule_index = 1
+    rule_index        = 1
     protocols_enabled = ["NFSv4.1"]
-    allowed_clients = ["0.0.0.0/0"]
-    unix_read_write = true
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -241,7 +241,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
-  count               = local.shared_storage_anf * local.sites
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -259,10 +259,10 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_log
 
   export_policy_rule {
-    rule_index = 1
+    rule_index        = 1
     protocols_enabled = ["NFSv4.1"]
-    allowed_clients = ["0.0.0.0/0"]
-    unix_read_write = true
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -276,7 +276,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
-  count               = local.shared_storage_anf * local.sites
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -294,10 +294,10 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_backup
 
   export_policy_rule {
-    rule_index = 1
+    rule_index        = 1
     protocols_enabled = ["NFSv4.1"]
-    allowed_clients = ["0.0.0.0/0"]
-    unix_read_write = true
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -311,7 +311,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
-  count               = local.shared_storage_anf * local.sites
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -329,10 +329,10 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_shared
 
   export_policy_rule {
-    rule_index = 1
+    rule_index        = 1
     protocols_enabled = ["NFSv4.1"]
-    allowed_clients = ["0.0.0.0/0"]
-    unix_read_write = true
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)

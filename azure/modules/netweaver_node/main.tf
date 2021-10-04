@@ -282,7 +282,7 @@ resource "azurerm_image" "netweaver-image" {
 
 # ANF volumes
 resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
-  count               = local.shared_storage_anf
+  count = local.shared_storage_anf
 
   lifecycle {
     prevent_destroy = false
@@ -300,10 +300,10 @@ resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
   storage_quota_in_gb = var.netweaver_anf_quota_sapmnt
 
   export_policy_rule {
-    rule_index = 1
+    rule_index        = 1
     protocols_enabled = ["NFSv4.1"]
-    allowed_clients = ["0.0.0.0/0"]
-    unix_read_write = true
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
