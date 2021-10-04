@@ -14,7 +14,7 @@ variable "pool" {
 
 variable "shared_disk_size" {
   description = "shared partition disk size"
-  default     = "104857600"               # 100MB
+  default     = "104857600" # 100MB
 }
 
 variable "shared_disk_count" {

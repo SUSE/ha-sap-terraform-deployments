@@ -6,7 +6,7 @@ resource "null_resource" "drbd_provisioner" {
   }
 
   connection {
-    host = element(local.provisioning_addresses, count.index)
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
@@ -27,7 +27,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-drbd_disk_device: ${format("%s%s","/dev/disk/by-id/google-", element(google_compute_instance.drbd.*.attached_disk.0.device_name, count.index))}
+drbd_disk_device: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.drbd.*.attached_disk.0.device_name, count.index))}
 drbd_disk_device_list: [${join(", ", formatlist("'/dev/disk/by-id/google-%s'", google_compute_instance.drbd.*.attached_disk.0.device_name))}]
 drbd_cluster_vip: ${var.drbd_cluster_vip}
 fencing_mechanism: ${var.fencing_mechanism}
@@ -49,13 +49,13 @@ partitions:
 }
 
 module "drbd_provision" {
-  source               = "../../../generic_modules/salt_provisioner"
-  node_count           = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
-  instance_ids         = null_resource.drbd_provisioner.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  background           = var.common_variables["background"]
+  source              = "../../../generic_modules/salt_provisioner"
+  node_count          = var.common_variables["provisioner"] == "salt" ? var.drbd_count : 0
+  instance_ids        = null_resource.drbd_provisioner.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  background          = var.common_variables["background"]
 }

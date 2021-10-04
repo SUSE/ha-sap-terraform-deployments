@@ -3,7 +3,7 @@
 # And: https://cloud.google.com/solutions/sap/docs/sap-hana-ha-config-sles
 
 resource "google_compute_health_check" "health-check" {
-  name  = "${var.name}-health-check"
+  name = "${var.name}-health-check"
 
   timeout_sec         = 10
   check_interval_sec  = 10

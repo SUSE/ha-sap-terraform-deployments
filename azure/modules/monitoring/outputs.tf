@@ -3,7 +3,7 @@ data "azurerm_public_ip" "monitoring" {
   name                = azurerm_public_ip.monitoring.0.name
   resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.monitoring]
+  depends_on = [azurerm_virtual_machine.monitoring]
 }
 
 data "azurerm_network_interface" "monitoring" {
@@ -11,7 +11,7 @@ data "azurerm_network_interface" "monitoring" {
   name                = azurerm_network_interface.monitoring.0.name
   resource_group_name = azurerm_virtual_machine.monitoring.0.resource_group_name
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.monitoring]
+  depends_on = [azurerm_virtual_machine.monitoring]
 }
 
 output "monitoring_ip" {

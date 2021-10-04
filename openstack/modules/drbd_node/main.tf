@@ -8,10 +8,10 @@ locals {
 
 resource "openstack_blockstorage_volume_v3" "data" {
   # only deploy if drbd_data_disk_type is not set to ephemeral
-  count             = local.create_volumes ? var.drbd_count : 0
-  name              = "${var.common_variables["deployment_name"]}-drbd-data-${count.index}"
-  size              = var.drbd_data_disk_size
-  availability_zone = var.region
+  count                = local.create_volumes ? var.drbd_count : 0
+  name                 = "${var.common_variables["deployment_name"]}-drbd-data-${count.index}"
+  size                 = var.drbd_data_disk_size
+  availability_zone    = var.region
   enable_online_resize = true
 }
 
@@ -61,6 +61,6 @@ module "drbd_on_destroy" {
   private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips   = local.provisioning_addresses
-  dependencies = var.on_destroy_dependencies
+  public_ips          = local.provisioning_addresses
+  dependencies        = var.on_destroy_dependencies
 }

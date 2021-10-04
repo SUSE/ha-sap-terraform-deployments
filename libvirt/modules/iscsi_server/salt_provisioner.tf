@@ -12,24 +12,24 @@ resource "null_resource" "iscsi_provisioner" {
   }
 
   provisioner "file" {
-    content     = <<EOF
+    content = <<EOF
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
 host_ip: ${element(var.host_ips, count.index)}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}
 iscsidev: /dev/vdb
 ${yamlencode(
-  {partitions: {for index in range(var.lun_count) :
-    tonumber(index+1) => {
-      start: format("%.0f%%", index*100/var.lun_count),
-      end: format("%.0f%%", (index+1)*100/var.lun_count)
-    }
-  }}
+    { partitions : { for index in range(var.lun_count) :
+      tonumber(index + 1) => {
+        start : format("%.0f%%", index * 100 / var.lun_count),
+        end : format("%.0f%%", (index + 1) * 100 / var.lun_count)
+      }
+    } }
 )}
 
 EOF
-    destination = "/tmp/grains"
-  }
+destination = "/tmp/grains"
+}
 }
 
 module "iscsi_provision" {
