@@ -31,7 +31,7 @@ variable "vnet_name" {
 }
 
 variable "vnet_hub_address_range" {
-  description = "vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  description = "Hub vnet address range in CIDR notation (only used if the vnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
   default     = "10.73.0.0/16"
   validation {
@@ -109,13 +109,13 @@ variable "subnet_netapp_address_range" {
 }
 
 variable "subnet_hub_gateway_name" {
-  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  description = "Already existing Hub subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
 
 variable "subnet_hub_gateway_address_range" {
-  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  description = "Hub subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
   default     = ""
   validation {
@@ -127,13 +127,13 @@ variable "subnet_hub_gateway_address_range" {
 }
 
 variable "subnet_hub_mgmt_name" {
-  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  description = "Already existing Hub subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
 
 variable "subnet_hub_mgmt_address_range" {
-  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  description = "Hub subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
   default     = ""
   validation {
@@ -230,7 +230,7 @@ variable "bastion_private_key" {
 }
 
 variable "bastion_host" {
-  description = "Bastion host address"
+  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
   type        = string
   default     = ""
 }
@@ -1095,7 +1095,7 @@ variable "fence_agent_client_secret" {
 # network topolgy related varibales
 
 variable "network_topology" {
-  description = "Network topolgy to use."
+  description = "Network topology to use."
   type        = string
   default     = "plain"
   validation {
@@ -1107,13 +1107,13 @@ variable "network_topology" {
 }
 
 variable "vnet_hub_create" {
-  description = "Create Hub Network"
+  description = "Create Hub Network in hub_spoke network topology."
   type        = bool
   default     = false
 }
 
 variable "vnet_hub_name" {
-  description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
+  description = "Already existing Hub virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
   type        = string
   default     = ""
 }
