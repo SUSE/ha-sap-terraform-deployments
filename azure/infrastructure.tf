@@ -65,7 +65,7 @@ module "network_plain" {
   deployment_name     = lower(local.deployment_name)
   az_region           = var.az_region
   resource_group_name = local.resource_group_name
-  vnet_name          = var.vnet_name
+  vnet_name          = local.vnet_name
   vnet_address_range = local.vnet_address_range
   subnet_name          = var.subnet_name
   subnet_address_range = local.subnet_address_range
