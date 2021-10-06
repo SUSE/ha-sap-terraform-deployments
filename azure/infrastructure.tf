@@ -65,12 +65,8 @@ module "network_plain" {
   deployment_name     = lower(local.deployment_name)
   az_region           = var.az_region
   resource_group_name = local.resource_group_name
-  # vnet_hub_name       = var.vnet_hub_name
-  # spoke_name          = var.spoke_name
   vnet_name          = var.vnet_name
   vnet_address_range = local.vnet_address_range
-  # subnet_mgmt_name = var.subnet_mgmt_name
-  # subnet_mgmt_address_range = var.subnet_mgmt_address_range
   subnet_name          = var.subnet_name
   subnet_address_range = local.subnet_address_range
 }
@@ -104,8 +100,6 @@ module "network_spoke" {
   vnet_hub_name       = var.vnet_hub_create ? module.network_hub.0.vnet_hub_name : var.vnet_hub_name
   spoke_name          = var.spoke_name
   vnet_address_range  = local.vnet_address_range
-  # subnet_mgmt_name = var.subnet_mgmt_name
-  # subnet_mgmt_address_range = local.subnet_mgmt_address_range
   subnet_workload_name          = var.subnet_workload_name
   subnet_workload_address_range = local.subnet_workload_address_range
   depends_on                    = [module.network_hub]

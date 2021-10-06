@@ -50,8 +50,3 @@ variable "subnet_address_range" {
     error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
   }
 }
-
-variable "network_topology" {
-  description = "Network topolgy to use."
-  type        = string
-}

@@ -74,35 +74,7 @@ variable "subnet_workload_address_range" {
   }
 }
 
-variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
-  type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
-}
-
-variable "bastion_user" {
-  type = string
-  default = "sles"
-}
-
-variable "bastion_public_key" {
-  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
-  type        = string
-  default     = ""
-}
-
 # Deployment variables
-
-variable "network_topology" {
-  description = "Network topolgy to use."
-  type        = string
-}
 
 variable "spoke_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"

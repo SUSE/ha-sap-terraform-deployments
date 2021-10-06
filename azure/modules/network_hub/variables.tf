@@ -70,38 +70,3 @@ variable "subnet_gateway_address_range" {
     error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
   }
 }
-
-variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
-  type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
-}
-
-variable "bastion_user" {
-  type = string
-  default = "sles"
-}
-
-variable "bastion_public_key" {
-  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_private_key" {
-  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
-  type        = string
-  default     = ""
-}
-
-# Deployment variables
-
-# variable "deployment_name" {
-#   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
-#   type        = string
-# }
-
-variable "network_topology" {
-  description = "Network topolgy to use."
-  type        = string
-}
