@@ -71,6 +71,7 @@ module "common_variables" {
   provider_type                       = "gcp"
   region                              = var.region
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -153,6 +154,8 @@ module "common_variables" {
 module "drbd_node" {
   source               = "./modules/drbd_node"
   common_variables     = module.common_variables.configuration
+  name                 = var.drbd_name
+  network_domain       = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   bastion_host         = module.bastion.public_ip
   drbd_count           = var.drbd_enabled == true ? 2 : 0
   machine_type         = var.drbd_machine_type
@@ -164,7 +167,6 @@ module "drbd_node" {
   drbd_data_disk_type  = var.drbd_data_disk_type
   drbd_cluster_vip     = local.drbd_cluster_vip
   gcp_credentials_file = var.gcp_credentials_file
-  network_domain       = "tf.local"
   host_ips             = local.drbd_ips
   fencing_mechanism    = var.drbd_cluster_fencing_mechanism
   sbd_storage_type     = var.sbd_storage_type
@@ -182,6 +184,8 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
+  name                      = var.netweaver_name
+  network_domain            = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   bastion_host              = module.bastion.public_ip
   xscs_server_count         = local.netweaver_xscs_server_count
   app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
@@ -191,7 +195,6 @@ module "netweaver_node" {
   network_subnet_name       = local.subnet_name
   os_image                  = local.netweaver_os_image
   gcp_credentials_file      = var.gcp_credentials_file
-  network_domain            = "tf.local"
   host_ips                  = local.netweaver_ips
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
@@ -207,6 +210,8 @@ module "netweaver_node" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.hana_name
+  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   bastion_host          = module.bastion.public_ip
   hana_count            = var.hana_count
   machine_type          = var.machine_type
@@ -233,6 +238,8 @@ module "hana_node" {
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  name                = var.monitoring_name
+  network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   compute_zones       = data.google_compute_zones.available.names
@@ -249,6 +256,8 @@ module "monitoring" {
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  name                = var.iscsi_name
+  network_domain      = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled == true ? 1 : 0
   machine_type        = var.machine_type_iscsi_server

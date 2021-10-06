@@ -35,6 +35,9 @@ region = "europe-west1"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
+
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
 #reg_code = "<<REG_CODE>>"
@@ -148,6 +151,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #########################
 # HANA machines variables
 #########################
+
+# Hostname, without the domain part
+#hana_name = "vmhana"
 
 # HANA machine type
 #machine_type = "n1-highmem-32"
@@ -276,6 +282,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
+
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
 #iscsi_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
@@ -296,6 +305,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
+
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
 #monitoring_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
@@ -308,6 +320,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 # Enable drbd cluster
 #drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 #drbd_machine_type = "n1-standard-4"
 
@@ -335,6 +350,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 
 # Enable netweaver cluster
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)

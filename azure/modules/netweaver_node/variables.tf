@@ -26,8 +26,8 @@ variable "storage_account" {
 }
 
 variable "network_domain" {
-  type    = string
-  default = "tf.local"
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "fencing_mechanism" {
@@ -43,6 +43,11 @@ variable "xscs_server_count" {
 variable "app_server_count" {
   type    = number
   default = 2
+}
+
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
 }
 
 variable "xscs_vm_size" {

@@ -74,6 +74,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "openstack"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -156,6 +157,8 @@ module "common_variables" {
 module "drbd_node" {
   source              = "./modules/drbd_node"
   common_variables    = module.common_variables.configuration
+  name                = var.drbd_name
+  network_domain      = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   region              = var.region
   region_net          = var.region_net
   bastion_host        = module.bastion.public_ip
@@ -187,6 +190,8 @@ module "drbd_node" {
 module "netweaver_node" {
   source                    = "./modules/netweaver_node"
   common_variables          = module.common_variables.configuration
+  name                      = var.netweaver_name
+  network_domain            = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   region                    = var.region
   region_net                = var.region_net
   bastion_host              = module.bastion.public_ip
@@ -200,7 +205,6 @@ module "netweaver_node" {
   network_subnet_id         = local.subnet_id
   firewall_internal         = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image                  = local.netweaver_os_image
-  network_domain            = "tf.local"
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   fencing_mechanism         = var.hana_cluster_fencing_mechanism
   sbd_storage_type          = var.sbd_storage_type
@@ -218,6 +222,8 @@ module "netweaver_node" {
 module "hana_node" {
   source                     = "./modules/hana_node"
   common_variables           = module.common_variables.configuration
+  name                       = var.hana_name
+  network_domain             = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   region                     = var.region
   region_net                 = var.region_net
   bastion_host               = module.bastion.public_ip
@@ -250,6 +256,8 @@ module "hana_node" {
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  name                = var.monitoring_name
+  network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   region              = var.region
   region_net          = var.region_net
   bastion_host        = module.bastion.public_ip
@@ -271,6 +279,8 @@ module "monitoring" {
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  name                = var.iscsi_name
+  network_domain      = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   region              = var.region
   region_net          = var.region_net
   bastion_host        = module.bastion.public_ip

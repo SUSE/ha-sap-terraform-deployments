@@ -1,6 +1,7 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.iscsisrv.*.network_interface.0.network_ip : google_compute_instance.iscsisrv.*.network_interface.0.access_config.0.nat_ip
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "google_compute_disk" "iscsi_data" {
@@ -13,7 +14,7 @@ resource "google_compute_disk" "iscsi_data" {
 
 resource "google_compute_instance" "iscsisrv" {
   count        = var.iscsi_count
-  name         = "${var.common_variables["deployment_name"]}-iscsisrv-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   description  = "iSCSI server"
   machine_type = var.machine_type
   zone         = element(var.compute_zones, 0)

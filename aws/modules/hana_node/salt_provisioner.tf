@@ -29,10 +29,10 @@ aws_credentials_file: /tmp/credentials
 aws_access_key_id: ${var.aws_access_key_id}
 aws_secret_access_key: ${var.aws_secret_access_key}
 route_table: ${var.route_table_id}
-name_prefix: ${var.name}
-hostname: ${var.name}${format("%02d", count.index + 1)}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-network_domain: "tf.local"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 hana_disk_device: ${local.hana_disk_device}

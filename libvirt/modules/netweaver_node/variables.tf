@@ -95,7 +95,7 @@ variable "isolated_network_name" {
 
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
 }
 
 variable "network_name" {

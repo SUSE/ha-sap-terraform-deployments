@@ -20,6 +20,9 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 iscsi_srv_ip: ${element(google_compute_instance.iscsisrv.*.network_interface.0.network_ip, count.index)}
 iscsidev: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.iscsisrv.*.attached_disk.0.device_name, count.index))}
 ${yamlencode(

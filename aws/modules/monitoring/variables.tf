@@ -14,6 +14,16 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "key_name" {
   type        = string
   description = "AWS key pair name"

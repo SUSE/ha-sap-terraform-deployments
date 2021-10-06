@@ -21,21 +21,21 @@ base:
     - cluster
 
 predeployment:
+  '*':
+    - default
+
   'role:hana_node':
     - match: grain
-    - default
     - cluster_node
     - hana_node
 
   'role:netweaver_node':
     - match: grain
-    - default
     - cluster_node
     - netweaver_node
 
   'role:drbd_node':
     - match: grain
-    - default
     - cluster_node
     - drbd_node
 
@@ -45,7 +45,6 @@ predeployment:
 
   'role:monitoring_srv':
     - match: grain
-    - default
     - monitoring_srv
 
   'role:bastion':

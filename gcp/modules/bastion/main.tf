@@ -3,6 +3,7 @@ locals {
   deployment_name    = var.common_variables["deployment_name"]
   private_ip_address = cidrhost(var.snet_address_range, 5)
   firewall_ports     = var.common_variables["monitoring_enabled"] ? ["22", "3000"] : ["22"]
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 # Bastion subnet
@@ -42,7 +43,7 @@ resource "google_compute_firewall" "bastion_egress_firewall" {
 
 resource "google_compute_instance" "bastion" {
   count        = local.bastion_count
-  name         = "${var.common_variables["deployment_name"]}-bastion"
+  name         = "${local.deployment_name}-${var.name}"
   description  = "Bastion server"
   machine_type = var.vm_size
   zone         = element(var.compute_zones, 0)

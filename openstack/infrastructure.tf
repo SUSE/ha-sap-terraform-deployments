@@ -114,6 +114,8 @@ resource "openstack_networking_secgroup_rule_v2" "ha_firewall_internal_allow_all
 module "bastion" {
   source           = "./modules/bastion"
   common_variables = module.common_variables.configuration
+  name             = var.bastion_name
+  network_domain   = var.bastion_network_domain == "" ? var.network_domain : var.bastion_network_domain
   region           = var.region
   region_net       = var.region_net
 

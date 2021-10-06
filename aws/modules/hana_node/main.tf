@@ -1,7 +1,7 @@
-
 locals {
   hana_disk_device = "/dev/xvdd"
   create_ha_infra  = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  hostname         = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 # Network resources: subnets, routes, etc
@@ -84,7 +84,7 @@ resource "aws_instance" "clusternodes" {
   }
 
   tags = {
-    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}${format("%02d", count.index + 1)}"
+    Name                                                 = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
     Workspace                                            = var.common_variables["deployment_name"]
     "${var.common_variables["deployment_name"]}-cluster" = "${var.name}${format("%02d", count.index + 1)}"
   }

@@ -5,6 +5,7 @@ locals {
   vm_count               = var.xscs_server_count + var.app_server_count
   create_ha_infra        = local.vm_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   provisioning_addresses = openstack_compute_instance_v2.netweaver.*.access_ip_v4
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "openstack_networking_port_v2" "netweaver" {
@@ -34,7 +35,7 @@ resource "openstack_networking_port_v2" "netweaver" {
 
 resource "openstack_compute_instance_v2" "netweaver" {
   count        = local.vm_count
-  name         = "${var.common_variables["deployment_name"]}-netweaver-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   flavor_name  = var.flavor
   image_id     = var.os_image
   config_drive = true

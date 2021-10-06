@@ -21,10 +21,10 @@ resource "null_resource" "hana_node_provisioner" {
 role: hana_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
-name_prefix: vm${var.name}
-hostname: vm${var.name}${format("%02d", count.index + 1)}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-network_domain: "tf.local"
+network_domain: ${var.network_domain}
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}

@@ -4,6 +4,7 @@ locals {
   bastion_public_key = var.common_variables["bastion_public_key"] != "" ? var.common_variables["bastion_public_key"] : var.common_variables["public_key"]
   use_data_volume    = var.common_variables["bastion_enabled"] && (var.bastion_data_disk_type == "volume" || var.bastion_data_disk_name == "") ? true : false
   create_data_volume = var.common_variables["bastion_enabled"] && local.use_data_volume && var.bastion_data_disk_name == "" ? true : false
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "openstack_networking_floatingip_v2" "bastion" {
@@ -65,7 +66,7 @@ resource "openstack_compute_volume_attach_v2" "data_attached" {
 
 resource "openstack_compute_instance_v2" "bastion" {
   count        = local.bastion_count
-  name         = "${var.common_variables["deployment_name"]}-bastion"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}"
   flavor_name  = var.bastion_flavor
   image_id     = var.os_image
   config_drive = true

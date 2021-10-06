@@ -95,6 +95,8 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
 module "bastion" {
   source             = "./modules/bastion"
   common_variables   = module.common_variables.configuration
+  name               = var.bastion_name
+  network_domain     = var.bastion_network_domain == "" ? var.network_domain : var.bastion_network_domain
   region             = var.region
   os_image           = local.bastion_os_image
   vm_size            = "custom-1-2048"

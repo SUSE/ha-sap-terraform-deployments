@@ -13,10 +13,20 @@ variable "os_image" {
   type        = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "vm_size" {
   description = "Bastion machine vm size"
   type        = string
   default     = "Standard_B1s"
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "resource_group_name" {

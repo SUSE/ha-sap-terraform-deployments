@@ -26,6 +26,7 @@ locals {
     "5${var.ers_instance_number}16",
     "9680" # monitoring - sap_host_exporter
   ]) : toset([])
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
@@ -307,7 +308,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "netweaver" {
   count                            = local.vm_count
-  name                             = "vmnetweaver${format("%02d", count.index + 1)}"
+  name                             = "${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.netweaver.*.id, count.index)]
@@ -332,7 +333,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   }
 
   os_profile {
-    computer_name  = "vmnetweaver${format("%02d", count.index + 1)}"
+    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

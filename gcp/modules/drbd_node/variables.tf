@@ -8,6 +8,11 @@ variable "bastion_host" {
   default     = ""
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "machine_type" {
   type    = string
   default = "n1-standard-4"
@@ -39,6 +44,11 @@ variable "os_image" {
   type        = string
 }
 
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "drbd_data_disk_size" {
   description = "drbd data disk size"
   type        = string
@@ -59,11 +69,6 @@ variable "drbd_cluster_vip" {
 variable "gcp_credentials_file" {
   description = "Path to your local gcp credentials file"
   type        = string
-}
-
-variable "network_domain" {
-  description = "hostname's network domain"
-  default     = "tf.local"
 }
 
 variable "host_ips" {

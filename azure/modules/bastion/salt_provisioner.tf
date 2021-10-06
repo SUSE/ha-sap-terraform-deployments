@@ -20,6 +20,9 @@ resource "null_resource" "bastion_provisioner" {
     content     = <<EOF
 role: bastion
 ${var.common_variables["grains_output"]}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}
+network_domain: ${var.network_domain}
 EOF
     destination = "/tmp/grains"
   }

@@ -29,6 +29,9 @@ aws_region = "eu-central-1"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
+
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
 aws_access_key_id = my-access-key-id
@@ -127,6 +130,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # HANA machines variables
 #########################
 
+# Hostname, without the domain part
+#hana_name = "vmhana"
+
 # Instance type to use for the hana cluster nodes
 #hana_instancetype = "r3.8xlarge"
 
@@ -147,9 +153,6 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #hana_os_image = "ami-xxxxxxxxxxxx"
 # Custom owner for private AMI
 #hana_os_owner = "amazon"
-
-# Hostname, without the domain part
-#name = "hana"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
@@ -247,6 +250,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
 
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
+
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
 #iscsi_os_image = "suse-sles-sap-15-sp1-byos"
 #iscsi_os_owner = "amazon"
@@ -264,6 +270,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
+#
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
 
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
 #monitoring_os_image = "suse-sles-sap-15-sp1-byos"
@@ -279,6 +288,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # netweaver will use AWS efs for nfs share by default, unless drbd is enabled
 # Enable drbd cluster
 #drbd_enabled = false
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 #drbd_instancetype = "t2.micro"
 
@@ -306,6 +318,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #############################
 
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)

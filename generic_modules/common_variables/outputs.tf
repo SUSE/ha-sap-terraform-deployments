@@ -21,6 +21,7 @@ output "configuration" {
     provider_type               = var.provider_type
     region                      = var.region
     deployment_name             = var.deployment_name
+    deployment_name_in_hostname = var.deployment_name_in_hostname
     reg_code                    = var.reg_code
     reg_email                   = var.reg_email
     reg_additional_modules      = var.reg_additional_modules

@@ -4,6 +4,7 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.drbd.*.network_interface.0.network_ip : google_compute_instance.drbd.*.network_interface.0.access_config.0.nat_ip
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "google_compute_disk" "data" {
@@ -27,7 +28,7 @@ resource "google_compute_route" "drbd-route" {
 
 resource "google_compute_instance" "drbd" {
   machine_type = var.machine_type
-  name         = "${var.common_variables["deployment_name"]}-drbd${format("%02d", count.index + 1)}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   count        = var.drbd_count
   zone         = element(var.compute_zones, count.index)
 

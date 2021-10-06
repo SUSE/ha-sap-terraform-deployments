@@ -49,10 +49,10 @@ resource "null_resource" "hana_node_provisioner" {
 role: hana_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
-name_prefix: ${var.common_variables["deployment_name"]}-hana
-hostname: ${var.common_variables["deployment_name"]}-hana${format("%02d", count.index + 1)}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-network_domain: "tf.local"
 sbd_lun_index: 0
 hana_disk_device: /dev/sdc
 hana_backup_device: /dev/sdb

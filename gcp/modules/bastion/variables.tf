@@ -7,8 +7,18 @@ variable "region" {
   type        = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "os_image" {
   description = "Image used to create the machine"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
   type        = string
 }
 

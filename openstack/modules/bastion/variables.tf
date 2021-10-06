@@ -17,6 +17,11 @@ variable "bastion_flavor" {
   default = "2C-2GB-40GB"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "bastion_data_disk_name" {
   description = "Use existing volume to mount on bastion for NFS server"
   type        = string
@@ -29,6 +34,11 @@ variable "bastion_data_disk_type" {
 
 variable "bastion_data_disk_size" {
   description = "Disk Size of the disks used to serve as NFS server"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
   type        = string
 }
 

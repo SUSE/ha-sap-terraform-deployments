@@ -64,6 +64,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "aws"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -143,6 +144,8 @@ module "common_variables" {
 module "drbd_node" {
   source                = "./modules/drbd_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.drbd_name
+  network_domain        = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   instance_type         = var.drbd_instancetype
   aws_region            = var.aws_region
@@ -177,6 +180,8 @@ module "drbd_node" {
 module "iscsi_server" {
   source             = "./modules/iscsi_server"
   common_variables   = module.common_variables.configuration
+  name               = var.iscsi_name
+  network_domain     = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   iscsi_count        = local.iscsi_enabled == true ? 1 : 0
   aws_region         = var.aws_region
   availability_zones = data.aws_availability_zones.available.names
@@ -200,10 +205,11 @@ module "iscsi_server" {
 module "netweaver_node" {
   source                = "./modules/netweaver_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.netweaver_name
+  network_domain        = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   xscs_server_count     = local.netweaver_xscs_server_count
   app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   instance_type         = var.netweaver_instancetype
-  name                  = "netweaver"
   aws_region            = var.aws_region
   availability_zones    = data.aws_availability_zones.available.names
   os_image              = local.netweaver_os_image
@@ -234,9 +240,10 @@ module "netweaver_node" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.hana_name
+  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   hana_count            = var.hana_count
   instance_type         = var.hana_instancetype
-  name                  = var.name
   aws_region            = var.aws_region
   availability_zones    = data.aws_availability_zones.available.names
   os_image              = local.hana_os_image
@@ -265,6 +272,8 @@ module "hana_node" {
 module "monitoring" {
   source             = "./modules/monitoring"
   common_variables   = module.common_variables.configuration
+  name               = var.monitoring_name
+  network_domain     = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   monitoring_enabled = var.monitoring_enabled
   instance_type      = var.monitor_instancetype
   key_name           = aws_key_pair.key-pair.key_name

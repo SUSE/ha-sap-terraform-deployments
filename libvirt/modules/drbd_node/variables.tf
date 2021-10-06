@@ -14,7 +14,7 @@ variable "timezone" {
 
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
 }
 
 variable "drbd_count" {

@@ -10,6 +10,7 @@ terraform {
 
 locals {
   vm_count = var.xscs_server_count + var.app_server_count
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "libvirt_volume" "netweaver_image_disk" {
@@ -21,7 +22,7 @@ resource "libvirt_volume" "netweaver_image_disk" {
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = local.vm_count

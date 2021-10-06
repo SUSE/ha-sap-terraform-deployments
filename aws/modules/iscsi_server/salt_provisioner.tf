@@ -16,6 +16,9 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 region: ${var.aws_region}
 iscsi_srv_ip: ${element(aws_instance.iscsisrv.*.private_ip, count.index)}
 iscsidev: ${local.iscsi_device_name}

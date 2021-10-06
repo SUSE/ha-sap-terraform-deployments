@@ -59,6 +59,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "azure"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -141,6 +142,8 @@ module "common_variables" {
 module "drbd_node" {
   source              = "./modules/drbd_node"
   common_variables    = module.common_variables.configuration
+  name                = var.drbd_name
+  network_domain      = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   bastion_host        = module.bastion.public_ip
   az_region           = var.az_region
   drbd_count          = var.drbd_enabled == true ? 2 : 0
@@ -169,6 +172,8 @@ module "drbd_node" {
 module "netweaver_node" {
   source                      = "./modules/netweaver_node"
   common_variables            = module.common_variables.configuration
+  name                        = var.netweaver_name
+  network_domain              = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   bastion_host                = module.bastion.public_ip
   az_region                   = var.az_region
   xscs_server_count           = local.netweaver_xscs_server_count
@@ -206,6 +211,8 @@ module "netweaver_node" {
 module "hana_node" {
   source                        = "./modules/hana_node"
   common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   bastion_host                  = module.bastion.public_ip
   az_region                     = var.az_region
   hana_count                    = var.hana_count
@@ -235,6 +242,8 @@ module "hana_node" {
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  name                = var.monitoring_name
+  network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   az_region           = var.az_region
@@ -250,6 +259,8 @@ module "monitoring" {
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  name                = var.iscsi_name
+  network_domain      = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled ? 1 : 0
   az_region           = var.az_region
