@@ -7,7 +7,7 @@ data "azurerm_virtual_network" "vnet-hub" {
   name                = var.vnet_name
   resource_group_name = local.resource_group_name
 }
- 
+
 data "azurerm_subnet" "subnet-hub-gateway" {
   count                = local.subnet_gateway_create ? 0 : 1
   name                 = var.subnet_gateway_name
@@ -93,7 +93,7 @@ resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
-    allocation_method = "Dynamic"
+  allocation_method = "Dynamic"
 }
 
 resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {

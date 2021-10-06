@@ -48,13 +48,13 @@ variable "vnet_address_range" {
 variable "subnet_mgmt_name" {
   description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "subnet_mgmt_address_range" {
   description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
-  default = ""
+  default     = ""
   validation {
     condition = (
       var.subnet_mgmt_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_mgmt_address_range))
@@ -66,13 +66,13 @@ variable "subnet_mgmt_address_range" {
 variable "subnet_gateway_name" {
   description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "subnet_gateway_address_range" {
   description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
   type        = string
-  default = ""
+  default     = ""
   validation {
     condition = (
       var.subnet_gateway_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_gateway_address_range))

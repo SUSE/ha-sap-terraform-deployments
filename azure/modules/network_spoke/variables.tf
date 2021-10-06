@@ -32,7 +32,7 @@ variable "vnet_hub_name" {
 variable "vnet_name" {
   description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "vnet_address_range" {

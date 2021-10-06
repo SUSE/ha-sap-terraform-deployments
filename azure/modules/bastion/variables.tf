@@ -47,7 +47,7 @@ variable "vnet_name" {
 variable "snet_id" {
   description = "Existing Virtual subnet ID where the bastion subnet will be created"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "snet_address_range" {

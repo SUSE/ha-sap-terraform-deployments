@@ -6,7 +6,7 @@ data "azurerm_virtual_network" "vnet-spoke" {
   name                = var.vnet_name
   resource_group_name = var.resource_group_name
 }
- 
+
 # data "azurerm_subnet" "subnet-spoke-mgmt" {
 #   count               = var.subnet_mgmt_create ? 0 : 1
 #   name                 = var.subnet_mgmt_name
@@ -62,22 +62,22 @@ resource "azurerm_subnet" "subnet-spoke-workload" {
 }
 
 resource "azurerm_virtual_network_peering" "peer-spoke1-hub" {
-    count                     = 1
-    name                      = "peer-spoke-${var.spoke_name}-hub-${var.deployment_name}"
-    resource_group_name       = var.resource_group_name
-    virtual_network_name      = local.vnet_name
-    remote_virtual_network_id = local.vnet_hub_id
+  count                     = 1
+  name                      = "peer-spoke-${var.spoke_name}-hub-${var.deployment_name}"
+  resource_group_name       = var.resource_group_name
+  virtual_network_name      = local.vnet_name
+  remote_virtual_network_id = local.vnet_hub_id
 
-    allow_virtual_network_access = true
-    allow_forwarded_traffic = true
-    allow_gateway_transit   = false
-    use_remote_gateways     = true
+  allow_virtual_network_access = true
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = false
+  use_remote_gateways          = true
 }
 
 resource "azurerm_virtual_network_peering" "peer-hub-spoke1" {
   count                        = 1
   name                         = "peer-hub-spoke-${var.spoke_name}-${var.deployment_name}"
-  resource_group_name          = var.resource_group_hub_name
+  resource_group_name          = var.resource_group_name
   virtual_network_name         = var.vnet_hub_name
   remote_virtual_network_id    = azurerm_virtual_network.vnet-spoke.0.id
   allow_virtual_network_access = true

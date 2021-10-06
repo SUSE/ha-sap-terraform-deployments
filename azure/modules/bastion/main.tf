@@ -13,7 +13,7 @@ resource "azurerm_subnet" "bastion" {
 }
 
 resource "azurerm_network_security_group" "bastion" {
-  count               = local.bastion_count == 1 && var.network_topology == "plain"? 1 : 0
+  count               = local.bastion_count == 1 && var.network_topology == "plain" ? 1 : 0
   name                = "nsg-bastion"
   location            = var.az_region
   resource_group_name = var.resource_group_name
@@ -59,7 +59,7 @@ resource "azurerm_network_security_rule" "grafana" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
-  count               = local.bastion_count == 1 && var.network_topology == "plain"? 1 : 0
+  count                     = local.bastion_count == 1 && var.network_topology == "plain" ? 1 : 0
   subnet_id                 = azurerm_subnet.bastion[0].id
   network_security_group_id = azurerm_network_security_group.bastion[0].id
 }
