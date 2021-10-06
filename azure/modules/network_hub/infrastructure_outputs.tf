@@ -1,17 +1,29 @@
+output "rg_hub_name" {
+  value = local.resource_group_name
+}
+
+output "rg_hub_primary_blob_endpoint" {
+  value = var.resource_group_hub_create ? azurerm_storage_account.mytfstorageacc[0].primary_blob_endpoint : ""
+}
+
 output "vnet_hub_name" {
-  value = azurerm_virtual_network.vnet-hub[0].name
+  value = local.vnet_name
 }
 
 output "vnet_hub_id" {
-  value = azurerm_virtual_network.vnet-hub[0].id
+  value = local.vnet_id
+}
+
+output "vnet_hub_address_range" {
+  value = local.vnet_address_range
 }
 
 output "subnet_hub_gateway_name" {
-  value = azurerm_subnet.subnet-hub-gateway[0].name
+  value = local.subnet_gateway_name
 }
 
 output "subnet_hub_gateway_id" {
-  value = azurerm_subnet.subnet-hub-gateway[0].id
+  value = local.subnet_gateway_id
 }
 
 output "subnet_hub_gateway_address_range" {
@@ -19,13 +31,17 @@ output "subnet_hub_gateway_address_range" {
 }
 
 output "subnet_hub_mgmt_name" {
-  value = azurerm_subnet.subnet-hub-mgmt[0].name
+  value = local.subnet_mgmt_name
 }
 
 output "subnet_hub_mgmt_id" {
-  value = azurerm_subnet.subnet-hub-mgmt[0].id
+  value = local.subnet_mgmt_id
 }
 
 output "subnet_hub_mgmt_address_range" {
   value = local.subnet_mgmt_address_range
+}
+
+output "subnet_hub_vnet_gateway" {
+  value = azurerm_virtual_network_gateway.hub-vnet-gateway
 }

@@ -4,7 +4,6 @@ locals {
   hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
-
 resource "azurerm_subnet" "bastion" {
   count                = local.bastion_count == 1 && var.network_topology == "plain" ? 1 : 0
   name                 = "snet-bastion"

@@ -19,6 +19,16 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "resource_group_hub_create" {
+  description = "Deploy Resource group for Hub."
+  type        = bool
+}
+
+variable "resource_group_hub_name" {
+  description = "Resource group where Hub is already deployed to or resource group to deploy Hub into. If it's not set the resource_group_name with '-hub' prefix is used instead."
+  type        = string
+}
+
 variable "vnet_name" {
   description = "Already existing virtual network name used by the created infrastructure. If it's not set a new one will be created named vnet-{{var.deployment_name/terraform.workspace}}"
   type        = string

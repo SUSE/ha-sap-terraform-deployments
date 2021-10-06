@@ -1,23 +1,27 @@
 output "vnet_spoke_name" {
-  value = azurerm_virtual_network.vnet-spoke[0].name
-}
-
-output "vnet_spoke_id" {
-  value = azurerm_virtual_network.vnet-spoke[0].id
+  value = local.vnet_name
 }
 
 # output "subnet_spoke_mgmt_name" {
-#   value = azurerm_subnet.subnet-spoke-mgmt[0].name
+#   value = local.subnet_workload_name
 # }
 # 
 # output "subnet_spoke_mgmt_id" {
-#   value = azurerm_subnet.subnet-spoke-mgmt[0].id
+#   value = local.subnet_mgmt_id
+# }
+#
+# output "subnet_spoke_mgmt_address_range" {
+#   value = local.subnet_mgmt_address_range
 # }
 
 output "subnet_spoke_workload_name" {
-  value = azurerm_subnet.subnet-spoke-workload[0].name
+  value = local.subnet_workload_name
 }
 
 output "subnet_spoke_workload_id" {
-  value = azurerm_subnet.subnet-spoke-workload[0].id
+  value = local.subnet_workload_id
+}
+
+output "subnet_spoke_workload_address_range" {
+  value = local.subnet_workload_address_range
 }
