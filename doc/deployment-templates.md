@@ -9,7 +9,7 @@ The following examples refer to the libvirt Terraform provider, but they may be 
 - ISCSI Server
 - NETWEAVER
 
-Not implementd yet:
+Not implemented yet:
 - NETWEAVER Monitoring (need implementation)
 
 Additionally you need to set up pillars. In dev-mode we use mostly `automatic`.

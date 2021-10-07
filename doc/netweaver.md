@@ -11,7 +11,11 @@ The deployment will create 4 new virtual machines to host the Netweaver environm
 
 Besides the standard installation, an additional HA cluster might be added in top of the ASCS and ERS communication to assure high availability between these two components using the *sap_suse_cluster_connector* (HA is enabled by default).
 
-More details in the official [Suse documentation](https://www.suse.com/media/white-paper/sap_netweaver_availability_cluster_740_setup_guide.pdf?_ga=2.211949268.1511104453.1571203291-1421744106.1546416539).
+More details in the official Suse documentation: 
+
+[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP_NW740_SLE15_SetupGuide/index.html)
+
+[SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide](https://documentation.suse.com/sbp/all/html/SAP_S4HA10_SetupGuide-SLE15/index.html)
 
 The deployment is performed using the [sapnwbootstrap-formula](https://github.com/SUSE/sapnwbootstrap-formula).
 
@@ -25,7 +29,7 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - Set the `netweaver_ha_enabled` option to create a ASCS, ERS, PAS and AAS environment. Setting this value to false will only create a ASCS and PAS without any HA functionality
 
-- In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders `sapmnt` and `usrsapsys` in the exposed folder. It's a good practice to store this folder with the Netweaver SID name (for example `/sapdata/HA1/sapmnt` and `/sapdata/HA1/usrsapsys`). **This subfolders content is removed by default during the deployment**. This NFS share can be created using the provided `drbd` module deployment that fully automatize this (`drbd` deployment is required for **azure and gcp**, **aws** uses the EFS storage by default).
+- In order to deploy a correct Netweaver environment a NFS share is needed (SAP stores some shared files there). The NFS share must have the folders `sapmnt` and `usrsapsys` in the exposed folder. It's a good practice to store this folder with the Netweaver SID name (for example `/sapdata/HA1/sapmnt` and `/sapdata/HA1/usrsapsys`). **This subfolders content is removed by default during the deployment**. This NFS share can be created using the provided `drbd` module deployment that fully automate this (`drbd` deployment is required for **azure and gcp**, **aws** uses the EFS storage by default).
 
 - **For libvirt**: Add the `netweaver_inst_media` variable to the `terraform.tfvars` with the address to the NFS share containing the netweaver installation software (`swpm`) folder, `sapexe` folder, `Netweaver Export` folder and `HANA HDB Client` folders (`Netweaver Export` and `HANA HDB Client` are required if the Database, PAS and AAS instances need to be installed). The `netweaver.sls` pillar file must also be updated with all this information. `Netweaver Export` and `HANA HDB Client` folders must be provided in `additional_dvds` list.
 
@@ -42,4 +46,4 @@ In order to deploy a SAP Netweaver environment with SAP Hana some changes must b
 
 - Modify the content of [cluster.sls](../pillar/netweaver/cluster.sls) and [netweaver.sls](../pillar/netweaver/netweaver.sls). The unique mandatory changes are `swpm_folder`, `sapexe_folder` and `additional_dvds` in the `netweaver.sls` file. These values must match with the folder of your `sap_inst_media`, the current values are just an example.
 
-- If the [netweaver.sls](pillar_examples/automatic/netweaver/netweaver.sls) pillar file from `pillar_examples/automatic/netweaver` is used, the parameters `netweaver_swpm_folder`, `netweaver_sapexe_folder` and `netweaver_additional_dvds` must be set in the `tfvars` file with the same data explained in the previous points.
+- If the [netweaver.sls](../pillar_examples/automatic/netweaver/netweaver.sls) pillar file from `pillar_examples/automatic/netweaver` is used, the parameters `netweaver_swpm_folder`, `netweaver_sapexe_folder` and `netweaver_additional_dvds` must be set in the `tfvars` file with the same data explained in the previous points.

@@ -1,11 +1,11 @@
 # Availability set for the hana VMs
 
 locals {
-  bastion_enabled             = var.common_variables["bastion_enabled"]
-  create_ha_infra             = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  bastion_enabled            = var.common_variables["bastion_enabled"]
+  create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
-  provisioning_addresses      = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
-  hana_lb_rules_ports         = local.create_ha_infra == 1 ? toset([
+  provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
+  hana_lb_rules_ports = local.create_ha_infra == 1 ? toset([
     "3${var.hana_instance_number}13",
     "3${var.hana_instance_number}14",
     "3${var.hana_instance_number}40",
@@ -279,13 +279,13 @@ resource "azurerm_virtual_machine" "hana" {
 }
 
 module "hana_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.hana_count
-  instance_ids         = azurerm_virtual_machine.hana.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_addresses
-  dependencies         = [data.azurerm_public_ip.hana]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.hana_count
+  instance_ids        = azurerm_virtual_machine.hana.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_addresses
+  dependencies        = [data.azurerm_public_ip.hana]
 }

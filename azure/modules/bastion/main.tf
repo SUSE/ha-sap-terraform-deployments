@@ -65,10 +65,10 @@ resource "azurerm_subnet_network_security_group_association" "bastion" {
 }
 
 resource "azurerm_network_interface" "bastion" {
-  count                     = local.bastion_count
-  name                      = "nic-bastion"
-  location                  = var.az_region
-  resource_group_name       = var.resource_group_name
+  count               = local.bastion_count
+  name                = "nic-bastion"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
 
   ip_configuration {
     name                          = "ipconf-primary"
@@ -150,11 +150,11 @@ resource "azurerm_virtual_machine" "bastion" {
 }
 
 module "bastion_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = local.bastion_count
-  instance_ids         = azurerm_virtual_machine.bastion.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["bastion_private_key"]
-  public_ips           = data.azurerm_public_ip.bastion.*.ip_address
-  dependencies         = [data.azurerm_public_ip.bastion]
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = local.bastion_count
+  instance_ids = azurerm_virtual_machine.bastion.*.id
+  user         = var.common_variables["authorized_user"]
+  private_key  = var.common_variables["bastion_private_key"]
+  public_ips   = data.azurerm_public_ip.bastion.*.ip_address
+  dependencies = [data.azurerm_public_ip.bastion]
 }

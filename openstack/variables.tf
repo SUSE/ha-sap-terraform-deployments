@@ -59,7 +59,7 @@ variable "firewall_internal" {
 }
 
 variable "create_firewall_rules" {
-  description = "Create predifined firewall rules for the connections outside the network (internal connections are always allowed). Set to false if custom firewall rules are already created for the used network"
+  description = "Create predefined firewall rules for the connections outside the network (internal connections are always allowed). Set to false if custom firewall rules are already created for the used network"
   type        = bool
   default     = true
 }

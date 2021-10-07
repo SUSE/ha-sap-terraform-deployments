@@ -10,7 +10,7 @@ If you are working on a team, then its best to store the terraform state file re
 2. Run `terraform init`
 3. Run `terraform plan` to check whether the following command will succeed:
 4. Run `terraform apply`
-6. In your proyect directory, run the command `terraform init --upgrade` to reset the state file.
+6. In your project directory, run the command `terraform init --upgrade` to reset the state file.
 7. Run `terraform plan` to check whether the following command will succeed:
 8. Run `terraform apply`
 9. Check whether you can run `terraform destroy` from another directory or machine.
