@@ -1,8 +1,8 @@
-variable openstack_auth_url {
+variable "openstack_auth_url" {
   description = "OpenStack Keystone auth_url for Kubernetes Provider Plugin"
 }
 
-variable openstack_password {
+variable "openstack_password" {
   description = "OpenStack Keystone Password for Kubernetes Provider Plugin"
 }
 

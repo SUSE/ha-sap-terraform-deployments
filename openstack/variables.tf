@@ -779,7 +779,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
