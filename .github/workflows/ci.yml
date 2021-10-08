@@ -161,13 +161,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: Install Terraform libvirt provider
-        run: |
-          echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/systemsmanagement:terraform.list
-          curl -fsSL https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/systemsmanagement_terraform.gpg > /dev/null
-          sudo apt-get update
-          sudo apt-get -y install terraform-provider-libvirt
           terraform_version: 1.1.6
 
       - name: terraform-format
@@ -192,13 +185,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: Install Terraform libvirt provider
-        run: |
-          echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/systemsmanagement:terraform.list
-          curl -fsSL https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/systemsmanagement_terraform.gpg > /dev/null
-          sudo apt-get update
-          sudo apt-get -y install terraform-provider-libvirt
           terraform_version: 1.1.6
 
       - name: terraform-validation
@@ -224,13 +210,6 @@ jobs:
 #         uses: hashicorp/setup-terraform@v1
 #         with:
 #           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-#       - name: Install Terraform libvirt provider
-#         run: |
-#           echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/systemsmanagement:terraform.list
-#           curl -fsSL https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/systemsmanagement_terraform.gpg > /dev/null
-#           sudo apt-get update
-#           sudo apt-get -y install terraform-provider-libvirt
 #           terraform_version: 1.1.6
 
 #       - name: terraform-plan
