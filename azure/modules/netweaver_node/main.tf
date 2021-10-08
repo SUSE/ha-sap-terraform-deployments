@@ -86,10 +86,9 @@ resource "azurerm_lb" "netweaver-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "netweaver-backend-pool" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
-  name                = "lbbe-netweaver"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.netweaver-load-balancer[0].id
+  name            = "lbbe-netweaver"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "netweaver-nodes" {

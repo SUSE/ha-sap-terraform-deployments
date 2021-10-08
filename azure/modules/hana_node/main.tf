@@ -67,10 +67,9 @@ resource "azurerm_lb" "hana-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "hana-load-balancer" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.hana-load-balancer[0].id
-  name                = "lbbe-hana"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.hana-load-balancer[0].id
+  name            = "lbbe-hana"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "hana" {
