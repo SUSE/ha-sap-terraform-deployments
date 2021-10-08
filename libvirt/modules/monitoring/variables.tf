@@ -51,6 +51,10 @@ variable "monitoring_srv_ip" {
 
 // Provider-specific variables
 
+variable "qemu_uri" {
+  description = "URI to connect with the qemu-service."
+}
+
 variable "source_image" {
   description = "Source image used to boot the machines (qcow2 format). It's possible to specify the path to a local (relative to the machine running the terraform command) image or a remote one. Remote images have to be specified using HTTP(S) urls for now."
   type        = string

@@ -130,6 +130,7 @@ module "common_variables" {
 module "iscsi_server" {
   source                = "./modules/iscsi_server"
   common_variables      = module.common_variables.configuration
+  qemu_uri              = var.qemu_uri
   name                  = var.iscsi_name
   network_domain        = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   iscsi_count           = local.iscsi_enabled == true ? 1 : 0
@@ -149,6 +150,7 @@ module "iscsi_server" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  qemu_uri              = var.qemu_uri
   name                  = var.hana_name
   network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   source_image          = var.hana_source_image
@@ -169,6 +171,7 @@ module "hana_node" {
 module "drbd_node" {
   source                = "./modules/drbd_node"
   common_variables      = module.common_variables.configuration
+  qemu_uri              = var.qemu_uri
   name                  = var.drbd_name
   network_domain        = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   source_image          = var.drbd_source_image
@@ -194,6 +197,7 @@ module "drbd_node" {
 module "monitoring" {
   source                = "./modules/monitoring"
   common_variables      = module.common_variables.configuration
+  qemu_uri              = var.qemu_uri
   name                  = var.monitoring_name
   network_domain        = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   monitoring_enabled    = var.monitoring_enabled
@@ -211,6 +215,7 @@ module "monitoring" {
 module "netweaver_node" {
   source                = "./modules/netweaver_node"
   common_variables      = module.common_variables.configuration
+  qemu_uri              = var.qemu_uri
   name                  = var.netweaver_name
   network_domain        = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   xscs_server_count     = local.netweaver_xscs_server_count

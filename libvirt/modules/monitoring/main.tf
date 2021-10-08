@@ -53,7 +53,7 @@ resource "libvirt_domain" "monitoring_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

@@ -69,7 +69,7 @@ resource "libvirt_domain" "iscsisrv" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

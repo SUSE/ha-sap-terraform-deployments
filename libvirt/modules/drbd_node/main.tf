@@ -87,7 +87,7 @@ resource "libvirt_domain" "drbd_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

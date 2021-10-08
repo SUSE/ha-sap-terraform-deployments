@@ -68,7 +68,7 @@ resource "libvirt_domain" "netweaver_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

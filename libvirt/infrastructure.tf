@@ -33,6 +33,7 @@ resource "libvirt_network" "isolated_network" {
 module "hana_sbd_disk" {
   source            = "./modules/shared_disk"
   common_variables  = module.common_variables.configuration
+  qemu_uri          = var.qemu_uri
   shared_disk_count = var.hana_ha_enabled && var.hana_count > 1 && var.sbd_storage_type == "shared-disk" && var.hana_cluster_fencing_mechanism == "sbd" ? 1 : 0
   name              = "sbd"
   pool              = var.storage_pool
@@ -42,6 +43,7 @@ module "hana_sbd_disk" {
 module "drbd_sbd_disk" {
   source            = "./modules/shared_disk"
   common_variables  = module.common_variables.configuration
+  qemu_uri          = var.qemu_uri
   shared_disk_count = var.drbd_enabled && var.sbd_storage_type == "shared-disk" && var.drbd_cluster_fencing_mechanism == "sbd" ? 1 : 0
   name              = "drbd-sbd"
   pool              = var.storage_pool
@@ -53,6 +55,7 @@ module "drbd_sbd_disk" {
 module "netweaver_shared_disk" {
   source            = "./modules/shared_disk"
   common_variables  = module.common_variables.configuration
+  qemu_uri          = var.qemu_uri
   shared_disk_count = var.netweaver_enabled && var.netweaver_ha_enabled ? 1 : 0
   name              = "netweaver-shared"
   pool              = var.storage_pool

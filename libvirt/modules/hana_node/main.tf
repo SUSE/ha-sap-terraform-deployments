@@ -88,7 +88,7 @@ resource "libvirt_domain" "hana_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

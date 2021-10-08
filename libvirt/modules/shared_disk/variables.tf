@@ -21,3 +21,7 @@ variable "shared_disk_count" {
   description = "variable used to decide to create or not the shared disk device"
   default     = 1
 }
+
+variable "qemu_uri" {
+  description = "URI to connect with the qemu-service."
+}
