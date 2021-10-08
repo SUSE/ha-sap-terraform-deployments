@@ -1,13 +1,3 @@
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    libvirt = {
-      source  = "dmacvicar/libvirt"
-      version = "0.6.3"
-    }
-  }
-}
-
 locals {
   vm_count = var.xscs_server_count + var.app_server_count
   hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name

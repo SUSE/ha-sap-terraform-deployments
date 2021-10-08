@@ -1,13 +1,3 @@
-# Configure the AWS Provider
-provider "aws" {
-  version = "~> 3.11.0"
-  region  = var.aws_region
-}
-
-terraform {
-  required_version = ">= 0.13"
-}
-
 data "aws_vpc" "current-vpc" {
   count = var.vpc_id != "" ? 1 : 0
   id    = var.vpc_id

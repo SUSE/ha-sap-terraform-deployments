@@ -1,13 +1,3 @@
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    libvirt = {
-      source  = "dmacvicar/libvirt"
-      version = "0.6.3"
-    }
-  }
-}
-
 resource "libvirt_volume" "shared_disk" {
   name  = "${var.common_variables["deployment_name"]}-${var.name}.raw"
   pool  = var.pool
