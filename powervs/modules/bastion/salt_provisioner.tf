@@ -23,16 +23,6 @@ ${var.common_variables["grains_output"]}
 EOF
     destination = "/tmp/grains"
   }
-
-  # Sets up bastion SNAT router - https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-using-linux#linux-networking
-  provisioner "remote-exec" {
-  inline = [
-    "echo 'net.ipv4.ip_forward = 1' > /etc/sysctl.d/powervs-snat.conf",
-    "/sbin/sysctl --system",
-    "grep '^iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE$' /etc/init.d/after.local || echo 'iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE' >> /etc/init.d/after.local",
-    "/usr/sbin/iptables -t nat -C POSTROUTING -o eth0 -j MASQUERADE >/dev/null 2>&1 || /usr/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
-    ]
-  }
 }
 
 module "bastion_provision" {
