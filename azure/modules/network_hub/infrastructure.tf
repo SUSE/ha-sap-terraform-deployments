@@ -32,11 +32,11 @@ locals {
   subnet_gateway_name          = local.subnet_gateway_create ? azurerm_subnet.subnet-hub-gateway.0.name : data.azurerm_subnet.subnet-hub-gateway.0.name
   subnet_gateway_id            = local.subnet_gateway_create ? azurerm_subnet.subnet-hub-gateway.0.id : format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, local.resource_group_name, local.vnet_name, local.subnet_gateway_name)
   subnet_gateway_address_range = local.subnet_gateway_create ? (var.subnet_gateway_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 255) : var.subnet_gateway_address_range) : data.azurerm_subnet.subnet-hub-gateway.0.address_prefix
-  subnet_mgmt_create        = true
-  subnet_mgmt_name          = local.subnet_mgmt_create ? azurerm_subnet.subnet-hub-mgmt.0.name : data.azurerm_subnet.subnet-hub-mgmt.0.name
-  subnet_mgmt_id            = local.subnet_mgmt_create ? azurerm_subnet.subnet-hub-mgmt.0.id : format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, local.resource_group_name, local.vnet_name, local.subnet_mgmt_name)
-  subnet_mgmt_address_range = local.subnet_mgmt_create ? (var.subnet_mgmt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 254) : var.subnet_mgmt_address_range) : data.azurerm_subnet.subnet-hub-mgmt.0.address_prefix
-  resource_group_name = var.resource_group_hub_name
+  subnet_mgmt_create           = true
+  subnet_mgmt_name             = local.subnet_mgmt_create ? azurerm_subnet.subnet-hub-mgmt.0.name : data.azurerm_subnet.subnet-hub-mgmt.0.name
+  subnet_mgmt_id               = local.subnet_mgmt_create ? azurerm_subnet.subnet-hub-mgmt.0.id : format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, local.resource_group_name, local.vnet_name, local.subnet_mgmt_name)
+  subnet_mgmt_address_range    = local.subnet_mgmt_create ? (var.subnet_mgmt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 254) : var.subnet_mgmt_address_range) : data.azurerm_subnet.subnet-hub-mgmt.0.address_prefix
+  resource_group_name          = var.resource_group_hub_name
 }
 
 resource "azurerm_resource_group" "rg-hub" {

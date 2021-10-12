@@ -22,10 +22,10 @@ data "azurerm_subnet" "subnet-spoke-workload" {
 }
 
 locals {
-  vnet_hub_id        = format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_hub_name, var.vnet_hub_name)
-  vnet_create        = var.vnet_name == "" ? true : false
-  vnet_name          = local.vnet_create ? azurerm_virtual_network.vnet-spoke.0.name : var.vnet_name
-  vnet_address_range = local.vnet_create ? azurerm_virtual_network.vnet-spoke.0.address_space.0 : data.azurerm_virtual_network.vnet-spoke.0.address_space
+  vnet_hub_id                   = format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_hub_name, var.vnet_hub_name)
+  vnet_create                   = var.vnet_name == "" ? true : false
+  vnet_name                     = local.vnet_create ? azurerm_virtual_network.vnet-spoke.0.name : var.vnet_name
+  vnet_address_range            = local.vnet_create ? azurerm_virtual_network.vnet-spoke.0.address_space.0 : data.azurerm_virtual_network.vnet-spoke.0.address_space
   subnet_workload_create        = var.subnet_workload_name == "" ? true : false
   subnet_workload_name          = local.subnet_workload_create ? azurerm_subnet.subnet-spoke-workload.0.name : var.vnet_name
   subnet_workload_id            = local.subnet_workload_create ? azurerm_subnet.subnet-spoke-workload.0.id : format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, var.vnet_name, var.subnet_workload_name)
