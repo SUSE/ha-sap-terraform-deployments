@@ -190,7 +190,7 @@ variable "hana_scale_out_anf_quota_shared" {
 }
 
 variable "majority_maker_vm_size" {
-  type    = string
+  type = string
 }
 
 variable "majority_maker_ip" {

@@ -1,6 +1,6 @@
 locals {
-  bastion_enabled             = var.common_variables["bastion_enabled"]
-  provisioning_address        = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
+  bastion_enabled      = var.common_variables["bastion_enabled"]
+  provisioning_address = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
 }
 
 
@@ -65,14 +65,14 @@ module "os_image_reference" {
 }
 
 resource "azurerm_virtual_machine" "majority_maker" {
-  count                            = var.node_count
-  name                             = "vm${var.name}mm"
-  location                         = var.az_region
-  resource_group_name              = var.resource_group_name
-  network_interface_ids            = [element(azurerm_network_interface.majority_maker.*.id, count.index)]
+  count                 = var.node_count
+  name                  = "vm${var.name}mm"
+  location              = var.az_region
+  resource_group_name   = var.resource_group_name
+  network_interface_ids = [element(azurerm_network_interface.majority_maker.*.id, count.index)]
   # availability_set_id              = var.common_variables["hana"]["ha_enabled"] ? azurerm_availability_set.hana-availability-set[0].id : null
-  vm_size                          = var.vm_size
-  delete_os_disk_on_termination    = true
+  vm_size                       = var.vm_size
+  delete_os_disk_on_termination = true
 
   storage_os_disk {
     name              = "disk-${var.name}majority_maker-Os"
@@ -114,13 +114,13 @@ resource "azurerm_virtual_machine" "majority_maker" {
 }
 
 module "majority_maker_on_destroy" {
-  source               = "../../../generic_modules/on_destroy"
-  node_count           = var.node_count
-  instance_ids         = azurerm_virtual_machine.majority_maker.*.id
-  user                 = var.common_variables["authorized_user"]
-  private_key          = var.common_variables["private_key"]
-  bastion_host         = var.bastion_host
-  bastion_private_key  = var.common_variables["bastion_private_key"]
-  public_ips           = local.provisioning_address
-  dependencies         = [data.azurerm_public_ip.majority_maker]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.node_count
+  instance_ids        = azurerm_virtual_machine.majority_maker.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = local.provisioning_address
+  dependencies        = [data.azurerm_public_ip.majority_maker]
 }

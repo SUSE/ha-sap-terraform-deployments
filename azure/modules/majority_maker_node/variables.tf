@@ -36,11 +36,11 @@ variable "storage_account_key" {
 }
 
 variable "hana_count" {
-  type    = string
+  type = string
 }
 
 variable "name" {
-  type    = string
+  type = string
 }
 
 variable "fencing_mechanism" {
@@ -68,7 +68,7 @@ variable "os_image" {
 }
 
 variable "node_count" {
-  type    = number
+  type = number
 }
 
 variable "vm_size" {

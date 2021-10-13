@@ -48,9 +48,9 @@ variable "hana_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.hana_master_password)) &&
-        can(regex("[a-z]+", var.hana_master_password)) &&
-        can(regex("[A-Z]+", var.hana_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.hana_master_password))
+      can(regex("[a-z]+", var.hana_master_password)) &&
+      can(regex("[A-Z]+", var.hana_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.hana_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }

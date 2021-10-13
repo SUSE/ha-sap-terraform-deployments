@@ -63,9 +63,9 @@ variable "netweaver_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.netweaver_master_password)) &&
-        can(regex("[a-z]+", var.netweaver_master_password)) &&
-        can(regex("[A-Z]+", var.netweaver_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.netweaver_master_password))
+      can(regex("[a-z]+", var.netweaver_master_password)) &&
+      can(regex("[A-Z]+", var.netweaver_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.netweaver_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }
@@ -154,9 +154,9 @@ variable "netweaver_hana_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.netweaver_hana_master_password)) &&
-        can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
-        can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
+      can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
+      can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }

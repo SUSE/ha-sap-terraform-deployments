@@ -3,7 +3,7 @@ data "azurerm_public_ip" "majority_maker" {
   name                = element(azurerm_public_ip.majority_maker.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.majority_maker.*.resource_group_name, count.index)
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.majority_maker]
+  depends_on = [azurerm_virtual_machine.majority_maker]
 }
 
 data "azurerm_network_interface" "majority_maker" {
@@ -11,7 +11,7 @@ data "azurerm_network_interface" "majority_maker" {
   name                = element(azurerm_network_interface.majority_maker.*.name, count.index)
   resource_group_name = element(azurerm_virtual_machine.majority_maker.*.resource_group_name, count.index)
   # depends_on is included to avoid the issue with `resource_group was not found`. Find an example in: https://github.com/terraform-providers/terraform-provider-azurerm/issues/8476
-  depends_on          = [azurerm_virtual_machine.majority_maker]
+  depends_on = [azurerm_virtual_machine.majority_maker]
 }
 
 output "cluster_nodes_ip" {
