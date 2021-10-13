@@ -15,15 +15,20 @@ az_region = "westeurope"
 # Use an already existing subnet in this virtual network
 #subnet_name = "my-subnet"
 
+# Use an already existing subnet for Netapp in this virtual network (optional, will be created otherwise)
+# subnet_netapp_name = "my-netapp-subnet"
+
 # vnet address range in CIDR notation
 # Only used if the vnet is created by terraform or the user doesn't have read permissions in this
 # resource. To use the current vnet address range set the value to an empty string
 # To define custom ranges
 #vnet_address_range = "10.74.0.0/16"
 #subnet_address_range = "10.74.1.0/24"
+#subnet_netapp_address_range = "10.74.3.0/24"
 # Or to use already existing address ranges
 #vnet_address_range = ""
 #subnet_address_range = ""
+#subnet_netapp_address_range = ""
 
 #################################
 # General configuration variables
@@ -170,6 +175,26 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 
 # Network options
 #hana_enable_accelerated_networking = false
+
+#########################
+# shared storage variables
+# Needed if HANA is deployed in scale-out scenario
+# see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
+# for reference and minimum requirements
+#########################
+#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+#anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
+#anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
+# min requirements Premium
+#hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
+#hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+# min requirements Ultra
+#hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
 
 # Disk configuration
 #hana_data_disks_configuration = {
@@ -415,6 +440,20 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
+
+#########################
+# Netweaver shared storage variables
+# Needed if Netweaver is deployed HA
+# see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
+# for reference and minimum requirements
+#########################
+#netweaver_shared_storage_type      = "drbd"  # drbd,anf supported at the moment (default: "drbd")
+#anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra -> only set once for Netweaver+HANA
+#anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra -> only set once for Netweaver+HANA
+# min requirements Premium
+#netweaver_anf_quota_sapmnt         = "2000"  # deployed 1x
+# min requirements Ultra
+#netweaver_anf_quota_sapmnt         = "1000"  # deployed 1x
 
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"

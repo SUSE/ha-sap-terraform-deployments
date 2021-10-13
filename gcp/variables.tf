@@ -453,6 +453,24 @@ variable "scenario_type" {
   default     = "performance-optimized"
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: none."
+  }
+}
+
 # Monitoring related variables
 variable "monitoring_name" {
   description = "hostname, without the domain part"
@@ -818,7 +836,19 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
-# Testing and QA
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment - not supported yet for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: none."
+  }
+}
+
+# Testing and QA variables
 
 # Disable extra package installation (sap, ha pattern etc).
 # Disables first registration to install salt-minion, it is considered that images are delivered with salt-minion

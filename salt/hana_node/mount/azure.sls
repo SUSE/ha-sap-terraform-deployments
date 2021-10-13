@@ -3,7 +3,7 @@
 hana_lvm_pvcreate_lun{{ loop.index0 }}_azure:
   lvm.pv_present:
     - name: /dev/disk/azure/scsi1/lun{{ loop.index0 }}
-{% endfor %}
+{%- endfor %}
 
 # Configure volume groups
 {%- for vg in grains['hana_data_disks_configuration']['names'].split('#') %}
@@ -47,5 +47,13 @@ mount_{{ vg }}_{{ loop.index0 }}:
     - require:
       - hana_format_lv_{{ vg }}_{{ loop.index0 }}_azure
 
-{% endfor %}
 {%- endfor %}
+{%- endfor %}
+
+{%- if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "anf" %}
+## scale-out on ANF NFS storage
+
+include:
+  - shared_storage.nfs
+
+{%- endif %}
