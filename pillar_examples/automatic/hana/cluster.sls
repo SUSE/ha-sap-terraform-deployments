@@ -53,6 +53,7 @@ cluster:
   corosync:
   {% if grains['provider'] == 'azure' %}
     totem:
+      secauth: 'on'
       token: 30000
       token_retransmits_before_loss_const: 10
       join: 60
@@ -63,6 +64,9 @@ cluster:
       secauth: 'off'
       token: 20000
       consensus: 24000
+  {% else %}
+    totem:
+      secauth: 'on'
   {% endif %}
   {% if grains['hana_scale_out_enabled']|default(False) %}
     quorum:
