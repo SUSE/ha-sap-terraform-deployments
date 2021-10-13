@@ -1,3 +1,4 @@
+
 # Azure Public Cloud deployment with terraform and Salt
 
 - [quickstart](#quickstart)
@@ -576,3 +577,9 @@ netweaver_cluster_fencing_mechanism = "native"
 
 ## Extra info
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
+
+## Use Azure ANF (Azure Netapp Files)
+
+To get a basic understanding what ANF is, please look at the Microsoft documentation e.g. [What is Azure NetApp Files](https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-introduction) and [Quickstart: Set up Azure NetApp Files and create an NFS volume](https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-quickstart-set-up-account-create-volumes?tabs=azure-portal).
+
+For detailed instructions on how to use it, please look at the storage section of each setup, e.g. HANA/Netweaver.

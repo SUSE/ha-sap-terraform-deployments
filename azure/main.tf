@@ -106,6 +106,8 @@ module "common_variables" {
   hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
+  hana_scale_out_enabled              = var.hana_scale_out_enabled
+  hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -128,6 +130,7 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  netweaver_shared_storage_type       = var.netweaver_shared_storage_type
   monitoring_hana_targets             = local.hana_ips
   monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
@@ -189,6 +192,7 @@ module "netweaver_node" {
   os_image                    = local.netweaver_os_image
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
+  network_subnet_netapp_id    = local.subnet_netapp_id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
@@ -201,6 +205,11 @@ module "netweaver_node" {
   virtual_host_ips            = local.netweaver_virtual_ips
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
   fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
+  # ANF specific
+  anf_account_name           = local.anf_account_name
+  anf_pool_name              = local.anf_pool_name
+  anf_pool_service_level     = local.anf_pool_service_level
+  netweaver_anf_quota_sapmnt = var.netweaver_anf_quota_sapmnt
   # only used by azure fence agent (native fencing)
   subscription_id           = data.azurerm_subscription.current.subscription_id
   tenant_id                 = data.azurerm_subscription.current.tenant_id
@@ -220,6 +229,7 @@ module "hana_node" {
   host_ips                      = local.hana_ips
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
+  network_subnet_netapp_id      = local.subnet_netapp_id
   storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
   storage_account_key           = var.storage_account_key
@@ -232,6 +242,14 @@ module "hana_node" {
   os_image                      = local.hana_os_image
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
   fencing_mechanism             = var.hana_cluster_fencing_mechanism
+  # ANF specific
+  anf_account_name                = local.anf_account_name
+  anf_pool_name                   = local.anf_pool_name
+  anf_pool_service_level          = local.anf_pool_service_level
+  hana_scale_out_anf_quota_data   = var.hana_scale_out_anf_quota_data
+  hana_scale_out_anf_quota_log    = var.hana_scale_out_anf_quota_log
+  hana_scale_out_anf_quota_backup = var.hana_scale_out_anf_quota_backup
+  hana_scale_out_anf_quota_shared = var.hana_scale_out_anf_quota_shared
   # only used by azure fence agent (native fencing)
   subscription_id           = data.azurerm_subscription.current.subscription_id
   tenant_id                 = data.azurerm_subscription.current.tenant_id
