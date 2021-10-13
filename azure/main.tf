@@ -203,7 +203,7 @@ module "netweaver_node" {
   # ANF specific
   anf_account_name           = local.anf_account_name
   anf_pool_name              = local.anf_pool_name
-  anf_pool_service_level     = local.anf_pool_service_level
+  anf_pool_service_level     = var.anf_pool_service_level
   netweaver_anf_quota_sapmnt = var.netweaver_anf_quota_sapmnt
   # only used by azure fence agent (native fencing)
   subscription_id           = data.azurerm_subscription.current.subscription_id
@@ -238,7 +238,7 @@ module "hana_node" {
   # ANF specific
   anf_account_name                = local.anf_account_name
   anf_pool_name                   = local.anf_pool_name
-  anf_pool_service_level          = local.anf_pool_service_level
+  anf_pool_service_level          = var.anf_pool_service_level
   hana_scale_out_anf_quota_data   = var.hana_scale_out_anf_quota_data
   hana_scale_out_anf_quota_log    = var.hana_scale_out_anf_quota_log
   hana_scale_out_anf_quota_backup = var.hana_scale_out_anf_quota_backup

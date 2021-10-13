@@ -39,9 +39,8 @@ locals {
   subnet_address_range        = var.subnet_name == "" ? (var.subnet_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 1) : var.subnet_address_range) : (var.subnet_address_range == "" ? data.azurerm_subnet.mysubnet.0.address_prefix : var.subnet_address_range)
   subnet_netapp_address_range = var.subnet_netapp_name == "" ? (var.subnet_netapp_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 3) : var.subnet_netapp_address_range) : (var.subnet_netapp_address_range == "" ? data.azurerm_subnet.mysubnet-netapp.0.address_prefix : var.subnet_netapp_address_range)
   shared_storage_anf          = (var.hana_scale_out_shared_storage_type == "anf" || var.netweaver_shared_storage_type == "anf") ? 1 : 0
-  anf_account_name            = var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name
-  anf_pool_name               = var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name
-  anf_pool_service_level      = var.anf_pool_service_level == "" ? azurerm_netapp_pool.mynetapp-pool.0.service_level : var.anf_pool_service_level
+  anf_account_name            = local.shared_storage_anf == 1 ? (var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name) : ""
+  anf_pool_name               = local.shared_storage_anf == 1 ? (var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name) : ""
 }
 
 # Azure resource group and storage account resources
