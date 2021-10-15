@@ -118,6 +118,7 @@ module "hana_node" {
   os_image                      = local.hana_os_image
   pi_cloud_instance_id          = var.pi_cloud_instance_id
   pi_sys_type                   = var.pi_sys_type
+  pi_storage_type               = var.pi_storage_type
   pi_network_ids                = local.pi_network_ids
   private_pi_network_names      = var.private_pi_network_names
   public_pi_network_names       = var.public_pi_network_names
