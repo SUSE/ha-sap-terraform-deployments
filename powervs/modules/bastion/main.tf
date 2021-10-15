@@ -36,8 +36,8 @@ resource "ibm_pi_volume" "bastion_volume"{
     pi_replication_policy = "none"
     pi_health_status      = "OK"
     timeouts {
-      create = "15m"
-      delete = "15m"
+      create = "30m"
+      delete = "30m"
     }
     depends_on            = [ibm_pi_volume.bastion_volume]
   }

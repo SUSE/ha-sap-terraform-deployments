@@ -39,7 +39,7 @@ resource "ibm_pi_instance" "ibm_pi_hana" {
   pi_health_status      = "OK"
   pi_volume_ids         = concat([for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id], local.create_shared_infra == 1 ? [var.sbd_disk_id] : [])
   timeouts {
-    create = "15m"
-    delete = "15m"
+    create = "30m"
+    delete = "30m"
   }
 }
