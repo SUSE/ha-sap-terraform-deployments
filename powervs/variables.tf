@@ -34,6 +34,11 @@ variable "pi_sys_type" {
   default     = ""
 }
 
+variable "pi_storage_type" {
+  description = "The storage type used for OS image. Use ibmcloud pi stypes to list available for the region."
+  default     = "tier1"
+}
+
 variable "public_pi_network_ids" {
   description = "The list of public network IDs that you want to assign to an instance."
   type        = list(string)

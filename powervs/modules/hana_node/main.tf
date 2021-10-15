@@ -35,6 +35,7 @@ resource "ibm_pi_instance" "ibm_pi_hana" {
   pi_replication_scheme = "suffix"
   pi_pin_policy         = "none"
   pi_replication_policy = "none"
+  pi_storage_type       = var.pi_storage_type
   pi_user_data          = local.bastion_enabled ? base64encode(local.userdata_hana) : ""
   pi_health_status      = "OK"
   pi_volume_ids         = concat([for n in range((count.index * local.disks_number),((count.index + 1) * local.disks_number)) : ibm_pi_volume.ibm_pi_hana_volume[n].volume_id], local.create_shared_infra == 1 ? [var.sbd_disk_id] : [])

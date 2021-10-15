@@ -48,6 +48,7 @@ module "bastion" {
   memory                        = var.bastion_node_memory
   os_image                      = local.bastion_os_image
   pi_sys_type                   = var.pi_sys_type
+  pi_storage_type               = var.pi_storage_type
   pi_network_ids                = local.bastion_network_ids
   private_pi_network_names      = var.private_pi_network_names
   public_pi_network_names       = var.public_pi_network_names
