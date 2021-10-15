@@ -99,8 +99,8 @@ bootstrap_salt () {
     cp -R /tmp/pillar/* /srv/pillar || true
     rm -rf /tmp/pillar
 
-    # Check if qa_mode is enabled
-    [[ "$(get_grain qa_mode /tmp/grains)" == "true" ]] && qa_mode=1
+    # Check if offline_mode is enabled
+    [[ "$(get_grain offline_mode /tmp/grains)" == "true" ]] && offline_mode=1
     # Get registration code
     reg_code=$(get_grain reg_code /tmp/grains)
     # Check if salt-call is installed
@@ -110,13 +110,13 @@ bootstrap_salt () {
     # https://www.suse.com/support/kb/doc/?id=7022311
     # Check if the deployment is executed in a cloud provider
     [[ "$(get_grain provider /tmp/grains)" =~ aws|azure|gcp ]] && cloud=1
-    if [[ ${qa_mode} != 1 && ${cloud} == 1 && "${reg_code}" == "" ]]; then
+    if [[ ${offline_mode} != 1 && ${cloud} == 1 && "${reg_code}" == "" ]]; then
         repeat_command "systemctl is-active guestregister.service | grep inactive" 300
         zypper lr || sudo /usr/sbin/registercloudguest --force-new
     fi
 
-    # Install salt if qa_mode is False and salt is not already installed
-    if [[ ${qa_mode} != 1 && ${salt_installed} != 1 ]]; then
+    # Install salt if offline_mode is False and salt is not already installed
+    if [[ ${offline_mode} != 1 && ${salt_installed} != 1 ]]; then
         install_salt_minion "${reg_code}"
     fi
 
@@ -171,8 +171,8 @@ deploy () {
 }
 
 run_tests () {
-    [[ "$(get_grain qa_mode)" == "true" ]] && qa_mode=1
-    if [[ ${qa_mode} && $(get_grain role) == hana_node ]]; then
+    [[ "$(get_grain hwcct)" == "true" ]] && hwcct_mode=1
+    if [[ ${hwcct_mode} && $(get_grain role) == hana_node ]]; then
         # We need to export HOST with the new hostname set by Salt
         # Otherwise, hwcct will error out.
         HOST=$(hostname)
@@ -185,7 +185,7 @@ run_tests () {
             --log-file-level=debug \
             --retcode-passthrough \
             $(salt_color_flag) \
-            state.apply qa_mode || log_error "tests failed"
+            state.apply hwcct || log_error "hwcct execution failed"
         log_ok "tests done"
     fi
 }

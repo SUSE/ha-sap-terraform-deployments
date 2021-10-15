@@ -3,19 +3,19 @@ hwcct-config-file:
   file.managed:
     - template: jinja
     - names:
-      - /srv/salt/qa_mode/files/hwcct/hwcct_config.json:
-        - source: salt://qa_mode/files/hwcct/hwcct_config.json.jinja
+      - /srv/salt/hwcct/files/hwcct/hwcct_config.json:
+        - source: salt://hwcct/files/hwcct/hwcct_config.json.jinja
 
 hwcct-bench-file:
   file.managed:
     - template: jinja
     - names:
-      - /srv/salt/qa_mode/files/hwcct/hwcct_bench.sh:
-        - source: salt://qa_mode/files/hwcct/hwcct_bench.jinja
+      - /srv/salt/hwcct/files/hwcct/hwcct_bench.sh:
+        - source: salt://hwcct/files/hwcct/hwcct_bench.jinja
 
 hwcct:
   cmd.run:
-    - name: sh /srv/salt/qa_mode/files/hwcct/hwcct_bench.sh
+    - name: sh /srv/salt/hwcct/files/hwcct/hwcct_bench.sh
     - require:
       - file: hwcct-config-file
       - file: hwcct-bench-file

@@ -1,4 +1,4 @@
-{% if grains.get('qa_mode') %}
+{% if grains.get('offline_mode') %}
 {% if grains['pythonversion'][0] == 2 %}
 python-shaptools:
 {% else %}

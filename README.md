@@ -21,7 +21,6 @@ ___
 - [Monitoring of cluster](doc/monitoring.md)
 - [S/4HANA and NetWeaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)
-- [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
 - [Fencing mechanism](doc/fencing.md)
 - [IP addresses auto generation](doc/ip_autogeneration.md)

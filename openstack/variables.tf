@@ -819,14 +819,18 @@ variable "netweaver_shared_storage_type" {
   }
 }
 
-# Specific QA variables
+# Testing and QA variables
 
-variable "qa_mode" {
-  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+# Disable extra package installation (sap, ha pattern etc).
+# Disables first registration to install salt-minion, it is considered that images are delivered with salt-minion
+variable "offline_mode" {
+  description = "Disable installation of extra packages not coming with image"
   type        = bool
   default     = false
 }
 
+# Execute HANA Hardware Configuration Check Tool to bench filesystems.
+# The test takes several hours. See results in /root/hwcct_out and in global log file /var/log/salt-result.log.
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool

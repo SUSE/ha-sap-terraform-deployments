@@ -40,7 +40,7 @@ output "configuration" {
     background                  = var.background
     monitoring_enabled          = var.monitoring_enabled
     monitoring_srv_ip           = var.monitoring_srv_ip
-    qa_mode                     = var.qa_mode
+    offline_mode                = var.offline_mode
     hana = {
       sid                            = var.hana_sid
       instance_number                = var.hana_instance_number
@@ -118,7 +118,7 @@ authorized_user: ${var.authorized_user}
 additional_packages: [${join(", ", formatlist("'%s'", var.additional_packages))}]
 monitoring_enabled: ${var.monitoring_enabled}
 monitoring_srv_ip: ${var.monitoring_srv_ip}
-qa_mode: ${var.qa_mode}
+offline_mode: ${var.offline_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
 ${local.requirements}
