@@ -3,7 +3,9 @@ terraform {
   required_providers {
     ibm = {
       source  = "IBM-Cloud/ibm"
-      version = "~> 1.26"
+# ibm terraform provider v1.33.1 deprecates pi_network_id replacing with pi_network which introduces new capabilities.
+# Setting the provider to 1.33.0 keeps the Argument is deprecated warning from happening while pi_network_id is replaced.
+      version = "1.33.0"
     }
   }
 }
