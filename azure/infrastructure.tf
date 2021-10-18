@@ -69,7 +69,10 @@ module "network_plain" {
   subnet_name                 = var.subnet_name
   subnet_address_range        = var.subnet_address_range
   subnet_netapp_name          = var.subnet_netapp_name
-  subnet_netapp_address_range = var.subnet_address_range
+  subnet_netapp_address_range = var.subnet_netapp_address_range
+  anf_account_name            = local.anf_account_name
+  anf_pool_name               = local.anf_pool_name
+  shared_storage_anf          = local.shared_storage_anf
 }
 
 # Hub Network (in case network_topology=hub_spoke && vnet_hub_create=true)
@@ -109,7 +112,10 @@ module "network_spoke" {
   subnet_workload_name          = var.subnet_workload_name
   subnet_workload_address_range = var.subnet_workload_address_range
   subnet_netapp_name            = var.subnet_netapp_name
-  subnet_netapp_address_range   = var.subnet_address_range
+  subnet_netapp_address_range   = var.subnet_netapp_address_range
+  anf_account_name              = local.anf_account_name
+  anf_pool_name                 = local.anf_pool_name
+  shared_storage_anf            = local.shared_storage_anf
   depends_on                    = [module.network_hub.0.subnet_hub_vnet_gateway]
 }
 

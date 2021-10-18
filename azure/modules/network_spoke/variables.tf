@@ -101,3 +101,23 @@ variable "spoke_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
 }
+
+# ANF variables
+
+variable "shared_storage_anf" {
+  description = "Create resources related to shared storage type ANF."
+  type        = bool
+}
+
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+  default     = ""
+}
+

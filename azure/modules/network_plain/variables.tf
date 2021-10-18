@@ -54,6 +54,7 @@ variable "subnet_address_range" {
 variable "subnet_netapp_name" {
   description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
   type        = string
+  default     = ""
 }
 
 variable "subnet_netapp_address_range" {
@@ -66,3 +67,21 @@ variable "subnet_netapp_address_range" {
     error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
   }
 }
+
+variable "shared_storage_anf" {
+  description = "Create resources related to shared storage type ANF."
+  type        = bool
+}
+
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+  default     = ""
+}
+

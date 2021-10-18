@@ -38,6 +38,7 @@ locals {
 }
 
 # Network resources: Virtual Network, Subnet
+
 resource "azurerm_virtual_network" "vnet-spoke" {
   count               = local.vnet_create ? 1 : 0
   name                = "vnet-spoke-${var.spoke_name}-${var.deployment_name}"

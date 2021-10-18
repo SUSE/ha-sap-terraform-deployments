@@ -1,9 +1,9 @@
 locals {
-  subnet_dmz_create            = var.fortinet_enabled ? true : false
-  subnet_dmz_address_range     = (var.subnet_dmz_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 253) : var.subnet_dmz_address_range)
+  subnet_dmz_create        = var.fortinet_enabled ? true : false
+  subnet_dmz_address_range = (var.subnet_dmz_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 253) : var.subnet_dmz_address_range)
 
-  subnet_hasync_create         = var.fortinet_enabled ? true : false
-  subnet_hasync_address_range  = (var.subnet_hasync_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 252) : var.subnet_hasync_address_range)
+  subnet_hasync_create        = var.fortinet_enabled ? true : false
+  subnet_hasync_address_range = (var.subnet_hasync_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 252) : var.subnet_hasync_address_range)
 
   subnet_shared_services_create        = var.fortinet_enabled ? true : false
   subnet_shared_services_address_range = (var.subnet_shared_services_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 251) : var.subnet_shared_services_address_range)
