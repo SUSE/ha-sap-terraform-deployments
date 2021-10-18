@@ -833,7 +833,7 @@ variable "netweaver_shared_storage_type" {
   }
 }
 
-# Testing and QA
+# Testing and QA variables
 
 # Disable extra package installation (sap, ha pattern etc).
 # Disables first registration to install salt-minion, it is considered that images are delivered with salt-minion
