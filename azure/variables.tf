@@ -388,7 +388,7 @@ variable "hana_majority_maker_vm_size" {
 }
 
 variable "hana_data_disks_configuration" {
-  type = map
+  type = map(any)
   default = {
     disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
     disks_size       = "128,128,128,128,128,128,128"
@@ -1043,7 +1043,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
