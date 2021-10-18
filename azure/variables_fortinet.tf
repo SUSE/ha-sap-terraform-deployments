@@ -5,11 +5,11 @@ variable "fortinet_enabled" {
 }
 
 variable "snet_ids" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "snet_address_ranges" {
-  type = list(string)
+  type    = list(string)
   default = []
 }

@@ -93,7 +93,7 @@ module "network_hub" {
   subnet_mgmt_name             = var.subnet_hub_mgmt_name
   subnet_mgmt_address_range    = var.subnet_hub_mgmt_address_range
 
-  fortinet_enabled             = var.fortinet_enabled
+  fortinet_enabled = var.fortinet_enabled
 }
 
 # Spoke Network (in case network_topology=hub_spoke)

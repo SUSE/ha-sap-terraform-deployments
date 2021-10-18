@@ -42,14 +42,14 @@ variable "snet_ids" {
 
 variable "snet_address_range" {
   description = "Subnet address range of the fortigate subnets"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "snet_address_ranges" {
   description = "Subnet address range list of the fortigate subnets"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "storage_account" {

@@ -1,5 +1,5 @@
 resource "azurerm_network_interface" "fortigate_nic_a" {
-  count               = 4
+  count = 4
 
   name                = format("nic-fortigate_a_%s", count.index + 1)
   location            = var.az_region
@@ -19,7 +19,7 @@ resource "azurerm_network_interface" "fortigate_nic_a" {
 }
 
 resource "azurerm_network_interface" "fortigate_nic_b" {
-  count               = 4
+  count = 4
 
   name                = format("nic-fortigate_b_%s", count.index + 1)
   location            = var.az_region
