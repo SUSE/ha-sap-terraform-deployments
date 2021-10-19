@@ -3,51 +3,23 @@ variable "common_variables" {
 }
 
 variable "az_region" {
-  description = "Azure region where the deployment machines will be created"
+  description = "Azure region where the FortiGates will be created"
   type        = string
-  default     = "westeurope"
-}
-
-variable "os_image" {
-  description = "sles4sap image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
-  type        = string
-}
-
-variable "vm_size" {
-  description = "Bastion machine vm size"
-  type        = string
-  default     = "Standard_B1s"
 }
 
 variable "resource_group_name" {
-  description = "Resource group name where the bastion will be created"
-  type        = string
-}
-
-variable "network_topology" {
-  description = "Network topolgy to use."
-  type        = string
-}
-
-variable "vnet_name" {
-  description = "Virtual network where the bastion subnet will be created"
+  description = "Resource group name where the FortiGates will be created"
   type        = string
 }
 
 variable "snet_ids" {
-  description = "Existing Virtual subnet ID where the bastion subnet will be created"
-  type        = list(string)
-  default     = []
-}
-
-variable "snet_address_range" {
-  description = "Subnet address range of the fortigate subnets"
+  description = "FortiGate Virtual subnet IDs"
   type        = list(string)
   default     = []
 }
 
 variable "snet_address_ranges" {
-  description = "Subnet address range list of the fortigate subnets"
+  description = "Subnet address range list of the FortiGate subnets"
   type        = list(string)
   default     = []
 }
@@ -55,4 +27,37 @@ variable "snet_address_ranges" {
 variable "storage_account" {
   description = "Storage account where the boot diagnostics will be stored"
   type        = string
+}
+
+variable "vnet_address_range" {
+  type = string
+}
+
+variable "vm_offer"     {
+  type = string
+}
+variable "vm_sku"       {
+  type = string
+}
+variable "vm_publisher" {
+  type = string
+}
+variable "vm_size"      {
+  type = string
+}
+
+variable "vm_license"   {
+  type = string
+}
+
+variable "vm_version"   {
+  type = string
+}
+
+variable "vm_username"  {
+  type = string
+}
+
+variable "vm_password" {
+  type = string
 }
