@@ -69,7 +69,7 @@ include:
         {% endif %}
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][site - 1] %}
-        {% set nfs_share = nfs_server_ip + ':/hana-' + mount + '-' + site|string %}
+        {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
       {% endif %}
     {% endif %}
   {% endif %}
