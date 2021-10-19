@@ -211,10 +211,10 @@ The **Demo** and **Small** sizes are targeted for non-production systems. The **
 
  ¹ use Azure feature "writeAccelerator" if deployed on several VMs
 
-
 #### Demo
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_E4s_v3"
 hana_enable_accelerated_networking = false
 hana_data_disks_configuration = {
@@ -232,6 +232,7 @@ hana_data_disks_configuration = {
 #### Small
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_E64s_v3"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -249,6 +250,7 @@ hana_data_disks_configuration = {
 #### Medium
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_M64s"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -266,6 +268,7 @@ hana_data_disks_configuration = {
 #### Large
 
 ```
+hana_count = "2"
 hana_vm_size = "Standard_M128s"
 hana_enable_accelerated_networking = true
 hana_data_disks_configuration = {
@@ -279,6 +282,10 @@ hana_data_disks_configuration = {
   paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 }
 ```
+
+#### Scale-Out
+
+Please look at [HANA Scale-Out scenario](#HANA-Scale-Out-scenario).
 
 ## S/4HANA and NetWeaver configuration
 
@@ -359,6 +366,73 @@ netweaver_xscs_accelerated_networking = false
 netweaver_app_accelerated_networking = true
 netweaver_app_server_count = 10
 ```
+
+#### deploy on ANF shared storage (recommended when using HANA scale-out)
+
+```
+netweaver_shared_storage_type = "anf"
+anf_pool_size                 = 15        # align with HANA scale-out
+anf_pool_service_level        = "Ultra"   # align with HANA scale-out
+netweaver_anf_quota_sapmnt    = "2000"    # see azure documentation about quota sizes and throughput
+```
+
+### HANA Scale-Out scenario
+
+Please read [Deploy a SAP HANA scale-out system with standby node on Azure VMs by using Azure NetApp Files on SUSE Linux Enterprise Server](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-scale-out-standby-netapp-files-suse) to get an idea how this setup will look like.
+
+To enable a scale-out deployment on 4,6,8,... HANA nodes you have to raise the `hana_count` variable accordingly.
+
+These parameters need to be provided in `terraform.tfvars`. There are also advanced parameters with examples in this file.
+
+```
+hana_count = 6
+hana_scale_out_enabled = true
+hana_scale_out_standby_count = 1 # default:1 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+```
+
+You will also need shared storage for /hana/{data,log,backup,shared} for this.
+
+At the moment ANF is supported on Azure in this sceanario. You can defined via these variables in `terraform.tfvars`:
+Please read the Azure documentation about [Sizing for HANA database on Azure NetApp Files](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-scale-out-standby-netapp-files-suse#sizing-for-hana-database-on-azure-netapp-files) to review what are the minimal requirements for your setup.
+
+```
+hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
+anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
+hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
+hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)
+hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
+hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+
+# to also deploy NetWeaver on ANF (recommended)
+netweaver_shared_storage_type      = "anf"
+netweaver_anf_quota_sapmnt         = "2000"  # deployed 1x
+```
+
+A single local disk is also needed and can be configured like this (or use the defaults):
+
+```
+hana_data_disks_configuration = {
+  disks_type       = "Premium_LRS"
+  disks_size       = "10"
+  caching          = "None"
+  writeaccelerator = "false"
+  # The next variables are used during the provisioning
+  luns        = "0"
+  names       = "usrsap"
+  lv_sizes    = "100"
+  mount_paths = "/usr/sap"
+}
+```
+
+#### terraform parallelism
+
+When deploying many scale-out nodes, e.g. 8 or 10, you should must pass the [`-nparallelism=n`](https://www.terraform.io/docs/cli/commands/apply.html#parallelism-n) parameter to `terraform apply` operations.
+
+It "limit[s] the number of concurrent operation as Terraform walks the graph."
+
+The default value of `10` is not sufficient because not all HANA cluster nodes will get provisioned at the same. A value of e.g. `30` should not hurt for most use-cases.
+
 
 # Advanced usage
 

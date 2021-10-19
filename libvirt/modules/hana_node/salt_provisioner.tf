@@ -29,6 +29,7 @@ hana_disk_device: /dev/vdb
 sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdc" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+node_count: ${var.hana_count + local.create_scale_out}
 EOF
     destination = "/tmp/grains"
   }

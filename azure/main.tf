@@ -8,12 +8,13 @@ module "local_execution" {
 # Iscsi server: 10.74.0.4
 # Monitoring: 10.74.0.5
 # Hana ips: 10.74.0.10, 10.74.0.11
+# Majority Maker ip: 10.74.0.9
 # Hana cluster vip: 10.74.0.12
 # Hana cluster vip secondary: 10.74.0.13
-# DRBD ips: 10.74.0.20, 10.74.0.21
-# DRBD cluster vip: 10.74.0.22
-# Netweaver ips: 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33
-# Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
+# DRBD ips: 10.74.0.6, 10.74.0.7
+# DRBD cluster vip: 10.74.0.8
+# Netweaver ips: 10.74.0.60, 10.74.0.61, 10.74.0.62, 10.74.0.63
+# Netweaver virtual ips: 10.74.0.64, 10.74.0.65, 10.74.0.66, 10.74.0.67
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
@@ -21,10 +22,11 @@ locals {
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_majority_maker_ip     = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start + 1)
 
-  drbd_ip_start    = 20
+  drbd_ip_start    = 6
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
 
@@ -32,7 +34,7 @@ locals {
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
   netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
 
-  netweaver_ip_start    = 30
+  netweaver_ip_start    = 60
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_virtual_ips_count, local.netweaver_ip_start + (local.netweaver_virtual_ips_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
@@ -108,6 +110,8 @@ module "common_variables" {
   hana_sbd_storage_type               = var.sbd_storage_type
   hana_scale_out_enabled              = var.hana_scale_out_enabled
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+  hana_scale_out_addhosts             = var.hana_scale_out_addhosts
+  hana_scale_out_standby_count        = var.hana_scale_out_standby_count
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -131,8 +135,8 @@ module "common_variables" {
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
-  monitoring_hana_targets             = local.hana_ips
-  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
@@ -255,6 +259,9 @@ module "hana_node" {
   tenant_id                 = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
+  # passed to majority_maker module
+  majority_maker_vm_size = var.hana_majority_maker_vm_size
+  majority_maker_ip      = local.hana_majority_maker_ip
 }
 
 module "monitoring" {

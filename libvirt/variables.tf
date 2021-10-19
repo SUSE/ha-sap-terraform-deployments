@@ -388,6 +388,20 @@ variable "hana_scale_out_shared_storage_type" {
   }
 }
 
+variable "hana_scale_out_addhosts" {
+  type        = map
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism

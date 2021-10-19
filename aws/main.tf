@@ -110,6 +110,8 @@ module "common_variables" {
   hana_sbd_storage_type               = var.sbd_storage_type
   hana_scale_out_enabled              = var.hana_scale_out_enabled
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+  hana_scale_out_addhosts             = var.hana_scale_out_addhosts
+  hana_scale_out_standby_count        = var.hana_scale_out_standby_count
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number

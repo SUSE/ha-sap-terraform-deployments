@@ -471,6 +471,20 @@ variable "hana_scale_out_shared_storage_type" {
   }
 }
 
+variable "hana_scale_out_addhosts" {
+  type        = map
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
+}
+
 # Monitoring related variables
 variable "monitoring_name" {
   description = "hostname, without the domain part"

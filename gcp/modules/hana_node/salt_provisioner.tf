@@ -45,6 +45,7 @@ route_name_secondary: ${join(",", google_compute_route.hana-route-secondary.*.na
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+node_count: ${var.hana_count + local.create_scale_out}
 EOF
     destination = "/tmp/grains"
   }

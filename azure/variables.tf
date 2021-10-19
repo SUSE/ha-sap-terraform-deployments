@@ -279,6 +279,12 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
+variable "hana_majority_maker_vm_size" {
+  description = "VM size for the HANA Majority Maker machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
 variable "hana_data_disks_configuration" {
   type = map
   default = {
@@ -317,6 +323,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -485,6 +503,38 @@ variable "hana_ignore_min_mem_check" {
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
+}
+
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
 }
 
 # SBD related variables
@@ -913,6 +963,18 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}
+
 # Testing and QA
 
 # Disable extra package installation (sap, ha pattern etc).
@@ -952,24 +1014,7 @@ variable "fence_agent_client_secret" {
   default     = ""
 }
 
-variable "hana_scale_out_enabled" {
-  description = "Enable HANA scale out deployment"
-  type        = bool
-  default     = false
-}
-
-variable "hana_scale_out_shared_storage_type" {
-  description = "Storage type to use for HANA scale out deployment"
-  type        = string
-  default     = ""
-  validation {
-    condition = (
-      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
-    )
-    error_message = "Invalid HANA scale out storage type. Options: anf."
-  }
-}
-
+# ANF shared storage
 variable "anf_account_name" {
   description = "Name of ANF Accounts"
   type        = string
@@ -997,18 +1042,6 @@ variable "anf_pool_service_level" {
       can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
     )
     error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
-  }
-}
-
-variable "netweaver_shared_storage_type" {
-  description = "shared Storage type to use for Netweaver deployment"
-  type        = string
-  default     = "drbd"
-  validation {
-    condition = (
-      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
-    )
-    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
   }
 }
 

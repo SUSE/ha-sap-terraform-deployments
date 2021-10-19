@@ -13,7 +13,7 @@ locals {
   bastion_public_key  = var.bastion_public_key != "" ? (fileexists(var.bastion_public_key) ? file(var.bastion_public_key) : var.bastion_public_key) : local.public_key
 
   requirements_file = "${path.module}/../../requirements.yml"
-  requirements      = fileexists(local.requirements_file) ? yamlencode({pkg_requirements: yamldecode(trimspace(file(local.requirements_file)))}) : yamlencode({pkg_requirements: null})
+  requirements      = fileexists(local.requirements_file) ? yamlencode({ pkg_requirements : yamldecode(trimspace(file(local.requirements_file))) }) : yamlencode({ pkg_requirements : null })
 }
 
 output "configuration" {
@@ -70,6 +70,8 @@ output "configuration" {
       sbd_storage_type               = var.hana_sbd_storage_type
       scale_out_enabled              = var.hana_scale_out_enabled
       scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+      scale_out_addhosts             = var.hana_scale_out_addhosts
+      scale_out_standby_count        = var.hana_scale_out_standby_count
     }
     netweaver = {
       ha_enabled           = var.netweaver_ha_enabled
@@ -107,7 +109,7 @@ output "configuration" {
       netweaver_targets_ha  = var.monitoring_netweaver_targets_ha
       netweaver_targets_vip = var.monitoring_netweaver_targets_vip
     }
-    grains_output           = <<EOF
+    grains_output            = <<EOF
 provider: ${var.provider_type}
 reg_code: ${var.reg_code}
 reg_email: ${var.reg_email}
@@ -123,7 +125,7 @@ provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
 ${local.requirements}
 EOF
-    hana_grains_output      = <<EOF
+    hana_grains_output       = <<EOF
 hana_sid: ${var.hana_sid}
 hana_instance_number: ${var.hana_instance_number}
 hana_cost_optimized_sid: ${var.hana_cost_optimized_sid}
@@ -148,13 +150,15 @@ hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
 hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
 hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
+hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
+hana_scale_out_standby_count: ${var.hana_scale_out_standby_count}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}
 fencing_mechanism: ${var.hana_cluster_fencing_mechanism}
 sbd_storage_type: ${var.hana_sbd_storage_type}
 EOF
-    netweaver_grains_output = <<EOF
+    netweaver_grains_output  = <<EOF
 ha_enabled: ${var.netweaver_ha_enabled}
 fencing_mechanism: ${var.netweaver_cluster_fencing_mechanism}
 sbd_storage_type: ${var.netweaver_sbd_storage_type}

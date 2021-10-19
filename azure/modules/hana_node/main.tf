@@ -3,6 +3,7 @@
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
   shared_storage_anf         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "anf" ? 1 : 0
+  create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
@@ -28,7 +29,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
   location                    = var.az_region
   resource_group_name         = var.resource_group_name
   managed                     = "true"
-  platform_fault_domain_count = 2
+  platform_fault_domain_count = 2 + local.create_scale_out
 
   tags = {
     workspace = var.common_variables["deployment_name"]
@@ -422,6 +423,36 @@ resource "azurerm_virtual_machine" "hana" {
   tags = {
     workspace = var.common_variables["deployment_name"]
   }
+}
+
+module "hana_majority_maker" {
+  source                        = "../majority_maker_node"
+  node_count                    = local.create_scale_out
+  name                          = var.name
+  common_variables              = var.common_variables
+  bastion_host                  = var.bastion_host
+  az_region                     = var.az_region
+  vm_size                       = var.majority_maker_vm_size
+  hana_count                    = var.hana_count
+  majority_maker_ip             = var.majority_maker_ip
+  host_ips                      = var.host_ips
+  resource_group_name           = var.resource_group_name
+  network_subnet_id             = var.network_subnet_id
+  storage_account               = var.storage_account
+  storage_account_name          = var.storage_account_name
+  storage_account_key           = var.storage_account_key
+  enable_accelerated_networking = var.enable_accelerated_networking
+  sles4sap_uri                  = var.sles4sap_uri
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  os_image                      = var.os_image
+  iscsi_srv_ip                  = var.iscsi_srv_ip
+  fencing_mechanism             = var.fencing_mechanism
+  # only used by azure fence agent (native fencing)
+  subscription_id           = var.subscription_id
+  tenant_id                 = var.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_on_destroy" {

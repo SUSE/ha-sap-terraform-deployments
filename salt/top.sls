@@ -7,6 +7,10 @@ base:
     - match: compound
     - cluster
 
+  'role:majority_maker_node':
+    - match: grain
+    - cluster
+
   'role:drbd_node':
     - match: grain
     - drbd
@@ -28,6 +32,12 @@ predeployment:
     - match: grain
     - cluster_node
     - hana_node
+
+  'role:majority_maker_node':
+    - match: grain
+    - default
+    - cluster_node
+    - majority_maker_node
 
   'role:netweaver_node':
     - match: grain

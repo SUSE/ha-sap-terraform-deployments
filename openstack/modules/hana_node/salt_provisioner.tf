@@ -59,6 +59,7 @@ hana_backup_device: /dev/sdb
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+node_count: ${var.hana_count + local.create_scale_out}
 EOF
     destination = "/tmp/grains"
   }
