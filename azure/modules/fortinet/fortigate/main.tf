@@ -211,7 +211,7 @@ locals {
       "primary_network_interface_id" = "nic-fortigate_a_1",
 
       "storage_os_disk_name"              = "disk-fgt-a-os",
-      "storage_os_disk_managed_disk_type" = "Standard_LRS",
+      "storage_os_disk_managed_disk_type" = "Premium_LRS",
       "storage_os_disk_create_option"     = "FromImage",
       "storage_os_disk_caching"           = "ReadWrite",
 
@@ -222,7 +222,7 @@ locals {
       "storage_data_disk_lun"               = 0,
       "zone"                                = 1,
 
-      "fgt_license_file"    = "FGVM8VTM21000779.lic",
+      "fgt_license_file"    = "${var.fortinet_licenses["license_a"]}",
       "fgt_ha_priority"     = "255"
       "fgt_admins_port"     = "443"
       "fgt_license_type"    = var.vm_license
@@ -248,7 +248,7 @@ locals {
       "primary_network_interface_id" = "nic-fortigate_b_1",
 
       "storage_os_disk_name"              = "disk-fgt-b-os",
-      "storage_os_disk_managed_disk_type" = "Standard_LRS",
+      "storage_os_disk_managed_disk_type" = "Premium_LRS",
       "storage_os_disk_create_option"     = "FromImage",
       "storage_os_disk_caching"           = "ReadWrite",
 
@@ -259,7 +259,7 @@ locals {
       "storage_data_disk_lun"               = 0,
       "zone"                                = 1,
 
-      "fgt_license_file"    = "FGVM8VTM21000780.lic",
+      "fgt_license_file"    = "${var.fortinet_licenses["license_b"]}",
       "fgt_ha_priority"     = "1"
       "fgt_admins_port"     = "443"
       "fgt_license_type"    = var.vm_license
@@ -313,6 +313,10 @@ resource "azurerm_network_security_group" "network_security_group" {
   name                = each.value.name
   location            = var.az_region
   resource_group_name = var.resource_group_name
+
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 resource "azurerm_network_security_rule" "network_security_rule" {
@@ -395,6 +399,11 @@ resource "azurerm_network_interface_backend_address_pool_association" "network_i
   network_interface_id    = azurerm_network_interface.network_interface[each.value.network_interface_id].id
   ip_configuration_name   = each.value.ip_configuration_name
   backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool[each.value.backend_address_pool_id].id
+
+  depends_on = [
+    azurerm_network_interface.network_interface,
+    azurerm_virtual_machine.virtual_machine
+  ]
 }
 
 resource "azurerm_lb_nat_rule" "lb_nat_rule" {
@@ -424,7 +433,7 @@ resource "azurerm_marketplace_agreement" "marketplace_agreement" {
   offer     = var.vm_offer
   plan      = var.vm_sku
 }
-resource "azurerm_virtual_machine" "fgt" {
+resource "azurerm_virtual_machine" "virtual_machine" {
   for_each                     = local.vm_configs
 
   name                         = each.value.name
@@ -433,6 +442,9 @@ resource "azurerm_virtual_machine" "fgt" {
   network_interface_ids        = [for nic in each.value.network_interface_ids : azurerm_network_interface.network_interface[nic].id]
   primary_network_interface_id = azurerm_network_interface.network_interface[each.value.primary_network_interface_id].id
   vm_size                      = var.vm_size
+
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   boot_diagnostics {
     enabled     = true
@@ -489,7 +501,7 @@ data "template_file" "fgt_customdata" {
   template = file("${path.module}/${each.value.config_template}")
   vars = {
     fgt_id              = each.value.name
-    fgt_license_file    = "${path.module}/${each.value.fgt_license_file}"
+    fgt_license_file    = each.value.fgt_license_file
     fgt_ha_priority     = each.value.fgt_ha_priority
     fgt_admins_port     = each.value.fgt_admins_port
     fgt_license_type    = each.value.fgt_license_type
