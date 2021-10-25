@@ -340,6 +340,10 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
 
   network_interface_id      = azurerm_network_interface.network_interface[each.value.name].id
   network_security_group_id = azurerm_network_security_group.network_security_group[each.value.nsgname].id
+
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 resource "azurerm_lb" "lb" {
@@ -494,6 +498,10 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   }
 
   zones = [each.value.zone]
+
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 data "template_file" "fgt_customdata" {
