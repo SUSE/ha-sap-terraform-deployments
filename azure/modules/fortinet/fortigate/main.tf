@@ -14,6 +14,26 @@ locals {
     "nic-fortigate_b_4" = { name = "nic-fortigate_b_4", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[3], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[3], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
   }
 
+  route_tables = {
+    "rt-protected"  = { name = "rt-protected" }
+  }
+
+  routes = {
+    "r-default" = {
+      name                   = "r-default"
+      address_prefix         = "0.0.0.0/0"
+      next_hop_in_ip_address = "nic-fortigate_a_2"
+      next_hop_type          = "VirtualAppliance"
+      route_table_name       = "rt-protected"
+    }
+  }
+
+  subnet_route_table_associations = {
+    "shared-services" = {
+      subnet_id      = var.snet_ids[1]
+      route_table_id = "rt-protected"
+    }
+  }
   network_security_groups = {
     "nsg-public"  = { name = "nsg-public" },
     "nsg-private" = { name = "nsg-private" }
@@ -422,7 +442,34 @@ resource "azurerm_lb_nat_rule" "lb_nat_rule" {
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
 }
+resource "azurerm_route_table" "route_table" {
 
+  for_each = local.route_tables
+
+  name                = each.value.name
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+}
+
+resource "azurerm_route" "route" {
+
+  for_each = local.routes
+
+  name                   = each.value.name
+  resource_group_name    = var.resource_group_name
+  route_table_name       = azurerm_route_table.route_table[each.value.route_table_name].name
+  address_prefix         = each.value.address_prefix
+  next_hop_type          = each.value.next_hop_type
+  next_hop_in_ip_address = azurerm_network_interface.network_interface[each.value.next_hop_in_ip_address].private_ip_address
+}
+
+resource "azurerm_subnet_route_table_association" "subnet_route_table_association" {
+
+  for_each = local.subnet_route_table_associations
+
+  subnet_id      = each.value.subnet_id
+  route_table_id = azurerm_route_table.route_table[each.value.route_table_id].id
+}
 resource "azurerm_network_interface_nat_rule_association" "network_interface_nat_rule_association" {
 
   for_each = local.network_interface_nat_rule_associations
