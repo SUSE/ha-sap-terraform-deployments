@@ -4,14 +4,14 @@ locals {
   }
 
   network_interfaces = {
-    "nic-fortigate_a_1" = { name = "nic-fortigate_a_1", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[0], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[0], ip_configuration_private_ip_offset = 6, nsgname = "nsg-public" },
-    "nic-fortigate_a_2" = { name = "nic-fortigate_a_2", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[1], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[1], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
-    "nic-fortigate_a_3" = { name = "nic-fortigate_a_3", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[2], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[2], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
-    "nic-fortigate_a_4" = { name = "nic-fortigate_a_4", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[3], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[3], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
-    "nic-fortigate_b_1" = { name = "nic-fortigate_b_1", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[0], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[0], ip_configuration_private_ip_offset = 7, nsgname = "nsg-public" },
-    "nic-fortigate_b_2" = { name = "nic-fortigate_b_2", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[1], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[1], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
-    "nic-fortigate_b_3" = { name = "nic-fortigate_b_3", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[2], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[2], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
-    "nic-fortigate_b_4" = { name = "nic-fortigate_b_4", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[3], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[3], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
+    "nic-fortigate_a_1" = { name = "nic-fortigate_a_1", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["dmz"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["dmz"], ip_configuration_private_ip_offset = 6, nsgname = "nsg-public" },
+    "nic-fortigate_a_2" = { name = "nic-fortigate_a_2", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
+    "nic-fortigate_a_3" = { name = "nic-fortigate_a_3", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
+    "nic-fortigate_a_4" = { name = "nic-fortigate_a_4", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 6, nsgname = "nsg-private" },
+    "nic-fortigate_b_1" = { name = "nic-fortigate_b_1", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["dmz"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["dmz"], ip_configuration_private_ip_offset = 7, nsgname = "nsg-public" },
+    "nic-fortigate_b_2" = { name = "nic-fortigate_b_2", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
+    "nic-fortigate_b_3" = { name = "nic-fortigate_b_3", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
+    "nic-fortigate_b_4" = { name = "nic-fortigate_b_4", enable_ip_forwarding = true, enable_accelerated_networking = true, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 7, nsgname = "nsg-private" },
   }
 
   route_tables = {
@@ -30,7 +30,7 @@ locals {
 
   subnet_route_table_associations = {
     "shared-services" = {
-      subnet_id      = var.snet_ids[1]
+      subnet_id      = var.snet_ids["shared-services"]
       route_table_id = "rt-protected"
     }
   }
@@ -114,7 +114,7 @@ locals {
       name                                                 = "lb-fgt-internal",
       sku                                                  = "standard",
       frontend_ip_configuration_name                       = "lb-fgt-internal-fe-ip-01"
-      frontend_ip_configuration_subnet_id                  = var.snet_ids[1]
+      frontend_ip_configuration_subnet_id                  = var.snet_ids["shared-services"]
       frontend_ip_configuration_private_ip_address_version = "IPv4"
       frontend_ip_configuration_public_ip_address_id       = null
     }
@@ -150,7 +150,7 @@ locals {
 
   lb_rules = {
     "lb-fgt-external-rule-443" = {
-      name                           = "lb-fgt-extrenal-rule-443"
+      name                           = "lb-fgt-external-rule-443"
       loadbalancer_id                = "lb-fgt-external"
       protocol                       = "Tcp"
       frontend_port                  = 443
@@ -160,6 +160,28 @@ locals {
       backend_address_pool_id        = "lb-fgt-external-be-pool-01"
       enable_floating_ip             = false
       disable_outbound_snat          = true
+    },
+    "lb-fgt-internal-rule-all" = {
+      name                           = "lb-fgt-internal-rule-all"
+      loadbalancer_id                = "lb-fgt-internal"
+      protocol                       = "All"
+      frontend_port                  = 0
+      backend_port                   = 0
+      frontend_ip_configuration_name = "lb-fgt-internal-fe-ip-01"
+      probe_id                       = "lb-fgt-internal-probe"
+      backend_address_pool_id        = "lb-fgt-internal-be-pool-01"
+      enable_floating_ip             = false
+      disable_outbound_snat          = true
+    }
+  }
+
+  lb_outbound_rules = {
+    "lb-fgt-external-rule-outboundall" = {
+      name                           = "lb-fgt-external-rule-outboundall"
+      loadbalancer_id                = "lb-fgt-external"
+      protocol                       = "All"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+      backend_address_pool_id        = "lb-fgt-external-be-pool-01"
     }
   }
 
@@ -187,8 +209,8 @@ locals {
   }
 
   lb_nat_rules = {
-    "lb-nat-rule-fgt-a-mgmt" = {
-      name                           = "lb-nat-rule-fgt-a-mgmt"
+    "lb-nat-rule-fgt-a-https-mgmt" = {
+      name                           = "lb-nat-rule-fgt-a-https-mgmt"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = "lb-fgt-external"
       protocol                       = "Tcp"
@@ -196,31 +218,66 @@ locals {
       backend_port                   = 443
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
     },
-    "lb-nat-rule-fgt-b-mgmt" = {
-      name                           = "lb-nat-rule-fgt-b-mgmt"
+    "lb-nat-rule-fgt-b-https-mgmt" = {
+      name                           = "lb-nat-rule-fgt-b-https-mgmt"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = "lb-fgt-external"
       protocol                       = "Tcp"
       frontend_port                  = 50443
       backend_port                   = 443
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+    }, "lb-nat-rule-fgt-a-ssh-mgmt" = {
+      name                           = "lb-nat-rule-fgt-a-ssh-mgmt"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = "lb-fgt-external"
+      protocol                       = "Tcp"
+      frontend_port                  = 40022
+      backend_port                   = 22
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+    },
+    "lb-nat-rule-fgt-b-ssh-mgmt" = {
+      name                           = "lb-nat-rule-fgt-b-ssh-mgmt"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = "lb-fgt-external"
+      protocol                       = "Tcp"
+      frontend_port                  = 50022
+      backend_port                   = 22
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
     }
   }
 
   network_interface_nat_rule_associations = {
-    "lb-nat-rule-fgt-a-mgmt-association" = {
+    "lb-nat-rule-fgt-a-https-mgmt-association" = {
       network_interface_id  = "nic-fortigate_a_4"
       ip_configuration_name = "ipconfig1"
-      nat_rule_id           = "lb-nat-rule-fgt-a-mgmt"
+      nat_rule_id           = "lb-nat-rule-fgt-a-https-mgmt"
     },
-    "lb-nat-rule-fgt-b-mgmt-association" = {
+    "lb-nat-rule-fgt-b-https-mgmt-association" = {
       network_interface_id  = "nic-fortigate_b_4"
       ip_configuration_name = "ipconfig1"
-      nat_rule_id           = "lb-nat-rule-fgt-b-mgmt"
+      nat_rule_id           = "lb-nat-rule-fgt-b-https-mgmt"
+    },
+    "lb-nat-rule-fgt-a-ssh-mgmt-association" = {
+      network_interface_id  = "nic-fortigate_a_4"
+      ip_configuration_name = "ipconfig1"
+      nat_rule_id           = "lb-nat-rule-fgt-a-ssh-mgmt"
+    },
+    "lb-nat-rule-fgt-b-ssh-mgmt-association" = {
+      network_interface_id  = "nic-fortigate_b_4"
+      ip_configuration_name = "ipconfig1"
+      nat_rule_id           = "lb-nat-rule-fgt-b-ssh-mgmt"
     }
 
   }
 
+  storage_accounts = {
+    "st-diag" = {
+      name                     = "stdiag"
+      account_replication_type = "LRS"
+      account_tier             = "Standard"
+    }
+
+  }
   vm_configs = {
     "vm-fgt-a" = {
       "name"            = "vm-fgt-a",
@@ -240,24 +297,25 @@ locals {
       "storage_data_disk_create_option"     = "Empty",
       "storage_data_disk_disk_size_gb"      = "30",
       "storage_data_disk_lun"               = 0,
+
       "zone"                                = 1,
 
       "fgt_license_file"    = "${var.fortinet_licenses["license_a"]}",
       "fgt_ha_priority"     = "255"
       "fgt_admins_port"     = "443"
       "fgt_license_type"    = var.vm_license
-      "fgt_port1_ip"        = cidrhost(var.snet_address_ranges[0], 6)
-      "fgt_port1_mask"      = cidrnetmask(var.snet_address_ranges[0])
-      "fgt_port1_gateway"   = cidrhost(var.snet_address_ranges[0], 1)
-      "fgt_port2_ip"        = cidrhost(var.snet_address_ranges[1], 6)
-      "fgt_port2_mask"      = cidrnetmask(var.snet_address_ranges[1])
-      "fgt_port2_gateway"   = cidrhost(var.snet_address_ranges[1], 1)
-      "fgt_port3_ip"        = cidrhost(var.snet_address_ranges[2], 6)
-      "fgt_port3_peerip"    = cidrhost(var.snet_address_ranges[2], 7)
-      "fgt_port3_mask"      = cidrnetmask(var.snet_address_ranges[2])
-      "fgt_port4_ip"        = cidrhost(var.snet_address_ranges[3], 6)
-      "fgt_port4_mask"      = cidrnetmask(var.snet_address_ranges[3])
-      "fgt_port4_gateway"   = cidrhost(var.snet_address_ranges[3], 1)
+      "fgt_port1_ip"        = cidrhost(var.snet_address_ranges["dmz"], 6)
+      "fgt_port1_mask"      = cidrnetmask(var.snet_address_ranges["dmz"])
+      "fgt_port1_gateway"   = cidrhost(var.snet_address_ranges["dmz"], 1)
+      "fgt_port2_ip"        = cidrhost(var.snet_address_ranges["shared-services"], 6)
+      "fgt_port2_mask"      = cidrnetmask(var.snet_address_ranges["shared-services"])
+      "fgt_port2_gateway"   = cidrhost(var.snet_address_ranges["shared-services"], 1)
+      "fgt_port3_ip"        = cidrhost(var.snet_address_ranges["hasync"], 6)
+      "fgt_port3_peerip"    = cidrhost(var.snet_address_ranges["hasync"], 7)
+      "fgt_port3_mask"      = cidrnetmask(var.snet_address_ranges["hasync"])
+      "fgt_port4_ip"        = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
+      "fgt_port4_mask"      = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      "fgt_port4_gateway"   = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
     }
     "vm-fgt-b" = {
       "name"            = "vm-fgt-b",
@@ -277,28 +335,28 @@ locals {
       "storage_data_disk_create_option"     = "Empty",
       "storage_data_disk_disk_size_gb"      = "30",
       "storage_data_disk_lun"               = 0,
+
       "zone"                                = 1,
 
       "fgt_license_file"    = "${var.fortinet_licenses["license_b"]}",
       "fgt_ha_priority"     = "1"
       "fgt_admins_port"     = "443"
       "fgt_license_type"    = var.vm_license
-      "fgt_port1_ip"        = cidrhost(var.snet_address_ranges[0], 7)
-      "fgt_port1_mask"      = cidrnetmask(var.snet_address_ranges[0])
-      "fgt_port1_gateway"   = cidrhost(var.snet_address_ranges[0], 1)
-      "fgt_port2_ip"        = cidrhost(var.snet_address_ranges[1], 7)
-      "fgt_port2_mask"      = cidrnetmask(var.snet_address_ranges[1])
-      "fgt_port2_gateway"   = cidrhost(var.snet_address_ranges[1], 1)
-      "fgt_port3_ip"        = cidrhost(var.snet_address_ranges[2], 7)
-      "fgt_port3_peerip"    = cidrhost(var.snet_address_ranges[2], 6)
-      "fgt_port3_mask"      = cidrnetmask(var.snet_address_ranges[2])
-      "fgt_port4_ip"        = cidrhost(var.snet_address_ranges[3], 7)
-      "fgt_port4_mask"      = cidrnetmask(var.snet_address_ranges[3])
-      "fgt_port4_gateway"   = cidrhost(var.snet_address_ranges[3], 1)
+      "fgt_port1_ip"        = cidrhost(var.snet_address_ranges["dmz"], 7)
+      "fgt_port1_mask"      = cidrnetmask(var.snet_address_ranges["dmz"])
+      "fgt_port1_gateway"   = cidrhost(var.snet_address_ranges["dmz"], 1)
+      "fgt_port2_ip"        = cidrhost(var.snet_address_ranges["shared-services"], 7)
+      "fgt_port2_mask"      = cidrnetmask(var.snet_address_ranges["shared-services"])
+      "fgt_port2_gateway"   = cidrhost(var.snet_address_ranges["shared-services"], 1)
+      "fgt_port3_ip"        = cidrhost(var.snet_address_ranges["hasync"], 7)
+      "fgt_port3_peerip"    = cidrhost(var.snet_address_ranges["hasync"], 6)
+      "fgt_port3_mask"      = cidrnetmask(var.snet_address_ranges["hasync"])
+      "fgt_port4_ip"        = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
+      "fgt_port4_mask"      = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      "fgt_port4_gateway"   = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
     }
   }
 }
-
 
 resource "azurerm_public_ip" "public_ip" {
 
@@ -442,6 +500,21 @@ resource "azurerm_lb_nat_rule" "lb_nat_rule" {
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
 }
+
+resource "azurerm_lb_outbound_rule" "lb_outbound_rule" {
+
+  for_each = local.lb_outbound_rules
+
+  name                    = each.value.name
+  resource_group_name     = var.resource_group_name
+  loadbalancer_id         = azurerm_lb.lb[each.value.loadbalancer_id].id
+  protocol                = each.value.protocol
+  backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool[each.value.backend_address_pool_id].id
+  frontend_ip_configuration {
+    name = each.value.frontend_ip_configuration_name
+  }
+}
+
 resource "azurerm_route_table" "route_table" {
 
   for_each = local.route_tables
@@ -484,6 +557,7 @@ resource "azurerm_marketplace_agreement" "marketplace_agreement" {
   offer     = var.vm_offer
   plan      = var.vm_sku
 }
+
 resource "azurerm_virtual_machine" "virtual_machine" {
   for_each                     = local.vm_configs
 
