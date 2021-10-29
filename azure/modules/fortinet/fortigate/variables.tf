@@ -14,14 +14,12 @@ variable "resource_group_name" {
 
 variable "snet_ids" {
   description = "FortiGate Virtual subnet IDs"
-  type        = list(string)
-  default     = []
+  type        = map(any)
 }
 
 variable "snet_address_ranges" {
   description = "Subnet address range list of the FortiGate subnets"
-  type        = list(string)
-  default     = []
+  type        = map(any)
 }
 
 variable "storage_account" {

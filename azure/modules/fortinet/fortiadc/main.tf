@@ -1,11 +1,11 @@
 locals {
   network_interfaces = {
-    "nic-fortiadc_a_1" = { name = "nic-fortiadc_a_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[1], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[1], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_a_2" = { name = "nic-fortiadc_a_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[2], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[2], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_a_3" = { name = "nic-fortiadc_a_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[3], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[3], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_b_1" = { name = "nic-fortiadc_b_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[1], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[1], ip_configuration_private_ip_offset = 9},
-    "nic-fortiadc_b_2" = { name = "nic-fortiadc_b_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[2], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[2], ip_configuration_private_ip_offset = 9},
-    "nic-fortiadc_b_3" = { name = "nic-fortiadc_b_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids[3], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges[3], ip_configuration_private_ip_offset = 9},
+    "nic-fortiadc_a_1" = { name = "nic-fortiadc_a_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 8},
+    "nic-fortiadc_a_2" = { name = "nic-fortiadc_a_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 8},
+    "nic-fortiadc_a_3" = { name = "nic-fortiadc_a_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 8},
+    "nic-fortiadc_b_1" = { name = "nic-fortiadc_b_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 9},
+    "nic-fortiadc_b_2" = { name = "nic-fortiadc_b_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 9},
+    "nic-fortiadc_b_3" = { name = "nic-fortiadc_b_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 9},
   }
 
   lbs = {
@@ -13,7 +13,7 @@ locals {
       name                                                 = "lb-fadc-internal"
       sku                                                  = "standard"
       frontend_ip_configuration_name                       = "lb-fadc-internal-fe-ip-01"
-      frontend_ip_configuration_subnet_id                  = var.snet_ids[1]
+      frontend_ip_configuration_subnet_id                  = var.snet_ids["shared-services"]
       frontend_ip_configuration_private_ip_address_version = "IPv4"
       frontend_ip_configuration_public_ip_address_id       = null
     }
@@ -73,8 +73,8 @@ locals {
       "fadc_license_file"    = "${var.fortinet_licenses["license_a"]}"
 
       "fadc_config_ha"   = true,
-      "fadc_ha_localip"  = cidrhost(var.snet_address_ranges[1], 8)
-      "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges[1], 9)
+      "fadc_ha_localip"  = cidrhost(var.snet_address_ranges["shared-services"], 8)
+      "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges["shared-services"], 9)
       "fadc_ha_nodeid"   = "5",
       "fadc_a_ha_nodeid" = "0",
       "fadc_b_ha_nodeid" = "1",
@@ -103,8 +103,8 @@ locals {
       "fadc_license_file"    = "${var.fortinet_licenses["license_b"]}"
 
       "fadc_config_ha"   = true,
-      "fadc_ha_localip"  = cidrhost(var.snet_address_ranges[1], 9)
-      "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges[1], 8)
+      "fadc_ha_localip"  = cidrhost(var.snet_address_ranges["shared-services"], 9)
+      "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges["shared-services"], 8)
       "fadc_ha_nodeid"   = "9",
       "fadc_a_ha_nodeid" = "0",
       "fadc_b_ha_nodeid" = "1",
