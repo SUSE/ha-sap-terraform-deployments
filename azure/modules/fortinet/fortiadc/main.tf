@@ -1,11 +1,11 @@
 locals {
   network_interfaces = {
-    "nic-fortiadc_a_1" = { name = "nic-fortiadc_a_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_a_2" = { name = "nic-fortiadc_a_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_a_3" = { name = "nic-fortiadc_a_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 8},
-    "nic-fortiadc_b_1" = { name = "nic-fortiadc_b_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 9},
-    "nic-fortiadc_b_2" = { name = "nic-fortiadc_b_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 9},
-    "nic-fortiadc_b_3" = { name = "nic-fortiadc_b_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 9},
+    "nic-fortiadc_a_1" = { name = "nic-fortiadc_a_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 8 }
+    "nic-fortiadc_a_2" = { name = "nic-fortiadc_a_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 8 }
+    "nic-fortiadc_a_3" = { name = "nic-fortiadc_a_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 8 }
+    "nic-fortiadc_b_1" = { name = "nic-fortiadc_b_1", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["shared-services"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["shared-services"], ip_configuration_private_ip_offset = 9 }
+    "nic-fortiadc_b_2" = { name = "nic-fortiadc_b_2", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["hasync"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["hasync"], ip_configuration_private_ip_offset = 9 }
+    "nic-fortiadc_b_3" = { name = "nic-fortiadc_b_3", enable_ip_forwarding = true, enable_accelerated_networking = false, ip_configuration_name = "ipconfig1", ip_configuration_subnet_id = var.snet_ids["fortinet-mgmt"], ip_configuration_private_ip_address_allocation = "Static", ip_configuration_private_ip_address = var.snet_address_ranges["fortinet-mgmt"], ip_configuration_private_ip_offset = 9 }
   }
 
   lbs = {
@@ -51,63 +51,63 @@ locals {
 
   vm_configs = {
     "vm-fadc-a" = {
-      "name"            = "vm-fadc-a",
-      "config_template" = "fadc-config.conf",
-      "identity"        = "SystemAssigned",
+      "name"            = "vm-fadc-a"
+      "config_template" = "fadc-config.conf"
+      "identity"        = "SystemAssigned"
 
-      "network_interface_ids"        = ["nic-fortiadc_a_1", "nic-fortiadc_a_2", "nic-fortiadc_a_3"],
-      "primary_network_interface_id" = "nic-fortiadc_a_1",
+      "network_interface_ids"        = ["nic-fortiadc_a_1", "nic-fortiadc_a_2", "nic-fortiadc_a_3"]
+      "primary_network_interface_id" = "nic-fortiadc_a_1"
 
-      "storage_os_disk_name"              = "disk-fadc-a-os",
-      "storage_os_disk_managed_disk_type" = "Premium_LRS",
-      "storage_os_disk_create_option"     = "FromImage",
-      "storage_os_disk_caching"           = "ReadWrite",
+      "storage_os_disk_name"              = "disk-fadc-a-os"
+      "storage_os_disk_managed_disk_type" = "Premium_LRS"
+      "storage_os_disk_create_option"     = "FromImage"
+      "storage_os_disk_caching"           = "ReadWrite"
 
-      "storage_data_disk_name"              = "disk-vm-fadc-a-data",
-      "storage_data_disk_managed_disk_type" = "Premium_LRS",
-      "storage_data_disk_create_option"     = "Empty",
-      "storage_data_disk_disk_size_gb"      = "30",
-      "storage_data_disk_lun"               = 0,
-      "zone"                                = 1,
+      "storage_data_disk_name"              = "disk-vm-fadc-a-data"
+      "storage_data_disk_managed_disk_type" = "Premium_LRS"
+      "storage_data_disk_create_option"     = "Empty"
+      "storage_data_disk_disk_size_gb"      = "30"
+      "storage_data_disk_lun"               = "0",
+      "zone"                                = "1",
 
-      "fadc_license_file"    = "${var.fortinet_licenses["license_a"]}"
+      "fadc_license_file" = "${var.fortinet_licenses["license_a"]}"
 
-      "fadc_config_ha"   = true,
+      "fadc_config_ha"   = true
       "fadc_ha_localip"  = cidrhost(var.snet_address_ranges["shared-services"], 8)
       "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges["shared-services"], 9)
-      "fadc_ha_nodeid"   = "5",
-      "fadc_a_ha_nodeid" = "0",
-      "fadc_b_ha_nodeid" = "1",
+      "fadc_ha_nodeid"   = "5"
+      "fadc_a_ha_nodeid" = "0"
+      "fadc_b_ha_nodeid" = "1"
       "fadc_ha_nodeid"   = "0"
     }
     "vm-fadc-b" = {
-      "name"            = "vm-fadc-b",
-      "config_template" = "fadc-config.conf",
-      "identity"        = "SystemAssigned",
+      "name"            = "vm-fadc-b"
+      "config_template" = "fadc-config.conf"
+      "identity"        = "SystemAssigned"
 
-      "network_interface_ids"        = ["nic-fortiadc_b_1", "nic-fortiadc_b_2", "nic-fortiadc_b_3"],
-      "primary_network_interface_id" = "nic-fortiadc_b_1",
+      "network_interface_ids"        = ["nic-fortiadc_b_1", "nic-fortiadc_b_2", "nic-fortiadc_b_3"]
+      "primary_network_interface_id" = "nic-fortiadc_b_1"
 
-      "storage_os_disk_name"              = "disk-fadc-b-os",
-      "storage_os_disk_managed_disk_type" = "Premium_LRS",
-      "storage_os_disk_create_option"     = "FromImage",
-      "storage_os_disk_caching"           = "ReadWrite",
+      "storage_os_disk_name"              = "disk-fadc-b-os"
+      "storage_os_disk_managed_disk_type" = "Premium_LRS"
+      "storage_os_disk_create_option"     = "FromImage"
+      "storage_os_disk_caching"           = "ReadWrite"
 
-      "storage_data_disk_name"              = "disk-vm-fadc-b-data",
-      "storage_data_disk_managed_disk_type" = "Premium_LRS",
-      "storage_data_disk_create_option"     = "Empty",
-      "storage_data_disk_disk_size_gb"      = "30",
-      "storage_data_disk_lun"               = 0,
-      "zone"                                = 1,
+      "storage_data_disk_name"              = "disk-vm-fadc-b-data"
+      "storage_data_disk_managed_disk_type" = "Premium_LRS"
+      "storage_data_disk_create_option"     = "Empty"
+      "storage_data_disk_disk_size_gb"      = "30"
+      "storage_data_disk_lun"               = "0"
+      "zone"                                = "1"
 
-      "fadc_license_file"    = "${var.fortinet_licenses["license_b"]}"
+      "fadc_license_file" = "${var.fortinet_licenses["license_b"]}"
 
-      "fadc_config_ha"   = true,
+      "fadc_config_ha"   = true
       "fadc_ha_localip"  = cidrhost(var.snet_address_ranges["shared-services"], 9)
       "fadc_ha_peerip"   = cidrhost(var.snet_address_ranges["shared-services"], 8)
-      "fadc_ha_nodeid"   = "9",
-      "fadc_a_ha_nodeid" = "0",
-      "fadc_b_ha_nodeid" = "1",
+      "fadc_ha_nodeid"   = "9"
+      "fadc_a_ha_nodeid" = "0"
+      "fadc_b_ha_nodeid" = "1"
       "fadc_ha_nodeid"   = "1"
     }
   }
@@ -185,7 +185,7 @@ resource "azurerm_marketplace_agreement" "marketplace_agreement" {
 }
 
 resource "azurerm_virtual_machine" "virtual_machine" {
-  for_each                     = local.vm_configs
+  for_each = local.vm_configs
 
   name                         = each.value.name
   location                     = var.az_region

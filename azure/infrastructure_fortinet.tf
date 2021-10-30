@@ -4,7 +4,7 @@ module "fortigate" {
   source             = "./modules/fortinet/fortigate"
   common_variables   = module.common_variables.configuration
   az_region          = var.az_region
-  vnet_address_range = var.vnet_address_range
+  vnet_address_range = var.vnet_hub_address_range
   vm_publisher       = var.fortinet_vm_publisher
   vm_license         = var.fortinet_vm_license_type
   vm_offer           = var.fortigate_vm_offer
@@ -18,16 +18,18 @@ module "fortigate" {
   storage_account     = azurerm_storage_account.storage_account.primary_blob_endpoint
   snet_ids = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
+    "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
     "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
+    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
   }
 
   snet_address_ranges = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range,
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range,
-    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range,
+    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
+    "trusted"         = module.network_hub.0.subnet-hub-trusted-address-range
+    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
+    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"
@@ -41,7 +43,7 @@ module "fortiadc" {
   source             = "./modules/fortinet/fortiadc"
   common_variables   = module.common_variables.configuration
   az_region          = var.az_region
-  vnet_address_range = var.vnet_address_range
+  vnet_address_range = var.vnet_hub_address_range
   vm_publisher       = var.fortinet_vm_publisher
   vm_license         = var.fortinet_vm_license_type
   vm_offer           = var.fortiadc_vm_offer
@@ -55,16 +57,18 @@ module "fortiadc" {
   storage_account     = azurerm_storage_account.storage_account.primary_blob_endpoint
   snet_ids = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
+    "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
     "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
+    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
   }
 
   snet_address_ranges = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range,
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range,
-    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range,
+    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
+    "trusted"         = module.network_hub.0.subnet-hub-trusted-address-range
+    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
+    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"

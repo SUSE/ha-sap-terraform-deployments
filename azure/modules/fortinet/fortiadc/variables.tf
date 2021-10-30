@@ -31,28 +31,28 @@ variable "vnet_address_range" {
   type = string
 }
 
-variable "vm_offer"     {
+variable "vm_offer" {
   type = string
 }
-variable "vm_sku"       {
+variable "vm_sku" {
   type = string
 }
 variable "vm_publisher" {
   type = string
 }
-variable "vm_size"      {
+variable "vm_size" {
   type = string
 }
 
-variable "vm_license"   {
+variable "vm_license" {
   type = string
 }
 
-variable "vm_version"   {
+variable "vm_version" {
   type = string
 }
 
-variable "vm_username"  {
+variable "vm_username" {
   type = string
 }
 
@@ -61,5 +61,5 @@ variable "vm_password" {
 }
 
 variable "fortinet_licenses" {
-  type = map
+  type = map(any)
 }
