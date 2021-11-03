@@ -165,10 +165,10 @@ locals {
       name                        = "nsg-public-inbound-rule"
       resource_group_name         = var.resource_group_name
       network_security_group_name = azurerm_network_security_group.network_security_group["nsg-public"].name
-      priority                    = "1001"
+      priority                    = "100"
       direction                   = "Inbound"
       access                      = "Allow"
-      protocol                    = "Tcp"
+      protocol                    = "*"
       source_port_range           = "*"
       destination_port_range      = "*"
       source_address_prefix       = "*"
@@ -178,10 +178,10 @@ locals {
       name                        = "nsg-private-inbound-rule"
       resource_group_name         = var.resource_group_name
       network_security_group_name = azurerm_network_security_group.network_security_group["nsg-private"].name
-      priority                    = "1001"
+      priority                    = "100"
       direction                   = "Inbound"
       access                      = "Allow"
-      protocol                    = "Tcp"
+      protocol                    = "*"
       source_port_range           = "*"
       destination_port_range      = "*"
       source_address_prefix       = "*"
@@ -191,10 +191,10 @@ locals {
       name                        = "nsg-public-outbound-rule"
       resource_group_name         = var.resource_group_name
       network_security_group_name = azurerm_network_security_group.network_security_group["nsg-public"].name
-      priority                    = "1001"
+      priority                    = "101"
       direction                   = "Outbound"
       access                      = "Allow"
-      protocol                    = "Tcp"
+      protocol                    = "*"
       source_port_range           = "*"
       destination_port_range      = "*"
       source_address_prefix       = "*"
@@ -204,10 +204,10 @@ locals {
       name                        = "nsg-private-outbound-rule"
       resource_group_name         = var.resource_group_name
       network_security_group_name = azurerm_network_security_group.network_security_group["nsg-private"].name
-      priority                    = "1001"
+      priority                    = "101"
       direction                   = "Outbound"
       access                      = "Allow"
-      protocol                    = "Tcp"
+      protocol                    = "*"
       source_port_range           = "*"
       destination_port_range      = "*"
       source_address_prefix       = "*"
@@ -222,15 +222,15 @@ locals {
     },
     "nic-fortigate_a_2" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_a_2"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     },
     "nic-fortigate_a_3" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_a_3"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     },
     "nic-fortigate_a_4" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_a_4"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     },
     "nic-fortigate_b_1" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_b_1"].id
@@ -238,15 +238,15 @@ locals {
     },
     "nic-fortigate_b_2" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_b_2"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     },
     "nic-fortigate_b_3" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_b_3"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     },
     "nic-fortigate_b_4" = {
       network_interface_id      = azurerm_network_interface.network_interface["nic-fortigate_b_4"].id
-      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-private"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     }
   }
   lbs = {
@@ -310,8 +310,8 @@ locals {
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "Tcp"
-      frontend_port                  = 443
-      backend_port                   = 443
+      frontend_port                  = "443"
+      backend_port                   = "443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
@@ -323,8 +323,8 @@ locals {
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "Tcp"
-      frontend_port                  = 80
-      backend_port                   = 80
+      frontend_port                  = "80"
+      backend_port                   = "80"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
@@ -336,8 +336,8 @@ locals {
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "Udp"
-      frontend_port                  = 10551
-      backend_port                   = 10551
+      frontend_port                  = "10551"
+      backend_port                   = "10551"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
@@ -349,8 +349,8 @@ locals {
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-internal"].id
       protocol                       = "All"
-      frontend_port                  = 0
-      backend_port                   = 0
+      frontend_port                  = "0"
+      backend_port                   = "0"
       frontend_ip_configuration_name = "lb-fgt-internal-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-internal-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-internal-be-pool-01"].id
@@ -360,14 +360,14 @@ locals {
   }
 
   lb_outbound_rules = {
-    "lb-fgt-external-rule-outboundall" = {
+    /*"lb-fgt-external-rule-outboundall" = {
       name                           = "lb-fgt-external-rule-outboundall"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "All"
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
-    }
+    }*/
   }
 
   network_interface_backend_address_pool_associations = {
@@ -462,116 +462,127 @@ locals {
     }
 
   }
+
+  availability_sets = {
+    "as-fortigate" = {
+      name                = "as-fortigate"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+    }
+  }
+
   vm_configs = {
     "vm-fgt-a" = {
-      "name"              = "vm-fgt-a"
+      name                = "vm-fgt-a"
       location            = var.az_region
       resource_group_name = var.resource_group_name
 
-      "config_template" = "fgt-config.conf"
-      "identity"        = "SystemAssigned"
+      config_template  = "fgt-config.conf"
+      identity         = "SystemAssigned"
 
-      "network_interface_ids" = [for nic in ["nic-fortigate_a_1", "nic-fortigate_a_2", "nic-fortigate_a_3", "nic-fortigate_a_4"] : azurerm_network_interface.network_interface[nic].id]
-      #"network_interface_ids"        = ["nic-fortigate_a_1", "nic-fortigate_a_2", "nic-fortigate_a_3", "nic-fortigate_a_4"]
-      "primary_network_interface_id" = azurerm_network_interface.network_interface["nic-fortigate_a_1"].id
+      network_interface_ids        = [for nic in ["nic-fortigate_a_1", "nic-fortigate_a_2", "nic-fortigate_a_3", "nic-fortigate_a_4"] : azurerm_network_interface.network_interface[nic].id]
+      primary_network_interface_id = azurerm_network_interface.network_interface["nic-fortigate_a_1"].id
 
-      "publisher" = var.vm_publisher
-      "offer"     = var.vm_offer
-      "plan"      = var.vm_sku
-      "version"   = var.vm_version
-      "vm_size"   = var.vm_size
+      publisher = var.vm_publisher
+      offer     = var.vm_offer
+      plan      = var.vm_sku
+      version   = var.vm_version
+      vm_size   = var.vm_size
 
-      "delete_os_disk_on_termination"    = true
-      "delete_data_disks_on_termination" = true
+      delete_os_disk_on_termination    = true
+      delete_data_disks_on_termination = true
 
-      "storage_os_disk_name"              = "disk-fgt-a-os"
-      "storage_os_disk_managed_disk_type" = "Premium_LRS"
-      "storage_os_disk_create_option"     = "FromImage"
-      "storage_os_disk_caching"           = "ReadWrite"
+      storage_os_disk_name              = "disk-fgt-a-os"
+      storage_os_disk_managed_disk_type = "Premium_LRS"
+      storage_os_disk_create_option     = "FromImage"
+      storage_os_disk_caching           = "ReadWrite"
 
-      "storage_data_disk_name"              = "disk-vm-fgt-a-data"
-      "storage_data_disk_managed_disk_type" = "Premium_LRS"
-      "storage_data_disk_create_option"     = "Empty"
-      "storage_data_disk_disk_size_gb"      = "30"
-      "storage_data_disk_lun"               = "0"
+      storage_data_disk_name              = "disk-vm-fgt-a-data"
+      storage_data_disk_managed_disk_type = "Premium_LRS"
+      storage_data_disk_create_option     = "Empty"
+      storage_data_disk_disk_size_gb      = "30"
+      storage_data_disk_lun               = "0"
 
       os_profile_computer_name  = "vm-fgt-a"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
 
-      "zone" = 1
+      zone = "1"
 
-      "fgt_license_file"  = "${var.fortinet_licenses["license_a"]}"
-      "fgt_ha_priority"   = "255"
-      "fgt_admins_port"   = "443"
-      "fgt_license_type"  = var.vm_license
-      "fgt_port1_ip"      = cidrhost(var.snet_address_ranges["dmz"], 6)
-      "fgt_port1_mask"    = cidrnetmask(var.snet_address_ranges["dmz"])
-      "fgt_port1_gateway" = cidrhost(var.snet_address_ranges["dmz"], 1)
-      "fgt_port2_ip"      = cidrhost(var.snet_address_ranges["trusted"], 6)
-      "fgt_port2_mask"    = cidrnetmask(var.snet_address_ranges["trusted"])
-      "fgt_port2_gateway" = cidrhost(var.snet_address_ranges["trusted"], 1)
-      "fgt_port3_ip"      = cidrhost(var.snet_address_ranges["hasync"], 6)
-      "fgt_port3_peerip"  = cidrhost(var.snet_address_ranges["hasync"], 7)
-      "fgt_port3_mask"    = cidrnetmask(var.snet_address_ranges["hasync"])
-      "fgt_port4_ip"      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
-      "fgt_port4_mask"    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      "fgt_port4_gateway" = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
-    }
+      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+
+      fgt_license_file  = "${var.fortinet_licenses["license_a"]}"
+      fgt_ha_priority   = "255"
+      fgt_admins_port   = "443"
+      fgt_license_type  = var.vm_license
+      fgt_port1_ip      = cidrhost(var.snet_address_ranges["dmz"], 6)
+      fgt_port1_mask    = cidrnetmask(var.snet_address_ranges["dmz"])
+      fgt_port1_gateway = cidrhost(var.snet_address_ranges["dmz"], 1)
+      fgt_port2_ip      = cidrhost(var.snet_address_ranges["trusted"], 6)
+      fgt_port2_mask    = cidrnetmask(var.snet_address_ranges["trusted"])
+      fgt_port2_gateway = cidrhost(var.snet_address_ranges["trusted"], 1)
+      fgt_port3_ip      = cidrhost(var.snet_address_ranges["hasync"], 6)
+      fgt_port3_peerip  = cidrhost(var.snet_address_ranges["hasync"], 7)
+      fgt_port3_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
+      fgt_port4_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
+      fgt_port4_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      fgt_port4_gateway = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+    },
     "vm-fgt-b" = {
-      "name"              = "vm-fgt-b"
+      name                = "vm-fgt-b"
       location            = var.az_region
       resource_group_name = var.resource_group_name
 
-      "config_template" = "fgt-config.conf"
-      "identity"        = "SystemAssigned"
+      config_template = "fgt-config.conf"
+      identity        = "SystemAssigned"
 
-      "network_interface_ids" = [for nic in ["nic-fortigate_b_1", "nic-fortigate_b_2", "nic-fortigate_b_3", "nic-fortigate_b_4"] : azurerm_network_interface.network_interface[nic].id]
-      #"network_interface_ids"        = ["nic-fortigate_b_1", "nic-fortigate_b_2", "nic-fortigate_b_3", "nic-fortigate_b_4"]
-      "primary_network_interface_id" = azurerm_network_interface.network_interface["nic-fortigate_b_1"].id
+      network_interface_ids         = [for nic in ["nic-fortigate_b_1", "nic-fortigate_b_2", "nic-fortigate_b_3", "nic-fortigate_b_4"] : azurerm_network_interface.network_interface[nic].id]
+      primary_network_interface_id  = azurerm_network_interface.network_interface["nic-fortigate_b_1"].id
 
-      "publisher" = var.vm_publisher
-      "offer"     = var.vm_offer
-      "plan"      = var.vm_sku
-      "version"   = var.vm_version
-      "vm_size"   = var.vm_size
+      publisher = var.vm_publisher
+      offer     = var.vm_offer
+      plan      = var.vm_sku
+      version   = var.vm_version
+      vm_size   = var.vm_size
 
-      "delete_os_disk_on_termination"    = true
-      "delete_data_disks_on_termination" = true
+      delete_os_disk_on_termination    = true
+      delete_data_disks_on_termination = true
 
-      "storage_os_disk_name"              = "disk-fgt-b-os"
-      "storage_os_disk_managed_disk_type" = "Premium_LRS"
-      "storage_os_disk_create_option"     = "FromImage"
-      "storage_os_disk_caching"           = "ReadWrite"
+      storage_os_disk_name              = "disk-fgt-b-os"
+      storage_os_disk_managed_disk_type = "Premium_LRS"
+      storage_os_disk_create_option     = "FromImage"
+      storage_os_disk_caching           = "ReadWrite"
 
-      "storage_data_disk_name"              = "disk-vm-fgt-b-data"
-      "storage_data_disk_managed_disk_type" = "Premium_LRS"
-      "storage_data_disk_create_option"     = "Empty"
-      "storage_data_disk_disk_size_gb"      = "30"
-      "storage_data_disk_lun"               = "0"
+      storage_data_disk_name              = "disk-vm-fgt-b-data"
+      storage_data_disk_managed_disk_type = "Premium_LRS"
+      storage_data_disk_create_option     = "Empty"
+      storage_data_disk_disk_size_gb      = "30"
+      storage_data_disk_lun               = "0"
 
       os_profile_computer_name  = "vm-fgt-b"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
 
-      "zone" = 1
+      zone = "1"
 
-      "fgt_license_file"  = "${var.fortinet_licenses["license_b"]}"
-      "fgt_ha_priority"   = "1"
-      "fgt_admins_port"   = "443"
-      "fgt_license_type"  = var.vm_license
-      "fgt_port1_ip"      = cidrhost(var.snet_address_ranges["dmz"], 7)
-      "fgt_port1_mask"    = cidrnetmask(var.snet_address_ranges["dmz"])
-      "fgt_port1_gateway" = cidrhost(var.snet_address_ranges["dmz"], 1)
-      "fgt_port2_ip"      = cidrhost(var.snet_address_ranges["trusted"], 7)
-      "fgt_port2_mask"    = cidrnetmask(var.snet_address_ranges["trusted"])
-      "fgt_port2_gateway" = cidrhost(var.snet_address_ranges["trusted"], 1)
-      "fgt_port3_ip"      = cidrhost(var.snet_address_ranges["hasync"], 7)
-      "fgt_port3_peerip"  = cidrhost(var.snet_address_ranges["hasync"], 6)
-      "fgt_port3_mask"    = cidrnetmask(var.snet_address_ranges["hasync"])
-      "fgt_port4_ip"      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
-      "fgt_port4_mask"    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      "fgt_port4_gateway" = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+
+      fgt_license_file  = "${var.fortinet_licenses["license_b"]}"
+      fgt_ha_priority   = "1"
+      fgt_admins_port   = "443"
+      fgt_license_type  = var.vm_license
+      fgt_port1_ip      = cidrhost(var.snet_address_ranges["dmz"], 7)
+      fgt_port1_mask    = cidrnetmask(var.snet_address_ranges["dmz"])
+      fgt_port1_gateway = cidrhost(var.snet_address_ranges["dmz"], 1)
+      fgt_port2_ip      = cidrhost(var.snet_address_ranges["trusted"], 7)
+      fgt_port2_mask    = cidrnetmask(var.snet_address_ranges["trusted"])
+      fgt_port2_gateway = cidrhost(var.snet_address_ranges["trusted"], 1)
+      fgt_port3_ip      = cidrhost(var.snet_address_ranges["hasync"], 7)
+      fgt_port3_peerip  = cidrhost(var.snet_address_ranges["hasync"], 6)
+      fgt_port3_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
+      fgt_port4_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
+      fgt_port4_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      fgt_port4_gateway = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
     }
   }
 }
@@ -640,9 +651,9 @@ resource "azurerm_network_security_group" "network_security_group" {
   name                = each.value.name
   location            = each.value.location
   resource_group_name = each.value.resource_group_name
-  #  depends_on = [
-  #    azurerm_network_interface.network_interface
-  #  ]
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 resource "azurerm_network_security_rule" "network_security_rule" {
@@ -669,9 +680,9 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   network_interface_id      = each.value.network_interface_id
   network_security_group_id = each.value.network_security_group_id
 
-  #  depends_on = [
-  #    azurerm_network_interface.network_interface
-  #  ]
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 resource "azurerm_lb" "lb" {
@@ -751,10 +762,10 @@ resource "azurerm_network_interface_backend_address_pool_association" "network_i
   ip_configuration_name   = each.value.ip_configuration_name
   backend_address_pool_id = each.value.backend_address_pool_id
 
-  #  depends_on = [
-  #    azurerm_network_interface.network_interface,
-  #    azurerm_virtual_machine.virtual_machine
-  #  ]
+  depends_on = [
+    azurerm_network_interface.network_interface,
+    azurerm_virtual_machine.virtual_machine
+  ]
 }
 
 resource "azurerm_lb_nat_rule" "lb_nat_rule" {
@@ -785,7 +796,16 @@ resource "azurerm_marketplace_agreement" "marketplace_agreement" {
   plan      = var.vm_sku
 }
 
+resource "azurerm_availability_set" "availability_set" {
+
+  for_each = local.availability_sets
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
+}
 resource "azurerm_virtual_machine" "virtual_machine" {
+
   for_each = local.vm_configs
 
   name                = each.value.name
@@ -846,7 +866,9 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     disable_password_authentication = false
   }
 
-  zones = [each.value.zone]
+  #zones = [each.value.zone]
+
+  availability_set_id = each.value.availability_set_id
 
   depends_on = [
     azurerm_network_interface.network_interface
@@ -854,7 +876,9 @@ resource "azurerm_virtual_machine" "virtual_machine" {
 }
 
 data "template_file" "custom_data" {
+
   for_each = local.vm_configs
+
   template = file("${path.module}/${each.value.config_template}")
   vars = {
     fgt_id            = each.value.name
@@ -877,9 +901,3 @@ data "template_file" "custom_data" {
     fgt_vnet          = var.vnet_address_range
   }
 }
-
-#resource "azurerm_role_assignment" "role_assignment" {
-#  scope                = data.azurerm_subscription.primary.id
-#  role_definition_name = "Reader"
-#  principal_id         = data.azurerm_client_config.example.object_id
-#}
