@@ -1,3 +1,40 @@
+resource "azurerm_marketplace_agreement" "marketplace_agreement_fortigate" {
+
+  count = var.fortinet_enabled ? 1 : 0
+
+  publisher = var.fortinet_vm_publisher
+  offer     = var.fortigate_vm_offer
+  plan      = var.fortigate_vm_sku
+}
+resource "azurerm_marketplace_agreement" "marketplace_agreement_fortiadc" {
+
+  count = var.fortinet_enabled ? 1 : 0
+
+  publisher = var.fortinet_vm_publisher
+  offer     = var.fortiadc_vm_offer
+  plan      = var.fortiadc_vm_sku
+}
+
+resource "random_id" "random_id" {
+
+  count = var.fortinet_enabled ? 1 : 0
+  keepers = {
+    resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
+  }
+
+  byte_length = 8
+}
+resource "azurerm_storage_account" "storage_account" {
+
+  count = var.fortinet_enabled ? 1 : 0
+
+  resource_group_name      = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
+  location                 = var.az_region
+  name                     = format("%s%s", "sadiag", "${random_id.random_id[count.index].hex}")
+  account_replication_type = "LRS"
+  account_tier             = "Standard"
+}
+
 module "fortigate" {
   count = var.fortinet_enabled ? 1 : 0
 
@@ -15,7 +52,7 @@ module "fortigate" {
   vm_password        = var.fortigate_vm_password
 
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
-  storage_account     = azurerm_storage_account.storage_account.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
   snet_ids = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
     "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
@@ -54,7 +91,7 @@ module "fortiadc" {
   vm_password        = var.fortiadc_vm_password
 
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
-  storage_account     = azurerm_storage_account.storage_account.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
   snet_ids = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
     "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
@@ -62,7 +99,6 @@ module "fortiadc" {
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
     "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
   }
-
   snet_address_ranges = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
     "trusted"         = module.network_hub.0.subnet-hub-trusted-address-range
@@ -74,20 +110,4 @@ module "fortiadc" {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"
     "license_b" = "${path.module}/${var.fortigate_b_license_file}"
   }
-}
-
-resource "random_id" "random_id" {
-  keepers = {
-    resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
-  }
-
-  byte_length = 8
-}
-resource "azurerm_storage_account" "storage_account" {
-
-  resource_group_name      = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
-  location                 = var.az_region
-  name                     = format("%s%s", "sadiag", "${random_id.random_id.hex}")
-  account_replication_type = "LRS"
-  account_tier             = "Standard"
 }

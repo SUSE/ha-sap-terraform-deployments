@@ -20,6 +20,13 @@ locals {
       resource_group_name = var.resource_group_name
       allocation_method   = "Static"
       sku                 = "Standard"
+    },
+    "pip-bastion-lb-fe" = {
+      name                = "pip-bastion-lb-fe"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+      allocation_method   = "Static"
+      sku                 = "Standard"
     }
   }
 
@@ -249,26 +256,43 @@ locals {
       network_security_group_id = azurerm_network_security_group.network_security_group["nsg-public"].id
     }
   }
+
   lbs = {
     "lb-fgt-external" = {
       name                                                 = "lb-fgt-external"
       location                                             = var.az_region
       resource_group_name                                  = var.resource_group_name
       sku                                                  = "standard"
-      frontend_ip_configuration_name                       = "lb-fgt-external-fe-ip-01"
-      frontend_ip_configuration_subnet_id                  = null
-      frontend_ip_configuration_private_ip_address_version = null
-      frontend_ip_configuration_public_ip_address_id       = azurerm_public_ip.public_ip["pip-fgt-v"].id
+
+      frontend_ip_configurations = [
+      {
+        name                 = "lb-fgt-external-fe-ip-01"
+        public_ip_address_id = azurerm_public_ip.public_ip["pip-fgt-v"].id
+        type                 = "public"
+      },
+      {
+        name                 = "lb-fgt-external-fe-ip-02"
+        public_ip_address_id = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].id
+        type                 = "public"
+      },
+    ]
     },
     "lb-fgt-internal" = {
       name                                                 = "lb-fgt-internal"
       location                                             = var.az_region
       resource_group_name                                  = var.resource_group_name
       sku                                                  = "standard"
-      frontend_ip_configuration_name                       = "lb-fgt-internal-fe-ip-01"
-      frontend_ip_configuration_subnet_id                  = var.snet_ids["trusted"]
-      frontend_ip_configuration_private_ip_address_version = "IPv4"
-      frontend_ip_configuration_public_ip_address_id       = null
+
+      frontend_ip_configurations = [
+        {
+          name                          = "lb-fgt-internal-fe-ip-01"
+          subnet_id                     = var.snet_ids["trusted"]
+          private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 4)
+          private_ip_address_allocation = "Static"
+          private_ip_address_version    = "IPv4"
+          type                          = "private"
+        }
+      ]
     }
   }
 
@@ -331,6 +355,19 @@ locals {
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
+    /*"lb-fgt-external-rule-22" = {
+      name                           = "lb-fgt-external-rule-22"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
+      protocol                       = "Tcp"
+      frontend_port                  = "22"
+      backend_port                   = "22"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
+      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      enable_floating_ip             = true
+      disable_outbound_snat          = true
+    },*/
     "lb-fgt-external-rule-10551" = {
       name                           = "lb-fgt-external-rule-10551"
       resource_group_name            = var.resource_group_name
@@ -360,14 +397,14 @@ locals {
   }
 
   lb_outbound_rules = {
-    /*"lb-fgt-external-rule-outboundall" = {
+    "lb-fgt-external-rule-outboundall" = {
       name                           = "lb-fgt-external-rule-outboundall"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "All"
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
-    }*/
+    }
   }
 
   network_interface_backend_address_pool_associations = {
@@ -452,15 +489,6 @@ locals {
       ip_configuration_name = "ipconfig1"
       nat_rule_id           = "lb-nat-rule-fgt-b-ssh-mgmt"
     }*/
-  }
-
-  storage_accounts = {
-    "st-diag" = {
-      name                     = "stdiag"
-      account_replication_type = "LRS"
-      account_tier             = "Standard"
-    }
-
   }
 
   availability_sets = {
@@ -685,7 +713,7 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   ]
 }
 
-resource "azurerm_lb" "lb" {
+/*resource "azurerm_lb" "lb" {
 
   for_each = local.lbs
 
@@ -699,6 +727,40 @@ resource "azurerm_lb" "lb" {
     subnet_id                  = each.value.frontend_ip_configuration_subnet_id
     private_ip_address_version = each.value.frontend_ip_configuration_private_ip_address_version
     public_ip_address_id       = each.value.frontend_ip_configuration_public_ip_address_id
+  }
+}*/
+
+resource "azurerm_lb" "lb" {
+
+  for_each = local.lbs
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
+  sku                 = each.value.sku
+
+  dynamic "frontend_ip_configuration" {
+    for_each = [
+      for fe_ip in each.value.frontend_ip_configurations : fe_ip
+      if fe_ip.type == "public"
+    ]
+    content {
+      name                          = frontend_ip_configuration.value.name
+      public_ip_address_id          = frontend_ip_configuration.value.public_ip_address_id
+    }
+  }
+  dynamic "frontend_ip_configuration" {
+    for_each = [
+      for fe_ip in each.value.frontend_ip_configurations : fe_ip
+      if fe_ip.type == "private"
+    ]
+    content {
+      name                          = frontend_ip_configuration.value.name
+      subnet_id                     = frontend_ip_configuration.value.subnet_id
+      private_ip_address            = frontend_ip_configuration.value.private_ip_address
+      private_ip_address_allocation = frontend_ip_configuration.value.private_ip_address_allocation
+      private_ip_address_version    = frontend_ip_configuration.value.private_ip_address_version
+    }
   }
 }
 
@@ -788,12 +850,6 @@ resource "azurerm_network_interface_nat_rule_association" "network_interface_nat
   network_interface_id  = azurerm_network_interface.network_interface[each.value.network_interface_id].id
   ip_configuration_name = each.value.ip_configuration_name
   nat_rule_id           = azurerm_lb_nat_rule.lb_nat_rule[each.value.nat_rule_id].id
-}
-
-resource "azurerm_marketplace_agreement" "marketplace_agreement" {
-  publisher = var.vm_publisher
-  offer     = var.vm_offer
-  plan      = var.vm_sku
 }
 
 resource "azurerm_availability_set" "availability_set" {
