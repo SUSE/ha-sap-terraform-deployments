@@ -345,12 +345,6 @@ resource "azurerm_network_interface_backend_address_pool_association" "network_i
   ]
 }
 
-resource "azurerm_marketplace_agreement" "marketplace_agreement" {
-  publisher = var.vm_publisher
-  offer     = var.vm_offer
-  plan      = var.vm_sku
-}
-
 resource "azurerm_availability_set" "availability_set" {
 
   for_each = local.availability_sets
