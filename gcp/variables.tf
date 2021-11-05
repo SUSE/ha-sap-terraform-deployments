@@ -784,6 +784,18 @@ variable "netweaver_cluster_fencing_mechanism" {
   }
 }
 
+variable "netweaver_cluster_vip_mechanism" {
+  description = "Mechanism used to manage the virtual IP address in the netweaver cluster. Options: load-balancer, route"
+  type        = string
+  default     = "load-balancer"
+  validation {
+    condition = (
+      can(regex("^(load-balancer|route)$", var.netweaver_cluster_vip_mechanism))
+    )
+    error_message = "Invalid Netweaver cluster vip mechanism. Options: load-balancer|route ."
+  }
+}
+
 variable "netweaver_nfs_share" {
   description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
   type        = string

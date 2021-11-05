@@ -3,6 +3,11 @@ variable "netweaver_ha_enabled" {
   type        = bool
 }
 
+variable "netweaver_cluster_vip_mechanism" {
+  description = "Mechanism used to manage the virtual IP address in the netweaver cluster."
+  type        = string
+}
+
 variable "netweaver_cluster_fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
   type        = string
