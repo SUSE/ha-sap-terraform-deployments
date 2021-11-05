@@ -51,6 +51,8 @@ module "fortigate" {
   vm_username        = var.fortigate_vm_username
   vm_password        = var.fortigate_vm_password
 
+  bastion_private_ip = cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5)
+
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
   snet_ids = {
