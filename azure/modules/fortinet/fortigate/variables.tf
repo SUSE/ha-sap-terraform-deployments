@@ -60,6 +60,10 @@ variable "vm_password" {
   type = string
 }
 
+variable "bastion_private_ip" {
+  type = string
+}
+
 variable "fortinet_licenses" {
   type = map(any)
 }

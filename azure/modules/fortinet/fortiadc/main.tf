@@ -80,10 +80,16 @@ locals {
       location                                             = var.az_region
       resource_group_name                                  = var.resource_group_name
       sku                                                  = "standard"
-      frontend_ip_configuration_name                       = "lb-fadc-internal-fe-ip-01"
-      frontend_ip_configuration_subnet_id                  = var.snet_ids["shared-services"]
-      frontend_ip_configuration_private_ip_address_version = "IPv4"
-      frontend_ip_configuration_public_ip_address_id       = null
+
+      frontend_ip_configurations = [
+        {
+          name                          = "lb-fadc-internal-fe-ip-01"
+          subnet_id                     = var.snet_ids["shared-services"]
+          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 4)
+          private_ip_address_allocation = "Static"
+          private_ip_address_version    = "IPv4"
+        }
+      ]
     }
   }
 
@@ -285,11 +291,28 @@ resource "azurerm_lb" "lb" {
   resource_group_name = each.value.resource_group_name
   sku                 = each.value.sku
 
-  frontend_ip_configuration {
-    name                       = each.value.frontend_ip_configuration_name
-    subnet_id                  = each.value.frontend_ip_configuration_subnet_id
-    private_ip_address_version = each.value.frontend_ip_configuration_private_ip_address_version
-    public_ip_address_id       = each.value.frontend_ip_configuration_public_ip_address_id
+  dynamic "frontend_ip_configuration" {
+    for_each = [
+      for fe_ip in each.value.frontend_ip_configurations : fe_ip
+      if lookup(fe_ip, "public_ip_address_id", null) != null
+    ]
+    content {
+      name                          = frontend_ip_configuration.value.name
+      public_ip_address_id          = frontend_ip_configuration.value.public_ip_address_id
+    }
+  }
+  dynamic "frontend_ip_configuration" {
+    for_each = [
+      for fe_ip in each.value.frontend_ip_configurations : fe_ip
+      if lookup(fe_ip, "private_ip_address", null) != null
+    ]
+    content {
+      name                          = frontend_ip_configuration.value.name
+      subnet_id                     = frontend_ip_configuration.value.subnet_id
+      private_ip_address            = frontend_ip_configuration.value.private_ip_address
+      private_ip_address_allocation = frontend_ip_configuration.value.private_ip_address_allocation
+      private_ip_address_version    = frontend_ip_configuration.value.private_ip_address_version
+    }
   }
 }
 

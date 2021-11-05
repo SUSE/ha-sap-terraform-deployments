@@ -355,19 +355,19 @@ locals {
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
-    /*"lb-fgt-external-rule-22" = {
+    "lb-fgt-external-rule-22" = {
       name                           = "lb-fgt-external-rule-22"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
       protocol                       = "Tcp"
       frontend_port                  = "22"
       backend_port                   = "22"
-      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
       enable_floating_ip             = true
       disable_outbound_snat          = true
-    },*/
+    },
     "lb-fgt-external-rule-10551" = {
       name                           = "lb-fgt-external-rule-10551"
       resource_group_name            = var.resource_group_name
@@ -539,22 +539,25 @@ locals {
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
 
-      fgt_license_file  = "${var.fortinet_licenses["license_a"]}"
-      fgt_ha_priority   = "255"
-      fgt_admins_port   = "443"
-      fgt_license_type  = var.vm_license
-      fgt_port1_ip      = cidrhost(var.snet_address_ranges["dmz"], 6)
-      fgt_port1_mask    = cidrnetmask(var.snet_address_ranges["dmz"])
-      fgt_port1_gateway = cidrhost(var.snet_address_ranges["dmz"], 1)
-      fgt_port2_ip      = cidrhost(var.snet_address_ranges["trusted"], 6)
-      fgt_port2_mask    = cidrnetmask(var.snet_address_ranges["trusted"])
-      fgt_port2_gateway = cidrhost(var.snet_address_ranges["trusted"], 1)
-      fgt_port3_ip      = cidrhost(var.snet_address_ranges["hasync"], 6)
-      fgt_port3_peerip  = cidrhost(var.snet_address_ranges["hasync"], 7)
-      fgt_port3_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
-      fgt_port4_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
-      fgt_port4_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      fgt_port4_gateway = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+      fgt_license_file    = "${var.fortinet_licenses["license_a"]}"
+      fgt_ha_priority     = "255"
+      fgt_admins_port     = "443"
+      fgt_license_type    = var.vm_license
+      fgt_port1_ip        = cidrhost(var.snet_address_ranges["dmz"], 6)
+      fgt_port1_mask      = cidrnetmask(var.snet_address_ranges["dmz"])
+      fgt_port1_gateway   = cidrhost(var.snet_address_ranges["dmz"], 1)
+      fgt_port2_ip        = cidrhost(var.snet_address_ranges["trusted"], 6)
+      fgt_port2_mask      = cidrnetmask(var.snet_address_ranges["trusted"])
+      fgt_port2_gateway   = cidrhost(var.snet_address_ranges["trusted"], 1)
+      fgt_port3_ip        = cidrhost(var.snet_address_ranges["hasync"], 6)
+      fgt_port3_peerip    = cidrhost(var.snet_address_ranges["hasync"], 7)
+      fgt_port3_mask      = cidrnetmask(var.snet_address_ranges["hasync"])
+      fgt_port4_ip        = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
+      fgt_port4_mask      = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      fgt_port4_gateway   = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+      fgt_vnet            = var.vnet_address_range
+      bastion_frontend_ip = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
+      bastion_private_ip  = var.bastion_private_ip
     },
     "vm-fgt-b" = {
       name                = "vm-fgt-b"
@@ -595,22 +598,25 @@ locals {
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
 
-      fgt_license_file  = "${var.fortinet_licenses["license_b"]}"
-      fgt_ha_priority   = "1"
-      fgt_admins_port   = "443"
-      fgt_license_type  = var.vm_license
-      fgt_port1_ip      = cidrhost(var.snet_address_ranges["dmz"], 7)
-      fgt_port1_mask    = cidrnetmask(var.snet_address_ranges["dmz"])
-      fgt_port1_gateway = cidrhost(var.snet_address_ranges["dmz"], 1)
-      fgt_port2_ip      = cidrhost(var.snet_address_ranges["trusted"], 7)
-      fgt_port2_mask    = cidrnetmask(var.snet_address_ranges["trusted"])
-      fgt_port2_gateway = cidrhost(var.snet_address_ranges["trusted"], 1)
-      fgt_port3_ip      = cidrhost(var.snet_address_ranges["hasync"], 7)
-      fgt_port3_peerip  = cidrhost(var.snet_address_ranges["hasync"], 6)
-      fgt_port3_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
-      fgt_port4_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
-      fgt_port4_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      fgt_port4_gateway = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+      fgt_license_file    = "${var.fortinet_licenses["license_b"]}"
+      fgt_ha_priority     = "1"
+      fgt_admins_port     = "443"
+      fgt_license_type    = var.vm_license
+      fgt_port1_ip        = cidrhost(var.snet_address_ranges["dmz"], 7)
+      fgt_port1_mask      = cidrnetmask(var.snet_address_ranges["dmz"])
+      fgt_port1_gateway   = cidrhost(var.snet_address_ranges["dmz"], 1)
+      fgt_port2_ip        = cidrhost(var.snet_address_ranges["trusted"], 7)
+      fgt_port2_mask      = cidrnetmask(var.snet_address_ranges["trusted"])
+      fgt_port2_gateway   = cidrhost(var.snet_address_ranges["trusted"], 1)
+      fgt_port3_ip        = cidrhost(var.snet_address_ranges["hasync"], 7)
+      fgt_port3_peerip    = cidrhost(var.snet_address_ranges["hasync"], 6)
+      fgt_port3_mask      = cidrnetmask(var.snet_address_ranges["hasync"])
+      fgt_port4_ip        = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
+      fgt_port4_mask      = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
+      fgt_port4_gateway   = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 1)
+      fgt_vnet            = var.vnet_address_range
+      bastion_frontend_ip = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].id
+      bastion_private_ip  = var.bastion_private_ip
     }
   }
 }
@@ -713,23 +719,6 @@ resource "azurerm_network_interface_security_group_association" "network_interfa
   ]
 }
 
-/*resource "azurerm_lb" "lb" {
-
-  for_each = local.lbs
-
-  name                = each.value.name
-  location            = each.value.location
-  resource_group_name = each.value.resource_group_name
-  sku                 = each.value.sku
-
-  frontend_ip_configuration {
-    name                       = each.value.frontend_ip_configuration_name
-    subnet_id                  = each.value.frontend_ip_configuration_subnet_id
-    private_ip_address_version = each.value.frontend_ip_configuration_private_ip_address_version
-    public_ip_address_id       = each.value.frontend_ip_configuration_public_ip_address_id
-  }
-}*/
-
 resource "azurerm_lb" "lb" {
 
   for_each = local.lbs
@@ -742,7 +731,7 @@ resource "azurerm_lb" "lb" {
   dynamic "frontend_ip_configuration" {
     for_each = [
       for fe_ip in each.value.frontend_ip_configurations : fe_ip
-      if fe_ip.type == "public"
+      if lookup(fe_ip, "public_ip_address_id", null) != null
     ]
     content {
       name                          = frontend_ip_configuration.value.name
@@ -752,7 +741,7 @@ resource "azurerm_lb" "lb" {
   dynamic "frontend_ip_configuration" {
     for_each = [
       for fe_ip in each.value.frontend_ip_configurations : fe_ip
-      if fe_ip.type == "private"
+      if lookup(fe_ip, "private_ip_address", null) != null
     ]
     content {
       name                          = frontend_ip_configuration.value.name
@@ -937,23 +926,25 @@ data "template_file" "custom_data" {
 
   template = file("${path.module}/${each.value.config_template}")
   vars = {
-    fgt_id            = each.value.name
-    fgt_license_file  = each.value.fgt_license_file
-    fgt_ha_priority   = each.value.fgt_ha_priority
-    fgt_admins_port   = each.value.fgt_admins_port
-    fgt_license_type  = each.value.fgt_license_type
-    fgt_port1_ip      = each.value.fgt_port1_ip
-    fgt_port1_mask    = each.value.fgt_port1_mask
-    fgt_port1_gateway = each.value.fgt_port1_gateway
-    fgt_port2_ip      = each.value.fgt_port2_ip
-    fgt_port2_mask    = each.value.fgt_port2_mask
-    fgt_port2_gateway = each.value.fgt_port2_gateway
-    fgt_port3_ip      = each.value.fgt_port3_ip
-    fgt_port3_mask    = each.value.fgt_port3_mask
-    fgt_port3_peerip  = each.value.fgt_port3_peerip
-    fgt_port4_ip      = each.value.fgt_port4_ip
-    fgt_port4_mask    = each.value.fgt_port4_mask
-    fgt_port4_gateway = each.value.fgt_port4_gateway
-    fgt_vnet          = var.vnet_address_range
+    fgt_id              = each.value.name
+    fgt_license_file    = each.value.fgt_license_file
+    fgt_ha_priority     = each.value.fgt_ha_priority
+    fgt_admins_port     = each.value.fgt_admins_port
+    fgt_license_type    = each.value.fgt_license_type
+    fgt_port1_ip        = each.value.fgt_port1_ip
+    fgt_port1_mask      = each.value.fgt_port1_mask
+    fgt_port1_gateway   = each.value.fgt_port1_gateway
+    fgt_port2_ip        = each.value.fgt_port2_ip
+    fgt_port2_mask      = each.value.fgt_port2_mask
+    fgt_port2_gateway   = each.value.fgt_port2_gateway
+    fgt_port3_ip        = each.value.fgt_port3_ip
+    fgt_port3_mask      = each.value.fgt_port3_mask
+    fgt_port3_peerip    = each.value.fgt_port3_peerip
+    fgt_port4_ip        = each.value.fgt_port4_ip
+    fgt_port4_mask      = each.value.fgt_port4_mask
+    fgt_port4_gateway   = each.value.fgt_port4_gateway
+    fgt_vnet            = each.value.fgt_vnet
+    bastion_frontend_ip = each.value.bastion_frontend_ip
+    bastion_private_ip  = var.bastion_private_ip
   }
 }
