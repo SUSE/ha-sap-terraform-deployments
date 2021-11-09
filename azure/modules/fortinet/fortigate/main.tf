@@ -1,5 +1,5 @@
 locals {
-  fgt_public_ips = {
+  public_ips = {
     "pip-fgt-v" = {
       name                = "pip-fgt-v"
       location            = var.az_region
@@ -431,7 +431,7 @@ locals {
   }
 
   lb_nat_rules = {
-    /*"lb-nat-rule-fgt-a-https-mgmt" = {
+    "lb-nat-rule-fgt-a-https-mgmt" = {
       name                           = "lb-nat-rule-fgt-a-https-mgmt"
       resource_group_name            = var.resource_group_name
       loadbalancer_id                = "lb-fgt-external"
@@ -465,11 +465,11 @@ locals {
       frontend_port                  = 50022
       backend_port                   = 22
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
-    }*/
+    }
   }
 
   network_interface_nat_rule_associations = {
-    /*"lb-nat-rule-fgt-a-https-mgmt-association" = {
+    "lb-nat-rule-fgt-a-https-mgmt-association" = {
       network_interface_id  = "nic-fortigate_a_4"
       ip_configuration_name = "ipconfig1"
       nat_rule_id           = "lb-nat-rule-fgt-a-https-mgmt"
@@ -488,7 +488,7 @@ locals {
       network_interface_id  = "nic-fortigate_b_4"
       ip_configuration_name = "ipconfig1"
       nat_rule_id           = "lb-nat-rule-fgt-b-ssh-mgmt"
-    }*/
+    }
   }
 
   availability_sets = {
@@ -623,7 +623,7 @@ locals {
 
 resource "azurerm_public_ip" "public_ip" {
 
-  for_each = local.fgt_public_ips
+  for_each = local.public_ips
 
   name                = each.value.name
   location            = each.value.location
@@ -849,6 +849,7 @@ resource "azurerm_availability_set" "availability_set" {
   location            = each.value.location
   resource_group_name = each.value.resource_group_name
 }
+
 resource "azurerm_virtual_machine" "virtual_machine" {
 
   for_each = local.vm_configs

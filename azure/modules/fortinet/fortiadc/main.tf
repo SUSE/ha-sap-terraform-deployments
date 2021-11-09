@@ -1,4 +1,39 @@
 locals {
+
+  fadc-custom-data-a = <<CUSTOM_DATA
+    {
+      "storage-account" : "safadc8c2a22b8aa8cc304",
+      "container" : "sc-fadc",
+      "license" : "FADV040000216490.lic",
+      "config" : "fadc-config-a.txt"
+    }
+  CUSTOM_DATA
+
+  fadc-custom-data-b = <<CUSTOM_DATA
+    {
+      "storage-account" : "safadc8c2a22b8aa8cc304",
+      "container" : "sc-fadc",
+      "license" : "FADV040000216491.lic",
+      "config" : "fadc-config-b.txt"
+    }
+  CUSTOM_DATA
+
+  public_ips = {
+    "pip-fadc-a" = {
+      name                = "pip-fadc-a"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+      allocation_method   = "Static"
+      sku                 = "Standard"
+    },
+    "pip-fadc-b" = {
+      name                = "pip-fadc-b"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+      allocation_method   = "Static"
+      sku                 = "Standard"
+    }
+  }
   network_interfaces = {
     "nic-fortiadc_a_1" = {
       name                                           = "nic-fortiadc_a_1"
@@ -7,7 +42,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
+      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-a"].id
       ip_configuration_subnet_id                     = var.snet_ids["shared-services"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 8)
@@ -43,7 +78,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
+      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-b"].id
       ip_configuration_subnet_id                     = var.snet_ids["shared-services"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 9)
@@ -74,6 +109,55 @@ locals {
     }
   }
 
+  storage_accounts = {
+    "sa-fortinet" = {
+      name                     = format("%s%s", "safadc", "${var.random_id}")
+      location                 = var.az_region
+      resource_group_name      = var.resource_group_name
+      account_tier             = "Standard"
+      account_replication_type = "LRS"
+      allow_blob_public_access = true
+    } 
+  }
+
+  storage_containers = {
+    "sc-fadc" = {
+      name                  = "sc-fadc"
+      storage_account_name  = azurerm_storage_account.storage_account["sa-fortinet"].name
+      container_access_type = "blob"
+    }
+  }
+
+  storage_blobs = {
+    "sb-fadc-license-a" = {
+      name                   = var.fortinet_licenses["license_a"]
+      storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
+      storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
+      type                   = "Block"
+      source                 = "${path.module}/${var.fortinet_licenses["license_a"]}"
+    },
+    "sb-fadc-license-b" = {
+      name                   = var.fortinet_licenses["license_b"] 
+      storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
+      storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
+      type                   = "Block"
+      source                 = "${path.module}/${var.fortinet_licenses["license_b"]}"
+    },
+    "sb-fadc-config-a" = {
+      name                   = "fadc-config-a.txt"
+      storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
+      storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
+      type                   = "Block"
+      source                 = "${path.module}/fadc-config-a.txt"
+    },
+    "sb-fadc-config-b" = {
+      name                   = "fadc-config-b.txt"
+      storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
+      storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
+      type                   = "Block"
+      source                 = "${path.module}/fadc-config-b.txt"
+    }
+  }
   lbs = {
     "lb-fadc-internal" = {
       name                                                 = "lb-fadc-internal"
@@ -184,6 +268,7 @@ locals {
       os_profile_computer_name  = "vm-fadc-a"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
+      os_profile_custom_data    = base64encode(local.fadc-custom-data-a)
 
       zone = "1"
 
@@ -240,6 +325,7 @@ locals {
       os_profile_computer_name  = "vm-fadc-b"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
+      os_profile_custom_data    = base64encode(local.fadc-custom-data-b)
 
       zone = "1"
 
@@ -264,6 +350,17 @@ locals {
   }
 }
 
+resource "azurerm_public_ip" "public_ip" {
+
+  for_each = local.public_ips
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
+  allocation_method   = each.value.allocation_method
+  sku                 = each.value.sku
+}
+
 resource "azurerm_network_interface" "network_interface" {
   for_each = local.network_interfaces
 
@@ -280,6 +377,38 @@ resource "azurerm_network_interface" "network_interface" {
     private_ip_address            = each.value.ip_configuration_private_ip_address
     public_ip_address_id          = each.value.ip_configuration_public_ip_address_id
   }
+}
+
+resource "azurerm_storage_account" "storage_account" {
+
+  for_each = local.storage_accounts
+
+  name                     = each.value.name
+  location                 = each.value.location
+  resource_group_name      = each.value.resource_group_name
+  account_tier             = each.value.account_tier
+  account_replication_type = each.value.account_replication_type
+  allow_blob_public_access = each.value.allow_blob_public_access
+}
+
+resource "azurerm_storage_container" "storage_container" {
+
+  for_each = local.storage_containers
+
+  name                  = each.value.name
+  storage_account_name  = each.value.storage_account_name
+  container_access_type = each.value.container_access_type
+}
+
+resource "azurerm_storage_blob" "storage_blob" {
+
+  for_each = local.storage_blobs
+
+  name                   = each.value.name                  
+  storage_account_name   = each.value.storage_account_name  
+  storage_container_name = each.value.storage_container_name
+  type                   = each.value.type                  
+  source                 = each.value.source                
 }
 
 resource "azurerm_lb" "lb" {
@@ -431,7 +560,8 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     computer_name  = each.value.os_profile_computer_name
     admin_username = each.value.os_profile_admin_username
     admin_password = each.value.os_profile_admin_password
-    custom_data    = data.template_file.custom_data[each.key].rendered
+    #custom_data    = data.template_file.custom_data[each.key].rendered
+    custom_data    = each.value.os_profile_custom_data
   }
 
   os_profile_linux_config {
