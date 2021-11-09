@@ -27,6 +27,10 @@ variable "storage_account" {
   type        = string
 }
 
+variable "random_id" {
+  type = string
+}
+
 variable "vnet_address_range" {
   type = string
 }

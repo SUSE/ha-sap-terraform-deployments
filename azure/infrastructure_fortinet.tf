@@ -94,6 +94,8 @@ module "fortiadc" {
 
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
+
+  random_id = random_id.random_id.0.hex
   snet_ids = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
     "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
@@ -109,7 +111,7 @@ module "fortiadc" {
     "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
   }
   fortinet_licenses = {
-    "license_a" = "${path.module}/${var.fortigate_a_license_file}"
-    "license_b" = "${path.module}/${var.fortigate_b_license_file}"
+    "license_a" = "${path.module}/${var.fortiadc_a_license_file}"
+    "license_b" = "${path.module}/${var.fortiadc_b_license_file}"
   }
 }
