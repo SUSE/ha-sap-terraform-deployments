@@ -155,4 +155,8 @@ module "bastion" {
   storage_account     = var.resource_group_hub_name == "" ? azurerm_storage_account.mytfstorageacc.primary_blob_endpoint : module.network_hub.0.rg_hub_primary_blob_endpoint
   snet_id             = local.subnet_bastion_id
   snet_address_range  = local.subnet_bastion_address_range
+
+  fortinet_enabled              = var.fortinet_enabled
+  fortinet_bastion_public_ip    = local.fortinet_bastion_public_ip
+  fortinet_bastion_public_ip_id = local.fortinet_bastion_public_ip_id
 }
