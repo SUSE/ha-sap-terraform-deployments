@@ -1,3 +1,8 @@
+locals {
+  fortinet_bastion_public_ip    = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip : ""
+  fortinet_bastion_public_ip_id = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip_id : ""
+}
+
 resource "azurerm_marketplace_agreement" "marketplace_agreement_fortigate" {
 
   count = var.fortinet_enabled ? 1 : 0
