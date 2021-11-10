@@ -75,7 +75,7 @@ resource "azurerm_network_interface" "bastion" {
     subnet_id                     = var.snet_id == "" ? azurerm_subnet.bastion[0].id : var.snet_id
     private_ip_address_allocation = "static"
     private_ip_address            = local.private_ip_address
-    public_ip_address_id          = !var.fortinet_enabled ? azurerm_public_ip.bastion[0].id : var.fortinet_bastion_public_ip_id
+    public_ip_address_id          = !var.fortinet_enabled ? azurerm_public_ip.bastion[0].id : ""
   }
 
   tags = {
