@@ -611,3 +611,32 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_sapexe_folder   =  "download_basket"
 # Additional media archives or folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
+
+#############################
+# Fortinet related variables
+#############################
+
+#fortinet_enabled = false
+#fortinet_licenses = {
+#  "license_a" = "license_a.lic"
+#  "license_b" = "license_b.lic"
+#}
+#fortinet_vm_publisher = "fortinet"
+#fortinet_vm_license_type = "byol"
+#fortigate_a_license_file = "license_fortigate_a.lic"
+#fortigate_b_license_file = "license_fortigate_b.lic"
+#fortigate_vm_offer = "fortinet_fortigate-vm_v5"
+#fortigate_vm_sku = "fortinet_fg-vm"
+#fortigate_vm_size = "Standard_F4s"
+#fortigate_vm_version = "7.0.1"
+#fortigate_vm_username = "azureuser"
+#fortigate_vm_password = "Password123!!"
+#fortiadc_a_license_file = "license_fortiadc_a.lic"
+#fortiadc_b_license_file = "license_fortiadc_b.lic"
+#fortiadc_vm_offer = "fortinet-fortiadc"
+#fortiadc_vm_sku = "fad-vm-byol"
+#fortiadc_vm_size = "Standard_F4s"
+#fortiadc_vm_version = "6.1.3"
+#fortiadc_vm_username = "azureuser"
+#fortiadc_vm_password = "Password123!!"
+#fortinet_bastion_private_ip = "10.73.254.5"
