@@ -14,6 +14,8 @@ resource "null_resource" "bastion_provisioner" {
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["bastion_private_key"]
+    # on fortinet, a default timeout of 5m is not enough to bootstrap everything
+    timeout     = "60m"
   }
 
   provisioner "file" {

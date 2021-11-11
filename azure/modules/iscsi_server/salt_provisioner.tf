@@ -14,6 +14,8 @@ resource "null_resource" "iscsi_provisioner" {
     bastion_host        = var.bastion_host
     bastion_user        = var.common_variables["authorized_user"]
     bastion_private_key = var.common_variables["bastion_private_key"]
+    # on fortinet, a default timeout of 5m is not enough to bootstrap everything
+    timeout             = "60m"
   }
 
   provisioner "file" {
