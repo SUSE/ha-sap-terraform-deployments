@@ -2,40 +2,7 @@ locals {
 
   fadc-license_a-basename = trimprefix(var.fortinet_licenses["license_a"], "./")
   fadc-license_b-basename = trimprefix(var.fortinet_licenses["license_b"], "./")
-  fadc-cloudinit-a = <<CLOUDINIT
-    {
-      "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
-      "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
-      "license" : "${local.fadc-license_a-basename}",
-      "config" : "fadc-config-a.txt"
-    }
-  CLOUDINIT
 
-  fadc-cloudinit-b = <<CLOUDINIT
-    {
-      "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
-      "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
-      "license" : "${local.fadc-license_b-basename}",
-      "config" : "fadc-config-b.txt"
-    }
-  CLOUDINIT
-
-  public_ips = {
-    "pip-fadc-a" = {
-      name                = "pip-fadc-a"
-      location            = var.az_region
-      resource_group_name = var.resource_group_name
-      allocation_method   = "Static"
-      sku                 = "Standard"
-    },
-    "pip-fadc-b" = {
-      name                = "pip-fadc-b"
-      location            = var.az_region
-      resource_group_name = var.resource_group_name
-      allocation_method   = "Static"
-      sku                 = "Standard"
-    }
-  }
   network_interfaces = {
     "nic-fortiadc_a_1" = {
       name                                           = "nic-fortiadc_a_1"
@@ -68,7 +35,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-a"].id
+      ip_configuration_public_ip_address_id          = null
       ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 8)
@@ -104,7 +71,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-b"].id
+      ip_configuration_public_ip_address_id          = null
       ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 9)
@@ -270,18 +237,13 @@ locals {
       os_profile_computer_name  = "vm-fadc-a"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
-      os_profile_custom_data    = base64encode(local.fadc-cloudinit-a)
+      os_profile_custom_data    = base64encode(local.fadc_configs["fadc-cloudinit-a"].config)
 
       zone = "1"
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
 
-      fadc-cloudinit-a = <<FADCCONFIG
-        config system global
-          set hostname vm-fadc-a
-          set admin-idle-timeout 120
-        end
-      FADCCONFIG
+
     },
     "vm-fadc-b" = {
       name                = "vm-fadc-b"
@@ -317,48 +279,65 @@ locals {
       os_profile_computer_name  = "vm-fadc-b"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
-      os_profile_custom_data    = base64encode(local.fadc-cloudinit-b)
+      os_profile_custom_data    = base64encode(local.fadc_configs["fadc-cloudinit-b"].config)
 
       zone = "1"
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
-
-      fadc-cloudinit-b = <<FADCCONFIG
+    }
+  }
+  fadc_configs = {
+    "fadc-config-a" = {
+      
+      name = "fadc-config-a"
+      config = <<FADCCONFIG
+        config system global
+          set hostname vm-fadc-a
+          set admin-idle-timeout 120
+        end
+        FADCCONFIG
+    },
+    "fadc-config-b" = {
+      
+      name = "fadc-config-b"
+      config = <<FADCCONFIG
         config system global
           set hostname vm-fadc-b
           set admin-idle-timeout 120
         end
-      FADCCONFIG
+        FADCCONFIG
+    },
+    "fadc-cloudinit-a" = {
+      name = "fadc-cloudinit-a"
+      config = <<CLOUDINIT
+        {
+          "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
+          "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
+          "license" : "${local.fadc-license_a-basename}",
+          "config" : "fadc-config-a.txt"
+        }
+      CLOUDINIT
+    },
+      "fadc-cloudinit-b" = {
+      name = "fadc-cloudinit-b"
+      config = <<CLOUDINIT
+        {
+          "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
+          "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
+          "license" : "${local.fadc-license_a-basename}",
+          "config" : "fadc-config-b.txt"
+        }
+      CLOUDINIT
     }
   }
 }
 
-resource "local_file" "file_fadca_config" {
-  filename = "${path.module}/fadc-config-a.txt"
-  content  = local.vm_configs["vm-fadc-a"]["fadc-cloudinit-a"]
-}
-resource "local_file" "file_fadcb_config" {
-  filename = "${path.module}/fadc-config-b.txt"
-  content  = local.vm_configs["vm-fadc-b"]["fadc-cloudinit-b"]
-}
+resource "local_file" "file" {
 
-resource "local_file" "file_fadca_init_config" {
-  filename = "${path.module}/fadc-init_config-a.txt"
-  content  = local.fadc-cloudinit-a
-}
-resource "local_file" "file_fadcb_init_config" {
-  filename = "${path.module}/fadc-init_config-b.txt"
-  content  = local.fadc-cloudinit-b
-}
-resource "azurerm_public_ip" "public_ip" {
+  for_each = local.fadc_configs
 
-  for_each = local.public_ips
-
-  name                = each.value.name
-  location            = each.value.location
-  resource_group_name = each.value.resource_group_name
-  allocation_method   = each.value.allocation_method
-  sku                 = each.value.sku
+  filename = "${path.module}/${each.value.name}.txt"
+  content  = each.value.config
 }
 
 resource "azurerm_network_interface" "network_interface" {
