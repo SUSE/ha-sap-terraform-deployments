@@ -156,6 +156,7 @@ module "bastion_on_destroy" {
   instance_ids = azurerm_virtual_machine.bastion.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = data.azurerm_public_ip.bastion.*.ip_address
+  public_ips   = !var.fortinet_enabled ? data.azurerm_public_ip.bastion.*.ip_address : [var.fortinet_bastion_public_ip]
+
   dependencies = [data.azurerm_public_ip.bastion]
 }
