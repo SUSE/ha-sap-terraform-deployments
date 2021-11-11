@@ -5,7 +5,7 @@
 {%- set node = grains['name_prefix'] ~ '%02d' % num %}
 wait_until_ssh_is_ready_{{ node }}:
   cmd.run:
-    - name: until ssh {{ node }} "rpm -q saphanabootstrap-formula";do sleep 30;done
+    - name: until ssh -o ConnectTimeout=3 -o PreferredAuthentications=publickey {{ node }} "rpm -q saphanabootstrap-formula";do sleep 30;done
     - output_loglevel: quiet
     - timeout: 1200
 {%- endfor %}
@@ -14,7 +14,7 @@ wait_until_ssh_is_ready_{{ node }}:
 {%- set node = grains['name_prefix'] ~ 'mm' %}
 wait_until_ssh_is_ready_{{ node }}:
   cmd.run:
-    - name: until ssh {{ node }} "rpm -q saphanabootstrap-formula";do sleep 30;done
+    - name: until ssh -o ConnectTimeout=3 -o PreferredAuthentications=publickey {{ node }} "rpm -q saphanabootstrap-formula";do sleep 30;done
     - output_loglevel: quiet
     - timeout: 1200
 {%- endif %}
