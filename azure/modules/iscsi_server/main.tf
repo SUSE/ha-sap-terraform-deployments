@@ -22,6 +22,7 @@ resource "azurerm_network_interface" "iscsisrv" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "iscsi_srv"
   }
 }
 
@@ -35,6 +36,7 @@ resource "azurerm_public_ip" "iscsisrv" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "iscsi_srv"
   }
 }
 
@@ -55,6 +57,7 @@ resource "azurerm_image" "iscsi_srv" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "iscsi_srv"
   }
 }
 
