@@ -42,6 +42,18 @@ output "subnet_hub_mgmt_address_range" {
   value = local.subnet_mgmt_address_range
 }
 
+output "subnet_hub_mon_name" {
+  value = local.subnet_mon_name
+}
+
+output "subnet_hub_mon_id" {
+  value = local.subnet_mon_id
+}
+
+output "subnet_hub_mon_address_range" {
+  value = local.subnet_mon_address_range
+}
+
 output "subnet_hub_vnet_gateway" {
   value = azurerm_virtual_network_gateway.hub-vnet-gateway
 }

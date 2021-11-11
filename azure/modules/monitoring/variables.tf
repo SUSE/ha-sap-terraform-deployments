@@ -66,3 +66,18 @@ variable "monitoring_srv_ip" {
   type        = string
   default     = ""
 }
+
+variable "vnet_name" {
+  description = "Virtual network where the monitoring subnet will be created"
+  type        = string
+}
+
+variable "snet_id" {
+  description = "Existing Virtual subnet ID where the monitoring subnet will be created"
+  type        = string
+  default     = ""
+}
+
+variable "snet_address_range" {
+  description = "Subnet address range of the monitoring subnet"
+}
