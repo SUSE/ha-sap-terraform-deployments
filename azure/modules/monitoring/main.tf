@@ -25,6 +25,7 @@ resource "azurerm_network_interface" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 
@@ -38,6 +39,7 @@ resource "azurerm_public_ip" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 
@@ -58,6 +60,7 @@ resource "azurerm_image" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 

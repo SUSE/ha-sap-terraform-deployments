@@ -80,6 +80,7 @@ resource "azurerm_network_interface" "bastion" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "bastion"
   }
 }
 
@@ -93,6 +94,7 @@ resource "azurerm_public_ip" "bastion" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "bastion"
   }
 }
 

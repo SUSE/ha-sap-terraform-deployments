@@ -40,6 +40,7 @@ resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -54,6 +55,7 @@ resource "azurerm_availability_set" "netweaver-app-availability-set" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -81,6 +83,7 @@ resource "azurerm_lb" "netweaver-load-balancer" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -201,6 +204,7 @@ resource "azurerm_public_ip" "netweaver" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -257,6 +261,7 @@ resource "azurerm_network_interface" "netweaver" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -277,6 +282,7 @@ resource "azurerm_image" "netweaver-image" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
   }
 }
 
@@ -314,6 +320,11 @@ resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
   #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
   #   replication_frequency     = "10minutes"
   # }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
+  }
 }
 
 # APP server disk
@@ -326,6 +337,11 @@ resource "azurerm_managed_disk" "app_server_disk" {
   storage_account_type = var.data_disk_type
   create_option        = "Empty"
   disk_size_gb         = var.data_disk_size
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "netweaver_node"
+  }
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "app_server_disk" {
