@@ -1,6 +1,7 @@
 locals {
   fortinet_bastion_public_ip    = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip : ""
   fortinet_bastion_public_ip_id = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip_id : ""
+  bastion_private_ip            = var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip
 }
 
 resource "azurerm_marketplace_agreement" "marketplace_agreement_fortigate" {
@@ -56,7 +57,7 @@ module "fortigate" {
   vm_username        = var.fortigate_vm_username
   vm_password        = var.fortigate_vm_password
 
-  bastion_private_ip = cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5)
+  bastion_private_ip = local.bastion_private_ip
 
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
