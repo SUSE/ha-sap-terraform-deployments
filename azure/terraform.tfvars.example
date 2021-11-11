@@ -612,31 +612,68 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Additional media archives or folders (added in start_dir.cd), relative to the netweaver_storage_account mounting point
 #netweaver_additional_dvds = ["dvd1", "dvd2"]
 
-#############################
-# Fortinet related variables
-#############################
+## Fortinet Deployment
 
-#fortinet_enabled = false
-#fortinet_licenses = {
-#  "license_a" = "license_a.lic"
-#  "license_b" = "license_b.lic"
-#}
-#fortinet_vm_publisher = "fortinet"
-#fortinet_vm_license_type = "byol"
-#fortigate_a_license_file = "license_fortigate_a.lic"
-#fortigate_b_license_file = "license_fortigate_b.lic"
-#fortigate_vm_offer = "fortinet_fortigate-vm_v5"
-#fortigate_vm_sku = "fortinet_fg-vm"
-#fortigate_vm_size = "Standard_F4s"
-#fortigate_vm_version = "7.0.1"
-#fortigate_vm_username = "azureuser"
-#fortigate_vm_password = "Password123!!"
-#fortiadc_a_license_file = "license_fortiadc_a.lic"
-#fortiadc_b_license_file = "license_fortiadc_b.lic"
-#fortiadc_vm_offer = "fortinet-fortiadc"
-#fortiadc_vm_sku = "fad-vm-byol"
-#fortiadc_vm_size = "Standard_F4s"
-#fortiadc_vm_version = "6.1.3"
-#fortiadc_vm_username = "azureuser"
-#fortiadc_vm_password = "Password123!!"
-#fortinet_bastion_private_ip = "10.73.254.5"
+## When the fortinet_enabled var is set to true, several deployments and configurations take place
+##
+## Two FortiGate NGFW appliance VMs are deployed in an Active/Passive configuration each with 4 interfaces
+## Two FortiADC appliance VMs are deployed in an Active/Active configuration each with 3 interfaces
+## Five subnets are added to the Hub vnet
+##   dmz
+##   trusted
+##   hasync
+##   fortinet-mgmt
+##   shared-services
+## Two Storage Accounts
+##   Storage account for FortiGate and FortiADC boot diagnostics and serial console access
+##   Storage account for FortiADC cloudinit files and licenses
+
+## Is the Fortinet infrastructure beiing deployed true | false
+## Fortinet components are only deployed if the SUSE/SAP deployment network is hub/spoke
+# fortinet_enabled         = true
+
+## Fortinet VM image publisher
+# fortinet_vm_publisher    = "fortinet"
+
+## Fortinet VM license type, applies to FortiGates and FortiADCs
+# fortinet_vm_license_type = "byol"
+
+## FortiGate VM License files. Files should be in the root module directory
+# fortigate_a_license_file = "FGVM8VTM21000779.lic"
+# fortigate_b_license_file = "FGVM8VTM21000780.lic"
+
+## FortiGate VM Azure Image Offer
+# fortigate_vm_offer       = "fortinet_fortigate-vm_v5"
+
+## FortiGate VM Image Plan/Sku
+# fortigate_vm_sku         = "fortinet_fg-vm"
+
+## FortiGate VM Azure Instance Size
+# fortigate_vm_size        = "Standard_F4s"
+
+## FortiGate Version
+# fortigate_vm_version     = "7.0.2"
+
+## FortiGate Credentials
+# fortigate_vm_username    = "azureuser"
+# fortigate_vm_password    = "Password123!!"
+
+## FortiADC VM License files. Files should be in the root module directory
+# fortiadc_a_license_file = "FADV040000216490.lic"
+# fortiadc_b_license_file = "FADV040000216491.lic"
+
+## FortiADC VM Azure Image Offer
+# fortiadc_vm_offer       = "fortinet-fortiadc"
+
+## FortiADC VM Image Plan/Sku
+# fortiadc_vm_sku         = "fad-vm-byol"
+
+## FortiADC VM Azure Instance Size
+# fortiadc_vm_size        = "Standard_F4s"
+
+## FortiADC Version
+# fortiadc_vm_version     = "6.1.3"
+
+## FortiADC Credentials
+# fortiadc_vm_username    = "azureuser"
+# fortiadc_vm_password    = "Password123!!"

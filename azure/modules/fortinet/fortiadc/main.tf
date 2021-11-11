@@ -1,22 +1,24 @@
 locals {
 
-  fadc-custom-data-a = <<CUSTOM_DATA
+  fadc-license_a-basename = trimprefix(var.fortinet_licenses["license_a"], "./")
+  fadc-license_b-basename = trimprefix(var.fortinet_licenses["license_b"], "./")
+  fadc-cloudinit-a = <<CLOUDINIT
     {
-      "storage-account" : "safadc8c2a22b8aa8cc304",
-      "container" : "sc-fadc",
-      "license" : "FADV040000216490.lic",
+      "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
+      "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
+      "license" : "${local.fadc-license_a-basename}",
       "config" : "fadc-config-a.txt"
     }
-  CUSTOM_DATA
+  CLOUDINIT
 
-  fadc-custom-data-b = <<CUSTOM_DATA
+  fadc-cloudinit-b = <<CLOUDINIT
     {
-      "storage-account" : "safadc8c2a22b8aa8cc304",
-      "container" : "sc-fadc",
-      "license" : "FADV040000216491.lic",
+      "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
+      "container" : "${azurerm_storage_container.storage_container["sc-fadc"].name}",
+      "license" : "${local.fadc-license_b-basename}",
       "config" : "fadc-config-b.txt"
     }
-  CUSTOM_DATA
+  CLOUDINIT
 
   public_ips = {
     "pip-fadc-a" = {
@@ -42,7 +44,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-a"].id
+      ip_configuration_public_ip_address_id          = null
       ip_configuration_subnet_id                     = var.snet_ids["shared-services"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 8)
@@ -66,7 +68,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
+      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-a"].id
       ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 8)
@@ -78,7 +80,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-b"].id
+      ip_configuration_public_ip_address_id          = null
       ip_configuration_subnet_id                     = var.snet_ids["shared-services"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 9)
@@ -102,7 +104,7 @@ locals {
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
       ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
+      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fadc-b"].id
       ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
       ip_configuration_private_ip_address_allocation = "Static"
       ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 9)
@@ -134,14 +136,14 @@ locals {
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = "${path.module}/${var.fortinet_licenses["license_a"]}"
+      source                 = "${var.fortinet_licenses["license_a"]}"
     },
     "sb-fadc-license-b" = {
       name                   = var.fortinet_licenses["license_b"] 
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = "${path.module}/${var.fortinet_licenses["license_b"]}"
+      source                 = "${var.fortinet_licenses["license_b"]}"
     },
     "sb-fadc-config-a" = {
       name                   = "fadc-config-a.txt"
@@ -268,28 +270,18 @@ locals {
       os_profile_computer_name  = "vm-fadc-a"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
-      os_profile_custom_data    = base64encode(local.fadc-custom-data-a)
+      os_profile_custom_data    = base64encode(local.fadc-cloudinit-a)
 
       zone = "1"
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
 
-
-      fadc_license_file = "${var.fortinet_licenses["license_a"]}"
-      fadc_config_ha     = true
-      fadc_port1_ip      = cidrhost(var.snet_address_ranges["shared-services"], 8)
-      fadc_port1_mask    = cidrnetmask(var.snet_address_ranges["shared-services"])
-      fadc_port1_gateway = cidrhost(var.snet_address_ranges["shared-services"], 1)
-      fadc_port2_ip      = cidrhost(var.snet_address_ranges["hasync"], 8)
-      fadc_port2_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
-      fadc_port3_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 8)
-      fadc_port3_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      fadc_ha_localip    = cidrhost(var.snet_address_ranges["hasync"], 8)
-      fadc_ha_peerip     = cidrhost(var.snet_address_ranges["hasync"], 9)
-      fadc_ha_nodeid     = "5"
-      fadc_a_ha_nodeid   = "0"
-      fadc_b_ha_nodeid   = "1"
-      fadc_ha_nodeid     = "0"
+      fadc-cloudinit-a = <<FADCCONFIG
+        config system global
+          set hostname vm-fadc-a
+          set admin-idle-timeout 120
+        end
+      FADCCONFIG
     },
     "vm-fadc-b" = {
       name                = "vm-fadc-b"
@@ -325,31 +317,39 @@ locals {
       os_profile_computer_name  = "vm-fadc-b"
       os_profile_admin_username = var.vm_username
       os_profile_admin_password = var.vm_password
-      os_profile_custom_data    = base64encode(local.fadc-custom-data-b)
+      os_profile_custom_data    = base64encode(local.fadc-cloudinit-b)
 
       zone = "1"
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
 
-      fadc_license_file  = "${var.fortinet_licenses["license_b"]}"
-      fadc_config_ha     = true
-      fadc_port1_ip      = cidrhost(var.snet_address_ranges["shared-services"], 9)
-      fadc_port1_mask    = cidrnetmask(var.snet_address_ranges["shared-services"])
-      fadc_port1_gateway = cidrhost(var.snet_address_ranges["shared-services"], 1)
-      fadc_port2_ip      = cidrhost(var.snet_address_ranges["hasync"], 9)
-      fadc_port2_mask    = cidrnetmask(var.snet_address_ranges["hasync"])
-      fadc_port3_ip      = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 9)
-      fadc_port3_mask    = cidrnetmask(var.snet_address_ranges["fortinet-mgmt"])
-      fadc_ha_localip    = cidrhost(var.snet_address_ranges["hasync"], 9)
-      fadc_ha_peerip     = cidrhost(var.snet_address_ranges["hasync"], 8)
-      fadc_ha_nodeid     = "9"
-      fadc_a_ha_nodeid   = "0"
-      fadc_b_ha_nodeid   = "1"
-      fadc_ha_nodeid     = "1"
+      fadc-cloudinit-b = <<FADCCONFIG
+        config system global
+          set hostname vm-fadc-b
+          set admin-idle-timeout 120
+        end
+      FADCCONFIG
     }
   }
 }
 
+resource "local_file" "file_fadca_config" {
+  filename = "${path.module}/fadc-config-a.txt"
+  content  = local.vm_configs["vm-fadc-a"]["fadc-cloudinit-a"]
+}
+resource "local_file" "file_fadcb_config" {
+  filename = "${path.module}/fadc-config-b.txt"
+  content  = local.vm_configs["vm-fadc-b"]["fadc-cloudinit-b"]
+}
+
+resource "local_file" "file_fadca_init_config" {
+  filename = "${path.module}/fadc-init_config-a.txt"
+  content  = local.fadc-cloudinit-a
+}
+resource "local_file" "file_fadcb_init_config" {
+  filename = "${path.module}/fadc-init_config-b.txt"
+  content  = local.fadc-cloudinit-b
+}
 resource "azurerm_public_ip" "public_ip" {
 
   for_each = local.public_ips
@@ -560,7 +560,6 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     computer_name  = each.value.os_profile_computer_name
     admin_username = each.value.os_profile_admin_username
     admin_password = each.value.os_profile_admin_password
-    #custom_data    = data.template_file.custom_data[each.key].rendered
     custom_data    = each.value.os_profile_custom_data
   }
 
@@ -575,27 +574,4 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   depends_on = [
     azurerm_network_interface.network_interface
   ]
-}
-
-data "template_file" "custom_data" {
-  for_each = local.vm_configs
-  template = file("${path.module}/${each.value.config_template}")
-  vars = {
-    fadc_id            = each.value.name
-    fadc_license_file  = each.value.fadc_license_file
-    fadc_config_ha     = true
-    fadc_port1_ip      = each.value.fadc_port1_ip
-    fadc_port1_mask    = each.value.fadc_port1_mask
-    fadc_port1_gateway = each.value.fadc_port1_gateway
-    fadc_port2_ip      = each.value.fadc_port2_ip
-    fadc_port2_mask    = each.value.fadc_port2_mask
-    fadc_port3_ip      = each.value.fadc_port3_ip
-    fadc_port3_mask    = each.value.fadc_port3_mask
-    fadc_ha_localip    = each.value.fadc_ha_localip
-    fadc_ha_peerip     = each.value.fadc_ha_peerip
-    fadc_ha_priority   = each.value.fadc_ha_nodeid
-    fadc_a_ha_nodeid   = each.value.fadc_a_ha_nodeid
-    fadc_b_ha_nodeid   = each.value.fadc_b_ha_nodeid
-    fadc_ha_nodeid     = each.value.fadc_ha_nodeid
-  }
 }
