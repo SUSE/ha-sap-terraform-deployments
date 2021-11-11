@@ -61,6 +61,9 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+
+  subnet_monitoring_id            = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_id : (var.network_topology == "plain" ? module.network_plain.0.subnet_plain_workload_id : "")
+  subnet_monitoring_address_range = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_address_range : cidrsubnet(local.vnet_address_range, 8, 5)
 }
 
 module "common_variables" {
@@ -285,6 +288,9 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
+  vnet_name           = local.vnet_name
+  snet_id             = local.subnet_monitoring_id
+  snet_address_range  = local.subnet_monitoring_address_range
 }
 
 module "iscsi_server" {
