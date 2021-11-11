@@ -4,7 +4,7 @@ locals {
   bastion_private_ip            = var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip
 }
 
-resource "azurerm_marketplace_agreement" "marketplace_agreement_fortigate" {
+/*resource "azurerm_marketplace_agreement" "marketplace_agreement_fortigate" {
 
   count = var.fortinet_enabled ? 1 : 0
 
@@ -19,7 +19,7 @@ resource "azurerm_marketplace_agreement" "marketplace_agreement_fortiadc" {
   publisher = var.fortinet_vm_publisher
   offer     = var.fortiadc_vm_offer
   plan      = var.fortiadc_vm_sku
-}
+}*/
 
 resource "random_id" "random_id" {
 
