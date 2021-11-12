@@ -1,7 +1,7 @@
 locals {
   fortinet_bastion_public_ip    = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip : ""
   fortinet_bastion_public_ip_id = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip_id : ""
-  bastion_private_ip            = var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip
+  bastion_private_ip            = var.fortinet_enabled ? (var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip) : ""
 }
 
 resource "random_id" "random_id" {
