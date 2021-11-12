@@ -68,11 +68,6 @@ variable "subnet_netapp_address_range" {
   }
 }
 
-variable "shared_storage_anf" {
-  description = "Create resources related to shared storage type ANF."
-  type        = bool
-}
-
 variable "anf_account_name" {
   description = "Name of ANF Accounts"
   type        = string
