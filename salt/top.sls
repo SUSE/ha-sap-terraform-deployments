@@ -9,6 +9,8 @@ base:
 
   'role:majority_maker_node':
     - match: grain
+    - hana.packages
+    - hana.ha_cluster
     - cluster
 
   'role:drbd_node':
@@ -35,7 +37,6 @@ predeployment:
 
   'role:majority_maker_node':
     - match: grain
-    - default
     - cluster_node
     - majority_maker_node
 
