@@ -50,6 +50,7 @@ module "fortigate" {
     "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
     "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
+    "waf"             = module.network_hub.0.subnet-hub-waf.0.id
   }
 
   snet_address_ranges = {
@@ -58,6 +59,7 @@ module "fortigate" {
     "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
     "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
+    "waf"             = module.network_hub.0.subnet-hub-waf-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"
@@ -91,6 +93,7 @@ module "fortiadc" {
     "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
     "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
+    "waf"             = module.network_hub.0.subnet-hub-waf.0.id
   }
   snet_address_ranges = {
     "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
@@ -98,6 +101,7 @@ module "fortiadc" {
     "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
     "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
     "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
+    "waf"             = module.network_hub.0.subnet-hub-waf-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortiadc_a_license_file}"

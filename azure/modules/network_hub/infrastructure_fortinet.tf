@@ -14,6 +14,9 @@ locals {
   subnet_shared_services_create        = var.fortinet_enabled ? true : false
   subnet_shared_services_address_range = (var.subnet_shared_services_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 249) : var.subnet_shared_services_address_range)
 
+  subnet_waf_create        = var.fortinet_enabled ? true : false
+  subnet_waf_address_range = (var.subnet_waf_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 248) : var.subnet_waf_address_range)
+
 }
 
 resource "azurerm_subnet" "subnet-hub-dmz" {
@@ -55,6 +58,14 @@ resource "azurerm_subnet" "subnet-hub-shared-services" {
   address_prefixes     = [local.subnet_shared_services_address_range]
 }
 
+resource "azurerm_subnet" "subnet-hub-waf" {
+  count                = local.subnet_waf_create ? 1 : 0
+  name                 = "snet-hub-waf-${var.deployment_name}"
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefixes     = [local.subnet_waf_address_range]
+}
+
 output "subnet-hub-dmz" {
   value = azurerm_subnet.subnet-hub-dmz
 }
@@ -88,4 +99,11 @@ output "subnet-hub-shared-services" {
 }
 output "subnet-hub-shared-services-address-range" {
   value = local.subnet_shared_services_address_range
+}
+
+output "subnet-hub-waf" {
+  value = azurerm_subnet.subnet-hub-waf
+}
+output "subnet-hub-waf-address-range" {
+  value = local.subnet_waf_address_range
 }

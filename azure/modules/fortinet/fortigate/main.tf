@@ -37,11 +37,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["dmz"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["dmz"], 6)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["dmz"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["dmz"], 6)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_a_2" = {
       name                                           = "nic-fortigate_a_2"
@@ -49,11 +54,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["trusted"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 6)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["trusted"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 6)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_a_3" = {
       name                                           = "nic-fortigate_a_3"
@@ -61,11 +71,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["hasync"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 6)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["hasync"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 6)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_a_4" = {
       name                                           = "nic-fortigate_a_4"
@@ -73,11 +88,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fgt-a"].id
-      ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["fortinet-mgmt"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 6)
+          public_ip_address_id          = azurerm_public_ip.public_ip["pip-fgt-a"].id
+        }
+      ]
     },
     "nic-fortigate_b_1" = {
       name                                           = "nic-fortigate_b_1"
@@ -85,11 +105,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["dmz"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["dmz"], 7)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["dmz"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["dmz"], 7)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_b_2" = {
       name                                           = "nic-fortigate_b_2"
@@ -97,11 +122,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["trusted"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 7)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["trusted"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 7)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_b_3" = {
       name                                           = "nic-fortigate_b_3"
@@ -109,11 +139,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = null
-      ip_configuration_subnet_id                     = var.snet_ids["hasync"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 7)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["hasync"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 7)
+          public_ip_address_id          = null
+        }
+      ]
     },
     "nic-fortigate_b_4" = {
       name                                           = "nic-fortigate_b_4"
@@ -121,11 +156,16 @@ locals {
       resource_group_name                            = var.resource_group_name
       enable_ip_forwarding                           = true
       enable_accelerated_networking                  = true
-      ip_configuration_name                          = "ipconfig1"
-      ip_configuration_public_ip_address_id          = azurerm_public_ip.public_ip["pip-fgt-b"].id
-      ip_configuration_subnet_id                     = var.snet_ids["fortinet-mgmt"]
-      ip_configuration_private_ip_address_allocation = "Static"
-      ip_configuration_private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
+
+      ip_configurations = [
+        {
+          name                          = "ipconfig1"
+          subnet_id                     = var.snet_ids["fortinet-mgmt"]
+          private_ip_address_allocation = "Static"
+          private_ip_address            = cidrhost(var.snet_address_ranges["fortinet-mgmt"], 7)
+          public_ip_address_id          = azurerm_public_ip.public_ip["pip-fgt-b"].id
+        }
+      ]
     }
   }
 
@@ -268,12 +308,10 @@ locals {
       {
         name                 = "lb-fgt-external-fe-ip-01"
         public_ip_address_id = azurerm_public_ip.public_ip["pip-fgt-v"].id
-        type                 = "public"
       },
       {
         name                 = "lb-fgt-external-fe-ip-02"
         public_ip_address_id = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].id
-        type                 = "public"
       },
     ]
     },
@@ -290,7 +328,6 @@ locals {
           private_ip_address            = cidrhost(var.snet_address_ranges["trusted"], 4)
           private_ip_address_allocation = "Static"
           private_ip_address_version    = "IPv4"
-          type                          = "private"
         }
       ]
     }
@@ -640,12 +677,16 @@ resource "azurerm_network_interface" "network_interface" {
   enable_ip_forwarding          = each.value.enable_ip_forwarding
   enable_accelerated_networking = each.value.enable_accelerated_networking
 
-  ip_configuration {
-    name                          = each.value.ip_configuration_name
-    subnet_id                     = each.value.ip_configuration_subnet_id
-    private_ip_address_allocation = each.value.ip_configuration_private_ip_address_allocation
-    private_ip_address            = each.value.ip_configuration_private_ip_address
-    public_ip_address_id          = each.value.ip_configuration_public_ip_address_id
+  dynamic "ip_configuration" {
+    for_each = each.value.ip_configurations
+    content {
+      name                          = ip_configuration.value.name
+      primary                       = lookup(ip_configuration.value, "primary", false)
+      subnet_id                     = ip_configuration.value.subnet_id
+      private_ip_address_allocation = ip_configuration.value.private_ip_address_allocation
+      private_ip_address            = ip_configuration.value.private_ip_address
+      public_ip_address_id          = ip_configuration.value.public_ip_address_id
+    }
   }
 }
 
