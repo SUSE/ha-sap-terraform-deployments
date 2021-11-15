@@ -4,7 +4,6 @@ locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
   hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  private_ip_address     = cidrhost(var.snet_address_range, 5)
 }
 
 resource "azurerm_network_interface" "monitoring" {
@@ -15,11 +14,9 @@ resource "azurerm_network_interface" "monitoring" {
 
   ip_configuration {
     name = "ipconf-primary"
-    #subnet_id                     = var.network_subnet_id
     subnet_id                     = var.snet_id == "" ? var.network_subnet_id : var.snet_id
     private_ip_address_allocation = "static"
-    #private_ip_address            = var.monitoring_srv_ip
-    private_ip_address   = local.private_ip_address
+    private_ip_address            = var.monitoring_srv_ip
     public_ip_address_id = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
   }
 

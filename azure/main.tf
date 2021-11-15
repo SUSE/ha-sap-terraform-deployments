@@ -24,7 +24,7 @@ locals {
         : module.bastion.0.public_ip
   )
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
-  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
+  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_monitoring_address_range, 5)
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
@@ -61,9 +61,6 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
-
-  subnet_monitoring_id            = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_id : (var.network_topology == "plain" ? module.network_plain.0.subnet_plain_workload_id : "")
-  subnet_monitoring_address_range = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_address_range : cidrsubnet(local.vnet_address_range, 8, 5)
 }
 
 module "common_variables" {
