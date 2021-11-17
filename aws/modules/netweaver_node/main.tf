@@ -40,7 +40,7 @@ resource "aws_route" "nw-ers-route" {
 
 # deploy if PAS on same machine as ASCS
 resource "aws_route" "nw-pas-route" {
-  count                  = var.app_server_count == 0 ? 1 : 0
+  count                  = local.vm_count > 0 && var.app_server_count == 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index)}/32"
   instance_id            = aws_instance.netweaver.0.id
