@@ -42,7 +42,7 @@ resource "google_compute_route" "nw-ers-route" {
 # deploy if PAS on same machine as ASCS
 resource "google_compute_route" "nw-pas-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-pas-route-${format("%02d", 1)}"
-  count                  = var.app_server_count == 0 ? 1 : 0
+  count                  = local.vm_count > 0 && var.app_server_count == 0 ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, local.app_start_index)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
