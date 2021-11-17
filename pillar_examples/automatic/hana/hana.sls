@@ -195,4 +195,8 @@ hana:
         password: {{ grains['hana_master_password'] }}
       {% endif %}
     {% endfor %}
+    - host: {{ grains['name_prefix'] }}mm
+      sid: {{ grains['hana_sid'].lower() }}
+      instance: "{{ grains['hana_instance_number'] }}"
+      password: {{ grains['hana_master_password'] }}
     {% endif %}
