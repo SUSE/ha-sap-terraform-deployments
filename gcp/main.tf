@@ -8,12 +8,12 @@ module "local_execution" {
 # Iscsi server: 10.0.0.4
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.0.10, 10.0.0.11
-# Hana cluster vip: 10.0.1.12
-# Hana cluster vip secondary: 10.0.1.13
+# Hana cluster vip: 10.0.9.12
+# Hana cluster vip secondary: 10.0.0.13
 # DRBD ips: 10.0.0.20, 10.0.0.21
-# DRBD cluster vip: 10.0.1.22
+# DRBD cluster vip: 10.0.0.22
 # Netweaver ips: 10.0.0.30, 10.0.0.31, 10.0.0.32, 10.0.0.33
-# Netweaver virtual ips: 10.0.1.34, 10.0.1.35, 10.0.1.36, 10.0.1.37
+# Netweaver virtual ips: 10.0.0.34, 10.0.0.35, 10.0.0.36, 10.0.0.37
 # If the addresses are provided by the user they will always have preference
 locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
@@ -48,9 +48,9 @@ locals {
 
   netweaver_ip_start            = 30
   netweaver_ips                 = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips_lb_xscs = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_xscs_server_count) : cidrhost(local.subnet_address_range, ip_index + 4)] # same subnet as netweaver hosts
+  netweaver_virtual_ips_lb_xscs = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_xscs_server_count) : cidrhost(local.subnet_address_range, ip_index + 4)]                                                                                               # same subnet as netweaver hosts
   netweaver_virtual_ips_lb_app  = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_xscs_server_count, local.netweaver_ip_start + local.netweaver_xscs_server_count + var.netweaver_app_server_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)] # different subnet as netweaver hosts
-  netweaver_virtual_ips_route   = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)] # different subnet as netweaver hosts
+  netweaver_virtual_ips_route   = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]                                                                      # different subnet as netweaver hosts
   netweaver_virtual_ips         = var.netweaver_cluster_vip_mechanism == "load-balancer" ? concat(local.netweaver_virtual_ips_lb_xscs, local.netweaver_virtual_ips_lb_app) : local.netweaver_virtual_ips_route
 
   # Check if iscsi server has to be created

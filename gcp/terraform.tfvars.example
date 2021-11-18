@@ -184,9 +184,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 
 # HANA cluster vip
 # If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
-#hana_cluster_vip = "10.0.0.200"
+#hana_cluster_vip = "10.0.0.12"
 # If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
-#hana_cluster_vip = "10.0.1.200"
+#hana_cluster_vip = "10.0.1.12"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
@@ -203,11 +203,14 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Enable Active/Active HANA setup (read-only access in the secondary instance)
 #hana_active_active = true
 
+# Each host IP address (sequential order).
+#hana_ips = ["10.0.0.10", "10.0.0.11"]
+
 # HANA cluster secondary vip. This IP address is attached to the read-only secondary instance. Only needed if hana_active_active is set to true
 # If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
-#hana_cluster_vip_secondary = "10.0.0.201"
+#hana_cluster_vip_secondary = "10.0.0.13"
 # If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
-#hana_cluster_vip_secondary = "10.0.1.201"
+#hana_cluster_vip_secondary = "10.0.1.13"
 
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a GCP storage bucket
@@ -253,9 +256,6 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
 
-# Each host IP address (sequential order).
-#hana_ips = ["10.0.0.2", "10.0.0.3"]
-
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
@@ -288,7 +288,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #iscsi_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 # iSCSI server address
-#iscsi_srv_ip = "10.0.0.253"
+#iscsi_srv_ip = "10.0.0.4"
 # Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk
 #iscsi_lun_count = 3
 # Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service
@@ -311,7 +311,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #monitoring_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
 
 # IP address of the machine where Prometheus and Grafana are running
-#monitoring_srv_ip = "10.0.0.4"
+#monitoring_srv_ip = "10.0.0.5"
 
 ########################
 # DRBD related variables
@@ -333,8 +333,16 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #drbd_data_disk_type = "pd-standard"
 
 # Each drbd cluster host IP address (sequential order).
-#drbd_ips = ["10.0.0.10", "10.0.0.11"]
-#drbd_cluster_vip = "10.0.1.201"
+#drbd_ips = ["10.0.0.20", "10.0.0.21"]
+
+# DRBD cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
+# Options: "load-balancer" (default), "route"
+#drbd_cluster_vip_mechanism = "load-balancer"
+
+# If the vip mechanism is the load balancer, this IP address must belong to the same subnet as the hana machines
+#drbd_cluster_vip = "10.0.0.22"
+# If the vip_mechanism is the routing system, this IP address must NOT belong to the same subnet range than the hana machines
+#drbd_cluster_vip = "10.0.1.22"
 
 # Select DRBD cluster fencing mechanism. 'native' by default
 #drbd_cluster_fencing_mechanism = "sbd"
@@ -406,9 +414,12 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Options: "load-balancer" (default), "route"
 #netweaver_cluster_vip_mechanism = "load-balancer"
 
-#netweaver_ips = ["10.0.0.20", "10.0.0.21", "10.0.0.22", "10.0.0.23"]
+#netweaver_ips = ["10.0.0.30", "10.0.0.31", "10.0.0.32", "10.0.0.33"]
 
-#netweaver_virtual_ips = ["10.0.1.25", "10.0.1.26", "10.0.0.27", "10.0.0.28"]
+# If "netweaver_cluster_vip_mechanism" is "load-balancer", the ASCS/ERS IP addresses must belong to the same subnet as the netweaver machines
+#netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35", "10.0.1.36", "10.0.1.37"]
+# If "netweaver_cluster_vip_mechanism" is "route", the ALL netweaver IP addresses must NOT belong to the same subnet as the netweaver machines
+#netweaver_virtual_ips = ["10.0.1.34", "10.0.1.35", "10.0.0.36", "10.0.0.37"]
 
 # Netweaver installation configuration
 # Netweaver system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)
