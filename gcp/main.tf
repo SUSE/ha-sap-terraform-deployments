@@ -35,9 +35,12 @@ locals {
   hana_cluster_vip_secondary = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_secondary_lb : local.hana_cluster_vip_secondary_route
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
-  drbd_ip_start    = 20
-  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
-  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
+  drbd_ip_start = 20
+  drbd_ips      = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
+  # Virtual IP addresses if a route is used. In this case the virtual ip address belongs to a different subnet than the machines
+  drbd_cluster_vip_lb    = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
+  drbd_cluster_vip_route = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
+  drbd_cluster_vip       = var.drbd_cluster_vip_mechanism == "load-balancer" ? local.drbd_cluster_vip_lb : local.drbd_cluster_vip_route
 
   netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
