@@ -60,8 +60,7 @@ cluster:
         {% elif grains['provider'] == 'gcp' %}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         route_name: {{ grains['route_name'] }}
-        {% elif grains['provider'] == 'openstack' %}
-        virtual_ip: {{ grains['drbd_cluster_vip'] }}
+        {% elif grains['provider'] == 'libvirt' or grains['provider'] == 'openstack' %}
         virtual_ip_mask: 24
         {% endif %}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
