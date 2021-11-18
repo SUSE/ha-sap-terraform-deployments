@@ -6,6 +6,7 @@ locals {
   create_ha_infra        = local.vm_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   provisioning_addresses = openstack_compute_instance_v2.netweaver.*.access_ip_v4
   hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_nfs     = var.common_variables["netweaver"]["shared_storage_type"] == "nfs" ? 1 : 0
 }
 
 resource "openstack_networking_port_v2" "netweaver" {

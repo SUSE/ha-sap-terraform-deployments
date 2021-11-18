@@ -47,7 +47,6 @@ variable "network_subnet_id" {
   type        = string
 }
 
-
 variable "os_image" {
   description = "Image used to create the machine"
   type        = string
@@ -65,7 +64,7 @@ variable "bastion_host" {
 }
 
 variable "host_ips" {
-  description = "ip addresses to set to the nodes"
+  description = "List of ip addresses to set to the machines"
   type        = list(string)
 }
 
@@ -74,43 +73,28 @@ variable "firewall_internal" {
   type        = string
 }
 
-variable "iscsi_srv_ip" {
-  description = "iscsi server address"
+variable "nfs_srv_ip" {
+  description = "nfs server address"
   type        = string
 }
 
-variable "cluster_ssh_pub" {
-  description = "path for the public key needed by the cluster"
-  type        = string
+variable "nfs_count" {
+  type        = number
+  description = "Number of nfs machines to deploy"
 }
 
-variable "cluster_ssh_key" {
-  description = "path for the private key needed by the cluster"
-  type        = string
+variable "nfs_volume_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
 }
 
-variable "xscs_server_count" {
-  type    = number
-  default = 2
+variable "nfs_data_volume_names" {
+  description = "Existing volumes to use for NFS server."
+  type        = list
 }
 
-variable "app_server_count" {
-  type    = number
-  default = 2
-}
-
-variable "netweaver_software_bucket" {
-  description = "gcp bucket where netweaver software is available"
-  type        = string
-}
-
-variable "virtual_host_ips" {
-  description = "virtual ip addresses to set to the nodes"
-  type        = list(string)
-}
-
-variable "netweaver_inst_media" {
-  description = "URL of the NFS share where the SAP Netweaver software installer is stored. This media shall be mounted in `netweaver_inst_folder`"
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
   type        = string
 }
 
@@ -120,12 +104,3 @@ variable "on_destroy_dependencies" {
   default     = []
 }
 
-variable "nfs_srv_ip" {
-  description = "IP address for shared storage NFS server"
-  type        = string
-}
-
-variable "nfs_mounting_point" {
-  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
-  type        = string
-}
