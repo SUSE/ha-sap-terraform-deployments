@@ -447,7 +447,6 @@ module "hana_majority_maker" {
   cluster_ssh_key               = var.cluster_ssh_key
   os_image                      = var.os_image
   iscsi_srv_ip                  = var.iscsi_srv_ip
-  fencing_mechanism             = var.fencing_mechanism
   # only used by azure fence agent (native fencing)
   subscription_id           = var.subscription_id
   tenant_id                 = var.tenant_id

@@ -110,6 +110,12 @@ output "configuration" {
       netweaver_targets_ha  = var.monitoring_netweaver_targets_ha
       netweaver_targets_vip = var.monitoring_netweaver_targets_vip
     }
+    drbd = {
+      cluster_vip           = var.drbd_cluster_vip
+      cluster_vip_mechanism = var.drbd_cluster_vip_mechanism
+      fencing_mechanism     = var.drbd_cluster_fencing_mechanism
+      sbd_storage_type      = var.drbd_sbd_storage_type
+    }
     grains_output            = <<EOF
 provider: ${var.provider_type}
 reg_code: ${var.reg_code}
@@ -195,6 +201,12 @@ drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.monitoring_drbd_target
 netweaver_targets: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets))}]
 netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_ha))}]
 netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_vip))}]
+EOF
+    drbd_grains_output       = <<EOF
+drbd_cluster_vip: ${var.drbd_cluster_vip}
+drbd_cluster_vip_mechanism: ${var.drbd_cluster_vip_mechanism}
+fencing_mechanism: ${var.drbd_cluster_fencing_mechanism}
+sbd_storage_type: ${var.drbd_sbd_storage_type}
 EOF
   }
 }

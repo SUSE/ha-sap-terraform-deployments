@@ -133,9 +133,9 @@ variable "monitoring_srv_ip" {
 # Tune deployment
 
 variable "offline_mode" {
-   description = "Prevent installation of extra packages not coming with image"
-   type        = bool
-   default     = false
+  description = "Prevent installation of extra packages not coming with image"
+  type        = bool
+  default     = false
 }
 
 variable "provisioning_output_colored" {

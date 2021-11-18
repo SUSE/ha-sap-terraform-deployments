@@ -34,11 +34,6 @@ variable "network_domain" {
   type        = string
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
 variable "xscs_server_count" {
   type    = number
   default = 2

@@ -43,11 +43,6 @@ variable "name" {
   type = string
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
 variable "enable_accelerated_networking" {
   type = bool
 }

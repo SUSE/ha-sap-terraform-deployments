@@ -145,6 +145,10 @@ module "common_variables" {
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -164,12 +168,9 @@ module "drbd_node" {
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   host_ips            = local.drbd_ips
-  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
-  drbd_cluster_vip    = local.drbd_cluster_vip
   # only used by azure fence agent (native fencing)
   subscription_id           = data.azurerm_subscription.current.subscription_id
   tenant_id                 = data.azurerm_subscription.current.tenant_id
@@ -209,7 +210,6 @@ module "netweaver_node" {
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
-  fencing_mechanism           = var.netweaver_cluster_fencing_mechanism
   # ANF specific
   anf_account_name           = local.anf_account_name
   anf_pool_name              = local.anf_pool_name
@@ -246,7 +246,6 @@ module "hana_node" {
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
-  fencing_mechanism             = var.hana_cluster_fencing_mechanism
   # ANF specific
   anf_account_name                = local.anf_account_name
   anf_pool_name                   = local.anf_pool_name
