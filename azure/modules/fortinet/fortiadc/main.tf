@@ -5,138 +5,203 @@ locals {
 
   network_interfaces = {
     "nic-fortiadc_a_1" = {
-      name                                           = "nic-fortiadc_a_1"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_a_1"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
           primary                       = true
-          subnet_id                     = var.snet_ids["shared-services"]
+          subnet_id                     = var.snet_ids["external-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 6)
+          private_ip_address            = cidrhost(var.snet_address_ranges["external-fadc"], 6)
           public_ip_address_id          = null
         },
         {
           name                          = "ipconfig2"
-          subnet_id                     = var.snet_ids["shared-services"]
+          subnet_id                     = var.snet_ids["external-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 8)
+          private_ip_address            = cidrhost(var.snet_address_ranges["external-fadc"], 8)
           public_ip_address_id          = null
         }
       ]
     }
     "nic-fortiadc_a_2" = {
-      name                                           = "nic-fortiadc_a_2"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_a_2"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
           primary                       = true
-          subnet_id                     = var.snet_ids["waf"]
+          subnet_id                     = var.snet_ids["internal-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["waf"], 6)
+          private_ip_address            = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
           public_ip_address_id          = null
         },
         {
           name                          = "ipconfig2"
-          subnet_id                     = var.snet_ids["waf"]
+          subnet_id                     = var.snet_ids["internal-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["waf"], 8)
+          private_ip_address            = cidrhost(var.snet_address_ranges["internal-fadc"], 8)
           public_ip_address_id          = null
         }
       ]
     }
     "nic-fortiadc_a_3" = {
-      name                                           = "nic-fortiadc_a_3"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_a_3"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
-          subnet_id                     = var.snet_ids["hasync"]
+          subnet_id                     = var.snet_ids["hasync-ftnt"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 8)
+          private_ip_address            = cidrhost(var.snet_address_ranges["hasync-ftnt"], 8)
           public_ip_address_id          = null
         }
       ]
     }
     "nic-fortiadc_b_1" = {
-      name                                           = "nic-fortiadc_b_1"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_b_1"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
           primary                       = true
-          subnet_id                     = var.snet_ids["shared-services"]
+          subnet_id                     = var.snet_ids["external-fadc"]
           private_ip_address_allocation = "Static"
           public_ip_address_id          = null
-          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 7)
+          private_ip_address            = cidrhost(var.snet_address_ranges["external-fadc"], 7)
         },
         {
           name                          = "ipconfig2"
-          subnet_id                     = var.snet_ids["shared-services"]
+          subnet_id                     = var.snet_ids["external-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 9)
+          private_ip_address            = cidrhost(var.snet_address_ranges["external-fadc"], 9)
           public_ip_address_id          = null
         }
       ]
     }
     "nic-fortiadc_b_2" = {
-      name                                           = "nic-fortiadc_b_2"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_b_2"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
           primary                       = true
-          subnet_id                     = var.snet_ids["waf"]
+          subnet_id                     = var.snet_ids["internal-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["waf"], 7)
+          private_ip_address            = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
           public_ip_address_id          = null
         },
         {
           name                          = "ipconfig2"
-          subnet_id                     = var.snet_ids["waf"]
+          subnet_id                     = var.snet_ids["internal-fadc"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["waf"], 9)
+          private_ip_address            = cidrhost(var.snet_address_ranges["internal-fadc"], 9)
           public_ip_address_id          = null
         }
       ]
     }
     "nic-fortiadc_b_3" = {
-      name                                           = "nic-fortiadc_b_3"
-      location                                       = var.az_region
-      resource_group_name                            = var.resource_group_name
-      enable_ip_forwarding                           = true
-      enable_accelerated_networking                  = true
+      name                          = "nic-fortiadc_b_3"
+      location                      = var.az_region
+      resource_group_name           = var.resource_group_name
+      enable_ip_forwarding          = true
+      enable_accelerated_networking = true
 
       ip_configurations = [
         {
           name                          = "ipconfig1"
-          subnet_id                     = var.snet_ids["hasync"]
+          subnet_id                     = var.snet_ids["hasync-ftnt"]
           private_ip_address_allocation = "Static"
-          private_ip_address            = cidrhost(var.snet_address_ranges["hasync"], 9)
+          private_ip_address            = cidrhost(var.snet_address_ranges["hasync-ftnt"], 9)
           public_ip_address_id          = null
         }
       ]
+    }
+  }
+
+  network_security_groups = {
+    "nsg-fortiadc" = {
+      name                = "nsg-fortiadc"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+    }
+  }
+
+  network_security_rules = {
+    "nsg-fortiadc-inbound-rule" = {
+      name                        = "nsg-fortiadc-inbound-rule"
+      resource_group_name         = var.resource_group_name
+      network_security_group_name = azurerm_network_security_group.network_security_group["nsg-fortiadc"].name
+      priority                    = "100"
+      direction                   = "Inbound"
+      access                      = "Allow"
+      protocol                    = "*"
+      source_port_range           = "*"
+      destination_port_range      = "*"
+      source_address_prefix       = "*"
+      destination_address_prefix  = "*"
+    },
+    "nsg-fortiadc-outbound-rule" = {
+      name                        = "nsg-fortiadc-outbound-rule"
+      resource_group_name         = var.resource_group_name
+      network_security_group_name = azurerm_network_security_group.network_security_group["nsg-fortiadc"].name
+      priority                    = "101"
+      direction                   = "Outbound"
+      access                      = "Allow"
+      protocol                    = "*"
+      source_port_range           = "*"
+      destination_port_range      = "*"
+      source_address_prefix       = "*"
+      destination_address_prefix  = "*"
+    }
+  }
+
+
+  network_security_group_associations = {
+    "nic-fortiadc_a_1" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_a_1"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
+    },
+    "nic-fortiadc_a_2" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_a_2"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
+    },
+    "nic-fortiadc_a_3" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_a_3"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
+    },
+    "nic-fortiadc_b_1" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_b_1"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
+    },
+    "nic-fortiadc_b_2" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_b_2"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
+    },
+    "nic-fortiadc_b_3" = {
+      network_interface_id      = azurerm_network_interface.network_interface["nic-fortiadc_b_3"].id
+      network_security_group_id = azurerm_network_security_group.network_security_group["nsg-fortiadc"].id
     }
   }
 
@@ -148,7 +213,7 @@ locals {
       account_tier             = "Standard"
       account_replication_type = "LRS"
       allow_blob_public_access = true
-    } 
+    }
   }
 
   storage_containers = {
@@ -168,7 +233,7 @@ locals {
       source                 = "${var.fortinet_licenses["license_a"]}"
     },
     "sb-fadc-license-b" = {
-      name                   = var.fortinet_licenses["license_b"] 
+      name                   = var.fortinet_licenses["license_b"]
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
@@ -190,70 +255,105 @@ locals {
     }
   }
   lbs = {
-    /*"lb-fadc-internal" = {
-      name                                                 = "lb-fadc-internal"
-      location                                             = var.az_region
-      resource_group_name                                  = var.resource_group_name
-      sku                                                  = "standard"
+    "lb-fadc-external-internal" = {
+      name                = "lb-fadc-external-internal"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+      sku                 = "standard"
 
       frontend_ip_configurations = [
         {
+          name                          = "lb-fadc-external-fe-ip-01"
+          subnet_id                     = var.snet_ids["external-fadc"]
+          private_ip_address            = cidrhost(var.snet_address_ranges["external-fadc"], 4)
+          private_ip_address_allocation = "Static"
+          private_ip_address_version    = "IPv4"
+        },
+        {
           name                          = "lb-fadc-internal-fe-ip-01"
-          subnet_id                     = var.snet_ids["shared-services"]
-          private_ip_address            = cidrhost(var.snet_address_ranges["shared-services"], 4)
+          subnet_id                     = var.snet_ids["internal-fadc"]
+          private_ip_address            = cidrhost(var.snet_address_ranges["internal-fadc"], 4)
           private_ip_address_allocation = "Static"
           private_ip_address_version    = "IPv4"
         }
       ]
-    }*/
+    }
   }
 
   lb_backend_address_pools = {
-    /*"lb-fadc-internal-be-pool-01" = {
+    "lb-fadc-external-be-pool-01" = {
+      name                = "lb-fadc-external-be-pool-01"
+      resource_group_name = var.resource_group_name
+      loadbalancer_id     = azurerm_lb.lb["lb-fadc-external-internal"].id
+    },
+    "lb-fadc-internal-be-pool-01" = {
       name                = "lb-fadc-internal-be-pool-01"
       resource_group_name = var.resource_group_name
-      loadbalancer_id     = azurerm_lb.lb["lb-fadc-internal"].id
-    }*/
+      loadbalancer_id     = azurerm_lb.lb["lb-fadc-external-internal"].id
+    }
   }
 
   lb_probes = {
-    /*"lb-fadc-internal-probe" = {
-      name                = "lb-fadc-internal-probe"
+    "lb-fadc-probe" = {
+      name                = "lb-fadc-probe"
       resource_group_name = var.resource_group_name
-      loadbalancer_id     = azurerm_lb.lb["lb-fadc-internal"].id
+      loadbalancer_id     = azurerm_lb.lb["lb-fadc-external-internal"].id
       port                = "8008"
       protocol            = "Tcp"
       interval_in_seconds = "5"
-    }*/
+    }
   }
 
   lb_rules = {
-    /*"lb-fadc-internal-rule-all" = {
-      name                           = "lb-adc-internal-rule-all"
+    "lb-fadc-external-rule-all" = {
+      name                           = "lb-fadc-external-rule-all"
       resource_group_name            = var.resource_group_name
-      loadbalancer_id                = azurerm_lb.lb["lb-fadc-internal"].id
+      loadbalancer_id                = azurerm_lb.lb["lb-fadc-external-internal"].id
+      protocol                       = "All"
+      frontend_port                  = 0
+      backend_port                   = 0
+      frontend_ip_configuration_name = "lb-fadc-external-fe-ip-01"
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fadc-probe"].id
+      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-external-be-pool-01"].id
+      enable_floating_ip             = true
+      disable_outbound_snat          = true
+    },
+    "lb-fadc-internal-rule-all" = {
+      name                           = "lb-fadc-internal-rule-all"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = azurerm_lb.lb["lb-fadc-external-internal"].id
       protocol                       = "All"
       frontend_port                  = 0
       backend_port                   = 0
       frontend_ip_configuration_name = "lb-fadc-internal-fe-ip-01"
-      probe_id                       = azurerm_lb_probe.lb_probe["lb-fadc-internal-probe"].id
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fadc-probe"].id
       backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id
       enable_floating_ip             = true
       disable_outbound_snat          = true
-    }*/
+    }
   }
 
   network_interface_backend_address_pool_associations = {
-    /*"nic-fortiadc_a_1" = {
+    "nic-fortiadc_a_1" = {
       network_interface_id    = azurerm_network_interface.network_interface["nic-fortiadc_a_1"].id
-      ip_configuration_name   = "ipconfig1"
-      backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id
+      ip_configuration_name   = "ipconfig2"
+      backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-external-be-pool-01"].id
     },
     "nic-fortiadc_b_1" = {
       network_interface_id    = azurerm_network_interface.network_interface["nic-fortiadc_b_1"].id
-      ip_configuration_name   = "ipconfig1"
+      ip_configuration_name   = "ipconfig2"
+      backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-external-be-pool-01"].id
+    },
+    "nic-fortiadc_a_2" = {
+      network_interface_id    = azurerm_network_interface.network_interface["nic-fortiadc_a_2"].id
+      ip_configuration_name   = "ipconfig2"
       backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id
-    }*/
+    },
+    "nic-fortiadc_b_2" = {
+      network_interface_id    = azurerm_network_interface.network_interface["nic-fortiadc_b_2"].id
+      ip_configuration_name   = "ipconfig2"
+      backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id
+    }
   }
 
   availability_sets = {
@@ -350,8 +450,8 @@ locals {
   }
   fadc_configs = {
     "fadc-config-a" = {
-      
-      name = "fadc-config-a"
+
+      name   = "fadc-config-a"
       config = <<FADCCONFIG
         config system global
           set hostname vm-fadc-a
@@ -361,7 +461,7 @@ locals {
           edit "port2"
             set vdom root
             set mode static
-            set ip ${cidrhost(var.snet_address_ranges["waf"], 6)}/24
+            set ip ${cidrhost(var.snet_address_ranges["internal-fadc"], 6)}/24
             set allowaccess https ping ssh snmp http telnet
             config  ha-node-ip-list
             end
@@ -369,7 +469,7 @@ locals {
           edit "port3"
             set vdom root
             set mode static
-            set ip ${cidrhost(var.snet_address_ranges["hasync"], 8)}/24
+            set ip ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 8)}/24
             config  ha-node-ip-list
             end
           next
@@ -385,14 +485,14 @@ locals {
           set l7-persistence-pickup enable
           set l4-persistence-pickup enable
           set hb-type unicast
-          set local-address ${cidrhost(var.snet_address_ranges["hasync"], 8)}
-          set peer-address ${cidrhost(var.snet_address_ranges["hasync"], 9)}
+          set local-address ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 8)}
+          set peer-address ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 9)}
         end
         FADCCONFIG
     },
     "fadc-config-b" = {
-      
-      name = "fadc-config-b"
+
+      name   = "fadc-config-b"
       config = <<FADCCONFIG
         config system global
           set hostname vm-fadc-b
@@ -402,7 +502,7 @@ locals {
           edit "port2"
             set vdom root
             set mode static
-            set ip ${cidrhost(var.snet_address_ranges["waf"], 7)}/24
+            set ip ${cidrhost(var.snet_address_ranges["internal-fadc"], 7)}/24
             set allowaccess https ping ssh snmp http telnet
             config  ha-node-ip-list
             end
@@ -410,7 +510,7 @@ locals {
           edit "port3"
             set vdom root
             set mode static
-            set ip ${cidrhost(var.snet_address_ranges["hasync"], 9)}/24
+            set ip ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 9)}/24
             config  ha-node-ip-list
             end
           next
@@ -426,13 +526,13 @@ locals {
           set l7-persistence-pickup enable
           set l4-persistence-pickup enable
           set hb-type unicast
-          set local-address ${cidrhost(var.snet_address_ranges["hasync"], 9)}
-          set peer-address ${cidrhost(var.snet_address_ranges["hasync"], 8)}
+          set local-address ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 9)}
+          set peer-address ${cidrhost(var.snet_address_ranges["hasync-ftnt"], 8)}
         end
         FADCCONFIG
     },
     "fadc-cloudinit-a" = {
-      name = "fadc-cloudinit-a"
+      name   = "fadc-cloudinit-a"
       config = <<CLOUDINIT
         {
           "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
@@ -442,8 +542,8 @@ locals {
         }
       CLOUDINIT
     },
-      "fadc-cloudinit-b" = {
-      name = "fadc-cloudinit-b"
+    "fadc-cloudinit-b" = {
+      name   = "fadc-cloudinit-b"
       config = <<CLOUDINIT
         {
           "storage-account" : "${azurerm_storage_account.storage_account["sa-fortinet"].name}",
@@ -511,11 +611,56 @@ resource "azurerm_storage_blob" "storage_blob" {
 
   for_each = local.storage_blobs
 
-  name                   = each.value.name                  
-  storage_account_name   = each.value.storage_account_name  
+  name                   = each.value.name
+  storage_account_name   = each.value.storage_account_name
   storage_container_name = each.value.storage_container_name
-  type                   = each.value.type                  
-  source                 = each.value.source                
+  type                   = each.value.type
+  source                 = each.value.source
+
+  depends_on = [
+    local_file.file
+  ]
+}
+
+resource "azurerm_network_security_group" "network_security_group" {
+
+  for_each = local.network_security_groups
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
+}
+
+resource "azurerm_network_security_rule" "network_security_rule" {
+
+  for_each = local.network_security_rules
+
+  name                        = each.value.name
+  network_security_group_name = each.value.network_security_group_name
+  resource_group_name         = each.value.resource_group_name
+  priority                    = each.value.priority
+  direction                   = each.value.direction
+  access                      = each.value.access
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  destination_address_prefix  = each.value.destination_address_prefix
+}
+
+resource "azurerm_network_interface_security_group_association" "network_interface_security_group_association" {
+
+  for_each = local.network_security_group_associations
+
+  network_interface_id      = each.value.network_interface_id
+  network_security_group_id = each.value.network_security_group_id
+
+  depends_on = [
+    azurerm_network_interface.network_interface
+  ]
 }
 
 resource "azurerm_lb" "lb" {
@@ -533,8 +678,8 @@ resource "azurerm_lb" "lb" {
       if lookup(fe_ip, "public_ip_address_id", null) != null
     ]
     content {
-      name                          = frontend_ip_configuration.value.name
-      public_ip_address_id          = frontend_ip_configuration.value.public_ip_address_id
+      name                 = frontend_ip_configuration.value.name
+      public_ip_address_id = frontend_ip_configuration.value.public_ip_address_id
     }
   }
   dynamic "frontend_ip_configuration" {
@@ -680,6 +825,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
 
   depends_on = [
     azurerm_network_interface.network_interface,
+    azurerm_storage_blob.storage_blob,
     local_file.file
   ]
 }

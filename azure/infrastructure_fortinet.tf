@@ -1,7 +1,7 @@
 locals {
-  fortinet_bastion_public_ip    = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip : ""
-  fortinet_bastion_public_ip_id = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip_id : ""
-  bastion_private_ip            = var.fortinet_enabled ? (var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip) : ""
+  fortinet_bastion_public_ip    = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip : null
+  fortinet_bastion_public_ip_id = var.fortinet_enabled ? module.fortigate.0.bastion_public_ip_id : null
+  bastion_private_ip            = var.fortinet_bastion_private_ip == null ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip
 }
 
 resource "random_id" "random_id" {
@@ -45,21 +45,21 @@ module "fortigate" {
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   storage_account     = azurerm_storage_account.storage_account[count.index].primary_blob_endpoint
   snet_ids = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
-    "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
-    "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
-    "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
-    "waf"             = module.network_hub.0.subnet-hub-waf.0.id
+    "external-fgt"  = module.network_hub.0.subnet-hub-external-fgt.0.id
+    "internal-fgt"  = module.network_hub.0.subnet-hub-internal-fgt.0.id
+    "hasync-ftnt"   = module.network_hub.0.subnet-hub-hasync-ftnt.0.id
+    "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt.0.id
+    "external-fadc" = module.network_hub.0.subnet-hub-external-fadc.0.id
+    "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc.0.id
   }
 
   snet_address_ranges = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
-    "trusted"         = module.network_hub.0.subnet-hub-trusted-address-range
-    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
-    "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
-    "waf"             = module.network_hub.0.subnet-hub-waf-address-range
+    "external-fgt"  = module.network_hub.0.subnet-hub-external-fgt-address-range
+    "internal-fgt"  = module.network_hub.0.subnet-hub-internal-fgt-address-range
+    "hasync-ftnt"   = module.network_hub.0.subnet-hub-hasync-ftnt-address-range
+    "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt-address-range
+    "external-fadc" = module.network_hub.0.subnet-hub-external-fadc-address-range
+    "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"
@@ -88,20 +88,20 @@ module "fortiadc" {
 
   random_id = random_id.random_id.0.hex
   snet_ids = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz.0.id
-    "trusted"         = module.network_hub.0.subnet-hub-trusted.0.id
-    "hasync"          = module.network_hub.0.subnet-hub-hasync.0.id
-    "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt.0.id
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services.0.id
-    "waf"             = module.network_hub.0.subnet-hub-waf.0.id
+    "external-fgt"  = module.network_hub.0.subnet-hub-external-fgt.0.id
+    "internal-fgt"  = module.network_hub.0.subnet-hub-internal-fgt.0.id
+    "hasync-ftnt"   = module.network_hub.0.subnet-hub-hasync-ftnt.0.id
+    "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt.0.id
+    "external-fadc" = module.network_hub.0.subnet-hub-external-fadc.0.id
+    "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc.0.id
   }
   snet_address_ranges = {
-    "dmz"             = module.network_hub.0.subnet-hub-dmz-address-range
-    "trusted"         = module.network_hub.0.subnet-hub-trusted-address-range
-    "hasync"          = module.network_hub.0.subnet-hub-hasync-address-range
-    "fortinet-mgmt"   = module.network_hub.0.subnet-hub-fortinet-mgmt-address-range
-    "shared-services" = module.network_hub.0.subnet-hub-shared-services-address-range
-    "waf"             = module.network_hub.0.subnet-hub-waf-address-range
+    "external-fgt"  = module.network_hub.0.subnet-hub-external-fgt-address-range
+    "internal-fgt"  = module.network_hub.0.subnet-hub-internal-fgt-address-range
+    "hasync-ftnt"   = module.network_hub.0.subnet-hub-hasync-ftnt-address-range
+    "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt-address-range
+    "external-fadc" = module.network_hub.0.subnet-hub-external-fadc-address-range
+    "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc-address-range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortiadc_a_license_file}"

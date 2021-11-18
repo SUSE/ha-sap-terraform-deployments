@@ -19,7 +19,7 @@ variable "snet_address_ranges" {
 variable "fortinet_licenses" {
   description = "FortiGate AP ELB/ILB and FortiADC HA deployment license files"
   type        = map(any)
-  default = {}
+  default     = {}
 }
 
 variable "fortinet_vm_publisher" {
@@ -68,7 +68,7 @@ variable "fortigate_vm_username" {
 }
 
 variable "fortigate_vm_password" {
-  type    = string
+  type = string
 }
 
 variable "fortiadc_a_license_file" {
@@ -107,10 +107,10 @@ variable "fortiadc_vm_username" {
 }
 
 variable "fortiadc_vm_password" {
-  type    = string
+  type = string
 }
 
 variable "fortinet_bastion_private_ip" {
-  type = string
+  type    = string
   default = ""
 }
