@@ -95,7 +95,6 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {% elif grains['provider'] == 'gcp' %}
-        virtual_ip_mechanism: {{ grains['hana_cluster_vip_mechanism'] }}
         {% if grains['hana_cluster_vip_mechanism'] == 'route' %}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         route_name: {{ grains['route_name'] }}
@@ -103,6 +102,7 @@ cluster:
         {% endif %}
         {% endif %}
         virtual_ip: {{ grains['hana_cluster_vip'] }}
+        virtual_ip_mechanism: {{ grains['hana_cluster_vip_mechanism'] }}
         {% if grains['provider'] == 'gcp' %}
         virtual_ip_mask: 32
         {% else %}

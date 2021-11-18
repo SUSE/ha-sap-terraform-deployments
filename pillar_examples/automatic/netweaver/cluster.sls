@@ -85,11 +85,11 @@ cluster:
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
         {%- elif grains['provider'] == 'gcp' %}
-        virtual_ip_mechanism: {{ grains['netweaver_cluster_vip_mechanism'] }}
         ascs_route_name: {{ grains['ascs_route_name'] }}
         ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         {%- endif %}
+        virtual_ip_mechanism: {{ grains['netweaver_cluster_vip_mechanism'] }}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
         {% if grains['fencing_mechanism'] == 'native' %}
         {% if grains['provider'] == 'azure' %}
