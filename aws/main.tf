@@ -128,6 +128,10 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -148,8 +152,6 @@ module "drbd_node" {
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   host_ips              = local.drbd_ips
-  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
-  drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_data_disk_size   = var.drbd_data_disk_size
   drbd_data_disk_type   = var.drbd_data_disk_type
   cluster_ssh_pub       = var.cluster_ssh_pub

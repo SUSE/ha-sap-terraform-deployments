@@ -558,6 +558,18 @@ variable "drbd_cluster_fencing_mechanism" {
   }
 }
 
+variable "drbd_cluster_vip_mechanism" {
+  description = "Mechanism used to manage the virtual IP address in the drbd cluster. Options: load-balancer, route"
+  type        = string
+  default     = "load-balancer"
+  validation {
+    condition = (
+      can(regex("^(load-balancer|route)$", var.drbd_cluster_vip_mechanism))
+    )
+    error_message = "Invalid DRBD cluster vip mechanism. Options: load-balancer|route ."
+  }
+}
+
 variable "drbd_nfs_mounting_point" {
   description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
   type        = string

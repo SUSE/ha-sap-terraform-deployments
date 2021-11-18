@@ -73,16 +73,6 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
-variable "drbd_cluster_vip" {
-  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-}
-
 variable "drbd_data_disk_size" {
   description = "Disk size of the disks used to store drbd content"
   type        = string

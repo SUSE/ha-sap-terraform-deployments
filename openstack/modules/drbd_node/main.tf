@@ -33,7 +33,7 @@ resource "openstack_networking_port_v2" "drbd" {
     ip_address = var.host_ips[count.index]
   }
   allowed_address_pairs {
-    ip_address = var.drbd_cluster_vip
+    ip_address = var.common_variables["drbd"]["cluster_vip"]
   }
   security_group_ids = [var.firewall_internal]
 }

@@ -18,7 +18,7 @@ resource "google_compute_disk" "data" {
 resource "google_compute_route" "drbd-route" {
   name                   = "${var.common_variables["deployment_name"]}-drbd-route"
   count                  = var.drbd_count > 0 ? 1 : 0
-  dest_range             = "${var.drbd_cluster_vip}/32"
+  dest_range             = "${var.common_variables["drbd"]["cluster_vip_mechanism"]}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.drbd.0.name
   next_hop_instance_zone = element(var.compute_zones, 0)

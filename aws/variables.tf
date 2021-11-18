@@ -696,7 +696,7 @@ variable "netweaver_cluster_fencing_mechanism" {
     condition = (
       can(regex("^(native|sbd)$", var.netweaver_cluster_fencing_mechanism))
     )
-    error_message = "Invalid Netweaver cluster fending mechanism. Options: native|sbd ."
+    error_message = "Invalid Netweaver cluster fencing mechanism. Options: native|sbd ."
   }
 }
 

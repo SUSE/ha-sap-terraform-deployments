@@ -68,17 +68,6 @@ variable "network_domain" {
   default     = "tf.local"
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -109,11 +98,6 @@ variable "drbd_data_disk_size" {
   description = "Disk size of the disks used to store drbd database content"
   type        = string
   default     = "50"
-}
-
-variable "drbd_cluster_vip" {
-  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
 }
 
 variable "on_destroy_dependencies" {

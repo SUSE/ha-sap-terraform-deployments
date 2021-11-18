@@ -114,6 +114,10 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "iscsi_server" {
@@ -163,10 +167,7 @@ module "drbd_node" {
   memory                = var.drbd_node_memory
   bridge                = "br0"
   host_ips              = local.drbd_ips
-  drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_disk_size        = var.drbd_disk_size
-  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.drbd_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   isolated_network_id   = local.internal_network_id

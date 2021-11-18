@@ -21,6 +21,7 @@ resource "null_resource" "drbd_provisioner" {
     content     = <<EOF
 role: drbd_node
 ${var.common_variables["grains_output"]}
+${var.common_variables["drbd_grains_output"]}
 region: ${var.aws_region}
 name_prefix: ${var.name}
 aws_cluster_profile: Cluster
@@ -32,9 +33,7 @@ hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-fencing_mechanism: ${var.fencing_mechanism}
 drbd_disk_device: /dev/xvdd
-drbd_cluster_vip: ${var.drbd_cluster_vip}
 route_table: ${var.route_table_id}
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}

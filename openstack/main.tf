@@ -163,6 +163,10 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -181,12 +185,9 @@ module "drbd_node" {
   firewall_internal   = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image            = local.drbd_os_image
   host_ips            = local.drbd_ips
-  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = module.iscsi_server.iscsisrv_ip
   drbd_data_disk_type = var.drbd_data_disk_type
   drbd_data_disk_size = var.drbd_data_disk_size
-  drbd_cluster_vip    = local.drbd_cluster_vip
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   nfs_mounting_point  = var.drbd_nfs_mounting_point
@@ -214,8 +215,6 @@ module "netweaver_node" {
   os_image                  = local.netweaver_os_image
   network_domain            = "tf.local"
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
-  fencing_mechanism         = var.hana_cluster_fencing_mechanism
-  sbd_storage_type          = var.sbd_storage_type
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
@@ -243,8 +242,6 @@ module "hana_node" {
   firewall_internal          = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image                   = local.hana_os_image
   host_ips                   = local.hana_ips
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
   hana_cluster_vip           = local.hana_cluster_vip
   hana_cluster_vip_secondary = local.hana_cluster_vip_secondary
   iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip

@@ -1,7 +1,5 @@
-
 locals {
-  hana_disk_device = "/dev/xvdd"
-  create_ha_infra  = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc

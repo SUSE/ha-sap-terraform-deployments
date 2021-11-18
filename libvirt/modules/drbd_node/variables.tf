@@ -32,11 +32,6 @@ variable "host_ips" {
   type        = list(string)
 }
 
-variable "drbd_cluster_vip" {
-  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-}
-
 variable "nfs_mounting_point" {
   description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
   type        = string
@@ -45,17 +40,6 @@ variable "nfs_mounting_point" {
 variable "nfs_export_name" {
   description = "Name of the created export in the NFS service. Usually, the `sid` of the SAP instances is used"
   type        = string
-}
-
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
-  type        = string
-  default     = "shared-disk"
 }
 
 variable "sbd_disk_id" {

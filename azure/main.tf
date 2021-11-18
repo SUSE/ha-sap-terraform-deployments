@@ -126,6 +126,10 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -143,12 +147,9 @@ module "drbd_node" {
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   host_ips            = local.drbd_ips
-  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
-  drbd_cluster_vip    = local.drbd_cluster_vip
 }
 
 module "netweaver_node" {

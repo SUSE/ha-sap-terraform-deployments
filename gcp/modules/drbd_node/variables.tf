@@ -51,11 +51,6 @@ variable "drbd_data_disk_type" {
   default     = "pd-standard"
 }
 
-variable "drbd_cluster_vip" {
-  description = "IP address used to configure the drbd cluster floating IP. It must be in other subnet than the machines!"
-  type        = string
-}
-
 variable "gcp_credentials_file" {
   description = "Path to your local gcp credentials file"
   type        = string
@@ -69,17 +64,6 @@ variable "network_domain" {
 variable "host_ips" {
   description = "ip addresses to set to the nodes"
   type        = list(string)
-}
-
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi"
-  type        = string
-  default     = "iscsi"
 }
 
 variable "iscsi_srv_ip" {
