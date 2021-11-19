@@ -8,7 +8,7 @@ module "local_execution" {
 # Iscsi server: 10.0.0.4
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.0.10, 10.0.0.11
-# Hana cluster vip: 10.0.9.12
+# Hana cluster vip: 10.0.0.12
 # Hana cluster vip secondary: 10.0.0.13
 # DRBD ips: 10.0.0.20, 10.0.0.21
 # DRBD cluster vip: 10.0.0.22
