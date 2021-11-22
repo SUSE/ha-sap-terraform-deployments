@@ -61,3 +61,8 @@ predeployment:
   'role:bastion':
     - match: grain
     - bastion
+
+# minimal NFS server on libvirt/openstack - should not be used for production
+  'role:nfs_srv':
+    - match: grain
+    - nfs_srv
