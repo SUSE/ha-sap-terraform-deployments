@@ -118,6 +118,7 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_vip_mechanism     = ""
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
@@ -130,6 +131,10 @@ module "common_variables" {
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "iscsi_server" {
@@ -183,10 +188,7 @@ module "drbd_node" {
   memory                = var.drbd_node_memory
   bridge                = var.bridge_device
   host_ips              = local.drbd_ips
-  drbd_cluster_vip      = local.drbd_cluster_vip
   drbd_disk_size        = var.drbd_disk_size
-  fencing_mechanism     = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type      = var.sbd_storage_type
   sbd_disk_id           = module.drbd_sbd_disk.id
   iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
   isolated_network_id   = local.internal_network_id

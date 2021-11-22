@@ -8,12 +8,12 @@ module "local_execution" {
 # Iscsi server: 10.0.0.4
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.0.10, 10.0.0.11
-# Hana cluster vip: 10.0.1.12
-# Hana cluster vip secondary: 10.0.1.13
+# Hana cluster vip: 10.0.0.12
+# Hana cluster vip secondary: 10.0.0.13
 # DRBD ips: 10.0.0.20, 10.0.0.21
-# DRBD cluster vip: 10.0.1.22
+# DRBD cluster vip: 10.0.0.22
 # Netweaver ips: 10.0.0.30, 10.0.0.31, 10.0.0.32, 10.0.0.33
-# Netweaver virtual ips: 10.0.1.34, 10.0.1.35, 10.0.1.36, 10.0.1.37
+# Netweaver virtual ips: 10.0.0.34, 10.0.0.35, 10.0.0.36, 10.0.0.37
 # If the addresses are provided by the user they will always have preference
 locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
@@ -35,17 +35,23 @@ locals {
   hana_cluster_vip_secondary = var.hana_cluster_vip_mechanism == "load-balancer" ? local.hana_cluster_vip_secondary_lb : local.hana_cluster_vip_secondary_route
 
   # 2 is hardcoded for drbd because we always deploy 4 machines
-  drbd_ip_start    = 20
-  drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
-  drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
+  drbd_ip_start = 20
+  drbd_ips      = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
+  # Virtual IP addresses if a route is used. In this case the virtual ip address belongs to a different subnet than the machines
+  drbd_cluster_vip_lb    = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
+  drbd_cluster_vip_route = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + local.drbd_ip_start + 2)
+  drbd_cluster_vip       = var.drbd_cluster_vip_mechanism == "load-balancer" ? local.drbd_cluster_vip_lb : local.drbd_cluster_vip_route
 
   netweaver_xscs_server_count = var.netweaver_enabled ? (var.netweaver_ha_enabled ? 2 : 1) : 0
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
   netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
 
-  netweaver_ip_start    = 30
-  netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
-  netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]
+  netweaver_ip_start            = 30
+  netweaver_ips                 = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
+  netweaver_virtual_ips_lb_xscs = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_xscs_server_count) : cidrhost(local.subnet_address_range, ip_index + 4)]                                                                                               # same subnet as netweaver hosts
+  netweaver_virtual_ips_lb_app  = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_xscs_server_count, local.netweaver_ip_start + local.netweaver_xscs_server_count + var.netweaver_app_server_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)] # different subnet as netweaver hosts
+  netweaver_virtual_ips_route   = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_virtual_ips_count) : cidrhost(cidrsubnet(local.subnet_address_range, -8, 0), 256 + ip_index + 4)]                                                                      # different subnet as netweaver hosts
+  netweaver_virtual_ips         = var.netweaver_cluster_vip_mechanism == "load-balancer" ? concat(local.netweaver_virtual_ips_lb_xscs, local.netweaver_virtual_ips_lb_app) : local.netweaver_virtual_ips_route
 
   # Check if iscsi server has to be created
   use_sbd       = var.hana_cluster_fencing_mechanism == "sbd" || var.drbd_cluster_fencing_mechanism == "sbd" || var.netweaver_cluster_fencing_mechanism == "sbd"
@@ -142,6 +148,7 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_vip_mechanism     = var.netweaver_cluster_vip_mechanism
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
@@ -154,6 +161,10 @@ module "common_variables" {
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = var.drbd_cluster_vip_mechanism
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -170,11 +181,8 @@ module "drbd_node" {
   os_image             = local.drbd_os_image
   drbd_data_disk_size  = var.drbd_data_disk_size
   drbd_data_disk_type  = var.drbd_data_disk_type
-  drbd_cluster_vip     = local.drbd_cluster_vip
   gcp_credentials_file = var.gcp_credentials_file
   host_ips             = local.drbd_ips
-  fencing_mechanism    = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type     = var.sbd_storage_type
   iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
   cluster_ssh_key      = var.cluster_ssh_key

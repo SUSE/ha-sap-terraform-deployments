@@ -74,29 +74,30 @@ output "configuration" {
       scale_out_standby_count        = var.hana_scale_out_standby_count
     }
     netweaver = {
-      ha_enabled           = var.netweaver_ha_enabled
-      fencing_mechanism    = var.netweaver_cluster_fencing_mechanism
-      sbd_storage_type     = var.netweaver_sbd_storage_type
-      sid                  = var.netweaver_sid
-      ascs_instance_number = var.netweaver_ascs_instance_number
-      ers_instance_number  = var.netweaver_ers_instance_number
-      pas_instance_number  = var.netweaver_pas_instance_number
-      master_password      = var.netweaver_master_password
-      product_id           = var.netweaver_product_id
-      inst_folder          = var.netweaver_inst_folder
-      extract_dir          = var.netweaver_extract_dir
-      swpm_folder          = var.netweaver_swpm_folder
-      sapcar_exe           = var.netweaver_sapcar_exe
-      swpm_sar             = var.netweaver_swpm_sar
-      sapexe_folder        = var.netweaver_sapexe_folder
-      additional_dvds      = var.netweaver_additional_dvds
-      nfs_share            = var.netweaver_nfs_share
-      sapmnt_path          = var.netweaver_sapmnt_path
-      hana_ip              = var.netweaver_hana_ip
-      hana_sid             = var.netweaver_hana_sid
-      hana_instance_number = var.netweaver_hana_instance_number
-      hana_master_password = var.netweaver_hana_master_password
-      shared_storage_type  = var.netweaver_shared_storage_type
+      ha_enabled            = var.netweaver_ha_enabled
+      cluster_vip_mechanism = var.netweaver_cluster_vip_mechanism
+      fencing_mechanism     = var.netweaver_cluster_fencing_mechanism
+      sbd_storage_type      = var.netweaver_sbd_storage_type
+      sid                   = var.netweaver_sid
+      ascs_instance_number  = var.netweaver_ascs_instance_number
+      ers_instance_number   = var.netweaver_ers_instance_number
+      pas_instance_number   = var.netweaver_pas_instance_number
+      master_password       = var.netweaver_master_password
+      product_id            = var.netweaver_product_id
+      inst_folder           = var.netweaver_inst_folder
+      extract_dir           = var.netweaver_extract_dir
+      swpm_folder           = var.netweaver_swpm_folder
+      sapcar_exe            = var.netweaver_sapcar_exe
+      swpm_sar              = var.netweaver_swpm_sar
+      sapexe_folder         = var.netweaver_sapexe_folder
+      additional_dvds       = var.netweaver_additional_dvds
+      nfs_share             = var.netweaver_nfs_share
+      sapmnt_path           = var.netweaver_sapmnt_path
+      hana_ip               = var.netweaver_hana_ip
+      hana_sid              = var.netweaver_hana_sid
+      hana_instance_number  = var.netweaver_hana_instance_number
+      hana_master_password  = var.netweaver_hana_master_password
+      shared_storage_type   = var.netweaver_shared_storage_type
     }
     monitoring = {
       hana_targets          = var.monitoring_hana_targets
@@ -108,6 +109,12 @@ output "configuration" {
       netweaver_targets     = var.monitoring_netweaver_targets
       netweaver_targets_ha  = var.monitoring_netweaver_targets_ha
       netweaver_targets_vip = var.monitoring_netweaver_targets_vip
+    }
+    drbd = {
+      cluster_vip           = var.drbd_cluster_vip
+      cluster_vip_mechanism = var.drbd_cluster_vip_mechanism
+      fencing_mechanism     = var.drbd_cluster_fencing_mechanism
+      sbd_storage_type      = var.drbd_sbd_storage_type
     }
     grains_output            = <<EOF
 provider: ${var.provider_type}
@@ -160,6 +167,7 @@ sbd_storage_type: ${var.hana_sbd_storage_type}
 EOF
     netweaver_grains_output  = <<EOF
 ha_enabled: ${var.netweaver_ha_enabled}
+netweaver_cluster_vip_mechanism: ${var.netweaver_cluster_vip_mechanism}
 fencing_mechanism: ${var.netweaver_cluster_fencing_mechanism}
 sbd_storage_type: ${var.netweaver_sbd_storage_type}
 netweaver_sid: ${var.netweaver_sid}
@@ -193,6 +201,12 @@ drbd_targets_ha_vip: [${join(", ", formatlist("'%s'", var.monitoring_drbd_target
 netweaver_targets: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets))}]
 netweaver_targets_ha: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_ha))}]
 netweaver_targets_vip: [${join(", ", formatlist("'%s'", var.monitoring_netweaver_targets_vip))}]
+EOF
+    drbd_grains_output       = <<EOF
+drbd_cluster_vip: ${var.drbd_cluster_vip}
+drbd_cluster_vip_mechanism: ${var.drbd_cluster_vip_mechanism}
+fencing_mechanism: ${var.drbd_cluster_fencing_mechanism}
+sbd_storage_type: ${var.drbd_sbd_storage_type}
 EOF
   }
 }

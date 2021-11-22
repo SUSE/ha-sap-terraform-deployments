@@ -145,6 +145,7 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_vip_mechanism     = ""
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
@@ -157,6 +158,10 @@ module "common_variables" {
   monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -177,12 +182,9 @@ module "drbd_node" {
   firewall_internal   = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image            = local.drbd_os_image
   host_ips            = local.drbd_ips
-  fencing_mechanism   = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type    = var.sbd_storage_type
   iscsi_srv_ip        = module.iscsi_server.iscsisrv_ip
   drbd_data_disk_type = var.drbd_data_disk_type
   drbd_data_disk_size = var.drbd_data_disk_size
-  drbd_cluster_vip    = local.drbd_cluster_vip
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   nfs_mounting_point  = var.drbd_nfs_mounting_point
@@ -211,8 +213,6 @@ module "netweaver_node" {
   firewall_internal         = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image                  = local.netweaver_os_image
   iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
-  fencing_mechanism         = var.hana_cluster_fencing_mechanism
-  sbd_storage_type          = var.sbd_storage_type
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
@@ -225,34 +225,30 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                     = "./modules/hana_node"
-  common_variables           = module.common_variables.configuration
-  name                       = var.hana_name
-  network_domain             = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  region                     = var.region
-  region_net                 = var.region_net
-  bastion_host               = module.bastion.public_ip
-  hana_count                 = var.hana_count
-  flavor                     = var.hana_flavor
-  userdata                   = data.template_file.userdata.rendered
-  network_name               = local.network_name
-  network_id                 = local.network_id
-  network_subnet_name        = local.subnet_name
-  network_subnet_id          = local.subnet_id
-  firewall_internal          = openstack_networking_secgroup_v2.ha_firewall_internal.id
-  os_image                   = local.hana_os_image
-  host_ips                   = local.hana_ips
-  fencing_mechanism          = var.hana_cluster_fencing_mechanism
-  sbd_storage_type           = var.sbd_storage_type
-  hana_cluster_vip           = local.hana_cluster_vip
-  hana_cluster_vip_secondary = local.hana_cluster_vip_secondary
-  iscsi_srv_ip               = module.iscsi_server.iscsisrv_ip
-  hana_data_disk_type        = var.hana_data_disk_type
-  hana_data_disk_size        = var.hana_data_disk_size
-  hana_backup_disk_type      = var.hana_backup_disk_type
-  hana_backup_disk_size      = var.hana_backup_disk_size
-  cluster_ssh_pub            = var.cluster_ssh_pub
-  cluster_ssh_key            = var.cluster_ssh_key
+  source                = "./modules/hana_node"
+  common_variables      = module.common_variables.configuration
+  name                  = var.hana_name
+  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  region                = var.region
+  region_net            = var.region_net
+  bastion_host          = module.bastion.public_ip
+  hana_count            = var.hana_count
+  flavor                = var.hana_flavor
+  userdata              = data.template_file.userdata.rendered
+  network_name          = local.network_name
+  network_id            = local.network_id
+  network_subnet_name   = local.subnet_name
+  network_subnet_id     = local.subnet_id
+  firewall_internal     = openstack_networking_secgroup_v2.ha_firewall_internal.id
+  os_image              = local.hana_os_image
+  host_ips              = local.hana_ips
+  iscsi_srv_ip          = module.iscsi_server.iscsisrv_ip
+  hana_data_disk_type   = var.hana_data_disk_type
+  hana_data_disk_size   = var.hana_data_disk_size
+  hana_backup_disk_type = var.hana_backup_disk_type
+  hana_backup_disk_size = var.hana_backup_disk_size
+  cluster_ssh_pub       = var.cluster_ssh_pub
+  cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
     openstack_networking_secgroup_v2.ha_firewall_internal
   ]

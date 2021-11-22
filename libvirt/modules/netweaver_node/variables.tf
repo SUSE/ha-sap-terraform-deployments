@@ -32,12 +32,6 @@ variable "virtual_host_ips" {
   type        = list(string)
 }
 
-variable "sbd_storage_type" {
-  description = "Choose the SBD storage type. Options: iscsi, shared-disk"
-  type        = string
-  default     = "shared-disk"
-}
-
 variable "shared_disk_id" {
   description = "Disk used by SBD and, ASCS/ERS"
   type        = string

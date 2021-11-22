@@ -34,11 +34,6 @@ variable "hana_count" {
   default = "2"
 }
 
-variable "fencing_mechanism" {
-  description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
-  type        = string
-}
-
 variable "hana_instance_number" {
   description = "Instance number of the HANA system. It must be a 2 digits string. Examples: 00, 01, 10"
   type        = string
