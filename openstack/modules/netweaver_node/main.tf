@@ -18,17 +18,11 @@ resource "openstack_networking_port_v2" "netweaver" {
     subnet_id  = var.network_subnet_id
     ip_address = var.host_ips[count.index]
   }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
+  dynamic "allowed_address_pairs" {
+    for_each = var.virtual_host_ips
+    content {
+      ip_address = var.virtual_host_ips[allowed_address_pairs.key]
+    }
   }
   security_group_ids = [var.firewall_internal]
 }
