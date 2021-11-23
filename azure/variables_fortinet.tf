@@ -112,5 +112,5 @@ variable "fortiadc_vm_password" {
 
 variable "fortinet_bastion_private_ip" {
   type    = string
-  default = ""
+  default = null
 }

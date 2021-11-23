@@ -67,3 +67,11 @@ variable "bastion_private_ip" {
 variable "fortinet_licenses" {
   type = map(any)
 }
+
+variable "resource_group_id" {
+  type = string
+}
+
+variable "vnet_spoke_address_range" {
+  type = string
+}
