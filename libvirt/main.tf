@@ -87,7 +87,7 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
-  hana_cluster_vip_mechanism          = ""
+  hana_cluster_vip_mechanism          = "vip-only"
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
@@ -118,7 +118,7 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
-  netweaver_cluster_vip_mechanism     = ""
+  netweaver_cluster_vip_mechanism     = "vip-only"
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
@@ -132,7 +132,7 @@ module "common_variables" {
   monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
   monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   drbd_cluster_vip                    = local.drbd_cluster_vip
-  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_vip_mechanism          = "vip-only"
   drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
   drbd_sbd_storage_type               = var.sbd_storage_type
 }
