@@ -67,3 +67,7 @@ variable "vm_password" {
 variable "fortinet_licenses" {
   type = map(any)
 }
+
+variable "resource_group_id" {
+  type = string
+}

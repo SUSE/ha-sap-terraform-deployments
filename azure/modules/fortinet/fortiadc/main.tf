@@ -280,6 +280,19 @@ locals {
     }
   }
 
+  role_assignments = {
+    "ra-fadc-a" = {
+      scope                = var.resource_group_id
+      role_definition_name = "Reader"
+      principal_id = azurerm_virtual_machine.virtual_machine["vm-fadc-a"].identity[0].principal_id
+    },
+    "ra-fadc-b" = {
+      scope                = var.resource_group_id
+      role_definition_name = "Reader"
+      principal_id = azurerm_virtual_machine.virtual_machine["vm-fadc-b"].identity[0].principal_id
+    }
+  }
+
   lb_backend_address_pools = {
     "lb-fadc-external-be-pool-01" = {
       name                = "lb-fadc-external-be-pool-01"
@@ -298,7 +311,7 @@ locals {
       name                = "lb-fadc-probe"
       resource_group_name = var.resource_group_name
       loadbalancer_id     = azurerm_lb.lb["lb-fadc-external-internal"].id
-      port                = "8008"
+      port                = "8080"
       protocol            = "Tcp"
       interval_in_seconds = "5"
     }
@@ -363,7 +376,7 @@ locals {
       resource_group_name = var.resource_group_name
     }
   }
-  vm_configs = {
+  virtual_machines = {
     "vm-fadc-a" = {
       name                = "vm-fadc-a"
       location            = var.az_region
@@ -565,6 +578,7 @@ resource "local_file" "file" {
 }
 
 resource "azurerm_network_interface" "network_interface" {
+
   for_each = local.network_interfaces
 
   name                          = each.value.name
@@ -759,7 +773,7 @@ resource "azurerm_availability_set" "availability_set" {
 }
 
 resource "azurerm_virtual_machine" "virtual_machine" {
-  for_each = local.vm_configs
+  for_each = local.virtual_machines
 
   name                = each.value.name
   location            = each.value.location
@@ -827,5 +841,18 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     azurerm_network_interface.network_interface,
     azurerm_storage_blob.storage_blob,
     local_file.file
+  ]
+}
+
+resource "azurerm_role_assignment" "role_assignment" {
+
+  for_each = local.role_assignments
+
+  scope                = each.value.scope
+  role_definition_name = each.value.role_definition_name
+  principal_id         = each.value.principal_id
+
+  depends_on = [
+    azurerm_virtual_machine.virtual_machine
   ]
 }
