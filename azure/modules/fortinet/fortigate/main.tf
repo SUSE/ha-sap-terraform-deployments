@@ -193,6 +193,22 @@ locals {
       next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
       next_hop_type          = "VirtualAppliance"
       route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+    },
+      "r-mgmt" = {
+      resource_group_name    = var.resource_group_name
+      name                   = "r-mgmt"
+      address_prefix         = var.snet_address_ranges["mgmt"]
+      next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
+      next_hop_type          = "VirtualAppliance"
+      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+    },
+    "r-mon" = {
+      resource_group_name    = var.resource_group_name
+      name                   = "r-mon"
+      address_prefix         = var.snet_address_ranges["mon"]
+      next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
+      next_hop_type          = "VirtualAppliance"
+      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
     }
   }
 
@@ -207,6 +223,10 @@ locals {
     },
     "hub-mon" = {
       subnet_id      = var.snet_ids["mon"]
+      route_table_id = azurerm_route_table.route_table["rt-protected"].id
+    },
+    "spoke-sap-1-workload" = {
+      subnet_id      = var.snet_ids["spoke-sap-1-workload"]
       route_table_id = azurerm_route_table.route_table["rt-protected"].id
     }
   }
