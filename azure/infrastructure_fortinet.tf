@@ -66,6 +66,7 @@ module "fortigate" {
     "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc.0.id
     "mgmt"          = module.network_hub.0.subnet_hub_mgmt_id
     "mon"           = module.network_hub.0.subnet_hub_mon_id
+    "spoke-sap-1-workload" = module.network_spoke.0.subnet_spoke_workload_id 
   }
 
   snet_address_ranges = {
@@ -75,6 +76,8 @@ module "fortigate" {
     "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt-address-range
     "external-fadc" = module.network_hub.0.subnet-hub-external-fadc-address-range
     "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc-address-range
+    "mgmt"          = module.network_hub.0.subnet_hub_mgmt_address_range
+    "mon"           = module.network_hub.0.subnet_hub_mon_address_range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortigate_a_license_file}"
@@ -112,6 +115,7 @@ module "fortiadc" {
     "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc.0.id
     "mgmt"          = module.network_hub.0.subnet_hub_mgmt_id
     "mon"           = module.network_hub.0.subnet_hub_mon_id
+    "spoke-sap-1-workload" = module.network_spoke.0.subnet_spoke_workload_id 
   }
   snet_address_ranges = {
     "external-fgt"  = module.network_hub.0.subnet-hub-external-fgt-address-range
@@ -120,6 +124,8 @@ module "fortiadc" {
     "mgmt-ftnt"     = module.network_hub.0.subnet-hub-mgmt-ftnt-address-range
     "external-fadc" = module.network_hub.0.subnet-hub-external-fadc-address-range
     "internal-fadc" = module.network_hub.0.subnet-hub-internal-fadc-address-range
+    "mgmt"          = module.network_hub.0.subnet_hub_mgmt_address_range
+    "mon"           = module.network_hub.0.subnet_hub_mon_address_range
   }
   fortinet_licenses = {
     "license_a" = "${path.module}/${var.fortiadc_a_license_file}"
