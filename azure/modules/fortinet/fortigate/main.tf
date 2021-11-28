@@ -170,21 +170,34 @@ locals {
   }
 
   route_tables = {
-    "rt-protected" = {
-      name                = "rt-protected"
+    "rt-hub" = {
+      name                = "rt-hub"
       location            = var.az_region
       resource_group_name = var.resource_group_name
-    }
+    },
+    "rt-spoke" = {
+      name                = "rt-spoke"
+      location            = var.az_region
+      resource_group_name = var.resource_group_name
+    },
   }
 
   routes = {
-    "r-default" = {
+    "r-default-hub" = {
       resource_group_name    = var.resource_group_name
-      name                   = "r-default"
+      name                   = "r-default-hub"
       address_prefix         = "0.0.0.0/0"
       next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
       next_hop_type          = "VirtualAppliance"
-      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+      route_table_name       = azurerm_route_table.route_table["rt-hub"].name
+    },
+    "r-default-spoke" = {
+      resource_group_name    = var.resource_group_name
+      name                   = "r-default-spoke"
+      address_prefix         = "0.0.0.0/0"
+      next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
+      next_hop_type          = "VirtualAppliance"
+      route_table_name       = azurerm_route_table.route_table["rt-spoke"].name
     },
     "r-spoke" = {
       resource_group_name    = var.resource_group_name
@@ -192,7 +205,15 @@ locals {
       address_prefix         = var.vnet_spoke_address_range
       next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
       next_hop_type          = "VirtualAppliance"
-      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+      route_table_name       = azurerm_route_table.route_table["rt-hub"].name
+    },
+    "r-hub" = {
+      resource_group_name    = var.resource_group_name
+      name                   = "r-hub"
+      address_prefix         = var.vnet_address_range
+      next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
+      next_hop_type          = "VirtualAppliance"
+      route_table_name       = azurerm_route_table.route_table["rt-spoke"].name
     },
       "r-mgmt" = {
       resource_group_name    = var.resource_group_name
@@ -200,7 +221,7 @@ locals {
       address_prefix         = var.snet_address_ranges["mgmt"]
       next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
       next_hop_type          = "VirtualAppliance"
-      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+      route_table_name       = azurerm_route_table.route_table["rt-hub"].name
     },
     "r-mon" = {
       resource_group_name    = var.resource_group_name
@@ -208,26 +229,26 @@ locals {
       address_prefix         = var.snet_address_ranges["mon"]
       next_hop_in_ip_address = azurerm_lb.lb["lb-fgt-internal"].private_ip_address
       next_hop_type          = "VirtualAppliance"
-      route_table_name       = azurerm_route_table.route_table["rt-protected"].name
+      route_table_name       = azurerm_route_table.route_table["rt-hub"].name
     }
   }
 
   subnet_route_table_associations = {
     "hub-external-fadc" = {
       subnet_id      = var.snet_ids["external-fadc"]
-      route_table_id = azurerm_route_table.route_table["rt-protected"].id
+      route_table_id = azurerm_route_table.route_table["rt-hub"].id
     },
     "hub-mgmt" = {
       subnet_id      = var.snet_ids["mgmt"]
-      route_table_id = azurerm_route_table.route_table["rt-protected"].id
+      route_table_id = azurerm_route_table.route_table["rt-hub"].id
     },
     "hub-mon" = {
       subnet_id      = var.snet_ids["mon"]
-      route_table_id = azurerm_route_table.route_table["rt-protected"].id
+      route_table_id = azurerm_route_table.route_table["rt-hub"].id
     },
     "spoke-sap-1-workload" = {
       subnet_id      = var.snet_ids["spoke-sap-1-workload"]
-      route_table_id = azurerm_route_table.route_table["rt-protected"].id
+      route_table_id = azurerm_route_table.route_table["rt-spoke"].id
     }
   }
   network_security_groups = {
