@@ -164,6 +164,27 @@ bastion_data_disk_type = ""
 # Disk size for NFS server volume on the bastion (only used for volume, not ephemeral)
 #bastion_data_disk_size = "60"
 
+##########################
+# NFS server machine variables
+##########################
+
+# Enable NFS server (will also be used if any shared_storage_type variable is set to "nfs")
+#nfs_enabled = false
+# use NFS server as inst_master (NFS mountpoint still need to be configured)
+#nfs_inst_master = false
+# Use existing nfs data volumes
+#nfs_data_volume_names = ["scale-out-data-1", "scale-out-data-2", "scale-out-data-3", "scale-out-data-4", "scale-out-data-5"]
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#nfs_nfs_mounting_point = "/mnt_permanent/sapdata"
+
+#########################
+# shared storage variables
+# Needed if Netweaver is deployed HA or HANA is deployed in scale-out scenario
+#########################
+#netweaver_shared_storage_type      = "drbd" # drbd,nfs supported at the moment (default: "drbd")
+#hana_scale_out_shared_storage_type = "" # only nfs supported at the moment (default: "")
+
 #########################
 # HANA machines variables
 #########################
@@ -173,6 +194,29 @@ bastion_data_disk_type = ""
 
 # HANA flavor
 hana_flavor = "8C-32GB-40GB-200GB"
+
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
+# enable to use HANA scale-out
+#hana_scale_out_enabled = false
+
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
+
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site
+#hana_scale_out_standby_count = 1 # default:1 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+
+#majority_maker_flavor = "2C-2GB-40GB"
+#majority_maker_ip     = "10.0.0.9"
 
 # HANA os_image. This value is used to overwrite the default "os_image".
 # If `openstack` utility is available in your local machine, the next command shows some of the available options

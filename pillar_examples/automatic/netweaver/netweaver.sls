@@ -109,6 +109,8 @@ netweaver:
       {%- elif grains['ha_enabled'] %}
       {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
+      {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
+      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
       {%- else %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS
       {%- endif %}
@@ -129,6 +131,8 @@ netweaver:
       {%- else %}
       {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
+      {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
+      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS{{ '{:0>2}'.format(grains['ers_instance_number']) }}
       {%- else %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS
       {%- endif %}

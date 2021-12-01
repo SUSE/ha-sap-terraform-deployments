@@ -60,6 +60,9 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 netweaver_inst_media: ${var.netweaver_inst_media}
+nfs_mount_ip:
+  sapmnt: [ ${local.shared_storage_nfs == 1 ? var.nfs_srv_ip : ""} ]
+nfs_mounting_point: ${var.nfs_mounting_point}
 EOF
     destination = "/tmp/grains"
   }

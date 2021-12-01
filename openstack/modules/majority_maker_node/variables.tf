@@ -13,8 +13,7 @@ variable "region_net" {
 }
 
 variable "flavor" {
-  type    = string
-  default = "8C-32GB-40GB-200GB"
+  type = string
 }
 
 variable "name" {
@@ -73,6 +72,11 @@ variable "firewall_internal" {
   type        = string
 }
 
+variable "majority_maker_ip" {
+  description = "Majority Maker server address"
+  type        = string
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -89,56 +93,11 @@ variable "cluster_ssh_key" {
 }
 
 variable "hana_count" {
-  type    = string
-  default = "2"
+  type = string
 }
 
-variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
-  type        = string
-  default     = "pd-ssd"
-}
-
-variable "hana_data_disk_size" {
-  description = "Disk size of the disks used to store hana database content"
-  type        = string
-  default     = "834"
-}
-
-variable "hana_backup_disk_type" {
-  description = "Disk type of the disks used to store hana database backup content"
-  type        = string
-  default     = "pd-standard"
-}
-
-variable "hana_backup_disk_size" {
-  description = "Disk size of the disks used to store hana database backup content"
-  type        = string
-  default     = "416"
-}
-
-variable "hana_disk_device" {
-  description = "Device where hana is installed"
-  type        = string
-  default     = "/dev/sdb"
-}
-
-variable "hana_backup_device" {
-  description = "Device where hana backup is stored"
-  type        = string
-  default     = "/dev/sdc"
-}
-
-variable "hana_inst_disk_device" {
-  description = "Device where hana installation software CIFS share is mounted"
-  type        = string
-  default     = "/dev/sdd"
-}
-
-variable "on_destroy_dependencies" {
-  description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
-  type        = any
-  default     = []
+variable "node_count" {
+  type = number
 }
 
 variable "hana_cluster_vip" {
@@ -153,21 +112,8 @@ variable "hana_cluster_vip_secondary" {
   default     = ""
 }
 
-variable "nfs_srv_ip" {
-  description = "IP address for shared storage NFS server"
-  type        = string
-}
-
-variable "nfs_mounting_point" {
-  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
-  type        = string
-}
-
-variable "majority_maker_flavor" {
-  type = string
-}
-
-variable "majority_maker_ip" {
-  description = "Majority Maker server address"
-  type        = string
+variable "on_destroy_dependencies" {
+  description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
+  type        = any
+  default     = []
 }

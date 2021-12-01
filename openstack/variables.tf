@@ -478,9 +478,9 @@ variable "hana_scale_out_shared_storage_type" {
   default     = ""
   validation {
     condition = (
-      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|nfs)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: none."
+    error_message = "Invalid HANA scale out storage type. Options: none, nfs."
   }
 }
 
@@ -496,6 +496,25 @@ variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
   default     = "1"
+}
+
+
+variable "hana_majority_maker_flavor" {
+  description = "The instance type of the HANA Majority Maker machine"
+  type        = string
+  default     = "1C-1GB-40GB"
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
 }
 
 # Monitoring related variables
@@ -587,6 +606,63 @@ variable "iscsi_disk_size" {
   description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
   type        = number
   default     = 10
+}
+
+# If nfs is selected as shared_storage_type
+# Use the next variables for advanced configuration
+
+variable "nfs_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnfs"
+}
+
+variable "nfs_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_enabled" {
+  description = "Enable NFS server."
+  type        = bool
+  default     = false
+}
+
+variable "nfs_os_image" {
+  description = "The image used to create the nfs machines"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_flavor" {
+  description = "The instance type of the nfs nodes"
+  type        = string
+  default     = "2C-2GB-40GB"
+}
+
+variable "nfs_srv_ip" {
+  description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_volume_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 100
+}
+
+variable "nfs_data_volume_names" {
+  description = "Existing volumes to use for NFS server."
+  type        = list
+  default     = []
+}
+
+variable "nfs_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
 }
 
 # DRBD related variables
@@ -827,9 +903,9 @@ variable "netweaver_shared_storage_type" {
   default     = ""
   validation {
     condition = (
-      can(regex("^(|)$", var.netweaver_shared_storage_type))
+      can(regex("^(|nfs)$", var.netweaver_shared_storage_type))
     )
-    error_message = "Invalid Netweaver shared storage type. Options: none."
+    error_message = "Invalid Netweaver shared storage type. Options: none, nfs."
   }
 }
 

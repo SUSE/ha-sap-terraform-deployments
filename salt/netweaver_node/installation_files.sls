@@ -1,4 +1,10 @@
 {% if grains.get('provider') in ['libvirt', 'openstack'] %}
+nfs-client:
+  pkg.installed:
+  - retry:
+     attempts: 3
+     interval: 15
+
 mount_swpm:
   mount.mounted:
     - name: {{ grains['netweaver_inst_folder'] }}
