@@ -139,6 +139,9 @@ jobs:
           sudo apt-get install -y git python3 python3-pip
           python3 -m pip install salt-lint
 
+      - name: salt-lint
+        run: make test-salt-lint
+
   terraform-format:
     name: 'terraform format'
     runs-on: ubuntu-20.04
