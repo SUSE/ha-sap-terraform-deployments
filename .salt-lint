@@ -1,0 +1,4 @@
+---
+rules:
+  204:
+    ignore: 'salt/shared_storage/nfs.sls'
