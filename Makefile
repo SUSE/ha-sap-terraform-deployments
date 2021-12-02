@@ -28,8 +28,22 @@ help:
 # to sum up all error codes.
 
 # test: @ Run all defined tests
-test: test-codespell test-shellcheck test-yamllint test-jsonlint test-salt-lint test-terraform-format test-terraform-validation
+test: test-tab test-codespell test-shellcheck test-yamllint test-jsonlint test-salt-lint test-terraform-format test-terraform-validation
 	@echo "All tests Done!"
+
+# test-tab: @ Run linting to find files containing tabspaces
+test-tab:
+	@for file in $(shell find . -regextype egrep -regex '.*\.(sls|yml|yaml)' ! -path "**/venv/*"); do\
+		grep -q -P '\t' $${file} ;\
+		if [ "$$?" -eq 0 ]; then\
+			err_add=1 ;\
+			echo "Tab found in $${file}" ;\
+			grep -H -n -P '\t' $${file} ;\
+		else \
+			err_add=0 ;\
+		fi;\
+		err=$$((err_add + err)) ;\
+	done; exit $$err
 
 # test-codespell: @ Run spell check
 test-codespell:
