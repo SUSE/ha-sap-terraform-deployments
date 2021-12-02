@@ -51,7 +51,7 @@ cluster:
       parameters:
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
         virtual_ip_mechanism: {{ grains['drbd_cluster_vip_mechanism'] }}
-	# load-balancer probe
+        # load-balancer probe
         probe: 61000
         {% if grains['provider'] == 'aws' %}
         route_table: {{ grains['route_table'] }}
