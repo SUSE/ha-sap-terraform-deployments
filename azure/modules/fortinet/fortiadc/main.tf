@@ -1,7 +1,7 @@
 locals {
 
-  fadc-license_a-basename = trimprefix(var.fortinet_licenses["license_a"], "./")
-  fadc-license_b-basename = trimprefix(var.fortinet_licenses["license_b"], "./")
+  fadc-license_a-basename = var.vm_license == "payg" ? "fadc_license_a_payg.lic" : trimprefix(var.fortinet_licenses["license_a"], "./")
+  fadc-license_b-basename = var.vm_license == "payg" ? "fadc_license_b_payg.lic" : trimprefix(var.fortinet_licenses["license_b"], "./")
 
   network_interfaces = {
     "nic-fortiadc_a_1" = {
@@ -226,18 +226,20 @@ locals {
 
   storage_blobs = {
     "sb-fadc-license-a" = {
-      name                   = var.fortinet_licenses["license_a"]
+      name                   = local.fadc-license_a-basename
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = "${var.fortinet_licenses["license_a"]}"
+      source                 = var.vm_license == "byol" ? "${var.fortinet_licenses["license_a"]}" : null
+      source_content         = var.vm_license == "payg" ? "payg" : null
     },
     "sb-fadc-license-b" = {
-      name                   = var.fortinet_licenses["license_b"]
+      name                   = local.fadc-license_b-basename
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = "${var.fortinet_licenses["license_b"]}"
+      source                 = var.vm_license == "byol" ? "${var.fortinet_licenses["license_a"]}" : null
+      source_content         = var.vm_license == "payg" ? "payg" : null
     },
     "sb-fadc-config-a" = {
       name                   = "fadc-config-a.txt"
@@ -245,6 +247,7 @@ locals {
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
       source                 = "${path.module}/fadc-config-a.txt"
+      source_content         = null
     },
     "sb-fadc-config-b" = {
       name                   = "fadc-config-b.txt"
@@ -252,6 +255,7 @@ locals {
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
       source                 = "${path.module}/fadc-config-b.txt"
+      source_content         = null
     }
   }
   lbs = {
@@ -630,6 +634,7 @@ resource "azurerm_storage_blob" "storage_blob" {
   storage_container_name = each.value.storage_container_name
   type                   = each.value.type
   source                 = each.value.source
+  source_content         = each.value.source_content
 
   depends_on = [
     local_file.file
