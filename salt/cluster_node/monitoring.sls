@@ -34,13 +34,15 @@ promtail_config:
     - source: salt://cluster_node/templates/promtail.yaml.j2
 
 # we need to add loki's user to the systemd-journal group, to let promtail read /run/log/journal
-loki_systemd_journal_member:
-  group.present:
-    - name: systemd-journal
-    - addusers:
-      - loki
-    - require:
-      - pkg: promtail
+## https://build.opensuse.org/request/show/940653 removed the loki user
+## promtail is running as root now and loki's permissions do not need to be adapted for now
+# loki_systemd_journal_member:
+#   group.present:
+#     - name: systemd-journal
+#     - addusers:
+#       - loki
+#     - require:
+#       - pkg: promtail
 
 promtail_service:
   service.running:
@@ -49,5 +51,5 @@ promtail_service:
     - require:
       - pkg: promtail
       - file: promtail_config
-      - group: loki_systemd_journal_member
+#      - group: loki_systemd_journal_member
 {%- endif %}
