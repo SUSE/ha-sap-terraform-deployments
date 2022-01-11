@@ -24,93 +24,95 @@ variable "fortinet_licenses" {
 
 variable "fortinet_vm_publisher" {
   type    = string
-  default = "fortinet"
+  default = ""
 }
 
 variable "fortinet_vm_license_type" {
   type    = string
-  default = "byol"
+  default = ""
 }
 
 variable "fortigate_a_license_file" {
   type    = string
-  default = "license_fortigate_a.lic"
+  default = ""
 }
 
 variable "fortigate_b_license_file" {
   type    = string
-  default = "license_fortigate_b.lic"
+  default = ""
 }
 
 variable "fortigate_vm_offer" {
   type    = string
-  default = "fortinet_fortigate-vm_v5"
+  default = ""
 }
 
 variable "fortigate_vm_sku" {
   type    = string
-  default = "fortinet_fg-vm"
+  default = ""
 }
 
 variable "fortigate_vm_size" {
   type    = string
-  default = "Standard_F4s"
+  default = ""
 }
 
 variable "fortigate_vm_version" {
   type    = string
-  default = "7.0.1"
+  default = ""
 }
 
 variable "fortigate_vm_username" {
   type    = string
-  default = "azureuser"
+  default = ""
 }
 
 variable "fortigate_vm_password" {
   type = string
+  default = ""
 }
 
 variable "fortiadc_a_license_file" {
   type    = string
-  default = "license_fortiadc_a.lic"
+  default = ""
 }
 
 variable "fortiadc_b_license_file" {
   type    = string
-  default = "license_fortiadc_b.lic"
+  default = ""
 }
 
 variable "fortiadc_vm_offer" {
   type    = string
-  default = "fortinet-fortiadc"
+  default = ""
 }
 
 variable "fortiadc_vm_sku" {
   type    = string
-  default = "fad-vm-byol"
+  default = ""
 }
 
 variable "fortiadc_vm_size" {
   type    = string
-  default = "Standard_F4s"
+  default = ""
 }
 
 variable "fortiadc_vm_version" {
   type    = string
-  default = "6.1.3"
+  default = ""
 }
 
 variable "fortiadc_vm_username" {
   type    = string
-  default = "azureuser"
+  default = ""
 }
 
 variable "fortiadc_vm_password" {
   type = string
+  default = ""
 }
 
 variable "fortinet_bastion_private_ip" {
   type    = string
-  default = null
+  default = ""
 }
