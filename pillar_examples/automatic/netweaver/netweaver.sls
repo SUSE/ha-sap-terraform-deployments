@@ -79,7 +79,7 @@ netweaver:
     password: {{ grains['hana_master_password'] }}
 
   schema:
-    {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
+    {%- if product_id_header in ['S4HANA1809', 'S4HANA1909', 'S4HANA2020', 'S4HANA2021'] %}
     name: SAPHANADB # This name is always used for new S/4HANA, so it shouldn't be changed
     {%- else %}
     name: SAPABAP1
