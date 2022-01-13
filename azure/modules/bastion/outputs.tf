@@ -7,7 +7,7 @@ data "azurerm_public_ip" "bastion" {
 }
 
 output "public_ip" {
-  value = !var.fortinet_enabled ? join("", data.azurerm_public_ip.bastion.*.ip_address) : var.fortinet_bastion_public_ip
+  value = !var.fortinet_enabled ? join("", azurerm_public_ip.bastion.*.ip_address) : var.fortinet_bastion_public_ip
 }
 
 output "subnet_bastion_id" {
