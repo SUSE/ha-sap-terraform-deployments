@@ -69,43 +69,6 @@ resource "azurerm_storage_account" "mytfstorageacc" {
   }
 }
 
-# Network resources: Virtual Network, Subnet
-resource "azurerm_virtual_network" "vnet-hub" {
-  count               = local.vnet_create ? 1 : 0
-  name                = "vnet-hub-${var.deployment_name}"
-  address_space       = [var.vnet_address_range]
-  location            = var.az_region
-  resource_group_name = local.resource_group_name
-
-  tags = {
-    workspace = var.deployment_name
-  }
-}
-
-resource "azurerm_subnet" "subnet-hub-gateway" {
-  count                = local.subnet_gateway_create ? 1 : 0
-  name                 = "GatewaySubnet" # has to be hard-coded to this value
-  resource_group_name  = local.resource_group_name
-  virtual_network_name = local.vnet_name
-  address_prefixes     = [local.subnet_gateway_address_range]
-}
-
-resource "azurerm_subnet" "subnet-hub-mgmt" {
-  count                = local.subnet_mgmt_create ? 1 : 0
-  name                 = "snet-hub-mgmt-${var.deployment_name}"
-  resource_group_name  = local.resource_group_name
-  virtual_network_name = local.vnet_name
-  address_prefixes     = [local.subnet_mgmt_address_range]
-}
-
-resource "azurerm_subnet" "subnet-hub-mon" {
-  count                = local.subnet_mon_create ? 1 : 0
-  name                 = "snet-hub-mon-${var.deployment_name}"
-  resource_group_name  = local.resource_group_name
-  virtual_network_name = local.vnet_name
-  address_prefixes     = [local.subnet_mon_address_range]
-}
-
 # Virtual Network Gateway
 resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
   name                = "hub-vpn-gateway1-pip"
@@ -136,3 +99,45 @@ resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {
   depends_on = [azurerm_public_ip.hub-vpn-gateway1-pip]
 }
 
+# Network resources: Virtual Network, Subnet
+resource "azurerm_virtual_network" "vnet-hub" {
+  count               = local.vnet_create ? 1 : 0
+  name                = "vnet-hub-${var.deployment_name}"
+  address_space       = [var.vnet_address_range]
+  location            = var.az_region
+  resource_group_name = local.resource_group_name
+
+  tags = {
+    workspace = var.deployment_name
+  }
+}
+
+resource "azurerm_subnet" "subnet-hub-gateway" {
+  count                = local.subnet_gateway_create ? 1 : 0
+  name                 = "GatewaySubnet" # has to be hard-coded to this value
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefixes     = [local.subnet_gateway_address_range]
+}
+
+resource "azurerm_subnet" "subnet-hub-mgmt" {
+  count                = local.subnet_mgmt_create ? 1 : 0
+  name                 = "snet-hub-mgmt-${var.deployment_name}"
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefixes     = [local.subnet_mgmt_address_range]
+
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
+}
+
+resource "azurerm_subnet" "subnet-hub-mon" {
+  count                = local.subnet_mon_create ? 1 : 0
+  name                 = "snet-hub-mon-${var.deployment_name}"
+  resource_group_name  = local.resource_group_name
+  virtual_network_name = local.vnet_name
+  address_prefixes     = [local.subnet_mon_address_range]
+
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
+}

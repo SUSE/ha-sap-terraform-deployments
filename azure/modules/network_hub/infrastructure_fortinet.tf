@@ -26,9 +26,8 @@ resource "azurerm_subnet" "subnet-hub-external-fgt" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_external_fgt_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 
 resource "azurerm_subnet" "subnet-hub-internal-fgt" {
@@ -38,9 +37,8 @@ resource "azurerm_subnet" "subnet-hub-internal-fgt" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_internal_fgt_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 resource "azurerm_subnet" "subnet-hub-hasync-ftnt" {
   count                = local.subnet_hasync_ftnt_create ? 1 : 0
@@ -49,9 +47,8 @@ resource "azurerm_subnet" "subnet-hub-hasync-ftnt" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_hasync_ftnt_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 
 resource "azurerm_subnet" "subnet-hub-mgmt-ftnt" {
@@ -61,9 +58,8 @@ resource "azurerm_subnet" "subnet-hub-mgmt-ftnt" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_mgmt_ftnt_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 
 resource "azurerm_subnet" "subnet-hub-external-fadc" {
@@ -73,9 +69,8 @@ resource "azurerm_subnet" "subnet-hub-external-fadc" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_external_fadc_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 
 resource "azurerm_subnet" "subnet-hub-internal-fadc" {
@@ -85,9 +80,8 @@ resource "azurerm_subnet" "subnet-hub-internal-fadc" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [local.subnet_internal_fadc_address_range]
 
-  depends_on = [
-    azurerm_virtual_network_gateway.hub-vnet-gateway
-  ]
+  # Gateway provisioning takes a long time. This is to prevent timeouts.
+  depends_on = [azurerm_virtual_network_gateway.hub-vnet-gateway]
 }
 
 output "subnet-hub-external-fgt" {
