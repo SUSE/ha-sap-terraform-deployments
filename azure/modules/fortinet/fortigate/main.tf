@@ -628,7 +628,7 @@ locals {
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
 
-      fgt_license_file    = "${var.fortinet_licenses["license_a"]}"
+      fgt_license_file    = var.fortinet_licenses["license_a"]
       fgt_ha_priority     = "255"
       fgt_admins_port     = "443"
       fgt_license_type    = var.vm_license
@@ -690,7 +690,7 @@ locals {
 
       availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
 
-      fgt_license_file    = "${var.fortinet_licenses["license_b"]}"
+      fgt_license_file    = var.fortinet_licenses["license_b"]
       fgt_ha_priority     = "1"
       fgt_admins_port     = "443"
       fgt_license_type    = var.vm_license

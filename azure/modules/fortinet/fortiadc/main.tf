@@ -207,7 +207,7 @@ locals {
 
   storage_accounts = {
     "sa-fortinet" = {
-      name                     = format("%s%s", "safadc", "${var.random_id}")
+      name                     = format("%s%s", "safadc", var.random_id)
       location                 = var.az_region
       resource_group_name      = var.resource_group_name
       account_tier             = "Standard"
@@ -230,7 +230,7 @@ locals {
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = var.vm_license == "byol" ? "${var.fortinet_licenses["license_a"]}" : null
+      source                 = var.vm_license == "byol" ? var.fortinet_licenses["license_a"] : null
       source_content         = var.vm_license == "payg" ? "payg" : null
     },
     "sb-fadc-license-b" = {
@@ -238,7 +238,7 @@ locals {
       storage_account_name   = azurerm_storage_account.storage_account["sa-fortinet"].name
       storage_container_name = azurerm_storage_container.storage_container["sc-fadc"].name
       type                   = "Block"
-      source                 = var.vm_license == "byol" ? "${var.fortinet_licenses["license_a"]}" : null
+      source                 = var.vm_license == "byol" ? var.fortinet_licenses["license_a"] : null
       source_content         = var.vm_license == "payg" ? "payg" : null
     },
     "sb-fadc-config-a" = {
