@@ -1,11 +1,11 @@
 locals {
-  subnet_external_fgt_create = var.fortinet_enabled ? true : false
-  subnet_external_fgt_address_range  = (var.subnet_external_fgt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 253) : var.subnet_external_fgt_address_range)
+  subnet_external_fgt_create        = var.fortinet_enabled ? true : false
+  subnet_external_fgt_address_range = (var.subnet_external_fgt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 253) : var.subnet_external_fgt_address_range)
 
   subnet_internal_fgt_create        = var.fortinet_enabled ? true : false
   subnet_internal_fgt_address_range = (var.subnet_internal_fgt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 252) : var.subnet_internal_fgt_address_range)
 
-  subnet_hasync_ftnt_create         = var.fortinet_enabled ? true : false
+  subnet_hasync_ftnt_create        = var.fortinet_enabled ? true : false
   subnet_hasync_ftnt_address_range = (var.subnet_hasync_ftnt_address_range == "" ? cidrsubnet(local.vnet_address_range, 8, 251) : var.subnet_hasync_ftnt_address_range)
 
   subnet_mgmt_ftnt_create        = var.fortinet_enabled ? true : false

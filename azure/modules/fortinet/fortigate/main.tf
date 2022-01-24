@@ -215,7 +215,7 @@ locals {
       next_hop_type          = "VirtualAppliance"
       route_table_name       = azurerm_route_table.route_table["rt-spoke"].name
     },
-      "r-mgmt" = {
+    "r-mgmt" = {
       resource_group_name    = var.resource_group_name
       name                   = "r-mgmt"
       address_prefix         = var.snet_address_ranges["mgmt"]
@@ -649,7 +649,7 @@ locals {
       bastion_private_ip  = var.bastion_private_ip
       spoke_address_range = var.vnet_spoke_address_range
       fadc_mgmt_a         = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
-      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)      
+      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
     },
     "vm-fgt-b" = {
       name                = "vm-fgt-b"
@@ -711,7 +711,7 @@ locals {
       bastion_private_ip  = var.bastion_private_ip
       spoke_address_range = var.vnet_spoke_address_range
       fadc_mgmt_a         = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
-      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)      
+      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
 
     }
   }
@@ -720,12 +720,12 @@ locals {
     "ra-fgt-a" = {
       scope                = var.resource_group_id
       role_definition_name = "Reader"
-      principal_id = azurerm_virtual_machine.virtual_machine["vm-fgt-a"].identity[0].principal_id
+      principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-a"].identity[0].principal_id
     },
     "ra-fgt-b" = {
       scope                = var.resource_group_id
       role_definition_name = "Reader"
-      principal_id = azurerm_virtual_machine.virtual_machine["vm-fgt-b"].identity[0].principal_id
+      principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-b"].identity[0].principal_id
     }
   }
 
