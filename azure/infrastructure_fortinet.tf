@@ -21,7 +21,7 @@ resource "azurerm_storage_account" "storage_account" {
 
   resource_group_name      = local.resource_group_name_ftnt
   location                 = var.az_region
-  name                     = format("%s%s", "sadiag", "${random_id.random_id[count.index].hex}")
+  name                     = format("%s%s", "sadiag", random_id.random_id[count.index].hex)
   account_replication_type = "LRS"
   account_tier             = "Standard"
 }
