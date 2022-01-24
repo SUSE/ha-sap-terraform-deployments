@@ -34,6 +34,8 @@ locals {
   shared_storage_anf = (var.hana_scale_out_shared_storage_type == "anf" || var.netweaver_shared_storage_type == "anf") ? 1 : 0
   anf_account_name   = local.shared_storage_anf == 1 ? (var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name) : ""
   anf_pool_name      = local.shared_storage_anf == 1 ? (var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name) : ""
+
+  bastion_provisioned = var.bastion_enabled && var.network_topology == "hub_spoke" ? module.bastion.0.provisioned : null
 }
 
 # Azure resource group and storage account resources
