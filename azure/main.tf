@@ -182,6 +182,8 @@ module "drbd_node" {
   tenant_id                 = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
+
+  depends_on = [local.bastion_provisioned]
 }
 
 module "netweaver_node" {
@@ -226,6 +228,8 @@ module "netweaver_node" {
   tenant_id                 = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
+
+  depends_on = [local.bastion_provisioned]
 }
 
 module "hana_node" {
@@ -268,6 +272,8 @@ module "hana_node" {
   # passed to majority_maker module
   majority_maker_vm_size = var.hana_majority_maker_vm_size
   majority_maker_ip      = local.hana_majority_maker_ip
+
+  depends_on = [local.bastion_provisioned]
 }
 
 module "monitoring" {
@@ -288,6 +294,8 @@ module "monitoring" {
   vnet_name           = local.vnet_name
   snet_id             = local.subnet_monitoring_id
   snet_address_range  = local.subnet_monitoring_address_range
+
+  depends_on = [local.bastion_provisioned]
 }
 
 module "iscsi_server" {
@@ -307,4 +315,6 @@ module "iscsi_server" {
   host_ips            = [local.iscsi_ip]
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size
+
+  depends_on = [local.bastion_provisioned]
 }
