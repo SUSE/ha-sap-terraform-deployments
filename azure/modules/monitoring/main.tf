@@ -13,11 +13,11 @@ resource "azurerm_network_interface" "monitoring" {
   resource_group_name = var.resource_group_name
 
   ip_configuration {
-    name = "ipconf-primary"
+    name                          = "ipconf-primary"
     subnet_id                     = var.snet_id == "" ? var.network_subnet_id : var.snet_id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
-    public_ip_address_id = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
+    public_ip_address_id          = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
   }
 
   tags = {

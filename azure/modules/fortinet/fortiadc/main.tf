@@ -288,12 +288,12 @@ locals {
     "ra-fadc-a" = {
       scope                = var.resource_group_id
       role_definition_name = "Reader"
-      principal_id = azurerm_virtual_machine.virtual_machine["vm-fadc-a"].identity[0].principal_id
+      principal_id         = azurerm_virtual_machine.virtual_machine["vm-fadc-a"].identity[0].principal_id
     },
     "ra-fadc-b" = {
       scope                = var.resource_group_id
       role_definition_name = "Reader"
-      principal_id = azurerm_virtual_machine.virtual_machine["vm-fadc-b"].identity[0].principal_id
+      principal_id         = azurerm_virtual_machine.virtual_machine["vm-fadc-b"].identity[0].principal_id
     }
   }
 

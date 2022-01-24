@@ -15,7 +15,7 @@ resource "null_resource" "netweaver_provisioner" {
     bastion_user        = var.common_variables["authorized_user"]
     bastion_private_key = var.common_variables["bastion_private_key"]
     # on fortinet, a default timeout of 5m is not enough to bootstrap everything
-    timeout             = "60m"
+    timeout = "60m"
   }
 
   provisioner "file" {

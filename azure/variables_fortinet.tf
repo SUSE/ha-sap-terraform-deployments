@@ -68,7 +68,7 @@ variable "fortigate_vm_username" {
 }
 
 variable "fortigate_vm_password" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -108,7 +108,7 @@ variable "fortiadc_vm_username" {
 }
 
 variable "fortiadc_vm_password" {
-  type = string
+  type    = string
   default = ""
 }
 
