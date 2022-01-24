@@ -4,6 +4,9 @@ locals {
   bastion_private_ip            = var.fortinet_bastion_private_ip == "" ? cidrhost(module.network_hub.0.subnet_hub_mgmt_address_range, 5) : var.fortinet_bastion_private_ip
 
   resource_group_name_ftnt = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
+
+  fortigate_a_provisioned         = var.fortinet_enabled ? module.fortigate.0.fortigate_a_id : null
+  fortigate_b_provisioned         = var.fortinet_enabled ? module.fortigate.0.fortigate_b_id : null
 }
 
 resource "random_id" "random_id" {

@@ -159,4 +159,9 @@ module "bastion" {
   fortinet_enabled              = var.fortinet_enabled
   fortinet_bastion_public_ip    = local.fortinet_bastion_public_ip
   fortinet_bastion_public_ip_id = local.fortinet_bastion_public_ip_id
+
+  depends_on = [
+                 local.fortigate_a_provisioned,
+                 local.fortigate_b_provisioned
+               ]
 }

@@ -16,3 +16,12 @@ output "bastion_public_ip" {
 output "bastion_public_ip_id" {
   value = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].id
 }
+
+output "fortigate_a_id" {
+  value = azurerm_virtual_machine.virtual_machine["vm-fgt-a"].id
+}
+
+output "fortigate_b_id" {
+  value = azurerm_virtual_machine.virtual_machine["vm-fgt-b"].id
+}
+
