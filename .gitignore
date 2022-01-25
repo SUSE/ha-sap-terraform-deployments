@@ -28,4 +28,5 @@ venv
 **/.direnv
 
 # Misc files
-*.lic
+**/*.lic
+**/*.txt
