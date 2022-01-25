@@ -31,24 +31,16 @@ variable "vnet_address_range" {
   type = string
 }
 
-variable "vm_offer" {
-  type = string
+variable "os_image" {
+  description = "OS image used to create this module machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:7.0.2"
+  type        = string
 }
-variable "vm_sku" {
-  type = string
-}
-variable "vm_publisher" {
-  type = string
-}
+
 variable "vm_size" {
   type = string
 }
 
 variable "vm_license" {
-  type = string
-}
-
-variable "vm_version" {
   type = string
 }
 

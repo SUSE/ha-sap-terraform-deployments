@@ -392,10 +392,10 @@ locals {
       network_interface_ids        = [for nic in ["nic-fortiadc_a_1", "nic-fortiadc_a_2", "nic-fortiadc_a_3"] : azurerm_network_interface.network_interface[nic].id]
       primary_network_interface_id = azurerm_network_interface.network_interface["nic-fortiadc_a_1"].id
 
-      publisher = var.vm_publisher
-      offer     = var.vm_offer
-      plan      = var.vm_sku
-      version   = var.vm_version
+      publisher = module.os_image_reference.publisher
+      offer     = module.os_image_reference.offer
+      plan      = module.os_image_reference.sku
+      version   = module.os_image_reference.version
       vm_size   = var.vm_size
 
       delete_os_disk_on_termination    = true
@@ -435,10 +435,10 @@ locals {
       network_interface_ids        = [for nic in ["nic-fortiadc_b_1", "nic-fortiadc_b_2", "nic-fortiadc_b_3"] : azurerm_network_interface.network_interface[nic].id]
       primary_network_interface_id = azurerm_network_interface.network_interface["nic-fortiadc_b_1"].id
 
-      publisher = var.vm_publisher
-      offer     = var.vm_offer
-      plan      = var.vm_sku
-      version   = var.vm_version
+      publisher = module.os_image_reference.publisher
+      offer     = module.os_image_reference.offer
+      plan      = module.os_image_reference.sku
+      version   = module.os_image_reference.version
       vm_size   = var.vm_size
 
       delete_os_disk_on_termination    = true
@@ -571,6 +571,11 @@ locals {
       CLOUDINIT
     }
   }
+}
+
+module "os_image_reference" {
+  source   = "../../../modules/os_image_reference"
+  os_image = var.os_image
 }
 
 resource "local_file" "file" {
