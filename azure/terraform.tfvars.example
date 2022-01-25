@@ -632,9 +632,6 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 ## Fortinet components are only deployed if the SUSE/SAP deployment network is hub/spoke
 # fortinet_enabled         = true
 
-## Fortinet VM image publisher
-# fortinet_vm_publisher    = "fortinet"
-
 ## Fortinet VM license type, applies to FortiGates and FortiADCs
 # fortinet_vm_license_type = "byol"
 
@@ -642,17 +639,14 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # fortigate_a_license_file = "FGVM8VTM21000779.lic"
 # fortigate_b_license_file = "FGVM8VTM21000780.lic"
 
-## FortiGate VM Azure Image Offer
-# fortigate_vm_offer       = "fortinet_fortigate-vm_v5"
-
-## FortiGate VM Image Plan/Sku
-# fortigate_vm_sku         = "fortinet_fg-vm"
+## FortiGate VM Azure Image
+# Run the next command to get the possible options and use the 4th column value.
+# az vm image list --output table --offer fortinet --all
+# BYOS example for fortigate:
+#fortigate_os_image = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:7.0.2"
 
 ## FortiGate VM Azure Instance Size
 # fortigate_vm_size        = "Standard_F4s"
-
-## FortiGate Version
-# fortigate_vm_version     = "7.0.2"
 
 ## FortiGate Credentials
 # fortigate_vm_username    = "azureuser"
@@ -662,17 +656,14 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # fortiadc_a_license_file = "FADV040000216490.lic"
 # fortiadc_b_license_file = "FADV040000216491.lic"
 
-## FortiADC VM Azure Image Offer
-# fortiadc_vm_offer       = "fortinet-fortiadc"
-
-## FortiADC VM Image Plan/Sku
-# fortiadc_vm_sku         = "fad-vm-byol"
+## FortiADC VM Azure Image
+# Run the next command to get the possible options and use the 4th column value.
+# az vm image list --output table --offer fortinet --all
+# BYOS example for fortiadc:
+#fortiadc_os_image = "fortinet:fortinet-fortiadc:fad-vm-byol:6.1.3"
 
 ## FortiADC VM Azure Instance Size
 # fortiadc_vm_size        = "Standard_F4s"
-
-## FortiADC Version
-# fortiadc_vm_version     = "6.1.3"
 
 ## FortiADC Credentials
 # fortiadc_vm_username    = "azureuser"

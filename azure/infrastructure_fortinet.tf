@@ -46,12 +46,9 @@ module "fortigate" {
   az_region                = var.az_region
   vnet_address_range       = var.vnet_hub_address_range
   vnet_spoke_address_range = var.vnet_address_range
-  vm_publisher             = var.fortinet_vm_publisher
+  os_image                 = var.fortigate_os_image
   vm_license               = var.fortinet_vm_license_type
-  vm_offer                 = var.fortigate_vm_offer
-  vm_sku                   = var.fortigate_vm_sku
   vm_size                  = var.fortigate_vm_size
-  vm_version               = var.fortigate_vm_version
   vm_username              = var.fortigate_vm_username
   vm_password              = var.fortigate_vm_password
 
@@ -95,12 +92,9 @@ module "fortiadc" {
   common_variables   = module.common_variables.configuration
   az_region          = var.az_region
   vnet_address_range = var.vnet_hub_address_range
-  vm_publisher       = var.fortinet_vm_publisher
+  os_image           = var.fortiadc_os_image
   vm_license         = var.fortinet_vm_license_type
-  vm_offer           = var.fortiadc_vm_offer
-  vm_sku             = var.fortiadc_vm_sku
   vm_size            = var.fortiadc_vm_size
-  vm_version         = var.fortiadc_vm_version
   vm_username        = var.fortiadc_vm_username
   vm_password        = var.fortiadc_vm_password
 
