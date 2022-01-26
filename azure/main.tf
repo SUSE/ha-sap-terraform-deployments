@@ -177,7 +177,7 @@ module "drbd_node" {
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
 
-  depends_on = [local.bastion_provisioned]
+  depends_on = [local.bastion_provisioner]
 }
 
 module "netweaver_node" {
@@ -223,7 +223,7 @@ module "netweaver_node" {
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
 
-  depends_on = [local.bastion_provisioned]
+  depends_on = [local.bastion_provisioner]
 }
 
 module "hana_node" {
@@ -267,7 +267,7 @@ module "hana_node" {
   majority_maker_vm_size = var.hana_majority_maker_vm_size
   majority_maker_ip      = local.hana_majority_maker_ip
 
-  depends_on = [local.bastion_provisioned]
+  depends_on = [local.bastion_provisioner]
 }
 
 module "monitoring" {
@@ -289,7 +289,7 @@ module "monitoring" {
   snet_id             = local.subnet_monitoring_id
   snet_address_range  = local.subnet_monitoring_address_range
 
-  depends_on = [local.bastion_provisioned]
+  depends_on = [local.bastion_provisioner]
 }
 
 module "iscsi_server" {
@@ -310,5 +310,5 @@ module "iscsi_server" {
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size
 
-  depends_on = [local.bastion_provisioned]
+  depends_on = [local.bastion_provisioner]
 }

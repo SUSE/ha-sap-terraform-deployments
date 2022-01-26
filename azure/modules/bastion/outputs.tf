@@ -16,6 +16,10 @@ output "subnet_bastion_id" {
   value = local.bastion_count == 1 && var.network_topology == "plain" ? azurerm_subnet.bastion.0.id : ""
 }
 
+output "provisioner" {
+  value = null_resource.bastion_provisioner
+}
+
 output "provisioned" {
   value = module.bastion_provision.provisioned
 }
