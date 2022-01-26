@@ -60,8 +60,8 @@ resource "azurerm_network_security_rule" "grafana" {
 
 resource "azurerm_subnet_network_security_group_association" "bastion" {
   count                     = local.bastion_count == 1 && var.network_topology == "plain" ? 1 : 0
-  subnet_id                 = azurerm_subnet.bastion[0].id
-  network_security_group_id = azurerm_network_security_group.bastion[0].id
+  subnet_id                 = azurerm_subnet.bastion.0.id
+  network_security_group_id = azurerm_network_security_group.bastion.0.id
 }
 
 resource "azurerm_network_interface" "bastion" {
@@ -72,10 +72,10 @@ resource "azurerm_network_interface" "bastion" {
 
   ip_configuration {
     name                          = "ipconf-primary"
-    subnet_id                     = var.snet_id == "" ? azurerm_subnet.bastion[0].id : var.snet_id
+    subnet_id                     = var.snet_id == "" ? azurerm_subnet.bastion.0.id : var.snet_id
     private_ip_address_allocation = "static"
     private_ip_address            = local.private_ip_address
-    public_ip_address_id          = ! var.fortinet_enabled ? azurerm_public_ip.bastion[0].id : ""
+    public_ip_address_id          = !var.fortinet_enabled ? azurerm_public_ip.bastion.0.id : ""
   }
 
   tags = {
@@ -85,7 +85,7 @@ resource "azurerm_network_interface" "bastion" {
 }
 
 resource "azurerm_public_ip" "bastion" {
-  count                   = local.bastion_count == 1 && ! var.fortinet_enabled ? 1 : 0
+  count                   = local.bastion_count == 1 && !var.fortinet_enabled ? 1 : 0
   name                    = "pip-bastion"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -108,7 +108,7 @@ resource "azurerm_virtual_machine" "bastion" {
   name                             = var.name
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
-  network_interface_ids            = [azurerm_network_interface.bastion[0].id]
+  network_interface_ids            = [azurerm_network_interface.bastion.0.id]
   vm_size                          = var.vm_size
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
@@ -158,7 +158,7 @@ module "bastion_on_destroy" {
   instance_ids = azurerm_virtual_machine.bastion.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = ! var.fortinet_enabled ? data.azurerm_public_ip.bastion.*.ip_address : [var.fortinet_bastion_public_ip]
+  public_ips   = !var.fortinet_enabled ? data.azurerm_public_ip.bastion.*.ip_address : [var.fortinet_bastion_public_ip]
 
   dependencies = [data.azurerm_public_ip.bastion]
 }

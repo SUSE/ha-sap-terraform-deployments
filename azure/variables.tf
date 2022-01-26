@@ -632,7 +632,7 @@ variable "hana_scale_out_enabled" {
 }
 
 variable "hana_scale_out_addhosts" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = <<EOF
     Additional hosts to pass to HANA scale-out installation

@@ -58,3 +58,13 @@ variable "storage_account" {
   description = "Storage account where the boot diagnostics will be stored"
   type        = string
 }
+
+variable "vnet_hub_create" {
+  description = "Create Hub Network in hub_spoke network topology."
+  type        = bool
+}
+
+variable "bastion_host" {
+  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
+  type        = string
+}
