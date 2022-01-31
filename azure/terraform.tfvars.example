@@ -597,26 +597,33 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 ##
 ## Two FortiGate NGFW appliance VMs are deployed in an Active/Passive configuration each with 4 interfaces
 ## Two FortiADC appliance VMs are deployed in an Active/Active configuration each with 3 interfaces
-## Five subnets are added to the Hub vnet
-##   dmz
-##   trusted
-##   hasync
-##   fortinet-mgmt
-##   shared-services
+## suffix subnets are added to the Hub vnet
+##   external-fgt
+##   internal-fgt
+##   hasync-ftnt
+##   mgmt-ftnt
+##   external-fadc
+##   internal-fadc
 ## Two Storage Accounts
 ##   Storage account for FortiGate and FortiADC boot diagnostics and serial console access
 ##   Storage account for FortiADC cloudinit files and licenses
 
 ## Is the Fortinet infrastructure beiing deployed true | false
 ## Fortinet components are only deployed if the SUSE/SAP deployment network is hub/spoke
-# fortinet_enabled         = true
+# fortinet_enabled = true
 
 ## Fortinet VM license type, applies to FortiGates and FortiADCs
+# value can be payg or byol, when using byol license files need 
+# to be placed in the root module directory
 # fortinet_vm_license_type = "byol"
 
 ## FortiGate VM License files. Files should be in the root module directory
 # fortigate_a_license_file = "FGVM8VTM21000779.lic"
 # fortigate_b_license_file = "FGVM8VTM21000780.lic"
+#
+# When using payg licensing leave the values blank
+# fortigate_a_license_file = ""
+# fortigate_b_license_file = ""
 
 ## FortiGate VM Azure Image
 # Run the next command to get the possible options and use the 4th column value.
@@ -632,8 +639,14 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # fortigate_vm_password    = "Password123!!"
 
 ## FortiADC VM License files. Files should be in the root module directory
+# value can be payg or byol, when using byol license files need 
+# to be placed in the root module directory
 # fortiadc_a_license_file = "FADV040000216490.lic"
 # fortiadc_b_license_file = "FADV040000216491.lic"
+#
+# When using payg licensing leave the values blank
+# fortiadc_a_license_file = ""
+# fortiadc_b_license_file = ""
 
 ## FortiADC VM Azure Image
 # Run the next command to get the possible options and use the 4th column value.

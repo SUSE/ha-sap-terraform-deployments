@@ -431,6 +431,19 @@ locals {
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
+    "lb-fgt-external-rule-3000" = {
+      name                           = "lb-fgt-external-rule-3000"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
+      protocol                       = "Tcp"
+      frontend_port                  = "3000"
+      backend_port                   = "3000"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
+      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      enable_floating_ip             = true
+      disable_outbound_snat          = true
+    },
     "lb-fgt-external-rule-10551" = {
       name                           = "lb-fgt-external-rule-10551"
       resource_group_name            = var.resource_group_name
