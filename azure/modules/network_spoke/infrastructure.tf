@@ -80,10 +80,12 @@ resource "azurerm_virtual_network_peering" "peer-spoke1-hub" {
   use_remote_gateways          = true
 }
 
+# In case different resource groups for hub/spoke are used,
+# this will be deployed in the hub's resource group.
 resource "azurerm_virtual_network_peering" "peer-hub-spoke1" {
   count                        = 1
   name                         = "peer-hub-spoke-${var.spoke_name}-${var.deployment_name}"
-  resource_group_name          = var.resource_group_name
+  resource_group_name          = var.resource_group_hub_name
   virtual_network_name         = var.vnet_hub_name
   remote_virtual_network_id    = azurerm_virtual_network.vnet-spoke.0.id
   allow_virtual_network_access = true
@@ -94,7 +96,7 @@ resource "azurerm_virtual_network_peering" "peer-hub-spoke1" {
 
 # Azure Netapp Files resources (see README for ANF setup)
 data "azurerm_subnet" "subnet-spoke-netapp" {
-  count                = local.shared_storage_anf == 1 && !local.subnet_netapp_create ? 1 : 0
+  count                = local.shared_storage_anf == 1 && ! local.subnet_netapp_create ? 1 : 0
   name                 = var.subnet_netapp_name
   virtual_network_name = local.vnet_name
   resource_group_name  = var.resource_group_name

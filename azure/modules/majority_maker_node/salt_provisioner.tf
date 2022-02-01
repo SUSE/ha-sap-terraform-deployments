@@ -6,7 +6,7 @@ resource "null_resource" "majority_maker_provisioner" {
   }
 
   connection {
-    host        = element(local.provisioning_address, count.index)
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["private_key"]
@@ -52,6 +52,6 @@ module "majority_maker_provision" {
   private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips          = local.provisioning_address
+  public_ips          = local.provisioning_addresses
   background          = var.common_variables["background"]
 }

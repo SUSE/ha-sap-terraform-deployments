@@ -7,6 +7,9 @@ locals {
 
   fortigate_a_provisioned = var.fortinet_enabled ? module.fortigate.0.fortigate_a_id : null
   fortigate_b_provisioned = var.fortinet_enabled ? module.fortigate.0.fortigate_b_id : null
+
+  bastion_host = var.bastion_host != "" ? var.bastion_host : (var.fortinet_enabled ? local.fortinet_bastion_public_ip : (var.bastion_enabled ? module.bastion.0.public_ip : ""))
+
 }
 
 resource "random_id" "random_id" {

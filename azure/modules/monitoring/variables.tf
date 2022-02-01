@@ -3,9 +3,8 @@ variable "common_variables" {
 }
 
 variable "bastion_host" {
-  description = "Bastion host address"
+  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
   type        = string
-  default     = ""
 }
 
 variable "monitoring_enabled" {
