@@ -229,6 +229,12 @@ variable "bastion_enabled" {
   default     = true
 }
 
+variable "bastion_host" {
+  description = "Public ip address of an existing Bastion host (with access to all deployed machines), to use in e.g. hub_spoke network topology."
+  type        = string
+  default     = ""
+}
+
 variable "bastion_os_image" {
   description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
@@ -243,12 +249,6 @@ variable "bastion_public_key" {
 
 variable "bastion_private_key" {
   description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_host" {
-  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
   type        = string
   default     = ""
 }

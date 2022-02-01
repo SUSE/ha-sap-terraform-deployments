@@ -26,7 +26,7 @@ locals {
   vnet_address_range = var.vnet_address_range == "" ? (var.network_topology == "hub_spoke" ? module.network_hub.0.vnet_hub_address_range : (var.network_topology == "plain" ? module.network_plain.0.vnet_plain_address_range : "")) : var.vnet_address_range
   # used to generate hosts
   subnet_address_range            = var.subnet_address_range == "" ? (var.network_topology == "hub_spoke" ? module.network_spoke.0.subnet_spoke_workload_address_range : (var.network_topology == "plain" ? module.network_plain.0.subnet_plain_workload_address_range : "")) : var.subnet_address_range
-  subnet_bastion_id               = var.bastion_enabled && var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mgmt_id : (var.bastion_enabled && var.network_topology == "plain" ? module.bastion.subnet_bastion_id : "")
+  subnet_bastion_id               = var.bastion_enabled && var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mgmt_id : (var.bastion_enabled && var.network_topology == "plain" ? module.bastion.0.subnet_bastion_id : "")
   subnet_bastion_address_range    = var.bastion_enabled && var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mgmt_address_range : cidrsubnet(local.vnet_address_range, 8, 2)
   subnet_monitoring_id            = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_id : (var.network_topology == "plain" ? module.network_plain.0.subnet_plain_workload_id : "")
   subnet_monitoring_address_range = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_address_range : local.subnet_address_range
@@ -35,8 +35,8 @@ locals {
   anf_account_name   = local.shared_storage_anf == 1 ? (var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name) : ""
   anf_pool_name      = local.shared_storage_anf == 1 ? (var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name) : ""
 
-  bastion_provisioner = var.bastion_enabled ? module.bastion.provisioner : []
-  bastion_provisioned = var.bastion_enabled ? module.bastion.provisioned : []
+  bastion_provisioner = var.bastion_enabled ? module.bastion.0.provisioner : []
+  bastion_provisioned = var.bastion_enabled ? module.bastion.0.provisioned : []
 }
 
 # Azure resource group and storage account resources
@@ -144,6 +144,8 @@ resource "azurerm_netapp_pool" "mynetapp-pool" {
 # Bastion
 
 module "bastion" {
+  count = var.bastion_enabled ? 1 : 0
+
   source              = "./modules/bastion"
   network_topology    = var.network_topology
   common_variables    = module.common_variables.configuration
@@ -154,7 +156,7 @@ module "bastion" {
   vm_size             = "Standard_B1s"
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   vnet_name           = local.vnet_name
-  storage_account     = var.resource_group_hub_name == "" ? azurerm_storage_account.mytfstorageacc.primary_blob_endpoint : module.network_hub.0.rg_hub_primary_blob_endpoint
+  storage_account     = var.resource_group_hub_name == "" ? azurerm_storage_account.mytfstorageacc.primary_blob_endpoint : (var.resource_group_hub_create ? module.network_hub.0.rg_hub_primary_blob_endpoint : "")
   snet_id             = local.subnet_bastion_id
   snet_address_range  = local.subnet_bastion_address_range
   vnet_hub_create     = var.vnet_hub_create

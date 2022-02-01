@@ -2,6 +2,11 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
+  type        = string
+}
+
 variable "az_region" {
   description = "Azure region where the deployment machines will be created"
   type        = string
@@ -62,9 +67,4 @@ variable "storage_account" {
 variable "vnet_hub_create" {
   description = "Create Hub Network in hub_spoke network topology."
   type        = bool
-}
-
-variable "bastion_host" {
-  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
-  type        = string
 }

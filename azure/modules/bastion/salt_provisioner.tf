@@ -1,5 +1,5 @@
 locals {
-  node_count = var.common_variables["provisioner"] == "salt" ? local.bastion_count : 0
+  node_count = var.common_variables["provisioner"] == "salt" ? 1 : 0
 }
 
 resource "null_resource" "bastion_provisioner" {
@@ -10,7 +10,7 @@ resource "null_resource" "bastion_provisioner" {
   }
 
   connection {
-    host        = !var.fortinet_enabled ? element(data.azurerm_public_ip.bastion.*.ip_address, count.index) : var.fortinet_bastion_public_ip
+    host        = var.fortinet_enabled ? var.fortinet_bastion_public_ip : element(data.azurerm_public_ip.bastion.*.ip_address, count.index)
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["bastion_private_key"]
@@ -36,7 +36,7 @@ module "bastion_provision" {
   instance_ids = null_resource.bastion_provisioner.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = !var.fortinet_enabled ? data.azurerm_public_ip.bastion.*.ip_address : [var.fortinet_bastion_public_ip]
+  public_ips   = var.fortinet_enabled ? [var.fortinet_baststion_public_ip] : data.azurerm_public_ip.bastion.*.ip_address
   background   = var.common_variables["background"]
   reboot       = false
 }
