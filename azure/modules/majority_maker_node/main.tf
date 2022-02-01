@@ -1,6 +1,6 @@
 locals {
-  bastion_enabled      = var.common_variables["bastion_enabled"]
-  provisioning_address = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
 }
 
 
@@ -27,7 +27,7 @@ resource "azurerm_network_interface" "majority_maker" {
 }
 
 resource "azurerm_public_ip" "majority_maker" {
-  count                   = var.node_count
+  count                   = local.bastion_enabled ? 0 : var.node_count
   name                    = "pip-${var.name}majority_maker"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
@@ -121,6 +121,6 @@ module "majority_maker_on_destroy" {
   private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips          = local.provisioning_address
+  public_ips          = local.provisioning_addresses
   dependencies        = [data.azurerm_public_ip.majority_maker]
 }
