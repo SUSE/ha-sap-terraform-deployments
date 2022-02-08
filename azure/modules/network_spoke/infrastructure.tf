@@ -7,13 +7,6 @@ data "azurerm_virtual_network" "vnet-spoke" {
   resource_group_name = var.resource_group_name
 }
 
-# data "azurerm_subnet" "subnet-spoke-mgmt" {
-#   count               = var.subnet_mgmt_create ? 0 : 1
-#   name                 = var.subnet_mgmt_name
-#   virtual_network_name = local.vnet_name
-#   resource_group_name  = var.resource_group_name
-# }
-
 data "azurerm_subnet" "subnet-spoke-workload" {
   count                = local.subnet_workload_create ? 0 : 1
   name                 = var.subnet_workload_name
@@ -50,14 +43,6 @@ resource "azurerm_virtual_network" "vnet-spoke" {
     workspace = var.deployment_name
   }
 }
-
-# resource "azurerm_subnet" "subnet-spoke-mgmt" {
-#   count                = local.subnet_mgmt_create ? 1 : 0
-#   name                 = "snet-spoke-${var.spoke_name}-mgmt-${var.deployment_name}"
-#   resource_group_name  = var.resource_group_name
-#   virtual_network_name = local.vnet_name
-#   address_prefixes     = [local.subnet_mgmt_address_range]
-# }
 
 resource "azurerm_subnet" "subnet-spoke-workload" {
   count                = local.subnet_workload_create ? 1 : 0

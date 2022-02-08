@@ -10,7 +10,7 @@ resource "null_resource" "bastion_provisioner" {
   }
 
   connection {
-    host        = var.fortinet_enabled ? var.fortinet_bastion_public_ip : element(data.azurerm_public_ip.bastion.*.ip_address, count.index)
+    host        = local.public_ip_address
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["bastion_private_key"]
@@ -36,7 +36,7 @@ module "bastion_provision" {
   instance_ids = null_resource.bastion_provisioner.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = var.fortinet_enabled ? [var.fortinet_bastion_public_ip] : data.azurerm_public_ip.bastion.*.ip_address
+  public_ips   = [local.public_ip_address]
   background   = var.common_variables["background"]
   reboot       = false
 }

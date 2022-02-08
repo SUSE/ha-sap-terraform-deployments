@@ -9,7 +9,7 @@ data "azurerm_public_ip" "bastion" {
 output "public_ip" {
   # if existing hub_spoke is used, a bastion host IP needs to be passed
   # otherwise use fortinet IP or the one created by this module
-  value = var.fortinet_enabled ? var.fortinet_bastion_public_ip : join("", data.azurerm_public_ip.bastion.*.ip_address)
+  value = local.public_ip_address
 }
 
 output "subnet_bastion_id" {
@@ -18,8 +18,4 @@ output "subnet_bastion_id" {
 
 output "provisioner" {
   value = null_resource.bastion_provisioner
-}
-
-output "provisioned" {
-  value = module.bastion_provision.provisioned
 }
