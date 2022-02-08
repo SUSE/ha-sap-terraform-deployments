@@ -1110,7 +1110,7 @@ variable "fence_agent_client_secret" {
   default     = ""
 }
 
-# network topolgy related varibales
+# network topolgy related variables
 
 variable "network_topology" {
   description = "Network topology to use."
@@ -1142,7 +1142,7 @@ variable "spoke_name" {
   default     = ""
 }
 
-# storage related varibales
+# storage related variables
 
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment"
