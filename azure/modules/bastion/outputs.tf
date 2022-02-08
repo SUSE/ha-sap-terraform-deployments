@@ -19,7 +19,3 @@ output "subnet_bastion_id" {
 output "provisioner" {
   value = null_resource.bastion_provisioner
 }
-
-output "provisioned" {
-  value = module.bastion_provision.provisioned
-}
