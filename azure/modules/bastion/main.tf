@@ -1,5 +1,6 @@
 locals {
   private_ip_address = cidrhost(var.snet_address_range, 5)
+  public_ip_address  = var.fortinet_enabled ? var.fortinet_bastion_public_ip : join("", data.azurerm_public_ip.bastion.*.ip_address)
   hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
@@ -151,11 +152,11 @@ resource "azurerm_virtual_machine" "bastion" {
 
 module "bastion_on_destroy" {
   source       = "../../../generic_modules/on_destroy"
-  node_count   = 1
+  node_count   = local.node_count
   instance_ids = azurerm_virtual_machine.bastion.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = ! var.fortinet_enabled ? data.azurerm_public_ip.bastion.*.ip_address : [var.fortinet_bastion_public_ip]
+  public_ips   = [local.public_ip_address]
 
-  dependencies = [data.azurerm_public_ip.bastion]
+  dependencies = [local.public_ip_address]
 }
