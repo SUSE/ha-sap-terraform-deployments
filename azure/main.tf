@@ -178,6 +178,7 @@ module "drbd_node" {
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
 
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
   depends_on = [local.bastion_provisioner]
 }
 
@@ -224,6 +225,7 @@ module "netweaver_node" {
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
 
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
   depends_on = [local.bastion_provisioner]
 }
 
@@ -268,6 +270,7 @@ module "hana_node" {
   majority_maker_vm_size = var.hana_majority_maker_vm_size
   majority_maker_ip      = local.hana_majority_maker_ip
 
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
   depends_on = [local.bastion_provisioner]
 }
 
@@ -290,6 +293,7 @@ module "monitoring" {
   snet_id             = local.subnet_monitoring_id
   snet_address_range  = local.subnet_monitoring_address_range
 
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
   depends_on = [local.bastion_provisioner]
 }
 
