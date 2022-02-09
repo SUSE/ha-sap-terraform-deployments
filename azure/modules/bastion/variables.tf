@@ -40,7 +40,7 @@ variable "resource_group_name" {
 }
 
 variable "network_topology" {
-  description = "Network topolgy to use."
+  description = "Network topology to use."
   type        = string
 }
 
