@@ -77,6 +77,7 @@ netweaver:
     sid: {{ hana_sid_upper }}
     instance: {{ hana_instance_number }}
     password: {{ grains['hana_master_password'] }}
+    sr_enabled: {{ grains['hana_sr_enabled']|default(false) }}
 
   schema:
     {%- if product_id_header in ['S4HANA1809', 'S4HANA1909', 'S4HANA2020', 'S4HANA2021'] %}
