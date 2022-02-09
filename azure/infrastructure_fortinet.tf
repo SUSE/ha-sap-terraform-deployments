@@ -38,7 +38,7 @@ data "azurerm_resource_group" "resource_group" {
   name = local.resource_group_name_ftnt
 
   depends_on = [
-    azurerm_resource_group.myrg
+    azurerm_resource_group.rg
   ]
 }
 module "fortigate" {
