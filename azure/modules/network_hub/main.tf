@@ -70,8 +70,8 @@ resource "azurerm_storage_account" "tfstorageacc" {
 }
 
 # Virtual Network Gateway
-resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
-  name                = "hub-vpn-gateway1-pip"
+resource "azurerm_public_ip" "hub-vpn-gateway-pip" {
+  name                = "hub-vpn-gateway-pip"
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
@@ -79,7 +79,7 @@ resource "azurerm_public_ip" "hub-vpn-gateway1-pip" {
 }
 
 resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {
-  name                = "hub-vpn-gateway1"
+  name                = "hub-vpn-gateway"
   location            = var.az_region
   resource_group_name = local.resource_group_name
 
@@ -92,11 +92,11 @@ resource "azurerm_virtual_network_gateway" "hub-vnet-gateway" {
 
   ip_configuration {
     name                          = "vnetGatewayConfig"
-    public_ip_address_id          = azurerm_public_ip.hub-vpn-gateway1-pip.id
+    public_ip_address_id          = azurerm_public_ip.hub-vpn-gateway-pip.id
     private_ip_address_allocation = "Dynamic"
     subnet_id                     = azurerm_subnet.subnet-hub-gateway.0.id
   }
-  depends_on = [azurerm_public_ip.hub-vpn-gateway1-pip]
+  depends_on = [azurerm_public_ip.hub-vpn-gateway-pip]
 }
 
 # Network resources: Virtual Network, Subnet
