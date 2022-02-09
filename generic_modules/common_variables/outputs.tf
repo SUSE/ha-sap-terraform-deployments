@@ -97,6 +97,7 @@ output "configuration" {
       hana_sid              = var.netweaver_hana_sid
       hana_instance_number  = var.netweaver_hana_instance_number
       hana_master_password  = var.netweaver_hana_master_password
+      hana_sr_enabled       = var.hana_ha_enabled
       shared_storage_type   = var.netweaver_shared_storage_type
     }
     monitoring = {
@@ -190,6 +191,7 @@ hana_ip: ${var.netweaver_hana_ip}
 hana_sid: ${var.netweaver_hana_sid}
 hana_instance_number: ${var.netweaver_hana_instance_number}
 hana_master_password: ${var.netweaver_hana_master_password}
+hana_sr_enabled: ${var.hana_ha_enabled}
 EOF
     monitoring_grains_output = <<EOF
 hana_targets: [${join(", ", formatlist("'%s'", var.monitoring_hana_targets))}]
