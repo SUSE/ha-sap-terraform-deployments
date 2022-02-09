@@ -14,7 +14,7 @@ data "azurerm_subscription" "current" {
 locals {
   deployment_name = var.deployment_name != "" ? var.deployment_name : terraform.workspace
 
-  resource_group_name = var.resource_group_name == "" ? azurerm_resource_group.myrg.0.name : var.resource_group_name
+  resource_group_name = var.resource_group_name == "" ? azurerm_resource_group.rg.0.name : var.resource_group_name
   # If vnet_name is not defined, a new vnet is created
   # If vnet_name is defined, and the vnet_address_range is empty, it will try to get the ip range from the real vnet using the data source. If vnet_address_range is defined it will use it
 
@@ -32,20 +32,20 @@ locals {
   subnet_monitoring_address_range = var.network_topology == "hub_spoke" && var.vnet_hub_create ? module.network_hub.0.subnet_hub_mon_address_range : local.subnet_address_range
 
   shared_storage_anf = (var.hana_scale_out_shared_storage_type == "anf" || var.netweaver_shared_storage_type == "anf") ? 1 : 0
-  anf_account_name   = local.shared_storage_anf == 1 ? (var.anf_account_name == "" ? azurerm_netapp_account.mynetapp-acc.0.name : var.anf_account_name) : ""
-  anf_pool_name      = local.shared_storage_anf == 1 ? (var.anf_pool_name == "" ? azurerm_netapp_pool.mynetapp-pool.0.name : var.anf_pool_name) : ""
+  anf_account_name   = local.shared_storage_anf == 1 ? (var.anf_account_name == "" ? azurerm_netapp_account.netapp-acc.0.name : var.anf_account_name) : ""
+  anf_pool_name      = local.shared_storage_anf == 1 ? (var.anf_pool_name == "" ? azurerm_netapp_pool.netapp-pool.0.name : var.anf_pool_name) : ""
 
   bastion_provisioner = var.bastion_enabled ? module.bastion.0.provisioner : []
 }
 
 # Azure resource group and storage account resources
-resource "azurerm_resource_group" "myrg" {
+resource "azurerm_resource_group" "rg" {
   count    = var.resource_group_name == "" ? 1 : 0
   name     = "rg-ha-sap-${local.deployment_name}"
   location = var.az_region
 }
 
-resource "azurerm_storage_account" "mytfstorageacc" {
+resource "azurerm_storage_account" "tfstorageacc" {
   name                     = "stdiag${lower(local.deployment_name)}"
   resource_group_name      = local.resource_group_name
   location                 = var.az_region
@@ -123,14 +123,14 @@ module "network_spoke" {
 
 # Azure Netapp Files resources (see README for ANF setup)
 
-resource "azurerm_netapp_account" "mynetapp-acc" {
+resource "azurerm_netapp_account" "netapp-acc" {
   count               = local.shared_storage_anf
   name                = "netapp-acc-${lower(local.deployment_name)}"
   resource_group_name = local.resource_group_name
   location            = var.az_region
 }
 
-resource "azurerm_netapp_pool" "mynetapp-pool" {
+resource "azurerm_netapp_pool" "netapp-pool" {
   count               = local.shared_storage_anf
   name                = "netapp-pool-${lower(local.deployment_name)}"
   account_name        = local.anf_account_name
@@ -155,7 +155,7 @@ module "bastion" {
   vm_size             = "Standard_B1s"
   resource_group_name = var.resource_group_hub_name == "" ? (var.resource_group_hub_create ? format("%s-hub", local.resource_group_name) : local.resource_group_name) : var.resource_group_hub_name
   vnet_name           = local.vnet_name
-  storage_account     = var.resource_group_hub_name == "" ? azurerm_storage_account.mytfstorageacc.primary_blob_endpoint : (var.resource_group_hub_create ? module.network_hub.0.rg_hub_primary_blob_endpoint : "")
+  storage_account     = var.resource_group_hub_name == "" ? azurerm_storage_account.tfstorageacc.primary_blob_endpoint : (var.resource_group_hub_create ? module.network_hub.0.rg_hub_primary_blob_endpoint : "")
   snet_id             = local.subnet_bastion_id
   snet_address_range  = local.subnet_bastion_address_range
   vnet_hub_create     = var.vnet_hub_create

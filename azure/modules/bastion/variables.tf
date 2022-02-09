@@ -3,7 +3,7 @@ variable "common_variables" {
 }
 
 variable "bastion_host" {
-  description = "Public ip address of an existing Bastion host, to use in e.g. hub_spoke network topology."
+  description = "Public ip address of an existing Bastion host (with access to all deployed machines), to use in e.g. hub_spoke network topology."
   type        = string
 }
 
@@ -40,7 +40,7 @@ variable "resource_group_name" {
 }
 
 variable "network_topology" {
-  description = "Network topolgy to use."
+  description = "Network topology to use."
   type        = string
 }
 

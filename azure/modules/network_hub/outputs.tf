@@ -3,7 +3,7 @@ output "rg_hub_name" {
 }
 
 output "rg_hub_primary_blob_endpoint" {
-  value = var.resource_group_hub_create ? azurerm_storage_account.mytfstorageacc[0].primary_blob_endpoint : ""
+  value = var.resource_group_hub_create ? azurerm_storage_account.tfstorageacc[0].primary_blob_endpoint : ""
 }
 
 output "vnet_hub_name" {

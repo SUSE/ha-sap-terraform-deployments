@@ -1110,10 +1110,10 @@ variable "fence_agent_client_secret" {
   default     = ""
 }
 
-# network topolgy related variables
+# network topology related variables
 
 variable "network_topology" {
-  description = "Network topology to use."
+  description = "Network topology to use. Available options: plain, hub_spoke"
   type        = string
   default     = "plain"
   validation {

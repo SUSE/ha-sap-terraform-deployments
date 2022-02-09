@@ -52,8 +52,7 @@ resource "azurerm_subnet" "subnet-spoke-workload" {
   address_prefixes     = [local.subnet_workload_address_range]
 }
 
-resource "azurerm_virtual_network_peering" "peer-spoke1-hub" {
-  count                     = 1
+resource "azurerm_virtual_network_peering" "peer-spoke-hub" {
   name                      = "peer-spoke-${var.spoke_name}-hub-${var.deployment_name}"
   resource_group_name       = var.resource_group_name
   virtual_network_name      = local.vnet_name
@@ -67,8 +66,7 @@ resource "azurerm_virtual_network_peering" "peer-spoke1-hub" {
 
 # In case different resource groups for hub/spoke are used,
 # this will be deployed in the hub's resource group.
-resource "azurerm_virtual_network_peering" "peer-hub-spoke1" {
-  count                        = 1
+resource "azurerm_virtual_network_peering" "peer-hub-spoke" {
   name                         = "peer-hub-spoke-${var.spoke_name}-${var.deployment_name}"
   resource_group_name          = var.resource_group_hub_name
   virtual_network_name         = var.vnet_hub_name

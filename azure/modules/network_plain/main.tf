@@ -56,17 +56,17 @@ resource "azurerm_subnet" "snet-workload" {
 
 resource "azurerm_subnet_network_security_group_association" "snet-workload" {
   subnet_id                 = local.subnet_id
-  network_security_group_id = azurerm_network_security_group.mysecgroup.id
+  network_security_group_id = azurerm_network_security_group.secgroup.id
 }
 
 resource "azurerm_subnet_route_table_association" "snet-workload" {
   subnet_id      = local.subnet_id
-  route_table_id = azurerm_route_table.myroutes.id
+  route_table_id = azurerm_route_table.routes.id
 }
 
 # Subnet route table
 
-resource "azurerm_route_table" "myroutes" {
+resource "azurerm_route_table" "routes" {
   name                = "route-${var.deployment_name}"
   location            = var.az_region
   resource_group_name = var.resource_group_name
@@ -110,7 +110,7 @@ resource "azurerm_subnet" "snet-netapp" {
 
 # Security group
 
-resource "azurerm_network_security_group" "mysecgroup" {
+resource "azurerm_network_security_group" "secgroup" {
   name                = "nsg-${var.deployment_name}"
   location            = var.az_region
   resource_group_name = var.resource_group_name
