@@ -56,7 +56,7 @@ resource "azurerm_resource_group" "rg-hub" {
   location = var.az_region
 }
 
-resource "azurerm_storage_account" "mytfstorageacc" {
+resource "azurerm_storage_account" "tfstorageacc" {
   count                    = var.resource_group_hub_create ? 1 : 0
   name                     = "stdiag${var.deployment_name}hub"
   resource_group_name      = local.resource_group_name

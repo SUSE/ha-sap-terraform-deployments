@@ -165,7 +165,7 @@ module "drbd_node" {
   os_image            = local.drbd_os_image
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   host_ips            = local.drbd_ips
@@ -203,7 +203,7 @@ module "netweaver_node" {
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
   network_subnet_netapp_id    = local.subnet_netapp_id
-  storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account             = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   ascs_instance_number        = var.netweaver_ascs_instance_number
@@ -242,7 +242,7 @@ module "hana_node" {
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
   network_subnet_netapp_id      = local.subnet_netapp_id
-  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account               = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
   storage_account_key           = var.storage_account_key
   enable_accelerated_networking = var.hana_enable_accelerated_networking
@@ -285,7 +285,7 @@ module "monitoring" {
   vm_size             = var.monitoring_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
@@ -308,7 +308,7 @@ module "iscsi_server" {
   vm_size             = var.iscsi_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   iscsi_srv_uri       = var.iscsi_srv_uri
   os_image            = local.iscsi_os_image
   host_ips            = [local.iscsi_ip]
