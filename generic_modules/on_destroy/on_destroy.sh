@@ -1,5 +1,9 @@
 #!/bin/bash
 
 if ! SUSEConnect -s | grep -q "Not Registered"; then
-  sudo /usr/bin/SUSEConnect -d
+  if [ -f /usr/sbin/registercloudguest ]; then
+    /usr/sbin/registercloudguest --clean
+  else
+    /usr/bin/SUSEConnect -d
+  fi
 fi
