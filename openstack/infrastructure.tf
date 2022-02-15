@@ -1,25 +1,8 @@
-# Configure the OpenStack Provider
-provider "openstack" {
-}
-
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    openstack = {
-      source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.35.0"
-    }
-    template = {
-      source = "hashicorp/template"
-    }
-  }
-}
-
-variable openstack_auth_url {
+variable "openstack_auth_url" {
   description = "OpenStack Keystone auth_url for Kubernetes Provider Plugin"
 }
 
-variable openstack_password {
+variable "openstack_password" {
   description = "OpenStack Keystone Password for Kubernetes Provider Plugin"
 }
 

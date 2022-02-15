@@ -54,7 +54,7 @@ resource "openstack_blockstorage_volume_v3" "data" {
 }
 
 data "openstack_blockstorage_volume_v3" "data" {
-  count = local.use_data_volume && ! local.create_data_volume ? 1 : 0
+  count = local.use_data_volume && !local.create_data_volume ? 1 : 0
   name  = var.bastion_data_disk_name
 }
 

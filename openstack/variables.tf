@@ -1,3 +1,8 @@
+variable "project" {
+  description = "OpenStack tenant/project name in openstack"
+  type        = string
+}
+
 variable "region" {
   description = "OpenStack Availability Zone region where the deployment machines will be created"
   type        = string
@@ -485,7 +490,7 @@ variable "hana_scale_out_shared_storage_type" {
 }
 
 variable "hana_scale_out_addhosts" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = <<EOF
     Additional hosts to pass to HANA scale-out installation
@@ -518,6 +523,7 @@ variable "hana_majority_maker_ip" {
 }
 
 # Monitoring related variables
+
 variable "monitoring_name" {
   description = "hostname, without the domain part"
   type        = string
@@ -655,7 +661,7 @@ variable "nfs_volume_size" {
 
 variable "nfs_data_volume_names" {
   description = "Existing volumes to use for NFS server."
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -887,7 +893,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
