@@ -17,10 +17,11 @@ resource "google_compute_subnetwork" "bastion_subnet" {
 
 # Connection to the bastion
 resource "google_compute_firewall" "bastion_ingress_firewall" {
-  count       = local.bastion_count
-  name        = "${local.deployment_name}-bastion-ingress-firewall"
-  network     = var.network_link
-  target_tags = ["bastion"]
+  count         = local.bastion_count
+  name          = "${local.deployment_name}-bastion-ingress-firewall"
+  network       = var.network_link
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["bastion"]
 
   allow {
     protocol = "tcp"
