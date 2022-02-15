@@ -115,7 +115,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -389,7 +389,7 @@ variable "hana_scale_out_shared_storage_type" {
 }
 
 variable "hana_scale_out_addhosts" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = <<EOF
     Additional hosts to pass to HANA scale-out installation
@@ -719,7 +719,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
