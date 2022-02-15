@@ -28,14 +28,14 @@ resource "aws_route" "nw-ascs-route" {
   count                  = local.vm_count > 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 0)}/32"
-  instance_id            = aws_instance.netweaver.0.id
+  network_interface_id   = aws_instance.netweaver.0.primary_network_interface_id
 }
 
 resource "aws_route" "nw-ers-route" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 1)}/32"
-  instance_id            = aws_instance.netweaver.1.id
+  network_interface_id   = aws_instance.netweaver.1.primary_network_interface_id
 }
 
 # deploy if PAS on same machine as ASCS
@@ -43,7 +43,7 @@ resource "aws_route" "nw-pas-route" {
   count                  = local.vm_count > 0 && var.app_server_count == 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index)}/32"
-  instance_id            = aws_instance.netweaver.0.id
+  network_interface_id   = aws_instance.netweaver.0.primary_network_interface_id
 }
 
 # deploy if PAS and AAS on separate hosts
@@ -51,7 +51,7 @@ resource "aws_route" "nw-app-route" {
   count                  = var.app_server_count
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index + count.index)}/32"
-  instance_id            = aws_instance.netweaver[local.app_start_index + count.index].id
+  network_interface_id   = aws_instance.netweaver[local.app_start_index + count.index].primary_network_interface_id
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {

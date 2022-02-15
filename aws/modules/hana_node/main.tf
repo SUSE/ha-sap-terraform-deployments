@@ -29,14 +29,14 @@ resource "aws_route" "hana-cluster-vip" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["hana"]["cluster_vip"]}/32"
-  instance_id            = aws_instance.hana.0.id
+  network_interface_id   = aws_instance.hana.0.primary_network_interface_id
 }
 
 resource "aws_route" "hana-cluster-vip-secondary" {
   count                  = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["hana"]["cluster_vip_secondary"]}/32"
-  instance_id            = aws_instance.hana.1.id
+  network_interface_id   = aws_instance.hana.1.primary_network_interface_id
 }
 
 module "sap_cluster_policies" {
@@ -66,8 +66,8 @@ resource "aws_instance" "hana" {
   private_ip                  = element(var.host_ips, count.index)
   vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index)
-  source_dest_check           = false
   iam_instance_profile        = module.sap_cluster_policies.cluster_profile_name[0]
+  source_dest_check           = false
 
   root_block_device {
     volume_type = "gp2"

@@ -25,7 +25,7 @@ resource "aws_route" "drbd-cluster-vip" {
   count                  = var.drbd_count > 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["drbd"]["cluster_vip"]}/32"
-  instance_id            = aws_instance.drbd.0.id
+  network_interface_id   = aws_instance.drbd.0.primary_network_interface_id
 }
 
 module "sap_cluster_policies" {
