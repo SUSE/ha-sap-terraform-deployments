@@ -99,7 +99,7 @@ variable "cluster_ssh_key" {
 }
 
 variable "hana_data_disks_configuration" {
-  type = map
+  type = map(any)
   default = {
     disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
     disks_size       = "128,128,128,128,128,128,128"
