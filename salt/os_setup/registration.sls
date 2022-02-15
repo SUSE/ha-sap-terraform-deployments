@@ -3,7 +3,27 @@
 {% if grains['reg_code'] and (not grains.get('offline_mode') or '_node' not in grains.get('role')) %}
 {% set reg_code = grains['reg_code'] %}
 {% set arch = grains['osarch'] %}
-register_system:
+
+# use registercloudguest for BYOS cloud images where available (images later than 20220103)
+{% if salt['file.file_exists']('/usr/sbin/registercloudguest') %}
+
+registercloudguest_registration:
+  cmd.run:
+    - name: |
+        /usr/sbin/registercloudguest --clean
+        /usr/sbin/registercloudguest --force-new -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
+        # a second register prevents "permission denied to repo" errors on some older images
+        /usr/sbin/registercloudguest --force-new -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
+    - env:
+        - reg_code: {{ reg_code }}
+    - retry:
+        attempts: 3
+        interval: 15
+
+# use SUSEConnect in case registercloudguest is not available, e.g. not public cloud or old images
+{% else %}
+
+SUSEConnect_registration:
   cmd.run:
     - name: /usr/bin/SUSEConnect -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
     - env:
@@ -59,17 +79,17 @@ default_sle_module_public_cloud_registration:
 
 {% endif %}
 
+# on-demand/PAYG image specific
+# PAYG images will use registercloudguest as part of their boot process (regardless of this state)
+{% else %}
+
 # Workaround for the 'Script died unexpectedly' error bsc#1158664
 # If it is a PAYG image, it will force a new registration before refreshing.
 # Also the pure refresh will not be executed as salt will still report failure.
 # See: https://github.com/saltstack/salt/issues/16291
 workaround_payg_cleanup:
   cmd.run:
-    - name: |
-        rm -f /etc/SUSEConnect &&
-        rm -f /etc/zypp/{repos,services,credentials}.d/* &&
-        rm -f /usr/lib/zypp/plugins/services/* &&
-        sed -i '/^# Added by SMT reg/,+1d' /etc/hosts
+    - name: /usr/sbin/registercloudguest --clean
     - onlyif: 'test -e /usr/sbin/registercloudguest'
 
 workaround_payg_new_register:
@@ -79,5 +99,9 @@ workaround_payg_new_register:
         attempts: 3
         interval: 15
     - onlyif: 'test -e /usr/sbin/registercloudguest'
+    - require:
+      - workaround_payg_cleanup
+
+{% endif %}
 
 {% endif %}
