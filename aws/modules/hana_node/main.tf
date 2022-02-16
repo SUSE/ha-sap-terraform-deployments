@@ -29,14 +29,14 @@ resource "aws_route" "hana-cluster-vip" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["hana"]["cluster_vip"]}/32"
-  instance_id            = aws_instance.clusternodes.0.id
+  instance_id            = aws_instance.hana.0.id
 }
 
 resource "aws_route" "hana-cluster-vip-secondary" {
   count                  = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["hana"]["cluster_vip_secondary"]}/32"
-  instance_id            = aws_instance.clusternodes.1.id
+  instance_id            = aws_instance.hana.1.id
 }
 
 module "sap_cluster_policies" {
@@ -45,7 +45,7 @@ module "sap_cluster_policies" {
   common_variables  = var.common_variables
   name              = var.name
   aws_region        = var.aws_region
-  cluster_instances = aws_instance.clusternodes.*.id
+  cluster_instances = aws_instance.hana.*.id
   route_table_id    = var.route_table_id
 }
 
@@ -56,7 +56,7 @@ module "get_os_image" {
 }
 
 ## EC2 HANA Instance
-resource "aws_instance" "clusternodes" {
+resource "aws_instance" "hana" {
   count                       = var.hana_count
   ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
@@ -94,10 +94,10 @@ resource "aws_instance" "clusternodes" {
 module "hana_on_destroy" {
   source       = "../../../generic_modules/on_destroy"
   node_count   = var.hana_count
-  instance_ids = aws_instance.clusternodes.*.id
+  instance_ids = aws_instance.hana.*.id
   user         = "ec2-user"
   private_key  = var.common_variables["private_key"]
-  public_ips   = aws_instance.clusternodes.*.public_ip
+  public_ips   = aws_instance.hana.*.public_ip
   dependencies = concat(
     [aws_route_table_association.hana-subnet-route-association],
     var.on_destroy_dependencies
