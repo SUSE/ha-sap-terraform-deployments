@@ -39,8 +39,10 @@ admin_user = "cloudadmin"
 # Default os_image. This value is not used if the specific values are set (e.g.: hana_os_image)
 # Run the next command to get the possible options and use the 4th column value (version can be changed by `latest`)
 # az vm image list --output table --publisher SUSE --all
-# BYOS example with sles4sap 15 sp2 (this value is a pattern, it will select the latest version that matches this name)
-#os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
+# PAYG example (default) with sles4sap 15 sp3 (this value is a pattern, it will select the latest version that matches this name)
+#os_image = "SUSE:sles-sap-15-sp3:gen2:latest"
+# BYOS example with sles4sap 15 sp3 (this value is a pattern, it will select the latest version that matches this name)
+#os_image = "SUSE:sles-sap-15-sp3-byos:gen2:latest"
 
 # The project requires a pair of SSH keys (public and private) to provision the machines
 # The private key is only used to create the SSH connection, it is not uploaded to the machines
