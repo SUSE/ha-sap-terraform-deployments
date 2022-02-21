@@ -610,27 +610,28 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 ##   Storage account for FortiGate and FortiADC boot diagnostics and serial console access
 ##   Storage account for FortiADC cloudinit files and licenses
 
-## Is the Fortinet infrastructure beiing deployed true | false
+## Is the Fortinet infrastructure being deployed true | false
 ## Fortinet components are only deployed if the SUSE/SAP deployment network is hub/spoke
-# fortinet_enabled = true
+# fortinet_enabled = false 
 
 ## Fortinet VM license type, applies to FortiGates and FortiADCs
-# value can be payg (default) or byol, when using byol license files need 
-# to be placed in the root module directory
-# fortinet_vm_license_type = "byol"
+# value can be "payg" or "byol"
+# When using byol, license files need to be placed in the root module directory
+# fortinet_vm_license_type = "payg"
 
-## FortiGate VM License files. Files should be in the root module directory.
-# Only needs to be supplied for byol deployments.
+## FortiGate VM License files. Files should be in the root module directory
+# The file names below are examples
 # fortigate_a_license_file = "FGVM8VTM21000779.lic"
 # fortigate_b_license_file = "FGVM8VTM21000780.lic"
 
 ## FortiGate VM Azure Image
 # Run the next command to get the possible options and use the 4th column value.
-# az vm image list --output table --offer fortinet --all
-# PAYG example for fortigate:
-# fortigate_os_image = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm_payg:7.0.2"
+# az vm image list --output table --offer fortinet_fortigate-vm_v5 --all
 # BYOL example for fortigate:
-# fortigate_os_image = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:7.0.2"
+# fortigate_os_image = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:7.0.3"
+# 
+# PAYG example for fortigate:
+# fortigate_os_image = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm_payg_20190624:7.0.3"
 
 ## FortiGate VM Azure Instance Size
 # fortigate_vm_size        = "Standard_F4s"
@@ -640,19 +641,25 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # fortigate_vm_password    = "Password123!!"
 
 ## FortiADC VM License files. Files should be in the root module directory
-# value can be payg or byol, when using byol license files need 
-# to be placed in the root module directory
-# Only needs to be supplied for byol deployments.
+# The file names below are examples
 # fortiadc_a_license_file = "FADV040000216490.lic"
 # fortiadc_b_license_file = "FADV040000216491.lic"
 
 ## FortiADC VM Azure Image
 # Run the next command to get the possible options and use the 4th column value.
-# az vm image list --output table --offer fortinet --all
-# PAYG example for fortiadc:
-# fortiadc_os_image = "fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-500mbps:6.1.3"
+# az vm image list --output table --offer fortinet-fortiadc --all
 # BYOL example for fortiadc:
-# fortiadc_os_image = "fortinet:fortinet-fortiadc:fad-vm-byol:6.1.3"
+# fortiadc_os_image = "fortinet:fortinet-fortiadc:fad-vm-byol:6.2.0"
+#
+# PAYG example for fortiadc:
+# fortiadc_os_image = "fortinet:fortinet-fortinet-fad-vm_payg-100mbps:6.2.0"
+
+# FortiADC PAYG has several traffic size options
+# fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-100mbps:6.2.0
+# fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-500mbps:6.2.0
+# fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-1gbps:6.2.0
+# fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-5gbps:6.2.0
+# fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-10gbps:6.2.0
 
 ## FortiADC VM Azure Instance Size
 # fortiadc_vm_size        = "Standard_F4s"
