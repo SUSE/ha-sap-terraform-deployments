@@ -81,3 +81,7 @@ resource "null_resource" "provision" {
     ]
   }
 }
+
+output "provisioned" {
+  value = var.background ? null_resource.provision_background : null_resource.provision
+}

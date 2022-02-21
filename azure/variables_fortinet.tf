@@ -10,7 +10,7 @@ variable "fortinet_vm_publisher" {
 }
 
 variable "fortinet_vm_license_type" {
-  description = "License type to use for fortinet VMs. 'Bring your own License' or 'Pay as you go'"
+  description = "License type to use for Fortinet VMs. 'bring your own license' or 'pay as you go'"
   type        = string
   default     = "payg"
   validation {
@@ -22,7 +22,7 @@ variable "fortinet_vm_license_type" {
 }
 
 variable "fortigate_a_license_file" {
-  description = "Path to look for license file of Fortigate A VM."
+  description = "License file for FortiGate A VM."
   type        = string
   default     = ""
   validation {
@@ -34,7 +34,7 @@ variable "fortigate_a_license_file" {
 }
 
 variable "fortigate_b_license_file" {
-  description = "Path to look for license file of Fortigate B VM."
+  description = "License file for FortiGate B VM."
   type        = string
   default     = ""
   validation {
@@ -47,29 +47,29 @@ variable "fortigate_b_license_file" {
 
 variable "fortigate_os_image" {
   type    = string
-  default = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm_payg:7.0.2"
+  default = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm_payg_20190624:7.0.2"
 }
 
 variable "fortigate_vm_size" {
-  description = "VM Sizing for Fortigate VMs"
+  description = "VM Sizing for FortiGate VMs"
   type        = string
   default     = "Standard_F4s"
 }
 
 variable "fortigate_vm_username" {
-  description = "Username for default Fortigate Admin user"
+  description = "Username for default FortiGate Admin user"
   type        = string
   default     = "azureuser"
 }
 
 variable "fortigate_vm_password" {
-  description = "Password for default Fortigate Admin user"
+  description = "Password for default FortiGate Admin user"
   type        = string
   default     = ""
 }
 
 variable "fortiadc_a_license_file" {
-  description = "Path to look for license file of FortiADC A VM."
+  description = "License file for FortiADC A VM."
   type        = string
   default     = ""
   validation {
@@ -81,7 +81,7 @@ variable "fortiadc_a_license_file" {
 }
 
 variable "fortiadc_b_license_file" {
-  description = "Path to look for license file of FortiADC B VM."
+  description = "License file for FortiADC B VM."
   type        = string
   default     = ""
   validation {
@@ -94,7 +94,7 @@ variable "fortiadc_b_license_file" {
 
 variable "fortiadc_os_image" {
   type    = string
-  default = "fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-500mbp:6.1.3"
+  default = "fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-100mbps:6.2.0"
 }
 
 variable "fortiadc_vm_size" {
