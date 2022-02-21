@@ -12,7 +12,7 @@ variable "fortinet_vm_publisher" {
 variable "fortinet_vm_license_type" {
   description = "License type to use for fortinet VMs. 'Bring your own License' or 'Pay as you go'"
   type        = string
-  default     = "byol"
+  default     = "payg"
   validation {
     condition = (
       can(regex("^(byol|payg)$", var.fortinet_vm_license_type))
@@ -24,18 +24,30 @@ variable "fortinet_vm_license_type" {
 variable "fortigate_a_license_file" {
   description = "Path to look for license file of Fortigate A VM."
   type        = string
-  default     = "license_fortigate_a.lic"
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|\\w*.lic)$", var.fortigate_a_license_file))
+    )
+    error_message = "Invalid license file. Options: \"\"|[0-9A-Za-z_]*.lic ."
+  }
 }
 
 variable "fortigate_b_license_file" {
   description = "Path to look for license file of Fortigate B VM."
   type        = string
-  default     = "license_fortigate_b.lic"
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|\\w*.lic)$", var.fortigate_b_license_file))
+    )
+    error_message = "Invalid license file. Options: \"\"|[0-9A-Za-z_]*.lic ."
+  }
 }
 
 variable "fortigate_os_image" {
   type    = string
-  default = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm:7.0.2"
+  default = "fortinet:fortinet_fortigate-vm_v5:fortinet_fg-vm_payg:7.0.2"
 }
 
 variable "fortigate_vm_size" {
@@ -59,18 +71,30 @@ variable "fortigate_vm_password" {
 variable "fortiadc_a_license_file" {
   description = "Path to look for license file of FortiADC A VM."
   type        = string
-  default     = "license_fortiadc_a.lic"
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|\\w*.lic)$", var.fortiadc_a_license_file))
+    )
+    error_message = "Invalid license file. Options: \"\"|[0-9A-Za-z_]*.lic ."
+  }
 }
 
 variable "fortiadc_b_license_file" {
   description = "Path to look for license file of FortiADC B VM."
   type        = string
-  default     = "license_fortiadc_b.lic"
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|\\w*.lic)$", var.fortiadc_b_license_file))
+    )
+    error_message = "Invalid license file. Options: \"\"|[0-9A-Za-z_]*.lic ."
+  }
 }
 
 variable "fortiadc_os_image" {
   type    = string
-  default = "fortinet:fortinet-fortiadc:fad-vm-byol:6.1.3"
+  default = "fortinet:fortinet-fortiadc:fortinet-fad-vm_payg-500mbp:6.1.3"
 }
 
 variable "fortiadc_vm_size" {
