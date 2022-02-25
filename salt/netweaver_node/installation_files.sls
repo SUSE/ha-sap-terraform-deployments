@@ -1,3 +1,9 @@
+{% if grains['provider'] == 'aws' %}
+{% set devicepartprefix = 'p' %}
+{% else %}
+{% set devicepartprefix = '' %}
+{% endif %}
+
 {% if grains.get('provider') in ['libvirt', 'openstack'] %}
 mount_swpm:
   mount.mounted:
@@ -27,13 +33,13 @@ nw_inst_partition:
     - name: |
         /usr/sbin/parted -s {{ netweaver_inst_disk_device }} mklabel msdos && \
         /usr/sbin/parted -s {{ netweaver_inst_disk_device }} mkpart primary ext2 1M 100% && sleep 1 && \
-        /sbin/mkfs -t xfs {{ netweaver_inst_disk_device }}1
-    - unless: ls {{ netweaver_inst_disk_device }}1
+        /sbin/mkfs -t xfs {{ netweaver_inst_disk_device }}{{ devicepartprefix }}1
+    - unless: ls {{ netweaver_inst_disk_device }}{{ devicepartprefix }}1
 
 mount_swpm:
   mount.mounted:
     - name: {{ grains['netweaver_inst_folder'] }}
-    - device: {{ netweaver_inst_disk_device }}1
+    - device: {{ netweaver_inst_disk_device }}{{ devicepartprefix }}1
     - fstype: xfs
     - mkmnt: True
     - persist: True

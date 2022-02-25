@@ -74,7 +74,7 @@ resource "aws_instance" "clusternodes" {
   ebs_block_device {
     volume_type = var.hana_data_disk_type
     volume_size = var.hana_data_disk_size
-    device_name = local.hana_disk_device
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

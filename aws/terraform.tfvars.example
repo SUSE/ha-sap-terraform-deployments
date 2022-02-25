@@ -200,9 +200,6 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
 
-# Device used by node where HANA will be installed
-#hana_disk_device = "/dev/xvdd"
-
 # IP address used to configure the hana cluster floating IP. It must belong to the same subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
 

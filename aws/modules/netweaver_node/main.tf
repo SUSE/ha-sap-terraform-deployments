@@ -98,7 +98,7 @@ resource "aws_instance" "netweaver" {
   ebs_block_device {
     volume_type = "gp2"
     volume_size = "60"
-    device_name = "/dev/xvdd"
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

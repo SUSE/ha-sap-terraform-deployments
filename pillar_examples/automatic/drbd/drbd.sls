@@ -1,3 +1,8 @@
+{% if grains['provider'] == 'aws' %}
+{% set devicepartprefix = 'p' %}
+{% else %}
+{% set devicepartprefix = '' %}
+{% endif %}
 {% set drbd_disk_device = salt['cmd.run']('realpath '~grains['drbd_disk_device']) %}
 
 drbd:
@@ -65,7 +70,7 @@ drbd:
     - name: "sapdata"
       device: "/dev/drbd1"
       {% if grains['provider'] != 'gcp' %}
-      disk: {{ drbd_disk_device }}1
+      disk: {{ drbd_disk_device }}{{ devicepartprefix }}1
       {% endif %}
 
       file_system: "xfs"

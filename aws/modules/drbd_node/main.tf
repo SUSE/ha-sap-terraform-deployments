@@ -63,7 +63,7 @@ resource "aws_instance" "drbd" {
   ebs_block_device {
     volume_type = var.drbd_data_disk_type
     volume_size = var.drbd_data_disk_size
-    device_name = "/dev/xvdd"
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

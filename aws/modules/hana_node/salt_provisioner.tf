@@ -35,7 +35,7 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-hana_disk_device: ${local.hana_disk_device}
+hana_disk_device: /dev/nvme1n1
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 EOF

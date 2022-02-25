@@ -18,7 +18,7 @@ role: iscsi_srv
 ${var.common_variables["grains_output"]}
 region: ${var.aws_region}
 iscsi_srv_ip: ${element(aws_instance.iscsisrv.*.private_ip, count.index)}
-iscsidev: ${local.iscsi_device_name}
+iscsidev: /dev/nvme1n1
 ${yamlencode(
     { partitions : { for index in range(var.lun_count) :
       tonumber(index + 1) => {

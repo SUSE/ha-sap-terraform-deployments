@@ -33,7 +33,7 @@ hostname: ${var.name}0${count.index + 1}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-drbd_disk_device: /dev/xvdd
+drbd_disk_device: /dev/nvme1n1
 route_table: ${var.route_table_id}
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
