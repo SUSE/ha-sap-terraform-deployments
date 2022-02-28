@@ -23,7 +23,7 @@ resource "aws_instance" "monitoring" {
   ebs_block_device {
     volume_type = "gp2"
     volume_size = "10"
-    device_name = "/dev/xvdd"
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

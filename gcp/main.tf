@@ -138,6 +138,10 @@ module "common_variables" {
   netweaver_ha_enabled                = var.netweaver_ha_enabled
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  drbd_cluster_vip                    = local.drbd_cluster_vip
+  drbd_cluster_vip_mechanism          = var.drbd_cluster_vip_mechanism
+  drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
+  drbd_sbd_storage_type               = var.sbd_storage_type
 }
 
 module "drbd_node" {
@@ -152,12 +156,9 @@ module "drbd_node" {
   os_image             = local.drbd_os_image
   drbd_data_disk_size  = var.drbd_data_disk_size
   drbd_data_disk_type  = var.drbd_data_disk_type
-  drbd_cluster_vip     = local.drbd_cluster_vip
   gcp_credentials_file = var.gcp_credentials_file
   network_domain       = "tf.local"
   host_ips             = local.drbd_ips
-  fencing_mechanism    = var.drbd_cluster_fencing_mechanism
-  sbd_storage_type     = var.sbd_storage_type
   iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
   cluster_ssh_key      = var.cluster_ssh_key

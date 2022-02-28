@@ -1,7 +1,5 @@
-
 locals {
-  hana_disk_device = "/dev/xvdd"
-  create_ha_infra  = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  create_ha_infra = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc
@@ -76,7 +74,7 @@ resource "aws_instance" "clusternodes" {
   ebs_block_device {
     volume_type = var.hana_data_disk_type
     volume_size = var.hana_data_disk_size
-    device_name = local.hana_disk_device
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

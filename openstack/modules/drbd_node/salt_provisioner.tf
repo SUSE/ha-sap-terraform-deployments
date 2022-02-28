@@ -48,6 +48,7 @@ resource "null_resource" "drbd_node_provisioner" {
     content     = <<EOF
 role: drbd_node
 ${var.common_variables["grains_output"]}
+${var.common_variables["drbd_grains_output"]}
 name_prefix: ${var.common_variables["deployment_name"]}-drbd
 hostname: ${var.common_variables["deployment_name"]}-drbd0${count.index + 1}
 network_domain: ${var.network_domain}
@@ -55,11 +56,8 @@ host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-drbd_cluster_vip: ${var.drbd_cluster_vip}
 drbd_disk_device: /dev/sdb
-fencing_mechanism: ${var.fencing_mechanism}
-sbd_storage_type: ${var.sbd_storage_type}
-sbd_disk_device: "${var.sbd_storage_type == "shared-disk" ? "/dev/sdc" : ""}"
+sbd_disk_device: "${var.common_variables["drbd"]["sbd_storage_type"] == "shared-disk" ? "/dev/sdc" : ""}"
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 nfs_mounting_point: ${var.nfs_mounting_point}

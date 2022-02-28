@@ -128,7 +128,9 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #########################
 
 # Instance type to use for the hana cluster nodes
-#hana_instancetype = "r3.8xlarge"
+# SAP certified instances types can be found at https://aws.amazon.com/sap/instance-types/
+# and example sizing at https://aws.amazon.com/sap/solutions/s4hana/ .
+#hana_instancetype = "r6i.xlarge"
 
 # Disk type for HANA
 #hana_data_disk_type = "gp2"
@@ -197,9 +199,6 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # It will be extracted to hana_client_extract_dir path (optional, by default /sapmedia_extract/HANA_CLIENT)
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
-
-# Device used by node where HANA will be installed
-#hana_disk_device = "/dev/xvdd"
 
 # IP address used to configure the hana cluster floating IP. It must belong to the same subnet than the machines!
 #hana_cluster_vip = "192.168.1.10"
@@ -275,7 +274,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Enable drbd cluster
 #drbd_enabled = false
 
-#drbd_instancetype = "t2.micro"
+#drbd_instancetype = "t3.medium"
 
 # DRBD machines image. By default, PAYG image is used. The usage is the same as the HANA images
 #drbd_os_image = "suse-sles-sap-15-sp1-byos"
@@ -308,7 +307,10 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # Set to 2 or higher to deploy additional AAS instances in new machines
 #netweaver_app_server_count = 2
 
-#netweaver_instancetype = "r3.8xlarge"
+# Instance type to use for the Netweaver nodes
+# SAP certified instances types can be found at https://aws.amazon.com/sap/instance-types/
+# and example sizing at https://aws.amazon.com/sap/solutions/s4hana/ .
+#netweaver_instancetype = "r5.large"
 
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
 #netweaver_os_image = "suse-sles-sap-15-sp1-byos"

@@ -1,9 +1,5 @@
 # iscsi server resources
 
-locals {
-  iscsi_device_name = "/dev/xvdd"
-}
-
 module "get_os_image" {
   source   = "../../modules/get_os_image"
   os_image = var.os_image
@@ -29,7 +25,7 @@ resource "aws_instance" "iscsisrv" {
   ebs_block_device {
     volume_type = "gp2"
     volume_size = var.iscsi_disk_size
-    device_name = local.iscsi_device_name
+    device_name = "/dev/sdb"
   }
 
   volume_tags = {

@@ -20,6 +20,7 @@ resource "null_resource" "drbd_provisioner" {
     content     = <<EOF
 role: drbd_node
 ${var.common_variables["grains_output"]}
+${var.common_variables["drbd_grains_output"]}
 name_prefix: ${var.common_variables["deployment_name"]}-drbd
 hostname: ${var.common_variables["deployment_name"]}-drbd0${count.index + 1}
 network_domain: ${var.network_domain}
@@ -29,15 +30,12 @@ cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 drbd_disk_device: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.drbd.*.attached_disk.0.device_name, count.index))}
 drbd_disk_device_list: [${join(", ", formatlist("'/dev/disk/by-id/google-%s'", google_compute_instance.drbd.*.attached_disk.0.device_name))}]
-drbd_cluster_vip: ${var.drbd_cluster_vip}
-fencing_mechanism: ${var.fencing_mechanism}
-sbd_storage_type: ${var.sbd_storage_type}
 sbd_lun_index: 2
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 nfs_mounting_point: ${var.nfs_mounting_point}
 nfs_export_name: ${var.nfs_export_name}
 vpc_network_name: ${var.network_name}
-route_name: ${google_compute_route.drbd-route[0].name}
+route_name: ${join(",", google_compute_route.drbd-route.*.name)}
 partitions:
   1:
     start: 0%
