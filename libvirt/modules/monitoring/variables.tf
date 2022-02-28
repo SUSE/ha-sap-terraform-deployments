@@ -23,6 +23,11 @@ variable "network_domain" {
   type        = string
 }
 
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
+}
+
 variable "network_name" {
   description = "libvirt NAT network name for VMs, use empty string for bridged networking"
   default     = ""

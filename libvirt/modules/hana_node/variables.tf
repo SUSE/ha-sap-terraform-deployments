@@ -17,6 +17,11 @@ variable "network_domain" {
   type        = string
 }
 
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
+}
+
 variable "hana_count" {
   description = "number of hosts like this one"
   default     = 2

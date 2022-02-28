@@ -32,6 +32,7 @@ resource "libvirt_domain" "drbd_domain" {
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.drbd_count
+  cloudinit  = var.userdata
   qemu_agent = true
   dynamic "disk" {
     for_each = [
