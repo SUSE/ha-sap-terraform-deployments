@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg)](https://github.com/SUSE/ha-sap-terraform-deployments/actions)
 
-**Supported terraform version  `0.13.4`**
+**Supported terraform version  `1.1.X`**
 ___
 
 # Supported cloud providers

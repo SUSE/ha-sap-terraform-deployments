@@ -1,15 +1,3 @@
-# Configure the GCP Provider
-provider "google" {
-  version     = "~> 3.43.0"
-  credentials = file(var.gcp_credentials_file)
-  project     = var.project
-  region      = var.region
-}
-
-terraform {
-  required_version = ">= 0.13"
-}
-
 data "google_compute_zones" "available" {
   region = var.region
   status = "UP"
@@ -30,7 +18,7 @@ locals {
   subnet_name          = var.subnet_name == "" ? google_compute_subnetwork.ha_subnet.0.name : var.subnet_name
   subnet_address_range = var.subnet_name == "" ? var.ip_cidr_range : (var.ip_cidr_range == "" ? data.google_compute_subnetwork.current-subnet.0.ip_cidr_range : var.ip_cidr_range)
 
-  create_firewall = ! var.bastion_enabled && var.create_firewall_rules ? 1 : 0
+  create_firewall = !var.bastion_enabled && var.create_firewall_rules ? 1 : 0
 }
 
 # Network resources: Network, Subnet

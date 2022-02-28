@@ -90,7 +90,7 @@ variable "nfs_volume_size" {
 
 variable "nfs_data_volume_names" {
   description = "Existing volumes to use for NFS server."
-  type        = list
+  type        = list(any)
 }
 
 variable "nfs_mounting_point" {
