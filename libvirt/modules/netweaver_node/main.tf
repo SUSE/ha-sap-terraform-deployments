@@ -26,6 +26,7 @@ resource "libvirt_domain" "netweaver_domain" {
   memory     = var.memory
   vcpu       = var.vcpu
   count      = local.vm_count
+  cloudinit  = var.userdata
   qemu_agent = true
 
   dynamic "disk" {

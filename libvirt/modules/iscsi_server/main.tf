@@ -32,6 +32,7 @@ resource "libvirt_domain" "iscsisrv" {
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.iscsi_count
+  cloudinit  = var.userdata
   qemu_agent = true
 
   dynamic "disk" {

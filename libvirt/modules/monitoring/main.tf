@@ -25,6 +25,7 @@ resource "libvirt_domain" "monitoring_domain" {
   count      = var.monitoring_enabled == true ? 1 : 0
   memory     = var.memory
   vcpu       = var.vcpu
+  cloudinit  = var.userdata
   qemu_agent = true
 
   disk {

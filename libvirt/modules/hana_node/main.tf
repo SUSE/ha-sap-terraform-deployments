@@ -33,6 +33,7 @@ resource "libvirt_domain" "hana_domain" {
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.hana_count
+  cloudinit  = var.userdata
   qemu_agent = true
   dynamic "disk" {
     for_each = [

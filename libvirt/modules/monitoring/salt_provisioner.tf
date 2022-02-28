@@ -1,3 +1,24 @@
+resource "null_resource" "wait_after_cloud_init" {
+  count = var.common_variables["provisioner"] == "salt" && var.monitoring_enabled ? 1 : 0
+
+  triggers = {
+    monitoring_id = libvirt_domain.monitoring_domain.0.id
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "if which cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
+    ]
+  }
+
+  depends_on = [libvirt_domain.monitoring_domain.0]
+  connection {
+    host     = libvirt_domain.monitoring_domain.0.network_interface.0.addresses.0
+    user     = "root"
+    password = "linux"
+  }
+}
+
 resource "null_resource" "monitoring_provisioner" {
   count = var.common_variables["provisioner"] == "salt" && var.monitoring_enabled ? 1 : 0
   triggers = {
@@ -24,6 +45,8 @@ public_ip: ${libvirt_domain.monitoring_domain[0].network_interface[0].addresses[
 EOF
     destination = "/tmp/grains"
   }
+
+  depends_on = [null_resource.wait_after_cloud_init]
 }
 
 module "monitoring_provision" {
