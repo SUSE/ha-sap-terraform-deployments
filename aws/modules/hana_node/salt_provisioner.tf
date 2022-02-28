@@ -35,7 +35,7 @@ network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-hana_disk_device: ${local.hana_disk_device}
+hana_disk_device: /dev/nvme1n1
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 node_count: ${var.hana_count + local.create_scale_out}

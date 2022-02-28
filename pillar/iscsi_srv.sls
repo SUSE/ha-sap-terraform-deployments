@@ -1,3 +1,8 @@
+{% if grains['provider'] == 'aws' %}
+{% set devicepartprefix = 'p' %}
+{% else %}
+{% set devicepartprefix = '' %}
+{% endif %}
 {% set devicenum = 'abcdefghijklmnopqrstuvwxyz' %}
 {% set partitions = grains['partitions'] %}
 {% set real_iscsidev = salt['cmd.run']('realpath '~grains['iscsidev']) %}
@@ -29,7 +34,7 @@ iscsi:
               block_size: 512
               emulate_write_cache: 0
               unmap_granularity: 0
-            dev: {{ real_iscsidev }}{{ loop.index }}
+            dev: {{ real_iscsidev }}{{ devicepartprefix }}{{ loop.index }}
             name: sd{{ devicenum[loop.index0] }}
             plugin: "block"
 {%- endfor %}
