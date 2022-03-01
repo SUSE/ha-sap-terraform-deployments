@@ -16,9 +16,10 @@ registercloudguest_registration:
         /usr/sbin/registercloudguest --force-new -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
     - env:
         - reg_code: {{ reg_code }}
+    # in certain setups we wait for our gateway to come up, e.g. azure/fortinet
     - retry:
-        attempts: 3
-        interval: 15
+        attempts: 30
+        interval: 30
 
 # use SUSEConnect in case registercloudguest is not available, e.g. not public cloud or old images
 {% else %}
@@ -28,9 +29,10 @@ SUSEConnect_registration:
     - name: /usr/bin/SUSEConnect -r $reg_code {{ ("-e " ~ grains['reg_email']) if grains['reg_email'] else "" }}
     - env:
         - reg_code: {{ reg_code }}
+    # in certain setups we wait for our gateway to come up, e.g. azure/fortinet
     - retry:
-        attempts: 3
-        interval: 15
+        attempts: 30
+        interval: 30
 
 {% if grains['osmajorrelease'] == 12 %}
 # hardcode the 12 version number for the 2 following modules, since they don't offer a sp version only 1.
@@ -42,6 +44,8 @@ default_sle_module_adv_systems_management_registration:
     - retry:
         attempts: 3
         interval: 15
+    - require:
+      - SUSEConnect_registration
 
 default_sle_module_public_cloud_registration:
   cmd.run:
@@ -51,6 +55,8 @@ default_sle_module_public_cloud_registration:
     - retry:
         attempts: 3
         interval: 15
+    - require:
+      - SUSEConnect_registration
 
 {% elif grains['osmajorrelease'] == 15 and grains['provider'] in ['gcp', 'aws', 'azure', 'openstack'] %}
 default_sle_module_public_cloud_registration:
@@ -61,6 +67,8 @@ default_sle_module_public_cloud_registration:
     - retry:
         attempts: 3
         interval: 15
+    - require:
+      - SUSEConnect_registration
 
 {% endif %}
 
@@ -71,9 +79,10 @@ default_sle_module_public_cloud_registration:
     - name: /usr/bin/SUSEConnect -p {{ module }} {{ "-r $mod_reg_code" if mod_reg_code else "" }}
     - env:
         - mod_reg_code: {{ mod_reg_code }}
+    # in certain setups we wait for our gateway to come up, e.g. azure/fortinet
     - retry:
-        attempts: 3
-        interval: 15
+        attempts: 30
+        interval: 30
 {% endfor %}
 {% endif %}
 
@@ -95,9 +104,10 @@ workaround_payg_cleanup:
 workaround_payg_new_register:
   cmd.run:
     - name: /usr/sbin/registercloudguest --force-new
+    # in certain setups we wait for our gateway to come up, e.g. azure/fortinet
     - retry:
-        attempts: 3
-        interval: 15
+        attempts: 30
+        interval: 30
     - onlyif: 'test -e /usr/sbin/registercloudguest'
     - require:
       - workaround_payg_cleanup
