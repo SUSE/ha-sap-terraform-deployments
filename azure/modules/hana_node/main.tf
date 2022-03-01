@@ -72,10 +72,9 @@ resource "azurerm_lb" "hana-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "hana-load-balancer" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.hana-load-balancer[0].id
-  name                = "lbbe-hana"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.hana-load-balancer[0].id
+  name            = "lbbe-hana"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "hana" {
@@ -117,7 +116,7 @@ resource "azurerm_lb_rule" "hana-lb-rules" {
   frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -133,7 +132,7 @@ resource "azurerm_lb_rule" "hana-lb-rules-secondary" {
   frontend_ip_configuration_name = "lbfe-hana-secondary"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer-secondary[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -148,7 +147,7 @@ resource "azurerm_lb_rule" "hanadb_exporter" {
   frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 9668
   backend_port                   = 9668
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"

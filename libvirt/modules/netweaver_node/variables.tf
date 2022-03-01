@@ -7,6 +7,11 @@ variable "name" {
   type        = string
 }
 
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"

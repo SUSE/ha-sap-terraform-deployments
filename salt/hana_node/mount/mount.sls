@@ -1,10 +1,16 @@
+{% if grains['provider'] == 'aws' %}
+{% set devicepartprefix = 'p' %}
+{% else %}
+{% set devicepartprefix = '' %}
+{% endif %}
+
 hana_partition:
   cmd.run:
     - name: |
         /usr/sbin/parted -s {{ grains['hana_disk_device'] }} mklabel msdos && \
         /usr/sbin/parted -s {{ grains['hana_disk_device'] }} mkpart primary ext2 1M 100% && sleep 1 && \
-        /sbin/mkfs -t {{ grains['hana_fstype'] }} {{ grains['hana_disk_device'] }}1
-    - unless: ls {{ grains['hana_disk_device'] }}1
+        /sbin/mkfs -t {{ grains['hana_fstype'] }} {{ grains['hana_disk_device'] }}{{ devicepartprefix }}1
+    - unless: ls {{ grains['hana_disk_device'] }}{{ devicepartprefix }}1
     - require:
       - pkg: parted
 
@@ -16,7 +22,7 @@ hana_directory:
     - makedirs: True
   mount.mounted:
     - name: /hana
-    - device: {{ grains['hana_disk_device'] }}1
+    - device: {{ grains['hana_disk_device'] }}{{ devicepartprefix }}1
     - fstype: {{ grains['hana_fstype'] }}
     - mkmnt: True
     - persist: True
