@@ -16,6 +16,6 @@ netweaver_node:
   python3-shaptools: 0.3.12+git.1619007514.1951d23
   salt-shaptools: 0.3.14+git.1643874204.627d53a
   habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
-  sapnwbootstrap-formula: 0.7.3+git.1644397286.141deb8
+  sapnwbootstrap-formula: 0.7.4+git.1646147057.78b198a
 iscsi_srv:
   iscsi-formula: 1.1.1
