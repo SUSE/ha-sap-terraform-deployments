@@ -2,6 +2,16 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "hana_count" {
   type    = string
   default = "2"
@@ -10,12 +20,6 @@ variable "hana_count" {
 variable "instance_type" {
   type    = string
   default = "r3.8xlarge"
-}
-
-variable "name" {
-  description = "prefix of the machines names"
-  type        = string
-  default     = "hana"
 }
 
 variable "aws_region" {

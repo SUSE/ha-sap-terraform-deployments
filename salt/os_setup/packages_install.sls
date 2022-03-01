@@ -1,8 +1,11 @@
+# check if iscsi-formula should be installed
+{%- if grains.get('role') == "iscsi_srv" %}
 iscsi-formula:
   pkg.installed:
     - retry:
         attempts: 3
         interval: 15
+{%- endif %}
 
 # iscsi kernel modules are not available in kernel-default-base
 kernel-default-base:

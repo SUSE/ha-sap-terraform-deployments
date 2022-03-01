@@ -21,6 +21,10 @@ variable "network_subnet_id" {
   type = string
 }
 
+variable "network_subnet_netapp_id" {
+  type = string
+}
+
 variable "storage_account" {
   type = string
 }
@@ -28,11 +32,6 @@ variable "storage_account" {
 variable "hana_count" {
   type    = string
   default = "2"
-}
-
-variable "name" {
-  type    = string
-  default = "hana"
 }
 
 variable "hana_instance_number" {
@@ -69,9 +68,19 @@ variable "os_image" {
   type        = string
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "vm_size" {
   type    = string
   default = "Standard_E4s_v3"
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
 }
 
 variable "iscsi_srv_ip" {
@@ -90,7 +99,7 @@ variable "cluster_ssh_key" {
 }
 
 variable "hana_data_disks_configuration" {
-  type = map
+  type = map(any)
   default = {
     disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
     disks_size       = "128,128,128,128,128,128,128"
@@ -112,4 +121,74 @@ variable "hana_data_disks_configuration" {
     sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100)
     paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup)
   EOF
+}
+
+variable "subscription_id" {
+  description = "ID of the azure subscription."
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "ID of the azure tenant."
+  type        = string
+}
+
+variable "fence_agent_app_id" {
+  description = "ID of the azure service principal / application that is used for native fencing."
+  type        = string
+}
+
+variable "fence_agent_client_secret" {
+  description = "Secret for the azure service principal / application that is used for native fencing."
+  type        = string
+}
+
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+}
+
+variable "anf_pool_service_level" {
+  description = "service level for ANF shared Storage"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
+    )
+    error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
+  }
+}
+
+variable "hana_scale_out_anf_quota_data" {
+  description = "Quota for ANF shared storage volume HANA scale-out data"
+  type        = number
+}
+
+variable "hana_scale_out_anf_quota_log" {
+  description = "Quota for ANF shared storage volume HANA scale-out log"
+  type        = number
+}
+
+variable "hana_scale_out_anf_quota_backup" {
+  description = "Quota for ANF shared storage volume HANA scale-out backup"
+  type        = number
+}
+
+variable "hana_scale_out_anf_quota_shared" {
+  description = "Quota for ANF shared storage volume HANA scale-out shared"
+  type        = number
+}
+
+variable "majority_maker_vm_size" {
+  type = string
+}
+
+variable "majority_maker_ip" {
+  description = "Majority Maker server address"
+  type        = string
 }

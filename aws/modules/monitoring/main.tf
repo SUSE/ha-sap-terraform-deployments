@@ -1,3 +1,7 @@
+locals {
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+}
+
 module "get_os_image" {
   source   = "../../modules/get_os_image"
   os_image = var.os_image
@@ -27,11 +31,11 @@ resource "aws_instance" "monitoring" {
   }
 
   volume_tags = {
-    Name = "${var.common_variables["deployment_name"]}-monitoring"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}"
   }
 
   tags = {
-    Name      = "${var.common_variables["deployment_name"]} - Monitoring"
+    Name      = "${var.common_variables["deployment_name"]}-${var.name}"
     Workspace = var.common_variables["deployment_name"]
   }
 }

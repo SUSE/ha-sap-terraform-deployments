@@ -3,7 +3,7 @@
 # Find all the available variables and definitions in the variables.tf file
 #################################
 
-# OpenStack tennant/project id
+# OpenStack tenant/project id
 project = "my-project"
 
 # Network Region where to deploy the configuration
@@ -40,6 +40,9 @@ ip_cidr_range = "10.0.0.0/24"
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
+
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
 
 # If BYOS images are used in the deployment, SCC registration code is required. Set `reg_code` and `reg_email` variables below
 # By default, all the images are PAYG, so these next parameters are not needed
@@ -126,13 +129,12 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
-#qa_mode = false
+#offline_mode = false
 
 # Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
-#
+
 ##########################
 # Bastion (jumpbox) machine variables
 ##########################
@@ -157,15 +159,64 @@ bastion_data_disk_type = ""
 #bastion_data_disk_type = "ephemeral"
 # or
 #bastion_data_disk_type = "volume"
+# or
+#bastion_data_disk_type = "rootdisk"
 # Disk size for NFS server volume on the bastion (only used for volume, not ephemeral)
 #bastion_data_disk_size = "60"
+
+##########################
+# NFS server machine variables
+##########################
+
+# Enable NFS server (will also be used if any shared_storage_type variable is set to "nfs")
+#nfs_enabled = false
+# use NFS server as inst_master (NFS mountpoint still need to be configured)
+#nfs_inst_master = false
+# Use existing nfs data volumes
+#nfs_data_volume_names = ["scale-out-data-1", "scale-out-data-2", "scale-out-data-3", "scale-out-data-4", "scale-out-data-5"]
+# NFS share mounting point and export. Warning: Since cloud images are using cloud-init, /mnt folder cannot be used as standard mounting point folder
+# It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
+#nfs_nfs_mounting_point = "/mnt_permanent/sapdata"
+
+#########################
+# shared storage variables
+# Needed if Netweaver is deployed HA or HANA is deployed in scale-out scenario
+#########################
+#netweaver_shared_storage_type      = "drbd" # drbd,nfs supported at the moment (default: "drbd")
+#hana_scale_out_shared_storage_type = "" # only nfs supported at the moment (default: "")
 
 #########################
 # HANA machines variables
 #########################
 
+# Hostname, without the domain part
+#hana_name = "vmhana"
+
 # HANA flavor
 hana_flavor = "8C-32GB-40GB-200GB"
+
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
+# enable to use HANA scale-out
+#hana_scale_out_enabled = false
+
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
+
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site
+#hana_scale_out_standby_count = 1 # default:1 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+
+#majority_maker_flavor = "2C-2GB-40GB"
+#majority_maker_ip     = "10.0.0.9"
 
 # HANA os_image. This value is used to overwrite the default "os_image".
 # If `openstack` utility is available in your local machine, the next command shows some of the available options
@@ -197,6 +248,11 @@ hana_cluster_vip_secondary = "10.0.0.13"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
+
+# Disable minimal memory checks for HANA. Useful to deploy development clusters.
+# Low memory usage can cause a failed deployment. Be aware that this option does
+# not work with any memory size and will most likely fail with less than 16 GiB
+#hana_ignore_min_mem_check = false
 
 # Select HANA cluster fencing mechanism. 'native' by default
 # Find more information in `doc/fencing.md` documentation page
@@ -253,11 +309,11 @@ hana_ips = ["10.0.0.10", "10.0.0.11"]
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
-# HANA instance system identifier. It's composed of 3 characters string
+# HANA instance system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options).
 #hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. It must follow the SAP Password policies
+# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -274,6 +330,9 @@ hana_ips = ["10.0.0.10", "10.0.0.11"]
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
+
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
 
 # iSCSI server os_image. This value is used to overwrite the default "os_image".
 # If `openstack` utility is available in your local machine, the next command shows some of the available options
@@ -297,6 +356,9 @@ iscsi_flavor = "2C-2GB-40GB"
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#hana_name = "vmmonitoring"
+
 monitoring_flavor = "4C-8GB-40GB"
 
 # Monitoring server os_image. This value is used to overwrite the default "os_image".
@@ -313,6 +375,9 @@ monitoring_flavor = "4C-8GB-40GB"
 
 # Enable drbd cluster
 #drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 drbd_flavor = "8C-32GB-40GB-200GB"
 
@@ -348,6 +413,9 @@ drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 # Enable netweaver cluster
 #netweaver_enabled = true
 
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
+
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
 # Set to 1 to only enable 1 PAS instance in an additional machine`
@@ -372,6 +440,10 @@ netweaver_flavor = "4C-8GB-40GB"
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP
 # - S4HANA1909.CORE.HDB.ABAPHA
+# - S4HANA2020.CORE.HDB.ABAP
+# - S4HANA2020.CORE.HDB.ABAPHA
+# - S4HANA2021.CORE.HDB.ABAP
+# - S4HANA2021.CORE.HDB.ABAPHA
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
@@ -400,7 +472,7 @@ netweaver_ips         = ["10.0.0.30", "10.0.0.31", "10.0.0.32", "10.0.0.33"]
 netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35", "10.0.0.36", "10.0.0.37"]
 
 # Netweaver installation configuration
-# Netweaver system identifier. It's composed of 3 characters string
+# Netweaver system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)
 #netweaver_sid = "HA1"
 # Netweaver ASCS instance number. It's composed of 2 integers string
 #netweaver_ascs_instance_number = "00"
@@ -408,7 +480,10 @@ netweaver_virtual_ips = ["10.0.0.34", "10.0.0.35", "10.0.0.36", "10.0.0.37"]
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# Netweaver master password. It must follow the SAP Password policies such as having 8 characters at least combining upper and lower case characters and numbers. It cannot start with special characters.
+# NetWeaver or S/4HANA master password. 
+# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
+# It cannot start with special characters and must contain a combination of
+# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers

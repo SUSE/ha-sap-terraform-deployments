@@ -1,11 +1,7 @@
 locals {
-  private_ip_address = var.iscsi_srv_ip
-  bastion_enabled    = var.common_variables["bastion_enabled"]
-  # provisioning_addresses = local.bastion_enabled ? data.openstack_networking_port_v2.iscsisrv.*.fixed_ip.ip_address : data.openstack_networking_port_v2.iscsisrv.*.fixed_ip.ip_address
-  # provisioning_addresses = [var.iscsi_srv_ip]
-  # provisioning_addresses = join(",",openstack_networking_port_v2.iscsisrv.*.fixed_ip.ip_address)
-  provisioning_addresses = data.openstack_networking_port_v2.iscsisrv.*.fixed_ip
-  # provisioning_addresses = data.openstack_compute_instance_v2.iscsisrv.*.network.0.fixed_ip_v4
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 
@@ -17,7 +13,7 @@ resource "openstack_networking_port_v2" "iscsisrv" {
   admin_state_up = "true"
   fixed_ip {
     subnet_id  = var.network_subnet_id
-    ip_address = local.private_ip_address
+    ip_address = var.host_ips[count.index]
   }
   security_group_ids = [var.firewall_internal]
 }
@@ -32,7 +28,7 @@ resource "openstack_blockstorage_volume_v3" "iscsisrv_sbd" {
 
 resource "openstack_compute_instance_v2" "iscsisrv" {
   count        = var.iscsi_count
-  name         = "${var.common_variables["deployment_name"]}-iscsisrv-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   flavor_name  = var.flavor
   image_id     = var.os_image
   config_drive = true

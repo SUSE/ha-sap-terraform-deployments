@@ -1,25 +1,8 @@
-# Configure the OpenStack Provider
-provider "openstack" {
-}
-
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-    openstack = {
-      source  = "terraform-provider-openstack/openstack"
-      version = "~> 1.35.0"
-    }
-    template = {
-      source = "hashicorp/template"
-    }
-  }
-}
-
-variable openstack_auth_url {
+variable "openstack_auth_url" {
   description = "OpenStack Keystone auth_url for Kubernetes Provider Plugin"
 }
 
-variable openstack_password {
+variable "openstack_password" {
   description = "OpenStack Keystone Password for Kubernetes Provider Plugin"
 }
 
@@ -114,6 +97,8 @@ resource "openstack_networking_secgroup_rule_v2" "ha_firewall_internal_allow_all
 module "bastion" {
   source           = "./modules/bastion"
   common_variables = module.common_variables.configuration
+  name             = var.bastion_name
+  network_domain   = var.bastion_network_domain == "" ? var.network_domain : var.bastion_network_domain
   region           = var.region
   region_net       = var.region_net
 
@@ -126,6 +111,7 @@ module "bastion" {
   firewall_internal      = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image               = local.bastion_os_image
   bastion_srv_ip         = var.bastion_srv_ip
+  bastion_data_disk_name = var.bastion_data_disk_name
   bastion_data_disk_type = var.bastion_data_disk_type
   bastion_data_disk_size = var.bastion_data_disk_size
   floatingip_pool        = var.floatingip_pool

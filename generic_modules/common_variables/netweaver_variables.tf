@@ -3,6 +3,11 @@ variable "netweaver_ha_enabled" {
   type        = bool
 }
 
+variable "netweaver_cluster_vip_mechanism" {
+  description = "Mechanism used to manage the virtual IP address in the netweaver cluster."
+  type        = string
+}
+
 variable "netweaver_cluster_fencing_mechanism" {
   description = "Choose the fencing mechanism for the cluster. Options: sbd, native"
   type        = string
@@ -63,9 +68,9 @@ variable "netweaver_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.netweaver_master_password)) &&
-        can(regex("[a-z]+", var.netweaver_master_password)) &&
-        can(regex("[A-Z]+", var.netweaver_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.netweaver_master_password))
+      can(regex("[a-z]+", var.netweaver_master_password)) &&
+      can(regex("[A-Z]+", var.netweaver_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.netweaver_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }
@@ -108,7 +113,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
 }
 
 variable "netweaver_nfs_share" {
@@ -154,10 +159,21 @@ variable "netweaver_hana_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.netweaver_hana_master_password)) &&
-        can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
-        can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
+      can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
+      can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
+  }
+}
+
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf|nfs)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf|nfs."
   }
 }

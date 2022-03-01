@@ -7,6 +7,11 @@ variable "name" {
   type        = string
 }
 
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
+}
+
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
@@ -89,7 +94,7 @@ variable "isolated_network_name" {
 
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
 }
 
 variable "network_name" {

@@ -17,6 +17,16 @@ variable "flavor" {
   default = "8C-32GB-40GB-200GB"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "network_name" {
   description = "Network to attach the static route (temporary solution)"
   type        = string
@@ -61,11 +71,6 @@ variable "host_ips" {
 variable "firewall_internal" {
   description = "Internal firewall to attach VM to"
   type        = string
-}
-
-variable "network_domain" {
-  description = "hostname's network domain"
-  default     = "tf.local"
 }
 
 variable "iscsi_srv_ip" {
@@ -146,4 +151,23 @@ variable "hana_cluster_vip_secondary" {
   description = "IP address used to configure the hana cluster floating IP for the secondary node in an Active/Active mode. Let empty to use an auto generated address"
   type        = string
   default     = ""
+}
+
+variable "nfs_srv_ip" {
+  description = "IP address for shared storage NFS server"
+  type        = string
+}
+
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
+  type        = string
+}
+
+variable "majority_maker_flavor" {
+  type = string
+}
+
+variable "majority_maker_ip" {
+  description = "Majority Maker server address"
+  type        = string
 }

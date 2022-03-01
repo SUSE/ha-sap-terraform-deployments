@@ -8,12 +8,13 @@ module "local_execution" {
 # Iscsi server: 10.74.0.4
 # Monitoring: 10.74.0.5
 # Hana ips: 10.74.0.10, 10.74.0.11
+# Majority Maker ip: 10.74.0.9
 # Hana cluster vip: 10.74.0.12
 # Hana cluster vip secondary: 10.74.0.13
-# DRBD ips: 10.74.0.20, 10.74.0.21
-# DRBD cluster vip: 10.74.0.22
-# Netweaver ips: 10.74.0.30, 10.74.0.31, 10.74.0.32, 10.74.0.33
-# Netweaver virtual ips: 10.74.0.34, 10.74.0.35, 10.74.0.36, 10.74.0.37
+# DRBD ips: 10.74.0.6, 10.74.0.7
+# DRBD cluster vip: 10.74.0.8
+# Netweaver ips: 10.74.0.60, 10.74.0.61, 10.74.0.62, 10.74.0.63
+# Netweaver virtual ips: 10.74.0.64, 10.74.0.65, 10.74.0.66, 10.74.0.67
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
@@ -21,10 +22,11 @@ locals {
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_majority_maker_ip     = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.subnet_address_range, var.hana_count + local.hana_ip_start + 1)
 
-  drbd_ip_start    = 20
+  drbd_ip_start    = 6
   drbd_ips         = length(var.drbd_ips) != 0 ? var.drbd_ips : [for ip_index in range(local.drbd_ip_start, local.drbd_ip_start + 2) : cidrhost(local.subnet_address_range, ip_index)]
   drbd_cluster_vip = var.drbd_cluster_vip != "" ? var.drbd_cluster_vip : cidrhost(local.subnet_address_range, local.drbd_ip_start + 2)
 
@@ -32,7 +34,7 @@ locals {
   netweaver_count             = var.netweaver_enabled ? local.netweaver_xscs_server_count + var.netweaver_app_server_count : 0
   netweaver_virtual_ips_count = var.netweaver_ha_enabled ? max(local.netweaver_count, 3) : max(local.netweaver_count, 2) # We need at least 2 virtual ips, if ASCS and PAS are in the same machine
 
-  netweaver_ip_start    = 30
+  netweaver_ip_start    = 60
   netweaver_ips         = length(var.netweaver_ips) != 0 ? var.netweaver_ips : [for ip_index in range(local.netweaver_ip_start, local.netweaver_ip_start + local.netweaver_count) : cidrhost(local.subnet_address_range, ip_index)]
   netweaver_virtual_ips = length(var.netweaver_virtual_ips) != 0 ? var.netweaver_virtual_ips : [for ip_index in range(local.netweaver_ip_start + local.netweaver_virtual_ips_count, local.netweaver_ip_start + (local.netweaver_virtual_ips_count * 2)) : cidrhost(local.subnet_address_range, ip_index)]
 
@@ -59,6 +61,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "azure"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -77,7 +80,7 @@ module "common_variables" {
   background                          = var.background
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
-  qa_mode                             = var.qa_mode
+  offline_mode                        = var.offline_mode
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
@@ -98,12 +101,17 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
-  hana_cluster_vip_mechanism          = ""
+  hana_cluster_vip_mechanism          = "load-balancer"
   hana_cluster_vip                    = var.hana_ha_enabled ? local.hana_cluster_vip : ""
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
+  hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
+  hana_scale_out_enabled              = var.hana_scale_out_enabled
+  hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+  hana_scale_out_addhosts             = var.hana_scale_out_addhosts
+  hana_scale_out_standby_count        = var.hana_scale_out_standby_count
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -124,10 +132,21 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_vip_mechanism     = "load-balancer"
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  netweaver_shared_storage_type       = var.netweaver_shared_storage_type
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
+  monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
+  monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   drbd_cluster_vip                    = local.drbd_cluster_vip
-  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_vip_mechanism          = "load-balancer"
   drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
   drbd_sbd_storage_type               = var.sbd_storage_type
 }
@@ -135,6 +154,8 @@ module "common_variables" {
 module "drbd_node" {
   source              = "./modules/drbd_node"
   common_variables    = module.common_variables.configuration
+  name                = var.drbd_name
+  network_domain      = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   bastion_host        = module.bastion.public_ip
   az_region           = var.az_region
   drbd_count          = var.drbd_enabled == true ? 2 : 0
@@ -150,11 +171,18 @@ module "drbd_node" {
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "netweaver_node" {
   source                      = "./modules/netweaver_node"
   common_variables            = module.common_variables.configuration
+  name                        = var.netweaver_name
+  network_domain              = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   bastion_host                = module.bastion.public_ip
   az_region                   = var.az_region
   xscs_server_count           = local.netweaver_xscs_server_count
@@ -170,6 +198,7 @@ module "netweaver_node" {
   os_image                    = local.netweaver_os_image
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
+  network_subnet_netapp_id    = local.subnet_netapp_id
   storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
@@ -181,11 +210,23 @@ module "netweaver_node" {
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
   iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
+  # ANF specific
+  anf_account_name           = local.anf_account_name
+  anf_pool_name              = local.anf_pool_name
+  anf_pool_service_level     = var.anf_pool_service_level
+  netweaver_anf_quota_sapmnt = var.netweaver_anf_quota_sapmnt
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_node" {
   source                        = "./modules/hana_node"
   common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   bastion_host                  = module.bastion.public_ip
   az_region                     = var.az_region
   hana_count                    = var.hana_count
@@ -193,6 +234,7 @@ module "hana_node" {
   host_ips                      = local.hana_ips
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
+  network_subnet_netapp_id      = local.subnet_netapp_id
   storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
   storage_account_key           = var.storage_account_key
@@ -204,11 +246,29 @@ module "hana_node" {
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
   iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  # ANF specific
+  anf_account_name                = local.anf_account_name
+  anf_pool_name                   = local.anf_pool_name
+  anf_pool_service_level          = var.anf_pool_service_level
+  hana_scale_out_anf_quota_data   = var.hana_scale_out_anf_quota_data
+  hana_scale_out_anf_quota_log    = var.hana_scale_out_anf_quota_log
+  hana_scale_out_anf_quota_backup = var.hana_scale_out_anf_quota_backup
+  hana_scale_out_anf_quota_shared = var.hana_scale_out_anf_quota_shared
+  # only used by azure fence agent (native fencing)
+  subscription_id           = data.azurerm_subscription.current.subscription_id
+  tenant_id                 = data.azurerm_subscription.current.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
+  # passed to majority_maker module
+  majority_maker_vm_size = var.hana_majority_maker_vm_size
+  majority_maker_ip      = local.hana_majority_maker_ip
 }
 
 module "monitoring" {
   source              = "./modules/monitoring"
   common_variables    = module.common_variables.configuration
+  name                = var.monitoring_name
+  network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
   az_region           = var.az_region
@@ -219,14 +279,13 @@ module "monitoring" {
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
-  hana_targets        = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets        = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets   = var.netweaver_enabled ? local.netweaver_virtual_ips : []
 }
 
 module "iscsi_server" {
   source              = "./modules/iscsi_server"
   common_variables    = module.common_variables.configuration
+  name                = var.iscsi_name
+  network_domain      = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled ? 1 : 0
   az_region           = var.az_region

@@ -49,8 +49,8 @@ resource "null_resource" "netweaver_node_provisioner" {
 role: netweaver_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["netweaver_grains_output"]}
-name_prefix: ${var.common_variables["deployment_name"]}-netweaver
-hostname: ${var.common_variables["deployment_name"]}-netweaver0${count.index + 1}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 virtual_host_ips: [${join(", ", formatlist("'%s'", var.virtual_host_ips))}]
@@ -60,6 +60,9 @@ cluster_ssh_key: ${var.cluster_ssh_key}
 sbd_lun_index: 1
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 netweaver_inst_media: ${var.netweaver_inst_media}
+nfs_mount_ip:
+  sapmnt: [ ${local.shared_storage_nfs == 1 ? var.nfs_srv_ip : ""} ]
+nfs_mounting_point: ${var.nfs_mounting_point}
 EOF
     destination = "/tmp/grains"
   }

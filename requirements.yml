@@ -2,20 +2,20 @@
 hana_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.11+git.1605797958.ae2f08a
-  habootstrap-formula: 0.4.4+git.1632747498.2caa677
-  saphanabootstrap-formula: 0.7.1+git.1619008686.8600866
+  salt-shaptools: 0.3.14+git.1643874204.627d53a
+  habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
+  saphanabootstrap-formula: 0.9.0+git.1644311138.1ee99f3
 drbd_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.11+git.1605797958.ae2f08a
-  habootstrap-formula: 0.4.4+git.1632747498.2caa677
-  drbd-formula: 0.4.2+git.1619081968.cc0bb4f
+  salt-shaptools: 0.3.14+git.1643874204.627d53a
+  habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
+  drbd-formula: 0.5.0+git.1637569723.cf85049
 netweaver_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.11+git.1605797958.ae2f08a
-  habootstrap-formula: 0.4.4+git.1632747498.2caa677
-  sapnwbootstrap-formula: 0.6.2+git.1619009582.e0ae9e8
+  salt-shaptools: 0.3.14+git.1643874204.627d53a
+  habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
+  sapnwbootstrap-formula: 0.7.4+git.1646147057.78b198a
 iscsi_srv:
   iscsi-formula: 1.1.1

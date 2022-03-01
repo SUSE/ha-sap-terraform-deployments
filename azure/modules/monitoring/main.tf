@@ -3,6 +3,7 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.monitoring.*.private_ip_address : data.azurerm_public_ip.monitoring.*.ip_address
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_network_interface" "monitoring" {
@@ -65,7 +66,7 @@ module "os_image_reference" {
 }
 
 resource "azurerm_virtual_machine" "monitoring" {
-  name                             = "vmmonitoring"
+  name                             = var.name
   count                            = var.monitoring_enabled == true ? 1 : 0
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
@@ -99,7 +100,7 @@ resource "azurerm_virtual_machine" "monitoring" {
   }
 
   os_profile {
-    computer_name  = "vmmonitoring"
+    computer_name  = local.hostname
     admin_username = var.common_variables["authorized_user"]
   }
 

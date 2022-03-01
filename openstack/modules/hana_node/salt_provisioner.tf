@@ -49,16 +49,25 @@ resource "null_resource" "hana_node_provisioner" {
 role: hana_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
-name_prefix: ${var.common_variables["deployment_name"]}-hana
-hostname: ${var.common_variables["deployment_name"]}-hana0${count.index + 1}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
-network_domain: "tf.local"
 sbd_lun_index: 0
 hana_disk_device: /dev/sdc
 hana_backup_device: /dev/sdb
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
+nfs_mount_ip:
+  data: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
+  log: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
+  backup: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
+  shared: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
+nfs_mounting_point: ${var.nfs_mounting_point}
+node_count: ${var.hana_count + local.create_scale_out}
+majority_maker_node: ${local.create_scale_out == 1 ? "${local.hostname}mm" : ""}
+majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"
   }

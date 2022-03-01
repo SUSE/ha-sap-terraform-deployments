@@ -7,6 +7,7 @@ locals {
   app_start_index        = local.create_ha_infra == 1 ? 2 : 1
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.netweaver.*.network_interface.0.network_ip : google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "google_compute_disk" "netweaver-software" {
@@ -20,7 +21,7 @@ resource "google_compute_disk" "netweaver-software" {
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
 resource "google_compute_route" "nw-ascs-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-ascs-route-${format("%02d", 1)}"
-  count                  = local.vm_count > 0 ? 1 : 0
+  count                  = local.vm_count > 0 && var.common_variables["netweaver"]["cluster_vip_mechanism"] == "route" ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, 0)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
@@ -30,7 +31,7 @@ resource "google_compute_route" "nw-ascs-route" {
 
 resource "google_compute_route" "nw-ers-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-ers-route-${format("%02d", 2)}"
-  count                  = local.create_ha_infra
+  count                  = local.create_ha_infra == 1 && var.common_variables["netweaver"]["cluster_vip_mechanism"] == "route" ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, 1)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.1.name
@@ -41,7 +42,7 @@ resource "google_compute_route" "nw-ers-route" {
 # deploy if PAS on same machine as ASCS
 resource "google_compute_route" "nw-pas-route" {
   name                   = "${var.common_variables["deployment_name"]}-nw-pas-route-${format("%02d", 1)}"
-  count                  = var.app_server_count == 0 ? 1 : 0
+  count                  = local.vm_count > 0 && var.app_server_count == 0 ? 1 : 0
   dest_range             = "${element(var.virtual_host_ips, local.app_start_index)}/32"
   network                = var.network_name
   next_hop_instance      = google_compute_instance.netweaver.0.name
@@ -60,9 +61,53 @@ resource "google_compute_route" "nw-app-route" {
   priority               = 1000
 }
 
+# GCP load balancer resource
+
+resource "google_compute_instance_group" "netweaver-primary-group" {
+  count     = local.vm_count > 0 && var.common_variables["netweaver"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
+  name      = "${var.common_variables["deployment_name"]}-nw-primary-group"
+  zone      = element(var.compute_zones, 0)
+  instances = [google_compute_instance.netweaver.0.id]
+}
+
+resource "google_compute_instance_group" "netweaver-secondary-group" {
+  count     = local.vm_count > 1 ? 1 : 0
+  name      = "${var.common_variables["deployment_name"]}-nw-secondary-group"
+  zone      = element(var.compute_zones, 1)
+  instances = [google_compute_instance.netweaver.1.id]
+}
+
+module "netweaver-load-balancer-ascs" {
+  count                 = local.vm_count > 0 && var.common_variables["netweaver"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
+  source                = "../../modules/load_balancer"
+  name                  = "${var.common_variables["deployment_name"]}-nw-ascs"
+  region                = var.common_variables["region"]
+  network_name          = var.network_name
+  network_subnet_name   = var.network_subnet_name
+  primary_node_group    = google_compute_instance_group.netweaver-primary-group.0.id
+  secondary_node_group  = google_compute_instance_group.netweaver-secondary-group.0.id
+  tcp_health_check_port = tonumber("620${var.common_variables["netweaver"]["ascs_instance_number"]}")
+  target_tags           = ["nw-group"]
+  ip_address            = element(var.virtual_host_ips, 0)
+}
+
+module "netweaver-load-balancer-ers" {
+  count                 = local.create_ha_infra == 1 && var.common_variables["netweaver"]["cluster_vip_mechanism"] == "load-balancer" ? 1 : 0
+  source                = "../../modules/load_balancer"
+  name                  = "${var.common_variables["deployment_name"]}-nw-ers"
+  region                = var.common_variables["region"]
+  network_name          = var.network_name
+  network_subnet_name   = var.network_subnet_name
+  primary_node_group    = google_compute_instance_group.netweaver-primary-group.0.id
+  secondary_node_group  = google_compute_instance_group.netweaver-secondary-group.0.id
+  tcp_health_check_port = tonumber("621${var.common_variables["netweaver"]["ers_instance_number"]}")
+  target_tags           = ["nw-group"]
+  ip_address            = element(var.virtual_host_ips, 1)
+}
+
 resource "google_compute_instance" "netweaver" {
   machine_type = var.machine_type
-  name         = "${var.common_variables["deployment_name"]}-netweaver0${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   count        = local.vm_count
   zone         = element(var.compute_zones, count.index)
 
@@ -108,6 +153,8 @@ resource "google_compute_instance" "netweaver" {
   service_account {
     scopes = ["compute-rw", "storage-rw", "logging-write", "monitoring-write", "service-control", "service-management"]
   }
+
+  tags = ["nw-group"]
 }
 
 module "netweaver_on_destroy" {

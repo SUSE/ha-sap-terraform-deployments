@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg)](https://github.com/SUSE/ha-sap-terraform-deployments/actions)
 
-**Supported terraform version  `0.13.4`**
+**Supported terraform version  `1.1.X`**
 ___
 
 # Supported cloud providers
@@ -19,9 +19,8 @@ ___
 - HA Clusters and HANA deployment
 - [Preparing SAP software](doc/sap_software.md)
 - [Monitoring of cluster](doc/monitoring.md)
-- [Netweaver](doc/netweaver.md)
+- [S/4HANA and NetWeaver](doc/netweaver.md)
 - [DRBD](doc/drbd.md)
-- [QA](doc/qa.md)
 - [Saptune](doc/saptune.md)
 - [Fencing mechanism](doc/fencing.md)
 - [IP addresses auto generation](doc/ip_autogeneration.md)

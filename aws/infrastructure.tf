@@ -1,13 +1,3 @@
-# Configure the AWS Provider
-provider "aws" {
-  version = "~> 3.11.0"
-  region  = var.aws_region
-}
-
-terraform {
-  required_version = ">= 0.13"
-}
-
 data "aws_vpc" "current-vpc" {
   count = var.vpc_id != "" ? 1 : 0
   id    = var.vpc_id
@@ -232,6 +222,17 @@ resource "aws_security_group_rule" "ha_exporter" {
   type        = "ingress"
   from_port   = 9664
   to_port     = 9664
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = local.security_group_id
+}
+
+resource "aws_security_group_rule" "saphost_exporter" {
+  count       = local.create_security_group_monitoring
+  type        = "ingress"
+  from_port   = 9680
+  to_port     = 9680
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 

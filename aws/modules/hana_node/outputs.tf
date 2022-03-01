@@ -1,20 +1,20 @@
-data "aws_instance" "clusternodes" {
+data "aws_instance" "hana" {
   count       = var.hana_count
-  instance_id = element(aws_instance.clusternodes.*.id, count.index)
+  instance_id = element(aws_instance.hana.*.id, count.index)
 }
 
 output "cluster_nodes_ip" {
-  value = data.aws_instance.clusternodes.*.private_ip
+  value = data.aws_instance.hana.*.private_ip
 }
 
 output "cluster_nodes_public_ip" {
-  value = data.aws_instance.clusternodes.*.public_ip
+  value = data.aws_instance.hana.*.public_ip
 }
 
 output "cluster_nodes_name" {
-  value = data.aws_instance.clusternodes.*.id
+  value = data.aws_instance.hana.*.id
 }
 
 output "cluster_nodes_public_name" {
-  value = data.aws_instance.clusternodes.*.public_dns
+  value = data.aws_instance.hana.*.public_dns
 }

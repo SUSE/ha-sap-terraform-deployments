@@ -17,6 +17,16 @@ variable "flavor" {
   default = "2C-2GB-40GB"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "network_name" {
   description = "Network to attach the static route (temporary solution)"
   type        = string
@@ -64,11 +74,6 @@ variable "firewall_internal" {
   type        = string
 }
 
-variable "network_domain" {
-  type    = string
-  default = "tf.local"
-}
-
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -113,4 +118,14 @@ variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any
   default     = []
+}
+
+variable "nfs_srv_ip" {
+  description = "IP address for shared storage NFS server"
+  type        = string
+}
+
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
+  type        = string
 }

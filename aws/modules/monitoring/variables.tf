@@ -14,6 +14,16 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "key_name" {
   type        = string
   description = "AWS key pair name"
@@ -47,23 +57,6 @@ variable "subnet_ids" {
 variable "timezone" {
   description = "Timezone setting for all VMs"
   default     = "Europe/Berlin"
-}
-
-variable "hana_targets" {
-  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
-  type        = list(string)
-}
-
-variable "drbd_targets" {
-  description = "IPs of DRBD hosts you want to monitor"
-  type        = list(string)
-  default     = []
-}
-
-variable "netweaver_targets" {
-  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
-  type        = list(string)
-  default     = []
 }
 
 variable "on_destroy_dependencies" {

@@ -48,9 +48,9 @@ variable "hana_master_password" {
   validation {
     condition = (
       can(regex("[0-9]+", var.hana_master_password)) &&
-        can(regex("[a-z]+", var.hana_master_password)) &&
-        can(regex("[A-Z]+", var.hana_master_password)) &&
-        can(regex("^[\\w]{8,}$", var.hana_master_password))
+      can(regex("[a-z]+", var.hana_master_password)) &&
+      can(regex("[A-Z]+", var.hana_master_password)) &&
+      can(regex("^[\\w]{8,}$", var.hana_master_password))
     )
     error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
   }
@@ -158,6 +158,11 @@ variable "hana_ha_enabled" {
   type        = bool
 }
 
+variable "hana_ignore_min_mem_check" {
+  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
+  type        = bool
+}
+
 variable "hana_cluster_fencing_mechanism" {
   description = "Select the HANA cluster fencing mechanism. Options: sbd"
   type        = string
@@ -166,4 +171,32 @@ variable "hana_cluster_fencing_mechanism" {
 variable "hana_sbd_storage_type" {
   description = "Choose the SBD storage type. Options: iscsi, shared-disk(this option available in Libvirt only)"
   type        = string
+}
+
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(|anf|nfs)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf, nfs."
+  }
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map(any)
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
 }

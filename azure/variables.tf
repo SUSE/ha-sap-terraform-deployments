@@ -48,6 +48,24 @@ variable "subnet_address_range" {
   }
 }
 
+variable "subnet_netapp_name" {
+  description = "Already existing subnet name used by the created infrastructure. If it's not set a new one will be created named snet-{{var.deployment_name/terraform.workspace}}"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_netapp_address_range" {
+  description = "subnet address range in CIDR notation (only used if the subnet is created by terraform or the user doesn't have read permissions in this resource. To use the current vnet address range set the value to an empty string)"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.subnet_netapp_address_range == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.subnet_netapp_address_range))
+    )
+    error_message = "Invalid IP range format. It must be something like: 102.168.10.5/24 ."
+  }
+}
+
 variable "admin_user" {
   description = "Administration user used to create the machines"
   type        = string
@@ -77,6 +95,18 @@ variable "authorized_keys" {
   description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (admin_user variable in this case)"
   type        = list(string)
   default     = []
+}
+
+variable "bastion_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmbastion"
+}
+
+variable "bastion_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
 }
 
 variable "bastion_enabled" {
@@ -109,6 +139,18 @@ variable "deployment_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
   default     = ""
+}
+
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+  default     = false
+}
+
+variable "network_domain" {
+  description = "hostname's network domain for all hosts. Can be overwritten by modules."
+  type        = string
+  default     = "tf.local"
 }
 
 variable "os_image" {
@@ -198,10 +240,16 @@ variable "provisioning_output_colored" {
 
 # Hana related variables
 
-variable "name" {
+variable "hana_name" {
   description = "hostname, without the domain part"
   type        = string
-  default     = "hana"
+  default     = "vmhana"
+}
+
+variable "hana_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
 }
 
 variable "hana_count" {
@@ -231,8 +279,14 @@ variable "hana_vm_size" {
   default     = "Standard_E4s_v3"
 }
 
+variable "hana_majority_maker_vm_size" {
+  description = "VM size for the HANA Majority Maker machine"
+  type        = string
+  default     = "Standard_D2s_v3"
+}
+
 variable "hana_data_disks_configuration" {
-  type = map
+  type = map(any)
   default = {
     disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
     disks_size       = "128,128,128,128,128,128,128"
@@ -269,6 +323,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -393,7 +459,7 @@ variable "hana_cluster_vip" {
 }
 
 variable "hana_cluster_fencing_mechanism" {
-  description = "Select the HANA cluster fencing mechanism. Options: sbd"
+  description = "Select the HANA cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -428,9 +494,47 @@ variable "hana_cluster_vip_secondary" {
   }
 }
 
+variable "hana_ignore_min_mem_check" {
+  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
+  type        = bool
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
+}
+
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|anf)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: anf."
+  }
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map(any)
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
 }
 
 # SBD related variables
@@ -452,6 +556,18 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
+variable "iscsi_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmiscsi"
+}
+
+variable "iscsi_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "iscsi_os_image" {
   description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
   type        = string
@@ -467,7 +583,7 @@ variable "iscsi_srv_uri" {
 variable "iscsi_vm_size" {
   description = "VM size for the iscsi server machine"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_DS1_v2"
 }
 
 variable "iscsi_srv_ip" {
@@ -494,6 +610,18 @@ variable "iscsi_disk_size" {
 }
 
 # Monitoring related variables
+
+variable "monitoring_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmmonitoring"
+}
+
+variable "monitoring_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "monitoring_enabled" {
   description = "Enable the host to be monitored by exporters, e.g node_exporter"
@@ -532,6 +660,18 @@ variable "monitoring_srv_ip" {
 }
 
 # DRBD related variables
+
+variable "drbd_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmdrbd"
+}
+
+variable "drbd_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "drbd_enabled" {
   description = "Enable the DRBD cluster for nfs"
@@ -576,7 +716,7 @@ variable "drbd_cluster_vip" {
 }
 
 variable "drbd_cluster_fencing_mechanism" {
-  description = "Select the DRBD cluster fencing mechanism. Options: sbd"
+  description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -594,6 +734,18 @@ variable "drbd_nfs_mounting_point" {
 }
 
 # Netweaver related variables
+
+variable "netweaver_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnetweaver"
+}
+
+variable "netweaver_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "netweaver_enabled" {
   description = "Enable SAP Netweaver cluster deployment"
@@ -716,7 +868,7 @@ variable "netweaver_master_password" {
 }
 
 variable "netweaver_cluster_fencing_mechanism" {
-  description = "Select the Netweaver cluster fencing mechanism. Options: sbd"
+  description = "Select the Netweaver cluster fencing mechanism. Options: sbd, native"
   type        = string
   default     = "sbd"
   validation {
@@ -801,7 +953,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -811,14 +963,30 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
-# Specific QA variables
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment"
+  type        = string
+  default     = "drbd"
+  validation {
+    condition = (
+      can(regex("^(|drbd|anf)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf."
+  }
+}
 
-variable "qa_mode" {
-  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+# Testing and QA
+
+# Disable extra package installation (sap, ha pattern etc).
+# Disables first registration to install salt-minion, it is considered that images are delivered with salt-minion
+variable "offline_mode" {
+  description = "Disable installation of extra packages usage not coming with the image"
   type        = bool
   default     = false
 }
 
+# Execute HANA Hardware Configuration Check Tool to bench filesystems.
+# The test takes several hours. See results in /root/hwcct_out and in global log file /var/log/salt-result.log.
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool
@@ -832,3 +1000,78 @@ variable "pre_deployment" {
   type        = bool
   default     = false
 }
+
+# native fencing
+variable "fence_agent_app_id" {
+  description = "ID of the azure service principal / application that is used for native fencing."
+  type        = string
+  default     = ""
+}
+
+variable "fence_agent_client_secret" {
+  description = "Secret for the azure service principal / application that is used for native fencing."
+  type        = string
+  default     = ""
+}
+
+# ANF shared storage
+variable "anf_account_name" {
+  description = "Name of ANF Accounts"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_name" {
+  description = "Name if ANF Pool"
+  type        = string
+  default     = ""
+}
+
+variable "anf_pool_size" {
+  description = "pool size for ANF shared Storage. Must be >=4 TB"
+  type        = number
+  default     = "4"
+}
+
+variable "anf_pool_service_level" {
+  description = "service level for ANF shared Storage"
+  type        = string
+  default     = "Ultra"
+  validation {
+    condition = (
+      can(regex("^(Standard|Premium|Ultra)$", var.anf_pool_service_level))
+    )
+    error_message = "Invalid ANF Pool service level. Options: Standard|Premium|Ultra."
+  }
+}
+
+variable "netweaver_anf_quota_sapmnt" {
+  description = "Quota for ANF shared storage volume Netweaver"
+  type        = number
+  default     = "1000"
+}
+
+variable "hana_scale_out_anf_quota_data" {
+  description = "Quota for ANF shared storage volume HANA scale-out data"
+  type        = number
+  default     = "2000"
+}
+
+variable "hana_scale_out_anf_quota_log" {
+  description = "Quota for ANF shared storage volume HANA scale-out log"
+  type        = number
+  default     = "2000"
+}
+
+variable "hana_scale_out_anf_quota_backup" {
+  description = "Quota for ANF shared storage volume HANA scale-out backup"
+  type        = number
+  default     = "1000"
+}
+
+variable "hana_scale_out_anf_quota_shared" {
+  description = "Quota for ANF shared storage volume HANA scale-out shared"
+  type        = number
+  default     = "2000"
+}
+

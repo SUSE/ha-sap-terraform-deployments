@@ -49,19 +49,28 @@ cluster:
     template:
       source: salt://drbd/templates/habootstrap-formula/cluster_resources_nfs_cloud.j2
       parameters:
-        {% if grains['provider'] == 'aws' %}
         virtual_ip: {{ grains['drbd_cluster_vip'] }}
+        virtual_ip_mechanism: {{ grains['drbd_cluster_vip_mechanism'] }}
+        # load-balancer probe
+        probe: 61000
+        {% if grains['provider'] == 'aws' %}
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}
         instance_tag: {{ grains['aws_instance_tag'] }}
-        {% elif grains['provider']== "azure" %}
-        probe: 61000
         {% elif grains['provider'] == 'gcp' %}
-        virtual_ip: {{ grains['drbd_cluster_vip'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
         route_name: {{ grains['route_name'] }}
-        {% elif grains['provider'] == 'openstack' %}
-        virtual_ip: {{ grains['drbd_cluster_vip'] }}
+        {% elif grains['provider'] == 'libvirt' or grains['provider'] == 'openstack' %}
         virtual_ip_mask: 24
         {% endif %}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
+        {% if grains['fencing_mechanism'] == 'native' %}
+        {% if grains['provider'] == 'azure' %}
+        # only used by azure fence agent (native fencing)
+        azure_subscription_id: {{ grains['subscription_id'] }}
+        azure_resource_group_name: {{ grains['resource_group_name'] }}
+        azure_tenant_id: {{ grains['tenant_id'] }}
+        azure_fence_agent_app_id: {{ grains['fence_agent_app_id'] }}
+        azure_fence_agent_client_secret: {{ grains['fence_agent_client_secret'] }}
+        {% endif %}
+        {% endif %}

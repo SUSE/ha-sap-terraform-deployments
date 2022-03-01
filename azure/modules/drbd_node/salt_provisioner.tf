@@ -21,8 +21,8 @@ resource "null_resource" "drbd_provisioner" {
 role: drbd_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["drbd_grains_output"]}
-name_prefix: vm${var.name}
-hostname: vm${var.name}0${count.index + 1}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
@@ -37,6 +37,11 @@ partitions:
   1:
     start: 0%
     end: 100%
+subscription_id: ${var.subscription_id}
+tenant_id: ${var.tenant_id}
+resource_group_name: ${var.resource_group_name}
+fence_agent_app_id: ${var.fence_agent_app_id}
+fence_agent_client_secret: ${var.fence_agent_client_secret}
   EOF
     destination = "/tmp/grains"
   }

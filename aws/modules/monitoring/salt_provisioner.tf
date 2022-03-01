@@ -16,16 +16,14 @@ resource "null_resource" "monitoring_provisioner" {
     content = <<EOF
 role: monitoring_srv
 ${var.common_variables["grains_output"]}
+${var.common_variables["monitoring_grains_output"]}
 region: ${var.aws_region}
-name_prefix: monitoring
-hostname: monitoring
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}
+network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 host_ip: ${var.monitoring_srv_ip}
 public_ip: ${aws_instance.monitoring[0].public_ip}
-hana_targets: [${join(", ", formatlist("'%s'", var.hana_targets))}]
-drbd_targets: [${join(", ", formatlist("'%s'", var.drbd_targets))}]
-netweaver_targets: [${join(", ", formatlist("'%s'", var.netweaver_targets))}]
-network_domain: "tf.local"
 EOF
 
     destination = "/tmp/grains"

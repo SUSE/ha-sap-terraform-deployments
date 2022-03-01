@@ -8,6 +8,11 @@ variable "bastion_host" {
   default     = ""
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool
@@ -29,27 +34,15 @@ variable "os_image" {
   type        = string
 }
 
+variable "network_domain" {
+  description = "hostname's network domain"
+  type        = string
+}
+
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
   default     = ""
-}
-
-variable "hana_targets" {
-  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
-  type        = list(string)
-}
-
-variable "drbd_targets" {
-  description = "IPs of DRBD hosts you want to monitor"
-  type        = list(string)
-  default     = []
-}
-
-variable "netweaver_targets" {
-  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
-  type        = list(string)
-  default     = []
 }
 
 variable "on_destroy_dependencies" {

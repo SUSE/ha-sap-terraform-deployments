@@ -1,11 +1,16 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.1.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.3"
+      version = "0.6.14"
     }
   }
+}
+
+locals {
+  hostname         = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  create_scale_out = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
 }
 
 resource "libvirt_volume" "hana_image_disk" {
@@ -24,10 +29,11 @@ resource "libvirt_volume" "hana_data_disk" {
 }
 
 resource "libvirt_domain" "hana_domain" {
-  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = var.hana_count
+  cloudinit  = var.userdata
   qemu_agent = true
   dynamic "disk" {
     for_each = [
@@ -94,7 +100,7 @@ resource "libvirt_domain" "hana_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

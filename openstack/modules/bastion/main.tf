@@ -1,8 +1,10 @@
 locals {
-  bastion_count       = var.common_variables["bastion_enabled"] ? 1 : 0
-  private_ip_address  = var.bastion_srv_ip
-  bastion_public_key  = var.common_variables["bastion_public_key"] != "" ? var.common_variables["bastion_public_key"] : var.common_variables["public_key"]
-  create_data_volumes = var.common_variables["bastion_enabled"] && var.bastion_data_disk_type == "volume" ? true : false
+  bastion_count      = var.common_variables["bastion_enabled"] ? 1 : 0
+  private_ip_address = var.bastion_srv_ip
+  bastion_public_key = var.common_variables["bastion_public_key"] != "" ? var.common_variables["bastion_public_key"] : var.common_variables["public_key"]
+  use_data_volume    = var.common_variables["bastion_enabled"] && (var.bastion_data_disk_type == "volume" || var.bastion_data_disk_name == "") ? true : false
+  create_data_volume = var.common_variables["bastion_enabled"] && local.use_data_volume && var.bastion_data_disk_name == "" ? true : false
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "openstack_networking_floatingip_v2" "bastion" {
@@ -32,61 +34,43 @@ resource "openstack_networking_port_v2" "bastion" {
 resource "openstack_compute_keypair_v2" "key_terraform_bastion" {
   name       = "terraform_bastion"
   public_key = local.bastion_public_key
-  # public_key = var.bastion_public_key
 }
 
-data "template_file" "userdata_bastion" {
-  template = <<CLOUDCONFIG
-#cloud-config
-
-cloud_config_modules:
-  - resolv_conf
-
-manage_resolv_conf: true
-
-resolv_conf:
-  nameservers: ['8.8.4.4', '8.8.8.8']
-
-users:
-  - name: sles
-    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
-    shell: /bin/bash
-    # you could set a password here, default is just key login
-    # lock_passwd: false
-    # plain_text_passwd: 'SecurePassword'
-    ssh-authorized-keys:
-    - ${local.bastion_public_key}
-
-runcmd:
-- |
-  # add any command here
-  # echo "any command"
-
-CLOUDCONFIG
+data "template_file" "userdata" {
+  template = file("${path.root}/cloud-config.tpl")
+  # You can also pass variables here to further customize config.
+  # vars = {
+  #   name = "value"
+  # }
 }
 
 resource "openstack_blockstorage_volume_v3" "data" {
   # only deploy if bastion_data_disk_type is not empty
-  count                = local.create_data_volumes ? 1 : 0
+  count                = local.create_data_volume ? 1 : 0
   name                 = "${var.common_variables["deployment_name"]}-bastion-data-${count.index}"
   size                 = var.bastion_data_disk_size
   availability_zone    = var.region
   enable_online_resize = true
 }
 
+data "openstack_blockstorage_volume_v3" "data" {
+  count = local.use_data_volume && !local.create_data_volume ? 1 : 0
+  name  = var.bastion_data_disk_name
+}
+
 resource "openstack_compute_volume_attach_v2" "data_attached" {
-  count       = local.create_data_volumes ? 1 : 0
+  count       = local.use_data_volume ? 1 : 0
   instance_id = openstack_compute_instance_v2.bastion.*.id[count.index]
-  volume_id   = openstack_blockstorage_volume_v3.data.*.id[count.index]
+  volume_id   = local.create_data_volume ? openstack_blockstorage_volume_v3.data.*.id[count.index] : data.openstack_blockstorage_volume_v3.data.*.id[count.index]
 }
 
 resource "openstack_compute_instance_v2" "bastion" {
   count        = local.bastion_count
-  name         = "${var.common_variables["deployment_name"]}-bastion"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}"
   flavor_name  = var.bastion_flavor
   image_id     = var.os_image
   config_drive = true
-  user_data    = data.template_file.userdata_bastion.rendered
+  user_data    = data.template_file.userdata.rendered
   key_pair     = "terraform_bastion"
   depends_on   = [openstack_networking_port_v2.bastion]
   network {

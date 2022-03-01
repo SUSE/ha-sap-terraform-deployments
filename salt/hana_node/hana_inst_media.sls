@@ -26,7 +26,7 @@ hana_inst_directory:
     - fstype: cifs
     - mkmnt: True
     - persist: True
-    - opts: vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0777,file_mode=0777,sec=ntlmssp
+    - opts: vers=3.0,username={{ grains['storage_account_name'] }},password={{ grains['storage_account_key'] }},dir_mode=0755,file_mode=0755,sec=ntlmssp
     - required:
       - nfs-client
   {% endif %}

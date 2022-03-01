@@ -1,10 +1,12 @@
 **/.terraform
 **/terraform.tfstate*
+**/.terraform.tfstate*
 **/terraform*.tfvars
 azure/terraform/provision/node0_id_rsa
 azure/terraform/provision/node0_id_rsa.pub
 azure/terraform/provision/node1_id_rsa
 azure/terraform/provision/node1_id_rsa.pub
+gcp/*.json
 **/id_rsa*
 
 salt/sshkeys

@@ -1,15 +1,3 @@
-# Configure the GCP Provider
-provider "google" {
-  version     = "~> 3.43.0"
-  credentials = file(var.gcp_credentials_file)
-  project     = var.project
-  region      = var.region
-}
-
-terraform {
-  required_version = ">= 0.13"
-}
-
 data "google_compute_zones" "available" {
   region = var.region
   status = "UP"
@@ -30,7 +18,7 @@ locals {
   subnet_name          = var.subnet_name == "" ? google_compute_subnetwork.ha_subnet.0.name : var.subnet_name
   subnet_address_range = var.subnet_name == "" ? var.ip_cidr_range : (var.ip_cidr_range == "" ? data.google_compute_subnetwork.current-subnet.0.ip_cidr_range : var.ip_cidr_range)
 
-  create_firewall = ! var.bastion_enabled && var.create_firewall_rules ? 1 : 0
+  create_firewall = !var.bastion_enabled && var.create_firewall_rules ? 1 : 0
 }
 
 # Network resources: Network, Subnet
@@ -86,7 +74,7 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "443", "3000", "7630", "9668", "9100", "9664", "9090"]
+    ports    = ["22", "80", "443", "3000", "7630", "9668", "9100", "9664", "9090", "9680"]
   }
 }
 
@@ -95,6 +83,8 @@ resource "google_compute_firewall" "ha_firewall_allow_tcp" {
 module "bastion" {
   source             = "./modules/bastion"
   common_variables   = module.common_variables.configuration
+  name               = var.bastion_name
+  network_domain     = var.bastion_network_domain == "" ? var.network_domain : var.bastion_network_domain
   region             = var.region
   os_image           = local.bastion_os_image
   vm_size            = "custom-1-2048"

@@ -6,6 +6,7 @@ locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   create_ha_infra        = var.xscs_server_count > 0 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   app_start_index        = local.create_ha_infra == 1 ? 2 : 1
+  shared_storage_anf     = var.common_variables["netweaver"]["shared_storage_type"] == "anf" ? 1 : 0
   additional_lun_number  = "0"
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.netweaver.*.private_ip_address : data.azurerm_public_ip.netweaver.*.ip_address
   ascs_lb_rules_ports = local.create_ha_infra == 1 ? toset([
@@ -15,15 +16,18 @@ locals {
     "81${var.ascs_instance_number}",
     "5${var.ascs_instance_number}13",
     "5${var.ascs_instance_number}14",
-    "5${var.ascs_instance_number}16"
+    "5${var.ascs_instance_number}16",
+    "9680" # monitoring - sap_host_exporter
   ]) : toset([])
   ers_lb_rules_ports = local.create_ha_infra == 1 ? toset([
     "32${var.ers_instance_number}",
     "33${var.ers_instance_number}",
     "5${var.ers_instance_number}13",
     "5${var.ers_instance_number}14",
-    "5${var.ers_instance_number}16"
+    "5${var.ers_instance_number}16",
+    "9680" # monitoring - sap_host_exporter
   ]) : toset([])
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_availability_set" "netweaver-xscs-availability-set" {
@@ -83,10 +87,9 @@ resource "azurerm_lb" "netweaver-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "netweaver-backend-pool" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
-  name                = "lbbe-netweaver"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.netweaver-load-balancer[0].id
+  name            = "lbbe-netweaver"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "netweaver-nodes" {
@@ -164,7 +167,7 @@ resource "azurerm_lb_rule" "ascs-lb-rules" {
   frontend_ip_configuration_name = "lbfe-netweaver-ascs"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id]
   probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -179,7 +182,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
   frontend_ip_configuration_name = "lbfe-netweaver-ers"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id]
   probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -189,7 +192,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
 
 resource "azurerm_public_ip" "netweaver" {
   count                   = local.bastion_enabled ? 0 : local.vm_count
-  name                    = "pip-netweaver0${count.index + 1}"
+  name                    = "pip-netweaver${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -202,7 +205,7 @@ resource "azurerm_public_ip" "netweaver" {
 
 resource "azurerm_network_interface" "netweaver" {
   count                         = local.vm_count
-  name                          = "nic-netweaver0${count.index + 1}"
+  name                          = "nic-netweaver${format("%02d", count.index + 1)}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = count.index < var.xscs_server_count ? var.xscs_accelerated_networking : var.app_accelerated_networking
@@ -276,11 +279,47 @@ resource "azurerm_image" "netweaver-image" {
   }
 }
 
+# ANF volumes
+resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
+  count = local.shared_storage_anf
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "netweaver-netapp-volume-sapmnt"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = var.anf_account_name
+  pool_name           = var.anf_pool_name
+  volume_path         = "netweaver-sapmnt"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.netweaver_anf_quota_sapmnt
+
+  export_policy_rule {
+    rule_index        = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
 # APP server disk
 
 resource "azurerm_managed_disk" "app_server_disk" {
   count                = var.app_server_count
-  name                 = "disk-netweaver0${count.index + 1}-App"
+  name                 = "disk-netweaver${format("%02d", count.index + 1)}-App"
   location             = var.az_region
   resource_group_name  = var.resource_group_name
   storage_account_type = var.data_disk_type
@@ -305,7 +344,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "netweaver" {
   count                            = local.vm_count
-  name                             = "vmnetweaver0${count.index + 1}"
+  name                             = "${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.netweaver.*.id, count.index)]
@@ -315,7 +354,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-netweaver0${count.index + 1}-Os"
+    name              = "disk-netweaver${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -330,7 +369,7 @@ resource "azurerm_virtual_machine" "netweaver" {
   }
 
   os_profile {
-    computer_name  = "vmnetweaver0${count.index + 1}"
+    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

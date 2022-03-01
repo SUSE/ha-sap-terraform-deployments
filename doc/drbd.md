@@ -1,6 +1,6 @@
 # DRBD(Distributed Replicated Block Device)
 
-Besides the default SAP Hana and HA cluster environment, the project can be tuned to deploy a NFS server base on DRBD device. This allows to create a high availability NFS share for Netweaver with the SAP Hana database.
+Besides the default SAP HANA and HA cluster environment, the project can be tuned to deploy a NFS server base on DRBD device. This allows to create a high availability NFS share for NetWeaver with the SAP HANA database.
 
 The deployment will create 2 new virtual machines to host the NFS environment based on DRBD cluster. The DRBD cluster is managed by HA cluster to assure high availability of NFS backing device.
 

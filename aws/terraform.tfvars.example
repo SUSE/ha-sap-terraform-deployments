@@ -29,6 +29,9 @@ aws_region = "eu-central-1"
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
 
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = true
+
 # aws-cli credentials data
 # access keys parameters have preference over the credentials file (they are self exclusive)
 aws_access_key_id = my-access-key-id
@@ -110,22 +113,24 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Run provisioner execution in background
 #background = true
 
-# QA variables
+# Testing and QA purpose
 
 # Define if the deployment is used for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
-#qa_mode = false
+#offline_mode = false
 
 # Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
 
 #########################
 # HANA machines variables
 #########################
+
+# Hostname, without the domain part
+#hana_name = "vmhana"
 
 # Instance type to use for the hana cluster nodes
 # SAP certified instances types can be found at https://aws.amazon.com/sap/instance-types/
@@ -150,11 +155,13 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Custom owner for private AMI
 #hana_os_owner = "amazon"
 
-# Hostname, without the domain part
-#name = "hana"
-
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
+
+# Disable minimal memory checks for HANA. Useful to deploy development clusters.
+# Low memory usage can cause a failed deployment. Be aware that this option does
+# not work with any memory size and will most likely fail with less than 16 GiB
+#hana_ignore_min_mem_check = false
 
 # The next variables define how the HANA installation software is obtained.
 # The installation software must be located in a AWS S3 bucket
@@ -219,11 +226,11 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
-# HANA instance system identifier. It's composed of 3 characters string
-#hana_sid = "prd"
+# HANA instance system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options).
+#hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. It must follow the SAP Password policies
+# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -240,6 +247,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
 # In order to enable the iscsi machine creation _fencing_mechanism must be set to 'sbd' for any of the clusters
+
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
 
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
 #iscsi_os_image = "suse-sles-sap-15-sp1-byos"
@@ -258,6 +268,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
+#
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
 
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
 #monitoring_os_image = "suse-sles-sap-15-sp1-byos"
@@ -273,6 +286,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # netweaver will use AWS efs for nfs share by default, unless drbd is enabled
 # Enable drbd cluster
 #drbd_enabled = false
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
 
 #drbd_instancetype = "t3.medium"
 
@@ -301,6 +317,9 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 
 #netweaver_enabled = true
 
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
+
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
 # Set to 1 to only enable 1 PAS instance in an additional machine`
@@ -322,15 +341,18 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #netweaver_virtual_ips = ["192.168.1.20", "192.168.1.21", "192.168.1.22", "192.168.1.23"]
 
 # Netweaver installation configuration
-# Netweaver system identifier. It's composed of 3 characters string
-#netweaver_sid = "ha1"
+# Netweaver system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)
+#netweaver_sid = "HA1"
 # Netweaver ASCS instance number. It's composed of 2 integers string
 #netweaver_ascs_instance_number = "00"
 # Netweaver ERS instance number. It's composed of 2 integers string
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# Netweaver master password. It must follow the SAP Password policies such as have 8 characters at least combining upper and lower case characters and numbers. It cannot start with special characters.
+# NetWeaver or S/4HANA master password. 
+# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
+# It cannot start with special characters and must contain a combination of
+# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
@@ -351,6 +373,10 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP
 # - S4HANA1909.CORE.HDB.ABAPHA
+# - S4HANA2020.CORE.HDB.ABAP
+# - S4HANA2020.CORE.HDB.ABAPHA
+# - S4HANA2021.CORE.HDB.ABAP
+# - S4HANA2021.CORE.HDB.ABAPHA
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"

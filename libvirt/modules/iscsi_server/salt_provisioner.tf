@@ -1,3 +1,23 @@
+resource "null_resource" "wait_after_cloud_init" {
+  count = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
+
+  triggers = {
+    iscsi_id = libvirt_domain.iscsisrv[count.index].id
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "if which cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
+    ]
+  }
+
+  connection {
+    host     = libvirt_domain.iscsisrv[count.index].network_interface.0.addresses.0
+    user     = "root"
+    password = "linux"
+  }
+}
+
 resource "null_resource" "iscsi_provisioner" {
   count = var.common_variables["provisioner"] == "salt" ? var.iscsi_count : 0
 
@@ -15,6 +35,8 @@ resource "null_resource" "iscsi_provisioner" {
     content = <<EOF
 role: iscsi_srv
 ${var.common_variables["grains_output"]}
+name_prefix: ${local.hostname}
+hostname: ${local.hostname}${format("%02d", count.index + 1)}
 host_ip: ${element(var.host_ips, count.index)}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}
 iscsidev: /dev/vdb
@@ -26,10 +48,11 @@ ${yamlencode(
       }
     } }
 )}
-
 EOF
 destination = "/tmp/grains"
 }
+
+depends_on = [null_resource.wait_after_cloud_init]
 }
 
 module "iscsi_provision" {

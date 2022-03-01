@@ -45,6 +45,12 @@ drbd:
   #  net:
   #    # Optional: you may assign the primary role to both nodes.
   #    multi_primaries: "no"
+  #    # Optional: Maximal number of buffer pages allocated. Max: 128k
+  #    max_buffers: 2048
+  #    # Optional: The socket send buffer to store packets. Max: 10M
+  #    sndbuf_size: 0
+  #    # Optional: Packets received are stored in socket buffer. Max: 10M
+  #    rcvbuf_size: 0
   #    # Optional: preventive measures to avoid situations where both nodes are primary and disconnected(AKA split brain)
   #    fencing: "resource-and-stonith"
   #    # Optional: split brain handler when no primary
@@ -66,6 +72,7 @@ drbd:
   #    after_resync_target: "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh"
   #    # Optional: DRBD detected a split brain situation but remains unresolved. This handler should alert someone.
       split_brain: "/usr/lib/drbd/notify-split-brain-haclusterexporter-suse-metric.sh"
+
   resource:
     - name: "sapdata"
       device: "/dev/drbd1"

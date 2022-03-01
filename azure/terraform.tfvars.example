@@ -15,15 +15,20 @@ az_region = "westeurope"
 # Use an already existing subnet in this virtual network
 #subnet_name = "my-subnet"
 
+# Use an already existing subnet for Netapp in this virtual network (optional, will be created otherwise)
+# subnet_netapp_name = "my-netapp-subnet"
+
 # vnet address range in CIDR notation
 # Only used if the vnet is created by terraform or the user doesn't have read permissions in this
 # resource. To use the current vnet address range set the value to an empty string
 # To define custom ranges
 #vnet_address_range = "10.74.0.0/16"
 #subnet_address_range = "10.74.1.0/24"
+#subnet_netapp_address_range = "10.74.3.0/24"
 # Or to use already existing address ranges
 #vnet_address_range = ""
 #subnet_address_range = ""
+#subnet_netapp_address_range = ""
 
 #################################
 # General configuration variables
@@ -33,6 +38,9 @@ az_region = "westeurope"
 # If it is not used, the terraform workspace string is used
 # The name must be unique among different deployments
 # deployment_name = "mydeployment"
+
+# Add the "deployment_name" as a prefix to the hostname.
+#deployment_name_in_hostname = false
 
 # Admin user for the created machines
 admin_user = "cloudadmin"
@@ -112,18 +120,24 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Run provisioner execution in background
 #background = true
 
-# QA variables
+# Test and QA purpose
 
 # Define if the deployment is used for testing purpose
 # Disable all extra packages that do not come from the image
 # Except salt-minion (for the moment) and salt formulas
 # true or false (default)
-#qa_mode = false
+#offline_mode = false
 
 # Execute HANA Hardware Configuration Check Tool to bench filesystems
-# qa_mode must be set to true for executing hwcct
 # true or false (default)
 #hwcct = false
+
+# Variables used with native fencing (azure fence agent)
+# Make sure to check out the documentation:
+# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-pacemaker#create-azure-fence-agent-stonith-device
+# The fencing mechanism has to be defined on a per cluster basis.
+# fence_agent_app_id = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"       # login
+# fence_agent_client_secret = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # password
 
 ##########################
 # Bastion (jumpbox) machine variables
@@ -146,12 +160,35 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # This example shows the demo option values.Find more options in the README file
 #########################
 
+# Hostname, without the domain part
+#hana_name = "vmhana"
+
 # HANA configuration ()
 # VM size to use for the cluster nodes
 #hana_vm_size = "Standard_E4s_v3"
 
 # Number of nodes in the cluster
-#hana_count = "2"
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
+# enable to use HANA scale-out
+# hana_scale_out_enabled             = false
+
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
+
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site
+#hana_scale_out_standby_count = 1 # default: 1
+
+# majority_maker_vm_size =  "Standard_D2s_v3"
+# majority_maker_ip =  "10.74.0.9"
 
 # Instance number for the HANA database. 00 by default.
 #hana_instance_number = "00"
@@ -159,7 +196,27 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Network options
 #hana_enable_accelerated_networking = false
 
-# Disk configuration
+#########################
+# shared storage variables
+# Needed if HANA is deployed in scale-out scenario
+# see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
+# for reference and minimum requirements
+#########################
+#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+#anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
+#anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
+# min requirements Premium
+#hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
+#hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+# min requirements Ultra
+#hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)
+#hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
+
+# local disk configuration  - scale-up example
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
 #  disks_size       = "512,512,512,512,64,1024"
@@ -169,6 +226,20 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #  names            = "datalog#shared#usrsap#backup"
 #  lv_sizes         = "70,100#100#100#100"
 #  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local Disk configuration - scale-out example
+# on scale-out we need shared storage for data/log/backup/shared and fewer local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "Premium_LRS"
+#  disks_size       = "10"
+#  caching          = "None"
+#  writeaccelerator = "false"
+#  # The next variables are used during the provisioning
+#  luns        = "0"
+#  names       = "usrsap"
+#  lv_sizes    = "100"
+#  mount_paths = "/usr/sap"
 #}
 
 # SLES4SAP image information
@@ -232,6 +303,11 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
 
+# Disable minimal memory checks for HANA. Useful to deploy development clusters.
+# Low memory usage can cause a failed deployment. Be aware that this option does
+# not work with any memory size and will most likely fail with less than 16 GiB
+#hana_ignore_min_mem_check = false
+
 # Each host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #hana_ips = ["10.74.1.11", "10.74.1.12"]
 
@@ -247,11 +323,11 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
-# HANA instance system identifier. It's composed of 3 characters string
-#hana_sid = "prd"
+# HANA instance system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options).
+#hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. It must follow the SAP Password policies
+# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -261,12 +337,18 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Cost optimized scenario
 #scenario_type = "cost-optimized"
 
+# fencing mechanism for HANA cluster (Options: sbd [default], native)
+# hana_cluster_fencing_mechanism = "sbd"
+
 #######################
 # SBD related variables
 #######################
 
 # In order to enable SBD, an ISCSI server is needed as right now is the only option
 # All the clusters will use the same mechanism
+
+# Hostname, without the domain part
+#iscsi_name = "vmiscsi"
 
 # Custom iscsi server image
 #iscsi_srv_uri = "/path/to/your/iscsi/image"
@@ -294,6 +376,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # Enable the host to be monitored by exporters
 #monitoring_enabled = true
 
+# Hostname, without the domain part
+#monitoring_name = "vmmonitoring"
+
 # IP address of the machine where Prometheus and Grafana are running. If it's not set the address will be auto generated from the provided vnet address range
 #monitoring_srv_ip = "10.74.1.13"
 
@@ -301,14 +386,17 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # DRBD related variables
 ########################
 
+# Enable drbd cluster
+#drbd_enabled = true
+
+# Hostname, without the domain part
+#drbd_name = "vmdrbd"
+
 # Custom drbd nodes image
 #drbd_image_uri = "/path/to/your/monitoring/image"
 
 # Public image usage for the DRBD machines. BYOS example
 #drbd_os_image = "SUSE:sles-sap-15-sp2-byos:gen2:latest"
-
-# Enable drbd cluster
-#drbd_enabled = true
 
 # Each drbd cluster host IP address (sequential order). If it's not set the addresses will be auto generated from the provided vnet address range
 #drbd_ips = ["10.74.1.21", "10.74.1.22"]
@@ -319,11 +407,17 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # It will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netwaever_sid} (e.g.: )192.168.1.20:/HA1
 #drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
+# fencing mechanism for DRBD cluster (Options: sbd [default], native)
+# drbd_cluster_fencing_mechanism = "sbd"
+
 #############################
 # Netweaver related variables
 #############################
 
 #netweaver_enabled = true
+
+# Hostname, without the domain part
+#netweaver_name = "vmnetweaver"
 
 # Netweaver APP server count (PAS and AAS)
 # Set to 0 to install the PAS instance in the same instance as the ASCS. This means only 1 machine is installed in the deployment (2 if HA capabilities are enabled)
@@ -342,15 +436,18 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_virtual_ips = ["10.74.1.35", "10.74.1.36", "10.74.1.37", "10.74.1.38"]
 
 # Netweaver installation configuration
-# Netweaver system identifier. It's composed of 3 characters string
-#netweaver_sid = "ha1"
+# Netweaver system identifier. The system identifier must be composed by 3 uppercase chars/digits string starting always with a character (there are some restricted options)
+#netweaver_sid = "HA1"
 # Netweaver ASCS instance number. It's composed of 2 integers string
 #netweaver_ascs_instance_number = "00"
 # Netweaver ERS instance number. It's composed of 2 integers string
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# Netweaver master password. It must follow the SAP Password policies such as having 8 characters at least combining upper and lower case characters and numbers. It cannot start with special characters.
+# NetWeaver or S/4HANA master password. 
+# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
+# It cannot start with special characters and must contain a combination of
+# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster
@@ -359,6 +456,9 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # VM sizes
 #netweaver_xscs_vm_size = Standard_D2s_v3
 #netweaver_app_vm_size = Standard_D2s_v3
+
+# fencing mechanism for Neteaver cluster (Options: sbd [default], native)
+# netweaver_cluster_fencing_mechanism = "sbd"
 
 # Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
 # Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
@@ -371,9 +471,27 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 # - S4HANA1809.CORE.HDB.ABAPHA
 # - S4HANA1909.CORE.HDB.ABAP
 # - S4HANA1909.CORE.HDB.ABAPHA
+# - S4HANA2020.CORE.HDB.ABAP
+# - S4HANA2020.CORE.HDB.ABAPHA
+# - S4HANA2021.CORE.HDB.ABAP
+# - S4HANA2021.CORE.HDB.ABAPHA
 
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
+
+#########################
+# Netweaver shared storage variables
+# Needed if Netweaver is deployed HA
+# see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
+# for reference and minimum requirements
+#########################
+#netweaver_shared_storage_type      = "drbd"  # drbd,anf supported at the moment (default: "drbd")
+#anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra -> only set once for Netweaver+HANA
+#anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra -> only set once for Netweaver+HANA
+# min requirements Premium
+#netweaver_anf_quota_sapmnt         = "2000"  # deployed 1x
+# min requirements Ultra
+#netweaver_anf_quota_sapmnt         = "1000"  # deployed 1x
 
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"

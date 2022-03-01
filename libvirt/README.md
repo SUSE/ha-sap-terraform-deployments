@@ -4,13 +4,15 @@
 
 - [Requirements](#requirements)
 - [Howto](#quickstart)
-- [Monitoring](../doc/monitoring.md)
-- [Netweaver](../doc/netweaver.md)
-- [DRBD](../doc/drbd.md)
-- [QA](../doc/qa.md)
 - [Design](#design)
 - [Specifications](#specifications)
 - [Troubleshooting](#troubleshooting)
+
+For detailed documentation see:
+
+- [Monitoring](../doc/monitoring.md)
+- [S/4HANA and NetWeaver](../doc/netweaver.md)
+- [DRBD](../doc/drbd.md)
 
 # Requirements
 
@@ -19,6 +21,8 @@
    [build from source](https://github.com/dmacvicar/terraform-provider-libvirt)
 
    You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider](https://github.com/dmacvicar/terraform-provider-libvirt))
+
+   You need the xslt processor `xsltproc` installed on the system. With it terraform is able to process xsl files.
 
 2. You need to fulfill the system requirements provided by SAP for each Application. At least 15 GB of free disk space and 512 MiB of free memory per node.
 
@@ -50,7 +54,7 @@ In order to deploy the environment, different configurations are available throu
 
 ## QA deployment
 
-The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. Find more information [here](../doc/qa.md).
+The project has been created in order to provide the option to run the deployment in a `Test` or `QA` mode. This mode only enables the packages coming properly from SLE channels, so no other packages will be used. Set `offline_mode = true` in `terraform.tfvars` to enable it.
 
 ## Pillar files configuration
 

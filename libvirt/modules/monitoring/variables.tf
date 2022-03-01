@@ -2,6 +2,11 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "name" {
+  description = "hostname, without the domain part"
+  type        = string
+}
+
 variable "monitoring_image" {
   description = "monitoring server base image"
   type        = string
@@ -13,14 +18,14 @@ variable "timezone" {
   default     = "Europe/Berlin"
 }
 
-variable "name" {
-  description = "hostname, without the domain part"
-  default     = "grafana"
-}
-
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
+}
+
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
 }
 
 variable "network_name" {
@@ -91,21 +96,4 @@ variable "isolated_network_name" {
 variable "storage_pool" {
   description = "libvirt storage pool name for VM disks"
   default     = "default"
-}
-
-variable "hana_targets" {
-  description = "IPs of HANA hosts you want to monitor; the last one is assumed to be the virtual IP of the active HA instance."
-  type        = list(string)
-}
-
-variable "drbd_targets" {
-  description = "IPs of DRBD hosts you want to monitor"
-  type        = list(string)
-  default     = []
-}
-
-variable "netweaver_targets" {
-  description = "IPs of Netweaver hosts you want to monitor; the first two are assumed to be the virtual IPs of the HA instances."
-  type        = list(string)
-  default     = []
 }

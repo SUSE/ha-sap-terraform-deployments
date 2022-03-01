@@ -14,7 +14,12 @@ variable "timezone" {
 
 variable "network_domain" {
   description = "hostname's network domain"
-  default     = "tf.local"
+  type        = string
+}
+
+variable "userdata" {
+  description = "userdata to inject into instance"
+  type        = string
 }
 
 variable "hana_count" {

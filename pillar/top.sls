@@ -11,6 +11,11 @@ base:
     - match: compound
     - hana.cluster
 
+  'role:majority_maker_node':
+    - match: grain
+    - hana.hana    # needed to run hana.ha_cluster
+    - hana.cluster
+
   'role:drbd_node':
     - match: grain
     - drbd.drbd

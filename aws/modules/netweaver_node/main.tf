@@ -2,6 +2,7 @@ locals {
   vm_count        = var.xscs_server_count + var.app_server_count
   create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   app_start_index = local.create_ha_infra == 1 ? 2 : 1
+  hostname        = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 # Network resources: subnets, routes, etc
@@ -27,22 +28,22 @@ resource "aws_route" "nw-ascs-route" {
   count                  = local.vm_count > 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 0)}/32"
-  instance_id            = aws_instance.netweaver.0.id
+  network_interface_id   = aws_instance.netweaver.0.primary_network_interface_id
 }
 
 resource "aws_route" "nw-ers-route" {
   count                  = local.create_ha_infra
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, 1)}/32"
-  instance_id            = aws_instance.netweaver.1.id
+  network_interface_id   = aws_instance.netweaver.1.primary_network_interface_id
 }
 
 # deploy if PAS on same machine as ASCS
 resource "aws_route" "nw-pas-route" {
-  count                  = var.app_server_count == 0 ? 1 : 0
+  count                  = local.vm_count > 0 && var.app_server_count == 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index)}/32"
-  instance_id            = aws_instance.netweaver.0.id
+  network_interface_id   = aws_instance.netweaver.0.primary_network_interface_id
 }
 
 # deploy if PAS and AAS on separate hosts
@@ -50,7 +51,7 @@ resource "aws_route" "nw-app-route" {
   count                  = var.app_server_count
   route_table_id         = var.route_table_id
   destination_cidr_block = "${element(var.virtual_host_ips, local.app_start_index + count.index)}/32"
-  instance_id            = aws_instance.netweaver[local.app_start_index + count.index].id
+  network_interface_id   = aws_instance.netweaver[local.app_start_index + count.index].primary_network_interface_id
 }
 
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
@@ -102,13 +103,13 @@ resource "aws_instance" "netweaver" {
   }
 
   volume_tags = {
-    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   }
 
   tags = {
-    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
     Workspace                                            = var.common_variables["deployment_name"]
-    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}${format("%02d", count.index + 1)}"
   }
 }
 

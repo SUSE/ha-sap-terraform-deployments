@@ -41,7 +41,11 @@ netweaver:
   sid_adm_password: {{ grains['netweaver_master_password'] }}
   sap_adm_password: {{ grains['netweaver_master_password'] }}
   master_password: {{ grains['netweaver_master_password'] }}
+  {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+  sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt"
+  {%- else %}
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
+  {%- endif %}
   sapmnt_path: {{ grains['netweaver_sapmnt_path'] }}
   {%- if grains.get('netweaver_swpm_folder', False) %}
   swpm_folder: {{ grains['netweaver_inst_folder'] }}/{{ grains['netweaver_swpm_folder'] }}
@@ -73,9 +77,10 @@ netweaver:
     sid: {{ hana_sid_upper }}
     instance: {{ hana_instance_number }}
     password: {{ grains['hana_master_password'] }}
+    sr_enabled: {{ grains['hana_sr_enabled']|default(false) }}
 
   schema:
-    {%- if product_id_header in ['S4HANA1809', 'S4HANA1909'] %}
+    {%- if product_id_header in ['S4HANA1809', 'S4HANA1909', 'S4HANA2020', 'S4HANA2021'] %}
     name: SAPHANADB # This name is always used for new S/4HANA, so it shouldn't be changed
     {%- else %}
     name: SAPABAP1
@@ -103,7 +108,13 @@ netweaver:
       shared_disk_dev: /dev/vdb
       init_shared_disk: True
       {%- elif grains['ha_enabled'] %}
+      {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+      shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
+      {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
+      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
+      {%- else %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS
+      {%- endif %}
       {%- endif %}
       sap_instance: ascs
 
@@ -119,7 +130,13 @@ netweaver:
       {%- if grains['provider'] == 'libvirt' %}
       shared_disk_dev: /dev/vdb
       {%- else %}
+      {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+      shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
+      {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
+      shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS{{ '{:0>2}'.format(grains['ers_instance_number']) }}
+      {%- else %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS
+      {%- endif %}
       {%- endif %}
       sap_instance: ers
     {% endif %}

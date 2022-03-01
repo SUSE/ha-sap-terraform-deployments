@@ -1,15 +1,16 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.1.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.3"
+      version = "0.6.14"
     }
   }
 }
 
 locals {
   vm_count = var.xscs_server_count + var.app_server_count
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "libvirt_volume" "netweaver_image_disk" {
@@ -21,10 +22,11 @@ resource "libvirt_volume" "netweaver_image_disk" {
 }
 
 resource "libvirt_domain" "netweaver_domain" {
-  name       = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}"
+  name       = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   memory     = var.memory
   vcpu       = var.vcpu
   count      = local.vm_count
+  cloudinit  = var.userdata
   qemu_agent = true
 
   dynamic "disk" {
@@ -77,7 +79,7 @@ resource "libvirt_domain" "netweaver_domain" {
     autoport    = true
   }
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 }

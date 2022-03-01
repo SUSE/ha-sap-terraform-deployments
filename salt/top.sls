@@ -7,6 +7,12 @@ base:
     - match: compound
     - cluster
 
+  'role:majority_maker_node':
+    - match: grain
+    - hana.packages
+    - hana.ha_cluster
+    - cluster
+
   'role:drbd_node':
     - match: grain
     - drbd
@@ -21,21 +27,26 @@ base:
     - cluster
 
 predeployment:
+  '*':
+    - default
+
   'role:hana_node':
     - match: grain
-    - default
     - cluster_node
     - hana_node
 
+  'role:majority_maker_node':
+    - match: grain
+    - cluster_node
+    - majority_maker_node
+
   'role:netweaver_node':
     - match: grain
-    - default
     - cluster_node
     - netweaver_node
 
   'role:drbd_node':
     - match: grain
-    - default
     - cluster_node
     - drbd_node
 
@@ -45,9 +56,13 @@ predeployment:
 
   'role:monitoring_srv':
     - match: grain
-    - default
     - monitoring_srv
 
   'role:bastion':
     - match: grain
     - bastion
+
+# minimal NFS server on libvirt/openstack - should not be used for production
+  'role:nfs_srv':
+    - match: grain
+    - nfs_srv

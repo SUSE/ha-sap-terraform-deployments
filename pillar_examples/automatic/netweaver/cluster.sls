@@ -8,8 +8,8 @@ cluster:
   interface: eth1
   {%- else %}
   interface: eth0
-  unicast: True
   {%- endif %}
+  unicast: True
   {% if grains['fencing_mechanism'] == 'sbd' %}
   sbd:
     device: {{ grains['sbd_disk_device']|default('') }}
@@ -65,6 +65,16 @@ cluster:
         ascs_fstype: xfs
         ers_device: {{ netweaver.netweaver.nodes[1].shared_disk_dev }}3
         ers_fstype: xfs
+        {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+        ascs_device: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
+        ascs_fstype: nfs4
+        ers_device: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
+        ers_fstype: nfs4
+        {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
+        ascs_device: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
+        ascs_fstype: nfs4
+        ers_device: {{ grains['netweaver_nfs_share'] }}/ERS{{ '{:0>2}'.format(grains['ers_instance_number']) }}
+        ers_fstype: nfs4
         {%- else %}
         ascs_device: {{ grains['netweaver_nfs_share'] }}/ASCS
         ascs_fstype: nfs4
@@ -83,6 +93,19 @@ cluster:
         ascs_route_name: {{ grains['ascs_route_name'] }}
         ers_route_name: {{ grains['ers_route_name'] }}
         vpc_network_name: {{ grains['vpc_network_name'] }}
+        {% elif grains['provider'] == 'libvirt' or grains['provider'] == 'openstack' %}
+        virtual_ip_mask: 24
         {%- endif %}
+        virtual_ip_mechanism: {{ grains['netweaver_cluster_vip_mechanism'] }}
         native_fencing: {{ grains['fencing_mechanism'] == 'native' }}
+        {% if grains['fencing_mechanism'] == 'native' %}
+        {% if grains['provider'] == 'azure' %}
+        # only used by azure fence agent (native fencing)
+        azure_subscription_id: {{ grains['subscription_id'] }}
+        azure_resource_group_name: {{ grains['resource_group_name'] }}
+        azure_tenant_id: {{ grains['tenant_id'] }}
+        azure_fence_agent_app_id: {{ grains['fence_agent_app_id'] }}
+        azure_fence_agent_client_secret: {{ grains['fence_agent_client_secret'] }}
+        {% endif %}
+        {% endif %}
         sapmnt_path: {{ grains['netweaver_sapmnt_path'] }}

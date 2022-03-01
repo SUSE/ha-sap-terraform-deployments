@@ -3,14 +3,13 @@
 This document is an inventory of functional templates for common use-cases of the deployment project.
 The following examples refer to the libvirt Terraform provider, but they may be used for the other providers as well: there are no significant differences for the most common settings.
 
-
-- Hana cluster (the simplest one)
-- Monitoring hana cluster
+- HANA cluster (the simplest one)
+- Monitoring HANA cluster
 - ISCSI Server
-- NETWEAVER
+- S/4HANA or NetWeaver
 
 Not implemented yet:
-- NETWEAVER Monitoring (need implementation)
+- S/4HANA and NetWeaver monitoring (need implementation)
 
 Additionally you need to set up pillars. In dev-mode we use mostly `automatic`.
 See https://github.com/SUSE/ha-sap-terraform-deployments/tree/master/pillar_examples#pillar-examples for more details.
@@ -83,7 +82,7 @@ storage_pool           = "terraform"
 
 NOTE: ISCSI server works with a sle15 or higher image
 
-# Netweaver
+# S/4HANA and NetWeaver
 
 ```
 qemu_uri = "qemu+ssh://MYUSER@MYSTEM/system"

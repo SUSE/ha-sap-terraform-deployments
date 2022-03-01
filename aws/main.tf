@@ -64,6 +64,7 @@ module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "aws"
   deployment_name                     = local.deployment_name
+  deployment_name_in_hostname         = var.deployment_name_in_hostname
   reg_code                            = var.reg_code
   reg_email                           = var.reg_email
   reg_additional_modules              = var.reg_additional_modules
@@ -79,7 +80,7 @@ module "common_variables" {
   background                          = var.background
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
-  qa_mode                             = var.qa_mode
+  offline_mode                        = var.offline_mode
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
@@ -100,12 +101,17 @@ module "common_variables" {
   hana_client_archive_file            = var.hana_client_archive_file
   hana_client_extract_dir             = var.hana_client_extract_dir
   hana_scenario_type                  = var.scenario_type
-  hana_cluster_vip_mechanism          = ""
+  hana_cluster_vip_mechanism          = "route"
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
+  hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
+  hana_scale_out_enabled              = var.hana_scale_out_enabled
+  hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
+  hana_scale_out_addhosts             = var.hana_scale_out_addhosts
+  hana_scale_out_standby_count        = var.hana_scale_out_standby_count
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -126,10 +132,21 @@ module "common_variables" {
   netweaver_hana_instance_number      = var.hana_instance_number
   netweaver_hana_master_password      = var.hana_master_password
   netweaver_ha_enabled                = var.netweaver_ha_enabled
+  netweaver_cluster_vip_mechanism     = "route"
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
+  netweaver_shared_storage_type       = var.netweaver_shared_storage_type
+  monitoring_hana_targets             = local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
+  monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
+  monitoring_drbd_targets_vip         = var.drbd_enabled ? [local.drbd_cluster_vip] : []
+  monitoring_netweaver_targets        = var.netweaver_enabled ? local.netweaver_ips : []
+  monitoring_netweaver_targets_ha     = var.netweaver_enabled && var.netweaver_ha_enabled ? [local.netweaver_ips[0], local.netweaver_ips[1]] : []
+  monitoring_netweaver_targets_vip    = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   drbd_cluster_vip                    = local.drbd_cluster_vip
-  drbd_cluster_vip_mechanism          = ""
+  drbd_cluster_vip_mechanism          = "route"
   drbd_cluster_fencing_mechanism      = var.drbd_cluster_fencing_mechanism
   drbd_sbd_storage_type               = var.sbd_storage_type
 }
@@ -137,6 +154,8 @@ module "common_variables" {
 module "drbd_node" {
   source                = "./modules/drbd_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.drbd_name
+  network_domain        = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   instance_type         = var.drbd_instancetype
   aws_region            = var.aws_region
@@ -169,6 +188,8 @@ module "drbd_node" {
 module "iscsi_server" {
   source             = "./modules/iscsi_server"
   common_variables   = module.common_variables.configuration
+  name               = var.iscsi_name
+  network_domain     = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
   iscsi_count        = local.iscsi_enabled == true ? 1 : 0
   aws_region         = var.aws_region
   availability_zones = data.aws_availability_zones.available.names
@@ -192,10 +213,11 @@ module "iscsi_server" {
 module "netweaver_node" {
   source                = "./modules/netweaver_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.netweaver_name
+  network_domain        = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
   xscs_server_count     = local.netweaver_xscs_server_count
   app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   instance_type         = var.netweaver_instancetype
-  name                  = "netweaver"
   aws_region            = var.aws_region
   availability_zones    = data.aws_availability_zones.available.names
   os_image              = local.netweaver_os_image
@@ -226,9 +248,10 @@ module "netweaver_node" {
 module "hana_node" {
   source                = "./modules/hana_node"
   common_variables      = module.common_variables.configuration
+  name                  = var.hana_name
+  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
   hana_count            = var.hana_count
   instance_type         = var.hana_instancetype
-  name                  = var.name
   aws_region            = var.aws_region
   availability_zones    = data.aws_availability_zones.available.names
   os_image              = local.hana_os_image
@@ -257,6 +280,8 @@ module "hana_node" {
 module "monitoring" {
   source             = "./modules/monitoring"
   common_variables   = module.common_variables.configuration
+  name               = var.monitoring_name
+  network_domain     = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   monitoring_enabled = var.monitoring_enabled
   instance_type      = var.monitor_instancetype
   key_name           = aws_key_pair.key-pair.key_name
@@ -268,9 +293,6 @@ module "monitoring" {
   os_owner           = local.monitoring_os_owner
   subnet_ids         = aws_subnet.infra-subnet.*.id
   timezone           = var.timezone
-  hana_targets       = concat(local.hana_ips, var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]]) # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
-  drbd_targets       = var.drbd_enabled ? local.drbd_ips : []
-  netweaver_targets  = var.netweaver_enabled ? local.netweaver_virtual_ips : []
   on_destroy_dependencies = [
     aws_route_table_association.infra-subnet-route-association,
     aws_route.public,

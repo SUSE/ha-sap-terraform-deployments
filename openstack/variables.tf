@@ -1,3 +1,8 @@
+variable "project" {
+  description = "OpenStack tenant/project name in openstack"
+  type        = string
+}
+
 variable "region" {
   description = "OpenStack Availability Zone region where the deployment machines will be created"
   type        = string
@@ -86,6 +91,18 @@ variable "authorized_keys" {
   default     = []
 }
 
+variable "bastion_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmbastion"
+}
+
+variable "bastion_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "bastion_enabled" {
   description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
   type        = bool
@@ -102,6 +119,12 @@ variable "bastion_flavor" {
   description = "The instance type of the bastion node"
   type        = string
   default     = "2C-2GB-40GB"
+}
+
+variable "bastion_data_disk_name" {
+  description = "Use existing volume to mount on bastion for NFS server"
+  type        = string
+  default     = ""
 }
 
 variable "bastion_data_disk_type" {
@@ -140,6 +163,18 @@ variable "deployment_name" {
   description = "Suffix string added to some of the infrastructure resources names. If it is not provided, the terraform workspace string is used as suffix"
   type        = string
   default     = ""
+}
+
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+  default     = true
+}
+
+variable "network_domain" {
+  description = "hostname's network domain for all hosts. Can be overwritten by modules."
+  type        = string
+  default     = "tf.local"
 }
 
 variable "os_image" {
@@ -228,6 +263,18 @@ variable "provisioning_output_colored" {
 }
 
 # Hana related variables
+
+variable "hana_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmhana"
+}
+
+variable "hana_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "hana_count" {
   description = "Number of hana nodes"
@@ -413,12 +460,82 @@ variable "hana_fstype" {
   default     = "xfs"
 }
 
+variable "hana_ignore_min_mem_check" {
+  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
+  type        = bool
+  default     = false
+}
+
 variable "scenario_type" {
   description = "Deployed scenario type. Available options: performance-optimized, cost-optimized"
   default     = "performance-optimized"
 }
 
+variable "hana_scale_out_enabled" {
+  description = "Enable HANA scale out deployment"
+  type        = bool
+  default     = false
+}
+
+variable "hana_scale_out_shared_storage_type" {
+  description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|nfs)$", var.hana_scale_out_shared_storage_type))
+    )
+    error_message = "Invalid HANA scale out storage type. Options: none, nfs."
+  }
+}
+
+variable "hana_scale_out_addhosts" {
+  type        = map(any)
+  default     = {}
+  description = <<EOF
+    Additional hosts to pass to HANA scale-out installation
+  EOF
+}
+
+variable "hana_scale_out_standby_count" {
+  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  type        = number
+  default     = "1"
+}
+
+
+variable "hana_majority_maker_flavor" {
+  description = "The instance type of the HANA Majority Maker machine"
+  type        = string
+  default     = "1C-1GB-40GB"
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
 # Monitoring related variables
+
+variable "monitoring_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmmonitoring"
+}
+
+variable "monitoring_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "monitoring_srv_ip" {
   description = "Monitoring server address"
   type        = string
@@ -456,6 +573,18 @@ variable "sbd_storage_type" {
 # If iscsi is selected as sbd_storage_type
 # Use the next variables for advanced configuration
 
+variable "iscsi_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmiscsi"
+}
+
+variable "iscsi_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
 variable "iscsi_os_image" {
   description = "The image used to create the iscsi machines"
   type        = string
@@ -485,7 +614,76 @@ variable "iscsi_disk_size" {
   default     = 10
 }
 
+# If nfs is selected as shared_storage_type
+# Use the next variables for advanced configuration
+
+variable "nfs_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnfs"
+}
+
+variable "nfs_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_enabled" {
+  description = "Enable NFS server."
+  type        = bool
+  default     = false
+}
+
+variable "nfs_os_image" {
+  description = "The image used to create the nfs machines"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_flavor" {
+  description = "The instance type of the nfs nodes"
+  type        = string
+  default     = "2C-2GB-40GB"
+}
+
+variable "nfs_srv_ip" {
+  description = "IP for iSCSI server. It must be in the same network addresses range defined in `ip_cidr_range`"
+  type        = string
+  default     = ""
+}
+
+variable "nfs_volume_size" {
+  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
+  type        = number
+  default     = 100
+}
+
+variable "nfs_data_volume_names" {
+  description = "Existing volumes to use for NFS server."
+  type        = list(any)
+  default     = []
+}
+
+variable "nfs_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on NFS server (`/mnt` must not be used in Azure)"
+  type        = string
+  default     = "/mnt_permanent/sapdata"
+}
+
 # DRBD related variables
+
+variable "drbd_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmdrbd"
+}
+
+variable "drbd_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "drbd_enabled" {
   description = "Enable the DRBD cluster for nfs"
@@ -532,7 +730,7 @@ variable "drbd_cluster_vip" {
 variable "drbd_cluster_fencing_mechanism" {
   description = "Select the DRBD cluster fencing mechanism. Options: sbd, native"
   type        = string
-  default     = "native"
+  default     = "sbd"
 }
 
 variable "drbd_nfs_mounting_point" {
@@ -542,6 +740,18 @@ variable "drbd_nfs_mounting_point" {
 }
 
 # Netweaver related variables
+
+variable "netweaver_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmnetweaver"
+}
+
+variable "netweaver_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
 
 variable "netweaver_enabled" {
   description = "Enable netweaver cluster creation"
@@ -683,7 +893,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -693,14 +903,30 @@ variable "netweaver_ha_enabled" {
   default     = true
 }
 
-# Specific QA variables
+variable "netweaver_shared_storage_type" {
+  description = "shared Storage type to use for Netweaver deployment - not supported yet for this cloud provider yet"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      can(regex("^(|nfs)$", var.netweaver_shared_storage_type))
+    )
+    error_message = "Invalid Netweaver shared storage type. Options: none, nfs."
+  }
+}
 
-variable "qa_mode" {
-  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+# Testing and QA variables
+
+# Disable extra package installation (sap, ha pattern etc).
+# Disables first registration to install salt-minion, it is considered that images are delivered with salt-minion
+variable "offline_mode" {
+  description = "Disable installation of extra packages not coming with image"
   type        = bool
   default     = false
 }
 
+# Execute HANA Hardware Configuration Check Tool to bench filesystems.
+# The test takes several hours. See results in /root/hwcct_out and in global log file /var/log/salt-result.log.
 variable "hwcct" {
   description = "Execute HANA Hardware Configuration Check Tool to bench filesystems"
   type        = bool

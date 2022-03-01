@@ -4,6 +4,7 @@ locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   vm_count               = var.monitoring_enabled == "true" ? 0 : 1
   provisioning_addresses = openstack_compute_instance_v2.monitoring.*.access_ip_v4
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "openstack_networking_port_v2" "monitoring" {
@@ -21,7 +22,7 @@ resource "openstack_networking_port_v2" "monitoring" {
 
 resource "openstack_compute_instance_v2" "monitoring" {
   count        = local.vm_count
-  name         = "${var.common_variables["deployment_name"]}-monitoring-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}"
   flavor_name  = var.flavor
   image_id     = var.os_image
   config_drive = true

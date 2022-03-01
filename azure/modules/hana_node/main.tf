@@ -1,8 +1,11 @@
-# Availability set for the hana VMs
+# Availabilityset for the hana VMs
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
+  shared_storage_anf         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "anf" ? 1 : 0
+  create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   provisioning_addresses     = local.bastion_enabled ? data.azurerm_network_interface.hana.*.private_ip_address : data.azurerm_public_ip.hana.*.ip_address
   hana_lb_rules_ports = local.create_ha_infra == 1 ? toset([
@@ -12,10 +15,12 @@ locals {
     "3${var.hana_instance_number}41",
     "3${var.hana_instance_number}42",
     "3${var.hana_instance_number}15",
-    "3${var.hana_instance_number}17"
+    "3${var.hana_instance_number}17",
+    "5${var.hana_instance_number}13" # S4HANA DB import checks sapctrl port
   ]) : toset([])
 
   hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
+  hostname                      = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -24,7 +29,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
   location                    = var.az_region
   resource_group_name         = var.resource_group_name
   managed                     = "true"
-  platform_fault_domain_count = 2
+  platform_fault_domain_count = 2 + local.create_scale_out
 
   tags = {
     workspace = var.common_variables["deployment_name"]
@@ -65,10 +70,9 @@ resource "azurerm_lb" "hana-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "hana-load-balancer" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.hana-load-balancer[0].id
-  name                = "lbbe-hana"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.hana-load-balancer[0].id
+  name            = "lbbe-hana"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "hana" {
@@ -110,7 +114,7 @@ resource "azurerm_lb_rule" "hana-lb-rules" {
   frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -126,7 +130,7 @@ resource "azurerm_lb_rule" "hana-lb-rules-secondary" {
   frontend_ip_configuration_name = "lbfe-hana-secondary"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer-secondary[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -141,7 +145,7 @@ resource "azurerm_lb_rule" "hanadb_exporter" {
   frontend_ip_configuration_name = "lbfe-hana"
   frontend_port                  = 9668
   backend_port                   = 9668
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.hana-load-balancer[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.hana-load-balancer[0].id]
   probe_id                       = azurerm_lb_probe.hana-load-balancer[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -151,7 +155,7 @@ resource "azurerm_lb_rule" "hanadb_exporter" {
 
 resource "azurerm_network_interface" "hana" {
   count                         = var.hana_count
-  name                          = "nic-${var.name}0${count.index + 1}"
+  name                          = "nic-${var.name}${format("%02d", count.index + 1)}"
   location                      = var.az_region
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = var.enable_accelerated_networking
@@ -171,7 +175,7 @@ resource "azurerm_network_interface" "hana" {
 
 resource "azurerm_public_ip" "hana" {
   count                   = local.bastion_enabled ? 0 : var.hana_count
-  name                    = "pip-${var.name}0${count.index + 1}"
+  name                    = "pip-${var.name}${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -200,6 +204,148 @@ resource "azurerm_image" "sles4sap" {
   }
 }
 
+# ANF volumes
+resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
+  count = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-data-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = var.anf_account_name
+  pool_name           = var.anf_pool_name
+  volume_path         = "${var.name}-data-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_data
+
+  export_policy_rule {
+    rule_index        = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
+  count = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-log-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-log-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_log
+
+  export_policy_rule {
+    rule_index        = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
+  count = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-backup-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-backup-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_backup
+
+  export_policy_rule {
+    rule_index        = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
+  count = local.shared_storage_anf * local.sites
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  name                = "${var.name}-netapp-volume-shared-${count.index + 1}"
+  location            = var.az_region
+  resource_group_name = var.resource_group_name
+  account_name        = "netapp-acc-${lower(var.common_variables["deployment_name"])}"
+  pool_name           = "netapp-pool-${lower(var.common_variables["deployment_name"])}"
+  volume_path         = "${var.name}-shared-${count.index + 1}"
+  service_level       = var.anf_pool_service_level
+  subnet_id           = var.network_subnet_netapp_id
+  protocols           = ["NFSv4.1"]
+  storage_quota_in_gb = var.hana_scale_out_anf_quota_shared
+
+  export_policy_rule {
+    rule_index        = 1
+    protocols_enabled = ["NFSv4.1"]
+    allowed_clients   = ["0.0.0.0/0"]
+    unix_read_write   = true
+  }
+
+  # Following section is only required if deploying a data protection volume (secondary)
+  # to enable Cross-Region Replication feature
+  # data_protection_replication {
+  #   endpoint_type             = "dst"
+  #   remote_volume_location    = azurerm_resource_group.example_primary.location
+  #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
+  #   replication_frequency     = "10minutes"
+  # }
+}
+
+
 # hana instances
 
 module "os_image_reference" {
@@ -217,7 +363,7 @@ locals {
 
 resource "azurerm_virtual_machine" "hana" {
   count                            = var.hana_count
-  name                             = "vm${var.name}0${count.index + 1}"
+  name                             = "${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.hana.*.id, count.index)]
@@ -227,7 +373,7 @@ resource "azurerm_virtual_machine" "hana" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Os"
+    name              = "disk-${var.name}${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -244,7 +390,7 @@ resource "azurerm_virtual_machine" "hana" {
   dynamic "storage_data_disk" {
     for_each = [for v in range(local.disks_number) : { index = v }]
     content {
-      name                      = "disk-${var.name}0${count.index + 1}-Data0${storage_data_disk.value.index + 1}"
+      name                      = "disk-${var.name}${format("%02d", count.index + 1)}-Data${format("%02d", storage_data_disk.value.index + 1)}"
       managed_disk_type         = element(local.disks_type, storage_data_disk.value.index)
       create_option             = "Empty"
       lun                       = storage_data_disk.value.index
@@ -255,7 +401,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   os_profile {
-    computer_name  = "vm${var.name}0${count.index + 1}"
+    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 
@@ -276,6 +422,35 @@ resource "azurerm_virtual_machine" "hana" {
   tags = {
     workspace = var.common_variables["deployment_name"]
   }
+}
+
+module "hana_majority_maker" {
+  source                        = "../majority_maker_node"
+  node_count                    = local.create_scale_out
+  name                          = var.name
+  common_variables              = var.common_variables
+  bastion_host                  = var.bastion_host
+  az_region                     = var.az_region
+  vm_size                       = var.majority_maker_vm_size
+  hana_count                    = var.hana_count
+  majority_maker_ip             = var.majority_maker_ip
+  host_ips                      = var.host_ips
+  resource_group_name           = var.resource_group_name
+  network_subnet_id             = var.network_subnet_id
+  storage_account               = var.storage_account
+  storage_account_name          = var.storage_account_name
+  storage_account_key           = var.storage_account_key
+  enable_accelerated_networking = var.enable_accelerated_networking
+  sles4sap_uri                  = var.sles4sap_uri
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  os_image                      = var.os_image
+  iscsi_srv_ip                  = var.iscsi_srv_ip
+  # only used by azure fence agent (native fencing)
+  subscription_id           = var.subscription_id
+  tenant_id                 = var.tenant_id
+  fence_agent_app_id        = var.fence_agent_app_id
+  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_on_destroy" {

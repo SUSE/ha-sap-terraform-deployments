@@ -5,6 +5,7 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? data.azurerm_network_interface.drbd.*.private_ip_address : data.azurerm_public_ip.drbd.*.ip_address
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "azurerm_availability_set" "drbd-availability-set" {
@@ -41,10 +42,9 @@ resource "azurerm_lb" "drbd-load-balancer" {
 }
 
 resource "azurerm_lb_backend_address_pool" "drbd-backend-pool" {
-  count               = var.drbd_count > 0 ? 1 : 0
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.drbd-load-balancer[0].id
-  name                = "lbbe-drbd"
+  count           = var.drbd_count > 0 ? 1 : 0
+  loadbalancer_id = azurerm_lb.drbd-load-balancer[0].id
+  name            = "lbbe-drbd"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "drbd-nodes" {
@@ -90,7 +90,7 @@ resource "azurerm_lb_rule" "drbd-lb-tcp-2049" {
   frontend_ip_configuration_name = "lbfe-drbd"
   frontend_port                  = 2049
   backend_port                   = 2049
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id]
   probe_id                       = azurerm_lb_probe.drbd-health-probe[count.index].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -105,7 +105,7 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
   frontend_ip_configuration_name = "lbfe-drbd"
   frontend_port                  = 2049
   backend_port                   = 2049
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.drbd-backend-pool[count.index].id]
   probe_id                       = azurerm_lb_probe.drbd-health-probe[count.index].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -115,7 +115,7 @@ resource "azurerm_lb_rule" "drbd-lb-udp-2049" {
 
 resource "azurerm_public_ip" "drbd" {
   count                   = local.bastion_enabled ? 0 : var.drbd_count
-  name                    = "pip-drbd0${count.index + 1}"
+  name                    = "pip-drbd${format("%02d", count.index + 1)}"
   location                = var.az_region
   resource_group_name     = var.resource_group_name
   allocation_method       = "Dynamic"
@@ -128,7 +128,7 @@ resource "azurerm_public_ip" "drbd" {
 
 resource "azurerm_network_interface" "drbd" {
   count               = var.drbd_count
-  name                = "nic-drbd0${count.index + 1}"
+  name                = "nic-drbd${format("%02d", count.index + 1)}"
   location            = var.az_region
   resource_group_name = var.resource_group_name
 
@@ -174,7 +174,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "drbd" {
   count                            = var.drbd_count
-  name                             = "vm${var.name}0${count.index + 1}"
+  name                             = "${var.name}${format("%02d", count.index + 1)}"
   location                         = var.az_region
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [element(azurerm_network_interface.drbd.*.id, count.index)]
@@ -184,7 +184,7 @@ resource "azurerm_virtual_machine" "drbd" {
   delete_data_disks_on_termination = true
 
   storage_os_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Os"
+    name              = "disk-${var.name}${format("%02d", count.index + 1)}-Os"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -199,7 +199,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   storage_data_disk {
-    name              = "disk-${var.name}0${count.index + 1}-Data01"
+    name              = "disk-${var.name}${format("%02d", count.index + 1)}-Data01"
     caching           = "ReadWrite"
     create_option     = "Empty"
     disk_size_gb      = "10"
@@ -208,7 +208,7 @@ resource "azurerm_virtual_machine" "drbd" {
   }
 
   os_profile {
-    computer_name  = "vmdrbd0${count.index + 1}"
+    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
     admin_username = var.common_variables["authorized_user"]
   }
 

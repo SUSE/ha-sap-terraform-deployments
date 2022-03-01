@@ -21,6 +21,11 @@ variable "deployment_name" {
   default     = ""
 }
 
+variable "deployment_name_in_hostname" {
+  description = "Add deployment_name as a prefix to all hostnames."
+  type        = bool
+}
+
 variable "reg_code" {
   description = "If informed, register the product using SUSEConnect"
   default     = ""
@@ -45,7 +50,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -125,8 +130,10 @@ variable "monitoring_srv_ip" {
   default     = ""
 }
 
-variable "qa_mode" {
-  description = "Enable test/qa mode (disable extra packages usage not coming in the image)"
+# Tune deployment
+
+variable "offline_mode" {
+  description = "Prevent installation of extra packages not coming with image"
   type        = bool
   default     = false
 }

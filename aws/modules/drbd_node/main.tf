@@ -1,4 +1,7 @@
 # drbd resources
+locals {
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+}
 
 resource "aws_subnet" "drbd-subnet" {
   count             = var.drbd_count
@@ -22,7 +25,7 @@ resource "aws_route" "drbd-cluster-vip" {
   count                  = var.drbd_count > 0 ? 1 : 0
   route_table_id         = var.route_table_id
   destination_cidr_block = "${var.common_variables["drbd"]["cluster_vip"]}/32"
-  instance_id            = aws_instance.drbd.0.id
+  network_interface_id   = aws_instance.drbd.0.primary_network_interface_id
 }
 
 module "sap_cluster_policies" {
@@ -67,13 +70,13 @@ resource "aws_instance" "drbd" {
   }
 
   volume_tags = {
-    Name = "${var.common_variables["deployment_name"]}-${var.name}0${count.index + 1}"
+    Name = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   }
 
   tags = {
-    Name                                                 = "${var.common_variables["deployment_name"]} - ${var.name}0${count.index + 1}"
+    Name                                                 = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
     Workspace                                            = var.common_variables["deployment_name"]
-    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}0${count.index + 1}"
+    "${var.common_variables["deployment_name"]}-cluster" = "${var.name}${format("%02d", count.index + 1)}"
   }
 }
 

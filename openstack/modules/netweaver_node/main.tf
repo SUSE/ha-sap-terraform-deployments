@@ -5,6 +5,8 @@ locals {
   vm_count               = var.xscs_server_count + var.app_server_count
   create_ha_infra        = local.vm_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   provisioning_addresses = openstack_compute_instance_v2.netweaver.*.access_ip_v4
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_nfs     = var.common_variables["netweaver"]["shared_storage_type"] == "nfs" ? 1 : 0
 }
 
 resource "openstack_networking_port_v2" "netweaver" {
@@ -17,24 +19,18 @@ resource "openstack_networking_port_v2" "netweaver" {
     subnet_id  = var.network_subnet_id
     ip_address = var.host_ips[count.index]
   }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
-  }
-  allowed_address_pairs {
-    ip_address = var.virtual_host_ips[0]
+  dynamic "allowed_address_pairs" {
+    for_each = var.virtual_host_ips
+    content {
+      ip_address = var.virtual_host_ips[allowed_address_pairs.key]
+    }
   }
   security_group_ids = [var.firewall_internal]
 }
 
 resource "openstack_compute_instance_v2" "netweaver" {
   count        = local.vm_count
-  name         = "${var.common_variables["deployment_name"]}-netweaver-${count.index + 1}"
+  name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   flavor_name  = var.flavor
   image_id     = var.os_image
   config_drive = true
