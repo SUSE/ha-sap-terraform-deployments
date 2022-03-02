@@ -90,10 +90,9 @@ resource "azurerm_lb" "netweaver-load-balancer" {
 # backend pools
 
 resource "azurerm_lb_backend_address_pool" "netweaver-backend-pool" {
-  count               = local.create_ha_infra
-  resource_group_name = var.resource_group_name
-  loadbalancer_id     = azurerm_lb.netweaver-load-balancer[0].id
-  name                = "lbbe-netweaver"
+  count           = local.create_ha_infra
+  loadbalancer_id = azurerm_lb.netweaver-load-balancer[0].id
+  name            = "lbbe-netweaver"
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "netweaver-nodes" {
@@ -171,7 +170,7 @@ resource "azurerm_lb_rule" "ascs-lb-rules" {
   frontend_ip_configuration_name = "lbfe-netweaver-ascs"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id]
   probe_id                       = azurerm_lb_probe.netweaver-ascs-health-probe[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"
@@ -186,7 +185,7 @@ resource "azurerm_lb_rule" "ers-lb-rules" {
   frontend_ip_configuration_name = "lbfe-netweaver-ers"
   frontend_port                  = tonumber(each.value)
   backend_port                   = tonumber(each.value)
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.netweaver-backend-pool[0].id]
   probe_id                       = azurerm_lb_probe.netweaver-ers-health-probe[0].id
   idle_timeout_in_minutes        = 30
   enable_floating_ip             = "true"

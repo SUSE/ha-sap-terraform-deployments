@@ -3,7 +3,7 @@
 # Find all the available variables and definitions in the variables.tf file
 #################################
 
-# OpenStack tennant/project id
+# OpenStack tenant/project id
 project = "my-project"
 
 # Network Region where to deploy the configuration

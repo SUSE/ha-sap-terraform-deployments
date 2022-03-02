@@ -48,6 +48,20 @@ locals {
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
 }
 
+data "template_file" "userdata" {
+  template = file("${path.root}/cloud-config.tpl")
+  # You can also pass variables here to further customize config.
+  # vars = {
+  #   name = "value"
+  # }
+}
+
+resource "libvirt_cloudinit_disk" "userdata" {
+  name      = "cloudinit.iso"
+  user_data = data.template_file.userdata.rendered
+}
+
+
 module "common_variables" {
   source                              = "../generic_modules/common_variables"
   provider_type                       = "libvirt"
@@ -149,6 +163,7 @@ module "iscsi_server" {
   memory                = var.iscsi_memory
   bridge                = var.bridge_device
   storage_pool          = var.storage_pool
+  userdata              = libvirt_cloudinit_disk.userdata.id
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   host_ips              = [local.iscsi_ip]
@@ -170,6 +185,7 @@ module "hana_node" {
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
+  userdata              = libvirt_cloudinit_disk.userdata.id
   host_ips              = local.hana_ips
   hana_disk_size        = var.hana_node_disk_size
   sbd_disk_id           = module.hana_sbd_disk.id
@@ -194,6 +210,7 @@ module "drbd_node" {
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
+  userdata              = libvirt_cloudinit_disk.userdata.id
   nfs_mounting_point    = var.drbd_nfs_mounting_point
   nfs_export_name       = var.netweaver_sid
 }
@@ -210,6 +227,7 @@ module "monitoring" {
   memory                = var.monitoring_memory
   bridge                = var.bridge_device
   storage_pool          = var.storage_pool
+  userdata              = libvirt_cloudinit_disk.userdata.id
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   monitoring_srv_ip     = local.monitoring_srv_ip
@@ -228,6 +246,7 @@ module "netweaver_node" {
   memory                = var.netweaver_node_memory
   bridge                = var.bridge_device
   storage_pool          = var.storage_pool
+  userdata              = libvirt_cloudinit_disk.userdata.id
   isolated_network_id   = local.internal_network_id
   isolated_network_name = local.internal_network_name
   host_ips              = local.netweaver_ips

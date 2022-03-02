@@ -1,12 +1,3 @@
-# Configure the Azure Provider
-provider "azurerm" {
-  version = "~> 2.32.0"
-  features {}
-}
-
-terraform {
-  required_version = ">= 0.13"
-}
 
 data "azurerm_subscription" "current" {
 }

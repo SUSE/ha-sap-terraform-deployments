@@ -50,7 +50,7 @@ variable "ha_sap_deployment_repo" {
 
 variable "additional_packages" {
   description = "extra packages which should be installed"
-  type        = list
+  type        = list(any)
   default     = []
 }
 

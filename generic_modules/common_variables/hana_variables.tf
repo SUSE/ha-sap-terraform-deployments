@@ -190,7 +190,7 @@ variable "hana_scale_out_shared_storage_type" {
 }
 
 variable "hana_scale_out_addhosts" {
-  type        = map
+  type        = map(any)
   description = <<EOF
     Additional hosts to pass to HANA scale-out installation
   EOF

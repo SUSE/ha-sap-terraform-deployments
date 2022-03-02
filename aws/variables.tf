@@ -227,7 +227,7 @@ variable "hana_os_owner" {
 variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
-  default     = "r3.8xlarge"
+  default     = "r6i.xlarge"
 }
 
 variable "hana_subnet_address_range" {
@@ -444,7 +444,7 @@ variable "hana_scale_out_shared_storage_type" {
 }
 
 variable "hana_scale_out_addhosts" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = <<EOF
     Additional hosts to pass to HANA scale-out installation
@@ -492,7 +492,7 @@ variable "drbd_os_owner" {
 variable "drbd_instancetype" {
   description = "The instance type of the drbd node"
   type        = string
-  default     = "t2.large"
+  default     = "t3.medium"
 }
 
 variable "drbd_cluster_vip" {
@@ -601,7 +601,7 @@ variable "iscsi_os_owner" {
 variable "iscsi_instancetype" {
   description = "The instance type of the iscsi server node."
   type        = string
-  default     = "t2.large"
+  default     = "t3.micro"
 }
 
 variable "iscsi_srv_ip" {
@@ -716,9 +716,9 @@ variable "netweaver_os_owner" {
 }
 
 variable "netweaver_instancetype" {
-  description = "Instance type for the Netweaver machines. Default to r3.8xlarge"
+  description = "Instance type for the Netweaver machines"
   type        = string
-  default     = "r3.8xlarge"
+  default     = "r5.large"
 }
 
 variable "netweaver_s3_bucket" {
@@ -855,7 +855,7 @@ variable "netweaver_sapexe_folder" {
 
 variable "netweaver_additional_dvds" {
   description = "Software folder with additional SAP software needed to install netweaver (NW export folder and HANA HDB client for example), path relative from the `netweaver_inst_media` mounted point"
-  type        = list
+  type        = list(any)
   default     = []
 }
 

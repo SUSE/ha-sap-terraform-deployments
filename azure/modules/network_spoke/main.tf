@@ -79,7 +79,7 @@ resource "azurerm_virtual_network_peering" "peer-hub-spoke" {
 
 # Azure Netapp Files resources (see README for ANF setup)
 data "azurerm_subnet" "subnet-spoke-netapp" {
-  count                = local.shared_storage_anf == 1 && ! local.subnet_netapp_create ? 1 : 0
+  count                = local.shared_storage_anf == 1 && !local.subnet_netapp_create ? 1 : 0
   name                 = var.subnet_netapp_name
   virtual_network_name = local.vnet_name
   resource_group_name  = var.resource_group_name
