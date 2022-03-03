@@ -331,7 +331,7 @@ locals {
       backend_port                   = 0
       frontend_ip_configuration_name = "lb-fadc-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fadc-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -344,7 +344,7 @@ locals {
       backend_port                   = 0
       frontend_ip_configuration_name = "lb-fadc-internal-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fadc-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fadc-internal-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     }
@@ -726,7 +726,7 @@ resource "azurerm_lb_backend_address_pool" "lb_backend_address_pool" {
   for_each = local.lb_backend_address_pools
 
   name                = each.value.name
-  resource_group_name = each.value.resource_group_name
+  #resource_group_name = each.value.resource_group_name
   loadbalancer_id     = each.value.loadbalancer_id
 }
 
@@ -754,7 +754,7 @@ resource "azurerm_lb_rule" "lb_rule" {
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   probe_id                       = each.value.probe_id
-  backend_address_pool_id        = each.value.backend_address_pool_id
+  backend_address_pool_ids       = each.value.backend_address_pool_ids
   enable_floating_ip             = each.value.enable_floating_ip
   disable_outbound_snat          = each.value.disable_outbound_snat
 }

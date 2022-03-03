@@ -401,7 +401,7 @@ locals {
       backend_port                   = "443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -414,7 +414,7 @@ locals {
       backend_port                   = "80"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -427,7 +427,7 @@ locals {
       backend_port                   = "22"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -440,7 +440,20 @@ locals {
       backend_port                   = "3000"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
+      enable_floating_ip             = true
+      disable_outbound_snat          = true
+    },
+    "lb-fgt-external-rule-3201" = {
+      name                           = "lb-fgt-external-rule-3201"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
+      protocol                       = "Tcp"
+      frontend_port                  = "3201"
+      backend_port                   = "3201"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -453,7 +466,7 @@ locals {
       backend_port                   = "10551"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -466,7 +479,7 @@ locals {
       backend_port                   = "0"
       frontend_ip_configuration_name = "lb-fgt-internal-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-internal-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-internal-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-internal-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -479,7 +492,7 @@ locals {
       backend_port                   = "41443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = false
       disable_outbound_snat          = true
     },
@@ -492,7 +505,7 @@ locals {
       backend_port                   = "51443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = false
       disable_outbound_snat          = true
     }
@@ -732,11 +745,13 @@ locals {
   role_assignments = {
     "ra-fgt-a" = {
       scope                = var.resource_group_id
+      #scope                = data.azurerm_subscription.subscription.id
       role_definition_name = "Reader"
       principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-a"].identity[0].principal_id
     },
     "ra-fgt-b" = {
       scope                = var.resource_group_id
+      #scope                = data.azurerm_subscription.subscription.id
       role_definition_name = "Reader"
       principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-b"].identity[0].principal_id
     }
@@ -759,6 +774,9 @@ module "os_image_reference" {
   os_image = var.os_image
 }
 
+data "azurerm_subscription" "subscription" {
+}
+
 resource "local_file" "file" {
 
   for_each = local.fgt_configs
@@ -766,6 +784,20 @@ resource "local_file" "file" {
   filename = "${path.module}/${each.value.name}.txt"
   content  = each.value.config
 }
+
+resource "azurerm_role_assignment" "role_assignment" {
+
+  for_each = local.role_assignments
+
+  scope                = each.value.scope
+  role_definition_name = each.value.role_definition_name
+  principal_id         = each.value.principal_id
+
+  depends_on = [
+    azurerm_virtual_machine.virtual_machine
+  ]
+}
+
 resource "azurerm_public_ip" "public_ip" {
 
   for_each = local.public_ips
@@ -911,7 +943,7 @@ resource "azurerm_lb_backend_address_pool" "lb_backend_address_pool" {
   for_each = local.lb_backend_address_pools
 
   name                = each.value.name
-  resource_group_name = each.value.resource_group_name
+  #resource_group_name = each.value.resource_group_name
   loadbalancer_id     = each.value.loadbalancer_id
 }
 
@@ -939,7 +971,7 @@ resource "azurerm_lb_rule" "lb_rule" {
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   probe_id                       = each.value.probe_id
-  backend_address_pool_id        = each.value.backend_address_pool_id
+  backend_address_pool_ids       = each.value.backend_address_pool_ids
   enable_floating_ip             = each.value.enable_floating_ip
   disable_outbound_snat          = each.value.disable_outbound_snat
 }
@@ -1104,17 +1136,4 @@ data "template_file" "custom_data" {
     fadc_mgmt_a         = each.value.fadc_mgmt_a
     fadc_mgmt_b         = each.value.fadc_mgmt_b
   }
-}
-
-resource "azurerm_role_assignment" "role_assignment" {
-
-  for_each = local.role_assignments
-
-  scope                = each.value.scope
-  role_definition_name = each.value.role_definition_name
-  principal_id         = each.value.principal_id
-
-  depends_on = [
-    azurerm_virtual_machine.virtual_machine
-  ]
 }
