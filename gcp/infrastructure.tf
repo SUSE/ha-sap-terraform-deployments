@@ -11,6 +11,8 @@ data "google_compute_subnetwork" "current-subnet" {
 
 locals {
   deployment_name = var.deployment_name != "" ? var.deployment_name : terraform.workspace
+  # only use 2 compute zones to have an even distribution of nodes
+  compute_zones = slice(data.google_compute_zones.available.names, 0, 2)
 
   network_link = var.vpc_name == "" ? google_compute_network.ha_network.0.self_link : format(
   "https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", var.project, var.vpc_name)
@@ -88,7 +90,7 @@ module "bastion" {
   region             = var.region
   os_image           = local.bastion_os_image
   vm_size            = "custom-1-2048"
-  compute_zones      = data.google_compute_zones.available.names
+  compute_zones      = local.compute_zones
   network_link       = local.network_link
   snet_address_range = cidrsubnet(cidrsubnet(local.subnet_address_range, -4, 0), 4, 2)
 }
