@@ -58,9 +58,10 @@ resource "google_compute_firewall" "ha_firewall_allow_internal" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_icmp" {
-  count   = local.create_firewall
-  name    = "${local.deployment_name}-fw-icmp"
-  network = local.vpc_name
+  count         = local.create_firewall
+  name          = "${local.deployment_name}-fw-icmp"
+  network       = local.vpc_name
+  source_ranges = ["0.0.0.0/0"]
 
   allow {
     protocol = "icmp"
@@ -68,9 +69,10 @@ resource "google_compute_firewall" "ha_firewall_allow_icmp" {
 }
 
 resource "google_compute_firewall" "ha_firewall_allow_tcp" {
-  count   = local.create_firewall
-  name    = "${local.deployment_name}-fw-tcp"
-  network = local.vpc_name
+  count         = local.create_firewall
+  name          = "${local.deployment_name}-fw-tcp"
+  network       = local.vpc_name
+  source_ranges = ["0.0.0.0/0"]
 
   allow {
     protocol = "tcp"
