@@ -175,7 +175,7 @@ module "drbd_node" {
   bastion_host         = module.bastion.public_ip
   drbd_count           = var.drbd_enabled == true ? 2 : 0
   machine_type         = var.drbd_machine_type
-  compute_zones        = data.google_compute_zones.available.names
+  compute_zones        = local.compute_zones
   network_name         = local.vpc_name
   network_subnet_name  = local.subnet_name
   os_image             = local.drbd_os_image
@@ -203,7 +203,7 @@ module "netweaver_node" {
   xscs_server_count         = local.netweaver_xscs_server_count
   app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   machine_type              = var.netweaver_machine_type
-  compute_zones             = data.google_compute_zones.available.names
+  compute_zones             = local.compute_zones
   network_name              = local.vpc_name
   network_subnet_name       = local.subnet_name
   os_image                  = local.netweaver_os_image
@@ -228,7 +228,7 @@ module "hana_node" {
   bastion_host          = module.bastion.public_ip
   hana_count            = var.hana_count
   machine_type          = var.machine_type
-  compute_zones         = data.google_compute_zones.available.names
+  compute_zones         = local.compute_zones
   network_name          = local.vpc_name
   network_subnet_name   = local.subnet_name
   os_image              = local.hana_os_image
@@ -255,7 +255,7 @@ module "monitoring" {
   network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
   bastion_host        = module.bastion.public_ip
   monitoring_enabled  = var.monitoring_enabled
-  compute_zones       = data.google_compute_zones.available.names
+  compute_zones       = local.compute_zones
   network_subnet_name = local.subnet_name
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_srv_ip
@@ -274,7 +274,7 @@ module "iscsi_server" {
   bastion_host        = module.bastion.public_ip
   iscsi_count         = local.iscsi_enabled == true ? 1 : 0
   machine_type        = var.machine_type_iscsi_server
-  compute_zones       = data.google_compute_zones.available.names
+  compute_zones       = local.compute_zones
   network_subnet_name = local.subnet_name
   os_image            = local.iscsi_os_image
   host_ips            = [local.iscsi_srv_ip]
