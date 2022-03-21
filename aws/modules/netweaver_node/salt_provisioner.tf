@@ -42,6 +42,8 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 app_server_count: ${var.app_server_count}
 netweaver_inst_disk_device: /dev/nvme1n1
 s3_bucket: ${var.s3_bucket}
+efs_mount_ip:
+  sapmnt: [ ${local.shared_storage_efs == 1 ? join("", aws_efs_file_system.netweaver-efs.*.dns_name) : ""} ]
   EOF
     destination = "/tmp/grains"
   }

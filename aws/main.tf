@@ -125,7 +125,7 @@ module "common_variables" {
   netweaver_swpm_sar                  = var.netweaver_swpm_sar
   netweaver_sapexe_folder             = var.netweaver_sapexe_folder
   netweaver_additional_dvds           = var.netweaver_additional_dvds
-  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : "${join("", aws_efs_file_system.netweaver-efs.*.dns_name)}:"
+  netweaver_nfs_share                 = var.drbd_enabled ? "${local.drbd_cluster_vip}:/${var.netweaver_sid}" : var.netweaver_nfs_share
   netweaver_sapmnt_path               = var.netweaver_sapmnt_path
   netweaver_hana_ip                   = var.hana_ha_enabled ? local.hana_cluster_vip : element(local.hana_ips, 0)
   netweaver_hana_sid                  = var.hana_sid
@@ -227,8 +227,7 @@ module "netweaver_node" {
   key_name              = aws_key_pair.key-pair.key_name
   security_group_id     = local.security_group_id
   route_table_id        = aws_route_table.route-table.id
-  efs_enable_mount      = var.netweaver_enabled == true && var.drbd_enabled == false ? true : false
-  efs_file_system_id    = join("", aws_efs_file_system.netweaver-efs.*.id)
+  efs_performance_mode  = var.netweaver_efs_performance_mode
   aws_credentials       = var.aws_credentials
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
