@@ -11,11 +11,11 @@ The deployment will create 4 new virtual machines to host the NetWeaver environm
 
 Besides the standard installation, an additional HA cluster might be added in top of the ASCS and ERS communication to assure high availability between these two components using the *sap_suse_cluster_connector* (HA is enabled by default).
 
-More details in the official Suse documentation: 
+More details in the official Suse documentation:
 
-[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP_NW740_SLE15_SetupGuide/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP_NW740_SLE15_SetupGuide_color_en.pdf)
+[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP-nw740-sle15-setupguide/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP-nw740-sle15-setupguide_color_en.pdf)
 
-[SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide](https://documentation.suse.com/sbp/all/html/SAP_S4HA10_SetupGuide-SLE15/index.html)
+[SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide](https://documentation.suse.com/sbp/all/html/SAP-S4HA10-setupguide-sle15/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP-S4HA10-setupguide-sle15_color_en.pdf)
 
 The deployment is performed using the [sapnwbootstrap-formula](https://github.com/SUSE/sapnwbootstrap-formula).
 
