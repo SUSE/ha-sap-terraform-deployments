@@ -58,7 +58,13 @@ include:
       {% set nfs_share = grains['netweaver_nfs_share'] %}
     {% endif %}
     # overwrite netweaver nfs variables on a per cloud provider and scenario basis
-    {% if grains['provider'] == 'azure' %}
+    {% if grains['provider'] == 'aws' %}
+      {% if grains['netweaver_shared_storage_type'] == "efs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['efs_mount_ip'][mount][0] %}
+        {% set nfs_share = nfs_server_ip + ':/' %}
+      {% endif %}
+    {% elif grains['provider'] == 'azure' %}
       {% if grains['netweaver_shared_storage_type'] == "anf" %}
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][0] %}
@@ -72,7 +78,13 @@ include:
       {% endif %}
     {% endif %}
   {% elif grains['role'] == "hana_node" %}
-    {% if grains['provider'] == 'azure' %}
+    {% if grains['provider'] == 'aws' %}
+      {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "efs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['efs_mount_ip'][mount][site - 1] %}
+        {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+      {% endif %}
+    {% elif grains['provider'] == 'azure' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "anf" %}
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][site - 1] %}

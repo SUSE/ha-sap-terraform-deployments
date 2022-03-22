@@ -61,14 +61,10 @@ variable "route_table_id" {
   description = "Route table id"
 }
 
-variable "efs_enable_mount" {
-  type        = bool
-  description = "Enable the mount operation on the EFS storage"
-}
-
-variable "efs_file_system_id" {
+variable "efs_performance_mode" {
   type        = string
-  description = "AWS efs file system ID to be used by EFS mount target"
+  description = "Performance mode of the EFS storage used by Netweaver"
+  default     = "generalPurpose"
 }
 
 variable "aws_credentials" {

@@ -172,8 +172,8 @@ variable "netweaver_shared_storage_type" {
   type        = string
   validation {
     condition = (
-      can(regex("^(|drbd|anf|nfs)$", var.netweaver_shared_storage_type))
+      can(regex("^(|drbd|anf|efs|nfs)$", var.netweaver_shared_storage_type))
     )
-    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf|nfs."
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|anf|efs|nfs."
   }
 }
