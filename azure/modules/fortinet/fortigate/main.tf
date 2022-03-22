@@ -607,8 +607,8 @@ locals {
   }
 
   availability_sets = {
-    "as-fortigate" = {
-      name                = "as-fortigate"
+    "avset-fortigate" = {
+      name                = "avset-fortigate"
       location            = var.az_region
       resource_group_name = var.resource_group_name
     }
@@ -652,7 +652,7 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortigate"].id
 
       fgt_license_file    = var.fortinet_licenses["license_a"]
       fgt_ha_priority     = "255"
@@ -714,7 +714,7 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortigate"].id
 
       fgt_license_file    = var.fortinet_licenses["license_b"]
       fgt_ha_priority     = "1"

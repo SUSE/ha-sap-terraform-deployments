@@ -374,8 +374,8 @@ locals {
   }
 
   availability_sets = {
-    "as-fortiadc" = {
-      name                = "as-fortiadc"
+    "avset-fortiadc" = {
+      name                = "avset-fortiadc"
       location            = var.az_region
       resource_group_name = var.resource_group_name
     }
@@ -420,7 +420,7 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortiadc"].id
 
 
     },
@@ -462,7 +462,7 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortiadc"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortiadc"].id
     }
   }
   fadc_configs = {
