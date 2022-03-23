@@ -41,7 +41,9 @@ netweaver:
   sid_adm_password: {{ grains['netweaver_master_password'] }}
   sap_adm_password: {{ grains['netweaver_master_password'] }}
   master_password: {{ grains['netweaver_master_password'] }}
-  {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+  {%- if grains['provider'] == 'aws' and grains['netweaver_shared_storage_type'] == 'efs' %}
+  sapmnt_inst_media: "{{ grains['efs_mount_ip']['sapmnt'][0] }}:/"
+  {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
   sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt"
   {%- else %}
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
@@ -108,7 +110,9 @@ netweaver:
       shared_disk_dev: /dev/vdb
       init_shared_disk: True
       {%- elif grains['ha_enabled'] %}
-      {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+      {%- if grains['provider'] == 'aws' and grains['netweaver_shared_storage_type'] == 'efs' %}
+      shared_disk_dev: {{ grains['efs_mount_ip']['sapmnt'][0] }}:/ASCS
+      {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
       {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
@@ -130,7 +134,9 @@ netweaver:
       {%- if grains['provider'] == 'libvirt' %}
       shared_disk_dev: /dev/vdb
       {%- else %}
-      {%- if grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
+      {%- if grains['provider'] == 'aws' and grains['netweaver_shared_storage_type'] == 'efs' %}
+      shared_disk_dev: {{ grains['efs_mount_ip']['sapmnt'][0] }}:/ERS
+      {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
       {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS{{ '{:0>2}'.format(grains['ers_instance_number']) }}

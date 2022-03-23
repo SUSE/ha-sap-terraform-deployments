@@ -1,8 +1,9 @@
 locals {
-  vm_count        = var.xscs_server_count + var.app_server_count
-  create_ha_infra = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
-  app_start_index = local.create_ha_infra == 1 ? 2 : 1
-  hostname        = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  vm_count           = var.xscs_server_count + var.app_server_count
+  create_ha_infra    = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index    = local.create_ha_infra == 1 ? 2 : 1
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_efs = var.common_variables["netweaver"]["shared_storage_type"] == "efs" ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc
@@ -54,9 +55,21 @@ resource "aws_route" "nw-app-route" {
   network_interface_id   = aws_instance.netweaver[local.app_start_index + count.index].primary_network_interface_id
 }
 
+# EFS storage for nfs share used by Netweaver for /usr/sap/{sid} and /sapmnt
+# It will be created for netweaver only when drbd is disabled
+resource "aws_efs_file_system" "netweaver-efs" {
+  count            = local.vm_count > 0 ? local.shared_storage_efs : 0
+  creation_token   = "${var.common_variables["deployment_name"]}-netweaver-efs"
+  performance_mode = var.efs_performance_mode
+
+  tags = {
+    Name = "${var.common_variables["deployment_name"]}-efs"
+  }
+}
+
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
-  count           = local.vm_count > 0 && var.efs_enable_mount ? min(local.vm_count, 2) : 0
-  file_system_id  = var.efs_file_system_id
+  count           = local.vm_count > 0 && local.shared_storage_efs == 1 ? min(local.vm_count, 2) : 0
+  file_system_id  = aws_efs_file_system.netweaver-efs.0.id
   subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
   security_groups = [var.security_group_id]
 }

@@ -805,6 +805,12 @@ variable "netweaver_cluster_fencing_mechanism" {
   }
 }
 
+variable "netweaver_nfs_share" {
+  description = "URL of the NFS share where /sapmnt and /usr/sap/{sid}/SYS will be mounted. This folder must have the sapmnt and usrsapsys folders. This parameter can be omitted if drbd_enabled is set to true, as a HA nfs share will be deployed by the project. Finally, if it is not used or set empty, these folders are created locally (for single machine deployments)"
+  type        = string
+  default     = ""
+}
+
 variable "netweaver_sapmnt_path" {
   description = "Path where sapmnt folder is stored"
   type        = string
@@ -866,14 +872,14 @@ variable "netweaver_ha_enabled" {
 }
 
 variable "netweaver_shared_storage_type" {
-  description = "shared Storage type to use for Netweaver deployment - not supported yet for this cloud provider yet"
+  description = "shared Storage type to use for Netweaver deployment"
   type        = string
-  default     = ""
+  default     = "efs"
   validation {
     condition = (
-      can(regex("^(|)$", var.netweaver_shared_storage_type))
+      can(regex("^(drbd|efs)$", var.netweaver_shared_storage_type))
     )
-    error_message = "Invalid Netweaver shared storage type. Options: none."
+    error_message = "Invalid Netweaver shared storage type. Options: drbd|efs."
   }
 }
 
