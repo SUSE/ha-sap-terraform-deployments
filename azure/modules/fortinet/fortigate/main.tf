@@ -744,14 +744,12 @@ locals {
 
   role_assignments = {
     "ra-fgt-a" = {
-      scope = var.resource_group_id
-      #scope                = data.azurerm_subscription.subscription.id
+      scope                = var.resource_group_id
       role_definition_name = "Reader"
       principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-a"].identity[0].principal_id
     },
     "ra-fgt-b" = {
-      scope = var.resource_group_id
-      #scope                = data.azurerm_subscription.subscription.id
+      scope                = var.resource_group_id
       role_definition_name = "Reader"
       principal_id         = azurerm_virtual_machine.virtual_machine["vm-fgt-b"].identity[0].principal_id
     }
@@ -942,8 +940,7 @@ resource "azurerm_lb_backend_address_pool" "lb_backend_address_pool" {
 
   for_each = local.lb_backend_address_pools
 
-  name = each.value.name
-  #resource_group_name = each.value.resource_group_name
+  name            = each.value.name
   loadbalancer_id = each.value.loadbalancer_id
 }
 
