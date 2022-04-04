@@ -56,6 +56,10 @@ variable "bastion_private_ip" {
   type = string
 }
 
+variable "netweaver_private_ips" {
+  type = list(any)
+}
+
 variable "fortinet_licenses" {
   type = map(any)
 }
