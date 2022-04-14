@@ -396,13 +396,13 @@ variable "sles4sap_uri" {
 variable "hana_vm_size" {
   description = "VM size for the hana machine"
   type        = string
-  default     = "Standard_E4s_v3"
+  default     = "Standard_E8s_v3"
 }
 
 variable "hana_majority_maker_vm_size" {
   description = "VM size for the HANA Majority Maker machine"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_D4s_v3"
 }
 
 variable "hana_data_disks_configuration" {
@@ -790,7 +790,7 @@ variable "drbd_enabled" {
 variable "drbd_vm_size" {
   description = "VM size for the DRBD machine"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_D4s_v3"
 }
 
 variable "drbd_ips" {
@@ -882,13 +882,13 @@ variable "netweaver_image_uri" {
 variable "netweaver_xscs_vm_size" {
   description = "VM size for the Netweaver xSCS machines"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_D4s_v3"
 }
 
 variable "netweaver_app_vm_size" {
   description = "VM size for the Netweaver application servers"
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_D4s_v3"
 }
 
 variable "netweaver_data_disk_type" {

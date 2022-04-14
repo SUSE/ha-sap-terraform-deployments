@@ -401,7 +401,7 @@ locals {
       backend_port                   = "443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -414,7 +414,7 @@ locals {
       backend_port                   = "80"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -427,7 +427,7 @@ locals {
       backend_port                   = "22"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -440,7 +440,20 @@ locals {
       backend_port                   = "3000"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-02"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
+      enable_floating_ip             = true
+      disable_outbound_snat          = true
+    },
+    "lb-fgt-external-rule-3201" = {
+      name                           = "lb-fgt-external-rule-3201"
+      resource_group_name            = var.resource_group_name
+      loadbalancer_id                = azurerm_lb.lb["lb-fgt-external"].id
+      protocol                       = "Tcp"
+      frontend_port                  = "3201"
+      backend_port                   = "3201"
+      frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
+      probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -453,7 +466,7 @@ locals {
       backend_port                   = "10551"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -466,7 +479,7 @@ locals {
       backend_port                   = "0"
       frontend_ip_configuration_name = "lb-fgt-internal-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-internal-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-internal-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-internal-be-pool-01"].id]
       enable_floating_ip             = true
       disable_outbound_snat          = true
     },
@@ -479,7 +492,7 @@ locals {
       backend_port                   = "41443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = false
       disable_outbound_snat          = true
     },
@@ -492,7 +505,7 @@ locals {
       backend_port                   = "51443"
       frontend_ip_configuration_name = "lb-fgt-external-fe-ip-01"
       probe_id                       = azurerm_lb_probe.lb_probe["lb-fgt-external-probe"].id
-      backend_address_pool_id        = azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id
+      backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_backend_address_pool["lb-fgt-external-be-pool-01"].id]
       enable_floating_ip             = false
       disable_outbound_snat          = true
     }
@@ -594,8 +607,8 @@ locals {
   }
 
   availability_sets = {
-    "as-fortigate" = {
-      name                = "as-fortigate"
+    "avset-fortigate" = {
+      name                = "avset-fortigate"
       location            = var.az_region
       resource_group_name = var.resource_group_name
     }
@@ -639,30 +652,32 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortigate"].id
 
-      fgt_license_file    = var.fortinet_licenses["license_a"]
-      fgt_ha_priority     = "255"
-      fgt_admins_port     = "443"
-      fgt_license_type    = var.vm_license
-      fgt_port1_ip        = cidrhost(var.snet_address_ranges["external-fgt"], 6)
-      fgt_port1_mask      = cidrnetmask(var.snet_address_ranges["external-fgt"])
-      fgt_port1_gateway   = cidrhost(var.snet_address_ranges["external-fgt"], 1)
-      fgt_port2_ip        = cidrhost(var.snet_address_ranges["internal-fgt"], 6)
-      fgt_port2_mask      = cidrnetmask(var.snet_address_ranges["internal-fgt"])
-      fgt_port2_gateway   = cidrhost(var.snet_address_ranges["internal-fgt"], 1)
-      fgt_port3_ip        = cidrhost(var.snet_address_ranges["hasync-ftnt"], 6)
-      fgt_port3_peerip    = cidrhost(var.snet_address_ranges["hasync-ftnt"], 7)
-      fgt_port3_mask      = cidrnetmask(var.snet_address_ranges["hasync-ftnt"])
-      fgt_port4_ip        = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 6)
-      fgt_port4_mask      = cidrnetmask(var.snet_address_ranges["mgmt-ftnt"])
-      fgt_port4_gateway   = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 1)
-      fgt_vnet            = var.vnet_address_range
-      bastion_frontend_ip = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
-      bastion_private_ip  = var.bastion_private_ip
-      spoke_address_range = var.vnet_spoke_address_range
-      fadc_mgmt_a         = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
-      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
+      fgt_license_file     = var.fortinet_licenses["license_a"]
+      fgt_ha_priority      = "255"
+      fgt_admins_port      = "443"
+      fgt_license_type     = var.vm_license
+      fgt_port1_ip         = cidrhost(var.snet_address_ranges["external-fgt"], 6)
+      fgt_port1_mask       = cidrnetmask(var.snet_address_ranges["external-fgt"])
+      fgt_port1_gateway    = cidrhost(var.snet_address_ranges["external-fgt"], 1)
+      fgt_port2_ip         = cidrhost(var.snet_address_ranges["internal-fgt"], 6)
+      fgt_port2_mask       = cidrnetmask(var.snet_address_ranges["internal-fgt"])
+      fgt_port2_gateway    = cidrhost(var.snet_address_ranges["internal-fgt"], 1)
+      fgt_port3_ip         = cidrhost(var.snet_address_ranges["hasync-ftnt"], 6)
+      fgt_port3_peerip     = cidrhost(var.snet_address_ranges["hasync-ftnt"], 7)
+      fgt_port3_mask       = cidrnetmask(var.snet_address_ranges["hasync-ftnt"])
+      fgt_port4_ip         = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 6)
+      fgt_port4_mask       = cidrnetmask(var.snet_address_ranges["mgmt-ftnt"])
+      fgt_port4_gateway    = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 1)
+      fgt_vnet             = var.vnet_address_range
+      bastion_frontend_ip  = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
+      bastion_private_ip   = var.bastion_private_ip
+      netweaver_sap_gui    = azurerm_public_ip.public_ip["pip-fgt-v"].ip_address
+      netweaver_private_ip = var.netweaver_private_ips[2]
+      spoke_address_range  = var.vnet_spoke_address_range
+      fadc_mgmt_a          = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
+      fadc_mgmt_b          = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
     },
     "vm-fgt-b" = {
       name                = "vm-fgt-b"
@@ -701,30 +716,34 @@ locals {
 
       zone = "1"
 
-      availability_set_id = azurerm_availability_set.availability_set["as-fortigate"].id
+      availability_set_id = azurerm_availability_set.availability_set["avset-fortigate"].id
 
-      fgt_license_file    = var.fortinet_licenses["license_b"]
-      fgt_ha_priority     = "1"
-      fgt_admins_port     = "443"
-      fgt_license_type    = var.vm_license
-      fgt_port1_ip        = cidrhost(var.snet_address_ranges["external-fgt"], 7)
-      fgt_port1_mask      = cidrnetmask(var.snet_address_ranges["external-fgt"])
-      fgt_port1_gateway   = cidrhost(var.snet_address_ranges["external-fgt"], 1)
-      fgt_port2_ip        = cidrhost(var.snet_address_ranges["internal-fgt"], 7)
-      fgt_port2_mask      = cidrnetmask(var.snet_address_ranges["internal-fgt"])
-      fgt_port2_gateway   = cidrhost(var.snet_address_ranges["internal-fgt"], 1)
-      fgt_port3_ip        = cidrhost(var.snet_address_ranges["hasync-ftnt"], 7)
-      fgt_port3_peerip    = cidrhost(var.snet_address_ranges["hasync-ftnt"], 6)
-      fgt_port3_mask      = cidrnetmask(var.snet_address_ranges["hasync-ftnt"])
-      fgt_port4_ip        = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 7)
-      fgt_port4_mask      = cidrnetmask(var.snet_address_ranges["mgmt-ftnt"])
-      fgt_port4_gateway   = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 1)
-      fgt_vnet            = var.vnet_address_range
-      bastion_frontend_ip = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
-      bastion_private_ip  = var.bastion_private_ip
-      spoke_address_range = var.vnet_spoke_address_range
-      fadc_mgmt_a         = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
-      fadc_mgmt_b         = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
+      fgt_license_file     = var.fortinet_licenses["license_b"]
+      fgt_ha_priority      = "1"
+      fgt_admins_port      = "443"
+      fgt_license_type     = var.vm_license
+      fgt_port1_ip         = cidrhost(var.snet_address_ranges["external-fgt"], 7)
+      fgt_port1_mask       = cidrnetmask(var.snet_address_ranges["external-fgt"])
+      fgt_port1_gateway    = cidrhost(var.snet_address_ranges["external-fgt"], 1)
+      fgt_port2_ip         = cidrhost(var.snet_address_ranges["internal-fgt"], 7)
+      fgt_port2_mask       = cidrnetmask(var.snet_address_ranges["internal-fgt"])
+      fgt_port2_gateway    = cidrhost(var.snet_address_ranges["internal-fgt"], 1)
+      fgt_port3_ip         = cidrhost(var.snet_address_ranges["hasync-ftnt"], 7)
+      fgt_port3_peerip     = cidrhost(var.snet_address_ranges["hasync-ftnt"], 6)
+      fgt_port3_mask       = cidrnetmask(var.snet_address_ranges["hasync-ftnt"])
+      fgt_port4_ip         = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 7)
+      fgt_port4_mask       = cidrnetmask(var.snet_address_ranges["mgmt-ftnt"])
+      fgt_port4_gateway    = cidrhost(var.snet_address_ranges["mgmt-ftnt"], 1)
+      fgt_vnet             = var.vnet_address_range
+      bastion_frontend_ip  = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
+      bastion_private_ip   = var.bastion_private_ip
+      bastion_frontend_ip  = azurerm_public_ip.public_ip["pip-bastion-lb-fe"].ip_address
+      bastion_private_ip   = var.bastion_private_ip
+      netweaver_sap_gui    = azurerm_public_ip.public_ip["pip-fgt-v"].ip_address
+      netweaver_private_ip = var.netweaver_private_ips[2]
+      spoke_address_range  = var.vnet_spoke_address_range
+      fadc_mgmt_a          = cidrhost(var.snet_address_ranges["internal-fadc"], 6)
+      fadc_mgmt_b          = cidrhost(var.snet_address_ranges["internal-fadc"], 7)
 
     }
   }
@@ -759,6 +778,9 @@ module "os_image_reference" {
   os_image = var.os_image
 }
 
+data "azurerm_subscription" "subscription" {
+}
+
 resource "local_file" "file" {
 
   for_each = local.fgt_configs
@@ -766,6 +788,20 @@ resource "local_file" "file" {
   filename = "${path.module}/${each.value.name}.txt"
   content  = each.value.config
 }
+
+resource "azurerm_role_assignment" "role_assignment" {
+
+  for_each = local.role_assignments
+
+  scope                = each.value.scope
+  role_definition_name = each.value.role_definition_name
+  principal_id         = each.value.principal_id
+
+  depends_on = [
+    azurerm_virtual_machine.virtual_machine
+  ]
+}
+
 resource "azurerm_public_ip" "public_ip" {
 
   for_each = local.public_ips
@@ -910,9 +946,8 @@ resource "azurerm_lb_backend_address_pool" "lb_backend_address_pool" {
 
   for_each = local.lb_backend_address_pools
 
-  name                = each.value.name
-  resource_group_name = each.value.resource_group_name
-  loadbalancer_id     = each.value.loadbalancer_id
+  name            = each.value.name
+  loadbalancer_id = each.value.loadbalancer_id
 }
 
 resource "azurerm_lb_probe" "lb_probe" {
@@ -939,7 +974,7 @@ resource "azurerm_lb_rule" "lb_rule" {
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   probe_id                       = each.value.probe_id
-  backend_address_pool_id        = each.value.backend_address_pool_id
+  backend_address_pool_ids       = each.value.backend_address_pool_ids
   enable_floating_ip             = each.value.enable_floating_ip
   disable_outbound_snat          = each.value.disable_outbound_snat
 }
@@ -1080,41 +1115,30 @@ data "template_file" "custom_data" {
 
   template = file("${path.module}/${each.value.config_template}")
   vars = {
-    fgt_id              = each.value.name
-    fgt_license_file    = each.value.fgt_license_file
-    fgt_ha_priority     = each.value.fgt_ha_priority
-    fgt_admins_port     = each.value.fgt_admins_port
-    fgt_license_type    = each.value.fgt_license_type
-    fgt_port1_ip        = each.value.fgt_port1_ip
-    fgt_port1_mask      = each.value.fgt_port1_mask
-    fgt_port1_gateway   = each.value.fgt_port1_gateway
-    fgt_port2_ip        = each.value.fgt_port2_ip
-    fgt_port2_mask      = each.value.fgt_port2_mask
-    fgt_port2_gateway   = each.value.fgt_port2_gateway
-    fgt_port3_ip        = each.value.fgt_port3_ip
-    fgt_port3_mask      = each.value.fgt_port3_mask
-    fgt_port3_peerip    = each.value.fgt_port3_peerip
-    fgt_port4_ip        = each.value.fgt_port4_ip
-    fgt_port4_mask      = each.value.fgt_port4_mask
-    fgt_port4_gateway   = each.value.fgt_port4_gateway
-    fgt_vnet            = each.value.fgt_vnet
-    bastion_frontend_ip = each.value.bastion_frontend_ip
-    bastion_private_ip  = each.value.bastion_private_ip
-    spoke_address_range = each.value.spoke_address_range
-    fadc_mgmt_a         = each.value.fadc_mgmt_a
-    fadc_mgmt_b         = each.value.fadc_mgmt_b
+    fgt_id               = each.value.name
+    fgt_license_file     = each.value.fgt_license_file
+    fgt_ha_priority      = each.value.fgt_ha_priority
+    fgt_admins_port      = each.value.fgt_admins_port
+    fgt_license_type     = each.value.fgt_license_type
+    fgt_port1_ip         = each.value.fgt_port1_ip
+    fgt_port1_mask       = each.value.fgt_port1_mask
+    fgt_port1_gateway    = each.value.fgt_port1_gateway
+    fgt_port2_ip         = each.value.fgt_port2_ip
+    fgt_port2_mask       = each.value.fgt_port2_mask
+    fgt_port2_gateway    = each.value.fgt_port2_gateway
+    fgt_port3_ip         = each.value.fgt_port3_ip
+    fgt_port3_mask       = each.value.fgt_port3_mask
+    fgt_port3_peerip     = each.value.fgt_port3_peerip
+    fgt_port4_ip         = each.value.fgt_port4_ip
+    fgt_port4_mask       = each.value.fgt_port4_mask
+    fgt_port4_gateway    = each.value.fgt_port4_gateway
+    fgt_vnet             = each.value.fgt_vnet
+    bastion_frontend_ip  = each.value.bastion_frontend_ip
+    bastion_private_ip   = each.value.bastion_private_ip
+    netweaver_sap_gui    = each.value.netweaver_sap_gui
+    netweaver_private_ip = each.value.netweaver_private_ip
+    spoke_address_range  = each.value.spoke_address_range
+    fadc_mgmt_a          = each.value.fadc_mgmt_a
+    fadc_mgmt_b          = each.value.fadc_mgmt_b
   }
-}
-
-resource "azurerm_role_assignment" "role_assignment" {
-
-  for_each = local.role_assignments
-
-  scope                = each.value.scope
-  role_definition_name = each.value.role_definition_name
-  principal_id         = each.value.principal_id
-
-  depends_on = [
-    azurerm_virtual_machine.virtual_machine
-  ]
 }

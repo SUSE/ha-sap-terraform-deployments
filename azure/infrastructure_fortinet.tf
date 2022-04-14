@@ -55,7 +55,8 @@ module "fortigate" {
   vm_username              = var.fortigate_vm_username
   vm_password              = var.fortigate_vm_password
 
-  bastion_private_ip = local.bastion_private_ip
+  bastion_private_ip    = local.bastion_private_ip
+  netweaver_private_ips = local.netweaver_ips
 
   resource_group_name = local.resource_group_name_ftnt
   resource_group_id   = data.azurerm_resource_group.resource_group[count.index].id
