@@ -2,6 +2,11 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Public ip address of an existing Bastion host (with access to all deployed machines), to use in e.g. hub_spoke network topology."
+  type        = string
+}
+
 variable "az_region" {
   description = "Azure region where the deployment machines will be created"
   type        = string
@@ -34,9 +39,20 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "network_topology" {
+  description = "Network topology to use."
+  type        = string
+}
+
 variable "vnet_name" {
   description = "Virtual network where the bastion subnet will be created"
   type        = string
+}
+
+variable "snet_id" {
+  description = "Existing Virtual subnet ID where the bastion subnet will be created"
+  type        = string
+  default     = ""
 }
 
 variable "snet_address_range" {
@@ -46,4 +62,9 @@ variable "snet_address_range" {
 variable "storage_account" {
   description = "Storage account where the boot diagnostics will be stored"
   type        = string
+}
+
+variable "vnet_hub_create" {
+  description = "Create Hub Network in hub_spoke network topology."
+  type        = bool
 }

@@ -1,4 +1,4 @@
-**/.terraform
+**/.terraform*
 **/terraform.tfstate*
 **/.terraform.tfstate*
 **/terraform*.tfvars
@@ -26,3 +26,7 @@ shell.nix
 venv
 **/.envrc
 **/.direnv
+
+# Misc files
+**/*.lic
+**/*.txt

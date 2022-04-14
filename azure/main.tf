@@ -18,7 +18,7 @@ module "local_execution" {
 # If the addresses are provided by the user will always have preference
 locals {
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
-  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
+  monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_monitoring_address_range, 5)
 
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, var.hana_count + local.hana_ip_start) : cidrhost(local.subnet_address_range, ip_index)]
@@ -58,20 +58,21 @@ locals {
 }
 
 module "common_variables" {
-  source                              = "../generic_modules/common_variables"
-  provider_type                       = "azure"
-  deployment_name                     = local.deployment_name
-  deployment_name_in_hostname         = var.deployment_name_in_hostname
-  reg_code                            = var.reg_code
-  reg_email                           = var.reg_email
-  reg_additional_modules              = var.reg_additional_modules
-  ha_sap_deployment_repo              = var.ha_sap_deployment_repo
-  additional_packages                 = var.additional_packages
-  public_key                          = var.public_key
-  private_key                         = var.private_key
-  authorized_keys                     = var.authorized_keys
-  authorized_user                     = var.admin_user
-  bastion_enabled                     = var.bastion_enabled
+  source                      = "../generic_modules/common_variables"
+  provider_type               = "azure"
+  deployment_name             = local.deployment_name
+  deployment_name_in_hostname = var.deployment_name_in_hostname
+  reg_code                    = var.reg_code
+  reg_email                   = var.reg_email
+  reg_additional_modules      = var.reg_additional_modules
+  ha_sap_deployment_repo      = var.ha_sap_deployment_repo
+  additional_packages         = var.additional_packages
+  public_key                  = var.public_key
+  private_key                 = var.private_key
+  authorized_keys             = var.authorized_keys
+  authorized_user             = var.admin_user
+  # enable bastion if bastion_host is defined or bastion_enabled is set
+  bastion_enabled                     = var.bastion_host != "" ? true : var.bastion_enabled
   bastion_public_key                  = var.bastion_public_key
   bastion_private_key                 = var.bastion_private_key
   provisioner                         = var.provisioner
@@ -156,7 +157,7 @@ module "drbd_node" {
   common_variables    = module.common_variables.configuration
   name                = var.drbd_name
   network_domain      = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
-  bastion_host        = module.bastion.public_ip
+  bastion_host        = local.bastion_host
   az_region           = var.az_region
   drbd_count          = var.drbd_enabled == true ? 2 : 0
   vm_size             = var.drbd_vm_size
@@ -164,7 +165,7 @@ module "drbd_node" {
   os_image            = local.drbd_os_image
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   host_ips            = local.drbd_ips
@@ -176,6 +177,9 @@ module "drbd_node" {
   tenant_id                 = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
+
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
+  depends_on = [local.bastion_provisioner]
 }
 
 module "netweaver_node" {
@@ -183,7 +187,7 @@ module "netweaver_node" {
   common_variables            = module.common_variables.configuration
   name                        = var.netweaver_name
   network_domain              = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
-  bastion_host                = module.bastion.public_ip
+  bastion_host                = local.bastion_host
   az_region                   = var.az_region
   xscs_server_count           = local.netweaver_xscs_server_count
   app_server_count            = var.netweaver_enabled ? var.netweaver_app_server_count : 0
@@ -199,7 +203,7 @@ module "netweaver_node" {
   resource_group_name         = local.resource_group_name
   network_subnet_id           = local.subnet_id
   network_subnet_netapp_id    = local.subnet_netapp_id
-  storage_account             = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account             = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   cluster_ssh_pub             = var.cluster_ssh_pub
   cluster_ssh_key             = var.cluster_ssh_key
   ascs_instance_number        = var.netweaver_ascs_instance_number
@@ -220,6 +224,9 @@ module "netweaver_node" {
   tenant_id                 = data.azurerm_subscription.current.tenant_id
   fence_agent_app_id        = var.fence_agent_app_id
   fence_agent_client_secret = var.fence_agent_client_secret
+
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
+  depends_on = [local.bastion_provisioner]
 }
 
 module "hana_node" {
@@ -227,7 +234,7 @@ module "hana_node" {
   common_variables              = module.common_variables.configuration
   name                          = var.hana_name
   network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  bastion_host                  = module.bastion.public_ip
+  bastion_host                  = local.bastion_host
   az_region                     = var.az_region
   hana_count                    = var.hana_count
   vm_size                       = var.hana_vm_size
@@ -235,7 +242,7 @@ module "hana_node" {
   resource_group_name           = local.resource_group_name
   network_subnet_id             = local.subnet_id
   network_subnet_netapp_id      = local.subnet_netapp_id
-  storage_account               = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account               = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   storage_account_name          = var.storage_account_name
   storage_account_key           = var.storage_account_key
   enable_accelerated_networking = var.hana_enable_accelerated_networking
@@ -262,6 +269,9 @@ module "hana_node" {
   # passed to majority_maker module
   majority_maker_vm_size = var.hana_majority_maker_vm_size
   majority_maker_ip      = local.hana_majority_maker_ip
+
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
+  depends_on = [local.bastion_provisioner]
 }
 
 module "monitoring" {
@@ -269,16 +279,22 @@ module "monitoring" {
   common_variables    = module.common_variables.configuration
   name                = var.monitoring_name
   network_domain      = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
-  bastion_host        = module.bastion.public_ip
+  bastion_host        = local.bastion_host
   monitoring_enabled  = var.monitoring_enabled
   az_region           = var.az_region
   vm_size             = var.monitoring_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   monitoring_uri      = var.monitoring_uri
   os_image            = local.monitoring_os_image
   monitoring_srv_ip   = local.monitoring_ip
+  vnet_name           = local.vnet_name
+  snet_id             = local.subnet_monitoring_id
+  snet_address_range  = local.subnet_monitoring_address_range
+
+  # make sure bastion is reachable via ssh (to prevent parallelization/sequence issues)
+  depends_on = [local.bastion_provisioner]
 }
 
 module "iscsi_server" {
@@ -286,16 +302,18 @@ module "iscsi_server" {
   common_variables    = module.common_variables.configuration
   name                = var.iscsi_name
   network_domain      = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
-  bastion_host        = module.bastion.public_ip
+  bastion_host        = local.bastion_host
   iscsi_count         = local.iscsi_enabled ? 1 : 0
   az_region           = var.az_region
   vm_size             = var.iscsi_vm_size
   resource_group_name = local.resource_group_name
   network_subnet_id   = local.subnet_id
-  storage_account     = azurerm_storage_account.mytfstorageacc.primary_blob_endpoint
+  storage_account     = azurerm_storage_account.tfstorageacc.primary_blob_endpoint
   iscsi_srv_uri       = var.iscsi_srv_uri
   os_image            = local.iscsi_os_image
   host_ips            = [local.iscsi_ip]
   lun_count           = var.iscsi_lun_count
   iscsi_disk_size     = var.iscsi_disk_size
+
+  depends_on = [local.bastion_provisioner]
 }

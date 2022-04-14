@@ -18,6 +18,7 @@ resource "azurerm_availability_set" "drbd-availability-set" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 
@@ -38,6 +39,7 @@ resource "azurerm_lb" "drbd-load-balancer" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 
@@ -123,6 +125,7 @@ resource "azurerm_public_ip" "drbd" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 
@@ -142,6 +145,7 @@ resource "azurerm_network_interface" "drbd" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 
@@ -162,6 +166,7 @@ resource "azurerm_image" "drbd-image" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 
@@ -228,6 +233,7 @@ resource "azurerm_virtual_machine" "drbd" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "drbd_node"
   }
 }
 

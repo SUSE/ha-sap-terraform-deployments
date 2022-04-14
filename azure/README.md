@@ -648,6 +648,12 @@ drbd_cluster_fencing_mechanism = "native"
 netweaver_cluster_fencing_mechanism = "native"
 ```
 
+## Use Hub/Spoke network architecture
+
+First of all, please get familiar with [Microsoft Azure's Hub/Spoke Architecture](https://docs.microsoft.com/en-us/azure/developer/terraform/hub-spoke-introduction).
+
+See `terraform.tfvars` for examples of different deployment scenarios.
+
 ## Extra info
 More info in [Azure's Terraform Create Complete VM Document](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm).
 

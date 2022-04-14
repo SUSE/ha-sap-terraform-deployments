@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "monitoring" {
 
   ip_configuration {
     name                          = "ipconf-primary"
-    subnet_id                     = var.network_subnet_id
+    subnet_id                     = var.snet_id == "" ? var.network_subnet_id : var.snet_id
     private_ip_address_allocation = "static"
     private_ip_address            = var.monitoring_srv_ip
     public_ip_address_id          = local.bastion_enabled ? null : azurerm_public_ip.monitoring.0.id
@@ -22,6 +22,7 @@ resource "azurerm_network_interface" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 
@@ -35,6 +36,7 @@ resource "azurerm_public_ip" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 
@@ -55,6 +57,7 @@ resource "azurerm_image" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 
@@ -120,6 +123,7 @@ resource "azurerm_virtual_machine" "monitoring" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "monitoring_srv"
   }
 }
 

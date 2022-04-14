@@ -3,9 +3,8 @@ variable "common_variables" {
 }
 
 variable "bastion_host" {
-  description = "Bastion host address"
+  description = "Public ip address of an existing Bastion host (with access to all deployed machines), to use in e.g. hub_spoke network topology."
   type        = string
-  default     = ""
 }
 
 variable "monitoring_enabled" {
@@ -65,4 +64,19 @@ variable "monitoring_srv_ip" {
   description = "monitoring server address"
   type        = string
   default     = ""
+}
+
+variable "vnet_name" {
+  description = "Virtual network where the monitoring subnet will be created"
+  type        = string
+}
+
+variable "snet_id" {
+  description = "Existing Virtual subnet ID where the monitoring subnet will be created"
+  type        = string
+  default     = ""
+}
+
+variable "snet_address_range" {
+  description = "Subnet address range of the monitoring subnet"
 }

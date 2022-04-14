@@ -1,5 +1,5 @@
 locals {
-  node_count = var.common_variables["provisioner"] == "salt" ? local.bastion_count : 0
+  node_count = var.common_variables["provisioner"] == "salt" ? 1 : 0
 }
 
 resource "null_resource" "bastion_provisioner" {
@@ -10,10 +10,12 @@ resource "null_resource" "bastion_provisioner" {
   }
 
   connection {
-    host        = element(data.azurerm_public_ip.bastion.*.ip_address, count.index)
+    host        = local.public_ip_address
     type        = "ssh"
     user        = var.common_variables["authorized_user"]
     private_key = var.common_variables["bastion_private_key"]
+    # on fortinet, a default timeout of 5m is not enough to bootstrap everything
+    timeout = "60m"
   }
 
   provisioner "file" {
@@ -34,7 +36,7 @@ module "bastion_provision" {
   instance_ids = null_resource.bastion_provisioner.*.id
   user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["bastion_private_key"]
-  public_ips   = data.azurerm_public_ip.bastion.*.ip_address
+  public_ips   = [local.public_ip_address]
   background   = var.common_variables["background"]
   reboot       = false
 }

@@ -33,6 +33,7 @@ resource "azurerm_availability_set" "hana-availability-set" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
@@ -64,6 +65,7 @@ resource "azurerm_lb" "hana-load-balancer" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
@@ -170,6 +172,7 @@ resource "azurerm_network_interface" "hana" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
@@ -183,6 +186,7 @@ resource "azurerm_public_ip" "hana" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
@@ -201,6 +205,7 @@ resource "azurerm_image" "sles4sap" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
@@ -238,6 +243,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
   #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
   #   replication_frequency     = "10minutes"
   # }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
+  }
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
@@ -273,6 +283,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
   #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
   #   replication_frequency     = "10minutes"
   # }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
+  }
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
@@ -308,6 +323,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
   #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
   #   replication_frequency     = "10minutes"
   # }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
+  }
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
@@ -343,6 +363,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
   #   remote_volume_resource_id = azurerm_netapp_volume.example_primary.id
   #   replication_frequency     = "10minutes"
   # }
+
+  tags = {
+    workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
+  }
 }
 
 
@@ -421,6 +446,7 @@ resource "azurerm_virtual_machine" "hana" {
 
   tags = {
     workspace = var.common_variables["deployment_name"]
+    role      = "hana_node"
   }
 }
 
