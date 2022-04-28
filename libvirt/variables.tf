@@ -187,6 +187,18 @@ variable "hana_node_memory" {
   default     = 32678
 }
 
+variable "majority_maker_node_vcpu" {
+  description = "Number of CPUs for the HANA machines"
+  type        = number
+  default     = 1
+}
+
+variable "majority_maker_node_memory" {
+  description = "Memory (in MBs) for the HANA machines"
+  type        = number
+  default     = 1024
+}
+
 variable "hana_fstype" {
   description = "Filesystem type to use for HANA"
   type        = string
@@ -200,6 +212,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -428,7 +452,13 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
+}
+
+variable "hana_scale_out_nfs" {
+  description = "This defines the base mountpoint on the NFS server for /hana/* and its sub directories in scale-out scenarios. It can be e.g. on the DRBD cluster (like for NetWeaver) or any other NFS share."
+  type        = string
+  default     = ""
 }
 
 # SBD related variables
@@ -851,8 +881,8 @@ variable "drbd_cluster_fencing_mechanism" {
   }
 }
 
-variable "drbd_nfs_mounting_point" {
-  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
+variable "nfs_mounting_point" {
+  description = "Mounting point of the NFS share created on the DRBD or NFS server (`/mnt` must not be used in Azure)"
   type        = string
   default     = "/mnt_permanent/sapdata"
 }
