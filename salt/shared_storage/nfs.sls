@@ -34,8 +34,9 @@ include:
   {% set mount_base = "/tmp" %}
   {% set persist = False %}
 {% elif grains['role'] == "hana_node" %}
-  {% set mounts = ["data", "log", "backup", "shared"] %}
-  {% if grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+  {% if grains['provider'] == 'gcp' and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% elif grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
     {% set mounts = grains["nfs_mount_ip"] %}
   {% elif grains['provider'] == 'openstack' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
     {% set mounts = grains["nfs_mount_ip"] %}
@@ -100,6 +101,12 @@ include:
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][site - 1] %}
         {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+      {% endif %}
+    {% elif grains['provider'] == 'gcp' %}
+      {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][site - 1] %}
+        {% set nfs_share = nfs_server_ip + ':/' + mount + '_' + site|string %}
       {% endif %}
     {% elif grains['provider'] == 'libvirt' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
