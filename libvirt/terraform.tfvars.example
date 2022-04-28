@@ -26,7 +26,7 @@ iprange = "192.168.XXX.Y/24"
 
 # Use an already existing image. The image must be in the same storage pool defined in `storage_pool` parameter
 # This option is way faster as the image must not be downloaded
-#volume_name = "SLES4SAP-15_SP1"
+#volume_name = "SLES4SAP-15_SP3"
 
 #################################
 # General configuration variables
@@ -113,10 +113,6 @@ iprange = "192.168.XXX.Y/24"
 # hana_source_image = "url-to-your-sles4sap-image"
 # hana_volume_name   = "SLES4SAP-15_SP0"
 
-# Disk size for HANA database content in bytes
-#hana_node_disk_size  = 68719476736 # 64GB
-# For S/4HANA set a big disk size
-#hana_node_disk_size  = 375809638400 # 350GB
 
 # The next variables define how the HANA installation software is obtained.
 # 'hana_inst_master' is a NFS share where HANA installation files (extracted or not) are stored
@@ -198,6 +194,39 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #scenario_type = "performance-optimized" # default
 # or
 #scenario_type = "cost-optimized"
+
+# local disk configuration  - scale-up example
+#hana_data_disks_configuration = {
+#  disks_size       = "256,256,256,256,64,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "100#100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  disks_size       = "256,256,256,256,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
+
+# local Disk configuration - scale-out with standby nodes example
+# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "pd-ssd"
+#  disks_size       = "64"
+#  # The next variables are used during the provisioning
+#  luns        = "0"
+#  names       = "usrsap"
+#  lv_sizes    = "100"
+#  paths = "/usr/sap"
+#}
 
 #######################
 # SBD related variables

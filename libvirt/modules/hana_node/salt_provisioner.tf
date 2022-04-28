@@ -45,8 +45,8 @@ network_domain: ${var.network_domain}
 timezone: ${var.timezone}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 host_ip: ${element(var.host_ips, count.index)}
-hana_disk_device: /dev/vdb
-sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdc" : ""}"
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", var.block_devices), )}}
+sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdb" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 node_count: ${var.hana_count + local.create_scale_out}
