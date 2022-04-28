@@ -200,3 +200,9 @@ variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
 }
+
+variable "hana_basepath_shared" {
+  description = "Set persistence.basepath_shared in global.ini (SAP Note 2080991)."
+  type        = bool
+  default     = true
+}
