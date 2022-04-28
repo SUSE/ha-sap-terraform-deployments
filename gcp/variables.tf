@@ -234,6 +234,12 @@ variable "machine_type" {
   default     = "n1-highmem-32"
 }
 
+variable "machine_type_majority_maker" {
+  description = "The instance type of the hana majority_maker"
+  type        = string
+  default     = "n1-standard-4"
+}
+
 variable "hana_os_image" {
   description = "The image used to create the hana machines"
   type        = string
@@ -247,6 +253,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -487,9 +505,51 @@ variable "hana_scale_out_addhosts" {
 }
 
 variable "hana_scale_out_standby_count" {
-  description = "Number of HANA scale-out standby nodes to be deployed per site"
+  description = "Number of HANA scale-out standby nodes to be deployed per site."
   type        = number
-  default     = "1"
+  default     = "0"
+}
+
+variable "filestore_tier" {
+  description = "service level / tier for filestore shared Storage"
+  type        = string
+  default     = "BASIC_SSD"
+  validation {
+    condition = (
+      can(regex("^(BASIC_SSD|ENTERPRISE)$", var.filestore_tier))
+    )
+    error_message = "Invalid filestore Pool service level. Options: BASIC_SSD|ENTERPRISE."
+  }
+}
+
+variable "netweaver_filestore_quota_sapmnt" {
+  description = "Quota for filestore shared storage volume Netweaver"
+  type        = number
+  default     = "1024"
+}
+
+variable "hana_scale_out_filestore_quota_data" {
+  description = "Quota for filestore shared storage volume HANA scale-out data"
+  type        = number
+  default     = "1024"
+}
+
+variable "hana_scale_out_filestore_quota_log" {
+  description = "Quota for filestore shared storage volume HANA scale-out log"
+  type        = number
+  default     = "1024"
+}
+
+variable "hana_scale_out_filestore_quota_backup" {
+  description = "Quota for filestore shared storage volume HANA scale-out backup"
+  type        = number
+  default     = "1024"
+}
+
+variable "hana_scale_out_filestore_quota_shared" {
+  description = "Quota for filestore shared storage volume HANA scale-out shared"
+  type        = number
+  default     = "1024"
 }
 
 # Monitoring related variables

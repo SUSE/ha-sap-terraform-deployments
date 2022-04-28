@@ -1,11 +1,14 @@
 # HANA deployment in GCP
 
 locals {
-  create_scale_out       = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
-  create_ha_infra        = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  bastion_enabled        = var.common_variables["bastion_enabled"]
-  provisioning_addresses = local.bastion_enabled ? google_compute_instance.clusternodes.*.network_interface.0.network_ip : google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
-  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  create_scale_out         = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  create_ha_infra          = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  bastion_enabled          = var.common_variables["bastion_enabled"]
+  provisioning_addresses   = local.bastion_enabled ? google_compute_instance.clusternodes.*.network_interface.0.network_ip : google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
+  hostname                 = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_filestore = var.common_variables["hana"]["scale_out_shared_storage_type"] == "filestore" ? 1 : 0
+  compute_zones_hana       = slice(var.compute_zones, 0, 2)
+  sites                    = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
 
   disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_type   = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
@@ -22,7 +25,6 @@ locals {
       }
     ]
   ])
-  compute_zones_hana = slice(var.compute_zones, 0, 2)
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
@@ -101,6 +103,115 @@ module "hana-secondary-load-balancer" {
   ip_address            = var.common_variables["hana"]["cluster_vip_secondary"]
 }
 
+# Filestore Storage
+resource "google_filestore_instance" "data" {
+  # check if local disk for "data" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") ? local.shared_storage_filestore * local.sites : 0
+
+  provider = google-beta
+  name     = "${var.common_variables["deployment_name"]}-hana-filestore-${count.index + 1}"
+  location = element(local.compute_zones_hana, count.index)
+  tier     = var.filestore_tier
+
+  file_shares {
+    capacity_gb = var.hana_scale_out_filestore_quota_data
+    name        = "data_${count.index + 1}"
+
+    nfs_export_options {
+      ip_ranges   = ["0.0.0.0/0"]
+      access_mode = "READ_WRITE"
+      squash_mode = "NO_ROOT_SQUASH"
+    }
+  }
+
+  networks {
+    network      = var.network_name
+    modes        = ["MODE_IPV4"]
+    connect_mode = "DIRECT_PEERING"
+  }
+}
+
+resource "google_filestore_instance" "log" {
+  # check if local disk for "log" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? local.shared_storage_filestore * local.sites : 0
+
+  provider = google-beta
+  name     = "${var.common_variables["deployment_name"]}-hana-filestore-${count.index + 1}"
+  location = element(local.compute_zones_hana, count.index)
+  tier     = var.filestore_tier
+
+  file_shares {
+    capacity_gb = var.hana_scale_out_filestore_quota_log
+    name        = "log_${count.index + 1}"
+
+    nfs_export_options {
+      ip_ranges   = ["0.0.0.0/0"]
+      access_mode = "READ_WRITE"
+      squash_mode = "NO_ROOT_SQUASH"
+    }
+  }
+
+  networks {
+    network      = var.network_name
+    modes        = ["MODE_IPV4"]
+    connect_mode = "DIRECT_PEERING"
+  }
+}
+
+resource "google_filestore_instance" "backup" {
+  # check if local disk for "backup" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "backup") ? local.shared_storage_filestore * local.sites : 0
+
+  provider = google-beta
+  name     = "${var.common_variables["deployment_name"]}-hana-filestore-${count.index + 1}"
+  location = element(local.compute_zones_hana, count.index)
+  tier     = var.filestore_tier
+
+  file_shares {
+    capacity_gb = var.hana_scale_out_filestore_quota_backup
+    name        = "backup_${count.index + 1}"
+
+    nfs_export_options {
+      ip_ranges   = ["0.0.0.0/0"]
+      access_mode = "READ_WRITE"
+      squash_mode = "NO_ROOT_SQUASH"
+    }
+  }
+
+  networks {
+    network      = var.network_name
+    modes        = ["MODE_IPV4"]
+    connect_mode = "DIRECT_PEERING"
+  }
+}
+
+resource "google_filestore_instance" "shared" {
+  # check if local disk for "shared" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? local.shared_storage_filestore * local.sites : 0
+
+  provider = google-beta
+  name     = "${var.common_variables["deployment_name"]}-hana-filestore-${count.index + 1}"
+  location = element(local.compute_zones_hana, count.index)
+  tier     = var.filestore_tier
+
+  file_shares {
+    capacity_gb = var.hana_scale_out_filestore_quota_shared
+    name        = "shared_${count.index + 1}"
+
+    nfs_export_options {
+      ip_ranges   = ["0.0.0.0/0"]
+      access_mode = "READ_WRITE"
+      squash_mode = "NO_ROOT_SQUASH"
+    }
+  }
+
+  networks {
+    network      = var.network_name
+    modes        = ["MODE_IPV4"]
+    connect_mode = "DIRECT_PEERING"
+  }
+}
+
 resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
   name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
@@ -155,6 +266,27 @@ resource "google_compute_instance" "clusternodes" {
   }
 
   tags = ["hana-group"]
+}
+
+module "hana_majority_maker" {
+  node_count           = local.create_scale_out
+  source               = "../majority_maker_node"
+  common_variables     = var.common_variables
+  name                 = var.name
+  network_domain       = var.network_domain
+  bastion_host         = var.bastion_host
+  hana_count           = var.hana_count
+  majority_maker_ip    = var.majority_maker_ip
+  machine_type         = var.machine_type_majority_maker
+  compute_zones        = var.compute_zones
+  network_name         = var.network_name
+  network_subnet_name  = var.network_subnet_name
+  os_image             = var.os_image
+  gcp_credentials_file = var.gcp_credentials_file
+  host_ips             = var.host_ips
+  iscsi_srv_ip         = var.iscsi_srv_ip
+  cluster_ssh_pub      = var.cluster_ssh_pub
+  cluster_ssh_key      = var.cluster_ssh_key
 }
 
 module "hana_on_destroy" {

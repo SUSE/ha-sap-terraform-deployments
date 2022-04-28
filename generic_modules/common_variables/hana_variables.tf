@@ -183,9 +183,9 @@ variable "hana_scale_out_shared_storage_type" {
   type        = string
   validation {
     condition = (
-      can(regex("^(|anf|efs|filestore|nfs)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|anf|filestore|nfs)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: anf, efs, filestore, nfs."
+    error_message = "Invalid HANA scale out storage type. Options: anf, filestore, nfs."
   }
 }
 
