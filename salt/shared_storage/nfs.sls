@@ -34,7 +34,9 @@ include:
   {% set mount_base = "/tmp" %}
   {% set persist = False %}
 {% elif grains['role'] == "hana_node" %}
-  {% if grains['provider'] == 'gcp' and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
+  {% if grains['provider'] == 'aws' and grains['hana_scale_out_shared_storage_type'] == "efs" %}
+    {% set mounts = grains["efs_mount_ip"] %}
+  {% elif grains['provider'] == 'gcp' and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
     {% set mounts = grains["nfs_mount_ip"] %}
   {% elif grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
     {% set mounts = grains["nfs_mount_ip"] %}
@@ -94,7 +96,7 @@ include:
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "efs" %}
         # define IPs and share
         {% set nfs_server_ip = grains['efs_mount_ip'][mount][site - 1] %}
-        {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+        {% set nfs_share = nfs_server_ip + ':/' %}
       {% endif %}
     {% elif grains['provider'] == 'azure' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "anf" %}

@@ -230,6 +230,12 @@ variable "hana_instancetype" {
   default     = "r6i.xlarge"
 }
 
+variable "hana_majority_maker_instancetype" {
+  description = "The instance type of the hana majority maker node"
+  type        = string
+  default     = "t3.micro"
+}
+
 variable "hana_subnet_address_range" {
   description = "List of address ranges to create the subnets for the hana machines. If not given the addresses will be generated based on vpc_address_range"
   type        = list(string)
@@ -280,6 +286,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. Must be in a third subnet."
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -459,7 +477,7 @@ variable "hana_scale_out_enabled" {
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
   type        = string
-  default     = ""
+  default     = "efs"
   validation {
     condition = (
       can(regex("^(|efs)$", var.hana_scale_out_shared_storage_type))
@@ -479,7 +497,13 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
+}
+
+variable "hana_efs_performance_mode" {
+  type        = string
+  description = "Performance mode of the EFS storage used by HANA"
+  default     = "generalPurpose"
 }
 
 # DRBD related variables

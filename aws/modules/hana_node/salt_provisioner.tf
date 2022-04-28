@@ -39,6 +39,10 @@ cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 node_count: ${var.hana_count + local.create_scale_out}
 hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", join(",", aws_instance.hana[count.index].ebs_block_device.*.volume_id)), )}}
+efs_mount_ip:
+  ${local.shared_storage_efs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [ ${join(", ", aws_efs_file_system.scale-out-efs-shared.*.dns_name)} ]" : ""}
+majority_maker_node: ${local.create_scale_out == 1 ? "${local.hostname}mm" : ""}
+majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"
   }
