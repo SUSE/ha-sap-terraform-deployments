@@ -543,7 +543,7 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
 }
 
 # SBD related variables
