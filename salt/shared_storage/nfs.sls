@@ -35,6 +35,11 @@ include:
   {% set persist = False %}
 {% elif grains['role'] == "hana_node" %}
   {% set mounts = ["data", "log", "backup", "shared"] %}
+  {% if grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% elif grains['provider'] == 'openstack' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% endif %}
   {% set mount_base = "/hana" %}
   {% set persist = True %}
   {% set hana_sid = grains['hana_sid'].upper() %}
@@ -70,6 +75,12 @@ include:
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][0] %}
         {% set nfs_share = nfs_server_ip + ':/netweaver-' + mount %}
       {% endif %}
+    {% elif grains['provider'] == 'libvirt' %}
+      {% if grains['netweaver_shared_storage_type'] == "nfs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][0] %}
+        {% set nfs_share = grains['netweaver_nfs_share'] + '/' + mount %}
+      {% endif %}
     {% elif grains['provider'] == 'openstack' %}
       {% if grains['netweaver_shared_storage_type'] == "nfs" %}
         # define IPs and share
@@ -89,6 +100,13 @@ include:
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][site - 1] %}
         {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+      {% endif %}
+    {% elif grains['provider'] == 'libvirt' %}
+      {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][site - 1] %}
+        {% set nfs_dir = grains['nfs_mount_dir'][mount][site - 1] %}
+        {% set nfs_share = nfs_server_ip + ':' + nfs_dir %}
       {% endif %}
     {% elif grains['provider'] == 'openstack' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
