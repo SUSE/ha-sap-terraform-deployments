@@ -203,10 +203,10 @@ hana_flavor = "8C-32GB-40GB-200GB"
 # Number of nodes in the cluster
 # 2 nodes will always be scale-up
 # 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
-hana_count = "2"
+#hana_count = "2"
 
 # enable to use HANA scale-out
-#hana_scale_out_enabled = false
+#hana_scale_out_enabled = true
 
 # HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
 # see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
@@ -218,7 +218,7 @@ hana_count = "2"
 # HANA scale-out roles
 # These role assignments are made per HANA site
 # Number of standby nodes per site
-#hana_scale_out_standby_count = 1 # default:1 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+#hana_scale_out_standby_count = 0 # default:0 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
 
 #majority_maker_flavor = "2C-2GB-40GB"
 #majority_maker_ip     = "10.0.0.9"
