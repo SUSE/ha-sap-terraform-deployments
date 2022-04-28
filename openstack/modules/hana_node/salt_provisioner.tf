@@ -59,10 +59,10 @@ iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 nfs_mount_ip:
-  data: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
-  log: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
-  backup: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
-  shared: [ ${local.shared_storage_nfs == 1 ? "${var.nfs_srv_ip}, ${var.nfs_srv_ip}" : ""} ]
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") ? "data: [${var.nfs_srv_ip}, ${var.nfs_srv_ip}]" : ""}
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? "log: [${var.nfs_srv_ip}, ${var.nfs_srv_ip}]" : ""}
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "backup") ? "backup: [${var.nfs_srv_ip}, ${var.nfs_srv_ip}]" : ""}
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [${var.nfs_srv_ip}, ${var.nfs_srv_ip}]" : ""}
 nfs_mounting_point: ${var.nfs_mounting_point}
 node_count: ${var.hana_count + local.create_scale_out}
 majority_maker_node: ${local.create_scale_out == 1 ? "${local.hostname}mm" : ""}
