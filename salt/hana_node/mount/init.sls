@@ -4,9 +4,7 @@ include:
   - hana_node.mount.azure
   {% elif grains['provider'] == 'gcp' %}
   - hana_node.mount.gcp
-  {% elif grains['provider'] == 'openstack' %}
-  - hana_node.mount.openstack
-  {%- if grains['provider'] in ['libvirt'] %}
+  {%- if grains['provider'] in ['libvirt', 'openstack'] %}
   - hana_node.mount.lvm
   {% else %}
   - hana_node.mount.mount

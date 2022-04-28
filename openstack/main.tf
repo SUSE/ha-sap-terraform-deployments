@@ -241,32 +241,30 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  region                = var.region
-  region_net            = var.region_net
-  bastion_host          = module.bastion.public_ip
-  hana_count            = var.hana_count
-  flavor                = var.hana_flavor
-  userdata              = data.template_file.userdata.rendered
-  network_name          = local.network_name
-  network_id            = local.network_id
-  network_subnet_name   = local.subnet_name
-  network_subnet_id     = local.subnet_id
-  firewall_internal     = openstack_networking_secgroup_v2.ha_firewall_internal.id
-  os_image              = local.hana_os_image
-  host_ips              = local.hana_ips
-  iscsi_srv_ip          = module.iscsi_server.iscsisrv_ip
-  hana_data_disk_type   = var.hana_data_disk_type
-  hana_data_disk_size   = var.hana_data_disk_size
-  hana_backup_disk_type = var.hana_backup_disk_type
-  hana_backup_disk_size = var.hana_backup_disk_size
-  cluster_ssh_pub       = var.cluster_ssh_pub
-  cluster_ssh_key       = var.cluster_ssh_key
-  nfs_srv_ip            = local.nfs_srv_ip
-  nfs_mounting_point    = var.nfs_nfs_mounting_point
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  region                        = var.region
+  region_net                    = var.region_net
+  bastion_host                  = module.bastion.public_ip
+  hana_count                    = var.hana_count
+  flavor                        = var.hana_flavor
+  userdata                      = data.template_file.userdata.rendered
+  network_name                  = local.network_name
+  network_id                    = local.network_id
+  network_subnet_name           = local.subnet_name
+  network_subnet_id             = local.subnet_id
+  firewall_internal             = openstack_networking_secgroup_v2.ha_firewall_internal.id
+  os_image                      = local.hana_os_image
+  host_ips                      = local.hana_ips
+  iscsi_srv_ip                  = module.iscsi_server.iscsisrv_ip
+  hana_data_disk_type           = var.hana_data_disk_type
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  nfs_srv_ip                    = local.nfs_srv_ip
+  nfs_mounting_point            = var.nfs_nfs_mounting_point
   # passed to majority_maker module
   majority_maker_flavor = var.hana_majority_maker_flavor
   majority_maker_ip     = local.hana_majority_maker_ip
