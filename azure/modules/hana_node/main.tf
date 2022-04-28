@@ -226,7 +226,8 @@ resource "azurerm_image" "sles4sap" {
 
 # ANF volumes
 resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
-  count = local.shared_storage_anf * local.sites
+  # check if local disk for "data" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") ? local.shared_storage_anf * local.sites : 0
 
   lifecycle {
     prevent_destroy = false
@@ -262,7 +263,8 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
-  count = local.shared_storage_anf * local.sites
+  # check if local disk for "log" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? local.shared_storage_anf * local.sites : 0
 
   lifecycle {
     prevent_destroy = false
@@ -298,7 +300,8 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
-  count = local.shared_storage_anf * local.sites
+  # check if local disk for "backup" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "backup") ? local.shared_storage_anf * local.sites : 0
 
   lifecycle {
     prevent_destroy = false
@@ -334,7 +337,8 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
-  count = local.shared_storage_anf * local.sites
+  # check if local disk for "shared" exists
+  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? local.shared_storage_anf * local.sites : 0
 
   lifecycle {
     prevent_destroy = false

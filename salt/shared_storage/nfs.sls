@@ -36,19 +36,23 @@ include:
 {% elif grains['role'] == "hana_node" %}
   {% if grains['provider'] == 'aws' and grains['hana_scale_out_shared_storage_type'] == "efs" %}
     {% set mounts = grains["efs_mount_ip"] %}
+  {% elif grains['provider'] == 'azure' and grains['hana_scale_out_shared_storage_type'] == "anf" %}
+    {% set mounts = grains["anf_mount_ip"] %}
   {% elif grains['provider'] == 'gcp' and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
     {% set mounts = grains["nfs_mount_ip"] %}
   {% elif grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
     {% set mounts = grains["nfs_mount_ip"] %}
   {% elif grains['provider'] == 'openstack' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
     {% set mounts = grains["nfs_mount_ip"] %}
+  {% else %}
+    {% set mounts = [] %}
   {% endif %}
   {% set mount_base = "/hana" %}
   {% set persist = True %}
   {% set hana_sid = grains['hana_sid'].upper() %}
   {% set hana_instance = '{:0>2}'.format(grains['hana_instance_number']) %}
   # define sites based on even/odd hostname
-  {% set host_num = grains['host']|replace(grains['name_prefix'], '') %}
+  {% set host_num = grains['hostname']|replace(grains['name_prefix'], '') %}
   {% if (host_num|int % 2) == 1 %}
     {% set site = 1 %}
   {% elif (host_num|int % 2) == 0 %}
@@ -126,7 +130,7 @@ include:
     {% endif %}
   {% endif %}
 
-wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}:
+wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   cmd.run:
     - name: until nc -zvw5 {{ nfs_server_ip }} 2049;do sleep 30;done
     - output_loglevel: quiet
@@ -135,14 +139,14 @@ wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}:
       - pkg: netcat-openbsd
 
 # Add a delay to the folder creation https://github.com/SUSE/ha-sap-terraform-deployments/issues/633
-wait_before_mount_{{ grains['role'] }}_{{ mount }}:
+wait_before_mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   module.run:
     - test.sleep:
       - length: 3
     - require:
-      - wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}
+      - wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}_site{{ site }}
 
-mount_{{ grains['role'] }}_{{ mount }}:
+mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   file.directory:
     - name: {{ mount_base }}/{{ mount }}
     - user: root
@@ -156,18 +160,18 @@ mount_{{ grains['role'] }}_{{ mount }}:
     - persist: {{ persist }}
     - opts: {{ nfs_options }}
     - require:
-      - wait_before_mount_{{ grains['role'] }}_{{ mount }}
+      - wait_before_mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}
       {%- if grains['provider'] == 'azure' %}
       - sls: provider.azure.nfsv4
       {% endif %}
 
-permissions_{{ grains['role'] }}_{{ mount }}:
+permissions_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   file.directory:
     - name: {{ mount_base }}/{{ mount }}
     - user: root
     - mode: "0755"
     - makedirs: True
     - require:
-      - mount_{{ grains['role'] }}_{{ mount }}
+      - mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}
 
 {%- endfor %}
