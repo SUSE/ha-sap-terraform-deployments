@@ -25,7 +25,7 @@ name_prefix: ${local.hostname}
 hostname: ${local.hostname}${format("%02d", count.index + 1)}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: ${var.network_domain}
-hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", join(",", azurerm_virtual_machine.hana[count.index].storage_data_disk.*.lun)), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 sbd_lun_index: 0
