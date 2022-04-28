@@ -35,9 +35,7 @@ hostname: ${local.hostname}${format("%02d", count.index + 1)}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: ${var.network_domain}
 sbd_lun_index: 0
-hana_disk_device: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.0.device_name, count.index))}
-hana_backup_device: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.1.device_name, count.index))}
-hana_inst_disk_device: ${format("%s%s", "/dev/disk/by-id/google-", element(google_compute_instance.clusternodes.*.attached_disk.2.device_name, count.index))}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", join(",", google_compute_instance.clusternodes[count.index].attached_disk.*.device_name)), )}}
 gcp_credentials_file: ${local.gcp_credentials_dest}
 vpc_network_name: ${var.network_name}
 route_name: ${join(",", google_compute_route.hana-route.*.name)}

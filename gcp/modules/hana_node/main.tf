@@ -6,31 +6,34 @@ locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? google_compute_instance.clusternodes.*.network_interface.0.network_ip : google_compute_instance.clusternodes.*.network_interface.0.access_config.0.nat_ip
   hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+
+  disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_type   = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks = flatten([
+    for node in range(var.hana_count) : [
+      for disk in range(local.disks_number) : {
+        node_num    = node
+        node        = "${local.hostname}${format("%02d", node + 1)}"
+        disk_number = disk
+        disk_name   = "${local.hostname}${format("%02d-%s-%02d", node + 1, "disk", disk + 1)}"
+        disk_type   = element(local.disks_type, disk)
+        disk_size   = element(local.disks_size, disk)
+      }
+    ]
+  ])
+  compute_zones_hana = slice(var.compute_zones, 0, 2)
 }
 
 # HANA disks configuration information: https://cloud.google.com/solutions/sap/docs/sap-hana-planning-guide#storage_configuration
-resource "google_compute_disk" "data" {
-  count = var.hana_count
-  name  = "${var.common_variables["deployment_name"]}-hana-data-${count.index}"
-  type  = var.hana_data_disk_type
-  size  = var.hana_data_disk_size
-  zone  = element(var.compute_zones, count.index)
-}
 
-resource "google_compute_disk" "backup" {
-  count = var.hana_count
-  name  = "${var.common_variables["deployment_name"]}-hana-backup-${count.index}"
-  type  = var.hana_backup_disk_type
-  size  = var.hana_backup_disk_size
-  zone  = element(var.compute_zones, count.index)
-}
+resource "google_compute_disk" "disk" {
+  for_each = { for disk in local.disks : "${disk.disk_name}" => disk }
 
-resource "google_compute_disk" "hana-software" {
-  count = var.hana_count
-  name  = "${var.common_variables["deployment_name"]}-hana-software-${count.index}"
-  type  = "pd-standard"
-  size  = "20"
-  zone  = element(var.compute_zones, count.index)
+  name = each.value.disk_name
+  type = each.value.disk_type
+  size = each.value.disk_size
+  zone = element(local.compute_zones_hana, each.value.node_num)
 }
 
 # Don't remove the routes! Even though the RA gcp-vpc-move-route creates them, if they are not created here, the terraform destroy cannot work as it will find new route names
@@ -102,7 +105,7 @@ resource "google_compute_instance" "clusternodes" {
   machine_type = var.machine_type
   name         = "${var.common_variables["deployment_name"]}-${var.name}${format("%02d", count.index + 1)}"
   count        = var.hana_count
-  zone         = element(var.compute_zones, count.index)
+  zone         = element(local.compute_zones_hana, count.index)
 
   can_ip_forward = true
 
@@ -128,27 +131,19 @@ resource "google_compute_instance" "clusternodes" {
   boot_disk {
     initialize_params {
       image = var.os_image
+      size  = 60
     }
 
     auto_delete = true
   }
 
-  attached_disk {
-    source      = element(google_compute_disk.data.*.self_link, count.index)
-    device_name = element(google_compute_disk.data.*.name, count.index)
-    mode        = "READ_WRITE"
-  }
-
-  attached_disk {
-    source      = element(google_compute_disk.backup.*.self_link, count.index)
-    device_name = element(google_compute_disk.backup.*.name, count.index)
-    mode        = "READ_WRITE"
-  }
-
-  attached_disk {
-    source      = element(google_compute_disk.hana-software.*.self_link, count.index)
-    device_name = element(google_compute_disk.hana-software.*.name, count.index)
-    mode        = "READ_WRITE"
+  dynamic "attached_disk" {
+    for_each = { for disk in local.disks : "${disk.disk_name}" => disk if disk.node_num == count.index }
+    content {
+      source      = google_compute_disk.disk[attached_disk.value.disk_name].id
+      device_name = attached_disk.value.disk_name
+      mode        = "READ_WRITE"
+    }
   }
 
   metadata = {
