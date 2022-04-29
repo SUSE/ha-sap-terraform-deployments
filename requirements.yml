@@ -2,19 +2,19 @@
 hana_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.15+git.1647616051.329993c
+  salt-shaptools: 0.3.16+git.1651132315.e44edee
   habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
   saphanabootstrap-formula: 0.9.0+git.1644311138.1ee99f3
 drbd_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.15+git.1647616051.329993c
+  salt-shaptools: 0.3.16+git.1651132315.e44edee
   habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
   drbd-formula: 0.5.0+git.1637569723.cf85049
 netweaver_node:
   python-shaptools: 0.3.12+git.1619007514.1951d23
   python3-shaptools: 0.3.12+git.1619007514.1951d23
-  salt-shaptools: 0.3.15+git.1647616051.329993c
+  salt-shaptools: 0.3.16+git.1651132315.e44edee
   habootstrap-formula: 0.4.4+git.1644311144.3dc7a98
   sapnwbootstrap-formula: 0.7.4+git.1646147057.78b198a
 iscsi_srv:
