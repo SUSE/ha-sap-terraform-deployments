@@ -116,7 +116,7 @@ variable "bastion_enabled" {
 }
 
 variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -154,9 +154,9 @@ variable "network_domain" {
 }
 
 variable "os_image" {
-  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp2:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp3:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "SUSE:sles-sap-15-sp2:gen2:latest"
+  default     = "SUSE:sles-sap-15-sp3:gen2:latest"
 }
 
 variable "timezone" {
@@ -259,7 +259,7 @@ variable "hana_count" {
 }
 
 variable "hana_os_image" {
-  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -569,7 +569,7 @@ variable "iscsi_network_domain" {
 }
 
 variable "iscsi_os_image" {
-  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -636,7 +636,7 @@ variable "monitoring_vm_size" {
 }
 
 variable "monitoring_os_image" {
-  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -692,7 +692,7 @@ variable "drbd_ips" {
 }
 
 variable "drbd_os_image" {
-  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -760,7 +760,7 @@ variable "netweaver_app_server_count" {
 }
 
 variable "netweaver_os_image" {
-  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
