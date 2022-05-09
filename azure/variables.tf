@@ -1001,19 +1001,6 @@ variable "pre_deployment" {
   default     = false
 }
 
-# native fencing
-variable "fence_agent_app_id" {
-  description = "ID of the azure service principal / application that is used for native fencing."
-  type        = string
-  default     = ""
-}
-
-variable "fence_agent_client_secret" {
-  description = "Secret for the azure service principal / application that is used for native fencing."
-  type        = string
-  default     = ""
-}
-
 # ANF shared storage
 variable "anf_account_name" {
   description = "Name of ANF Accounts"

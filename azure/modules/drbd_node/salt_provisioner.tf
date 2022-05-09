@@ -37,11 +37,6 @@ partitions:
   1:
     start: 0%
     end: 100%
-subscription_id: ${var.subscription_id}
-tenant_id: ${var.tenant_id}
-resource_group_name: ${var.resource_group_name}
-fence_agent_app_id: ${var.fence_agent_app_id}
-fence_agent_client_secret: ${var.fence_agent_client_secret}
   EOF
     destination = "/tmp/grains"
   }

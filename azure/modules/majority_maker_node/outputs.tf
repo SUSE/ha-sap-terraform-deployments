@@ -29,3 +29,7 @@ output "cluster_nodes_name" {
 output "cluster_nodes_public_name" {
   value = [data.azurerm_public_ip.majority_maker.*.fqdn]
 }
+
+output "fence_principal_id" {
+  value = var.common_variables["hana"]["fencing_mechanism"] == "native" ? azurerm_virtual_machine.majority_maker.0.identity.0.principal_id : null
+}

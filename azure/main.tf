@@ -171,11 +171,6 @@ module "drbd_node" {
   iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
-  # only used by azure fence agent (native fencing)
-  subscription_id           = data.azurerm_subscription.current.subscription_id
-  tenant_id                 = data.azurerm_subscription.current.tenant_id
-  fence_agent_app_id        = var.fence_agent_app_id
-  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "netweaver_node" {
@@ -215,11 +210,6 @@ module "netweaver_node" {
   anf_pool_name              = local.anf_pool_name
   anf_pool_service_level     = var.anf_pool_service_level
   netweaver_anf_quota_sapmnt = var.netweaver_anf_quota_sapmnt
-  # only used by azure fence agent (native fencing)
-  subscription_id           = data.azurerm_subscription.current.subscription_id
-  tenant_id                 = data.azurerm_subscription.current.tenant_id
-  fence_agent_app_id        = var.fence_agent_app_id
-  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_node" {
@@ -254,11 +244,6 @@ module "hana_node" {
   hana_scale_out_anf_quota_log    = var.hana_scale_out_anf_quota_log
   hana_scale_out_anf_quota_backup = var.hana_scale_out_anf_quota_backup
   hana_scale_out_anf_quota_shared = var.hana_scale_out_anf_quota_shared
-  # only used by azure fence agent (native fencing)
-  subscription_id           = data.azurerm_subscription.current.subscription_id
-  tenant_id                 = data.azurerm_subscription.current.tenant_id
-  fence_agent_app_id        = var.fence_agent_app_id
-  fence_agent_client_secret = var.fence_agent_client_secret
   # passed to majority_maker module
   majority_maker_vm_size = var.hana_majority_maker_vm_size
   majority_maker_ip      = local.hana_majority_maker_ip

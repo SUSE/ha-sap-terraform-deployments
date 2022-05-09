@@ -31,11 +31,6 @@ sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-subscription_id: ${var.subscription_id}
-tenant_id: ${var.tenant_id}
-resource_group_name: ${var.resource_group_name}
-fence_agent_app_id: ${var.fence_agent_app_id}
-fence_agent_client_secret: ${var.fence_agent_client_secret}
 node_count: ${var.hana_count + var.node_count}
 majority_maker_node: vm${var.name}mm
 majority_maker_ip: ${var.majority_maker_ip}
