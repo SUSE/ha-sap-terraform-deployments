@@ -132,13 +132,6 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # true or false (default)
 #hwcct = false
 
-# Variables used with native fencing (azure fence agent)
-# Make sure to check out the documentation:
-# https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-pacemaker#create-azure-fence-agent-stonith-device
-# The fencing mechanism has to be defined on a per cluster basis.
-# fence_agent_app_id = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"       # login
-# fence_agent_client_secret = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # password
-
 ##########################
 # Bastion (jumpbox) machine variables
 ##########################

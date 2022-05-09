@@ -20,7 +20,26 @@ locals {
   ]) : toset([])
 
   hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
-  hostname                      = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+
+  hostname       = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  hostnames_hana = [for h in range(var.hana_count) : format("%s%02d", local.hostname, h + 1)]
+  hostname_mm    = format("%s%s", local.hostname, "mm")
+  hostnames      = local.create_scale_out == 1 ? concat(local.hostnames_hana, [local.hostname_mm]) : local.hostnames_hana
+
+  principal_ids = concat(azurerm_virtual_machine.hana.*.identity.0.principal_id, [module.hana_majority_maker.fence_principal_id])
+  fence_scopes = flatten([
+    for c in range(var.hana_count + local.create_scale_out) : [
+      for n in local.hostnames : {
+        count     = c
+        node      = element(local.hostnames, c)
+        principal = element(local.principal_ids, c)
+        scope     = format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Compute/virtualMachines/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, n)
+      }
+    ]
+  ])
+}
+
+data "azurerm_subscription" "current" {
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -401,7 +420,7 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   os_profile {
-    computer_name  = "${local.hostname}${format("%02d", count.index + 1)}"
+    computer_name  = element(local.hostnames_hana, count.index)
     admin_username = var.common_variables["authorized_user"]
   }
 
@@ -419,15 +438,48 @@ resource "azurerm_virtual_machine" "hana" {
     storage_uri = var.storage_account
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   tags = {
     workspace = var.common_variables["deployment_name"]
   }
 }
 
+resource "azurerm_role_definition" "fence" {
+  count = var.common_variables["hana"]["ha_enabled"] && var.common_variables["hana"]["fencing_mechanism"] == "native" ? 1 : 0
+  name  = "role-fence-${local.hostname}"
+  # It is recommended to use the first entry of the assignable_scopes.
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_definition#scope
+  scope = format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Compute/virtualMachines/%s%02d", data.azurerm_subscription.current.subscription_id, var.resource_group_name, local.hostname, count.index + 1)
+
+  permissions {
+    actions = [
+      "Microsoft.Compute/*/read",
+      "Microsoft.Compute/virtualMachines/powerOff/action",
+      "Microsoft.Compute/virtualMachines/restart/action",
+      "Microsoft.Compute/virtualMachines/start/action"
+    ]
+    not_actions = []
+  }
+
+  assignable_scopes = [
+    for h in local.hostnames : format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Compute/virtualMachines/%s", data.azurerm_subscription.current.subscription_id, var.resource_group_name, h)
+  ]
+}
+
+resource "azurerm_role_assignment" "host" {
+  for_each           = { for r in local.fence_scopes : "${r.node}_${r.scope}" => r if var.common_variables["hana"]["ha_enabled"] && var.common_variables["hana"]["fencing_mechanism"] == "native" }
+  scope              = each.value.scope
+  role_definition_id = element(azurerm_role_definition.fence.*.role_definition_resource_id, 0)
+  principal_id       = each.value.principal
+}
+
 module "hana_majority_maker" {
   source                        = "../majority_maker_node"
   node_count                    = local.create_scale_out
-  name                          = var.name
+  name                          = local.hostname
   common_variables              = var.common_variables
   bastion_host                  = var.bastion_host
   az_region                     = var.az_region
@@ -446,11 +498,6 @@ module "hana_majority_maker" {
   cluster_ssh_key               = var.cluster_ssh_key
   os_image                      = var.os_image
   iscsi_srv_ip                  = var.iscsi_srv_ip
-  # only used by azure fence agent (native fencing)
-  subscription_id           = var.subscription_id
-  tenant_id                 = var.tenant_id
-  fence_agent_app_id        = var.fence_agent_app_id
-  fence_agent_client_secret = var.fence_agent_client_secret
 }
 
 module "hana_on_destroy" {

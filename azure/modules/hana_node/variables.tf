@@ -123,26 +123,6 @@ variable "hana_data_disks_configuration" {
   EOF
 }
 
-variable "subscription_id" {
-  description = "ID of the azure subscription."
-  type        = string
-}
-
-variable "tenant_id" {
-  description = "ID of the azure tenant."
-  type        = string
-}
-
-variable "fence_agent_app_id" {
-  description = "ID of the azure service principal / application that is used for native fencing."
-  type        = string
-}
-
-variable "fence_agent_client_secret" {
-  description = "Secret for the azure service principal / application that is used for native fencing."
-  type        = string
-}
-
 variable "anf_account_name" {
   description = "Name of ANF Accounts"
   type        = string

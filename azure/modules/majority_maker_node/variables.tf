@@ -90,23 +90,3 @@ variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
 }
-
-variable "subscription_id" {
-  description = "ID of the azure subscription."
-  type        = string
-}
-
-variable "tenant_id" {
-  description = "ID of the azure tenant."
-  type        = string
-}
-
-variable "fence_agent_app_id" {
-  description = "ID of the azure service principal / application that is used for native fencing."
-  type        = string
-}
-
-variable "fence_agent_client_secret" {
-  description = "Secret for the azure service principal / application that is used for native fencing."
-  type        = string
-}

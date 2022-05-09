@@ -3,7 +3,6 @@ locals {
   provisioning_address = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
 }
 
-
 # majority maker network configuration
 
 resource "azurerm_network_interface" "majority_maker" {
@@ -66,7 +65,7 @@ module "os_image_reference" {
 
 resource "azurerm_virtual_machine" "majority_maker" {
   count                 = var.node_count
-  name                  = "vm${var.name}mm"
+  name                  = "${var.name}mm"
   location              = var.az_region
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.majority_maker.*.id, count.index)]
@@ -90,7 +89,7 @@ resource "azurerm_virtual_machine" "majority_maker" {
   }
 
   os_profile {
-    computer_name  = "vm${var.name}mm"
+    computer_name  = "${var.name}mm"
     admin_username = var.common_variables["authorized_user"]
   }
 
@@ -106,6 +105,10 @@ resource "azurerm_virtual_machine" "majority_maker" {
   boot_diagnostics {
     enabled     = "true"
     storage_uri = var.storage_account
+  }
+
+  identity {
+    type = "SystemAssigned"
   }
 
   tags = {

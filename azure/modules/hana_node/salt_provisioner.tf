@@ -32,11 +32,6 @@ sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
-subscription_id: ${var.subscription_id}
-tenant_id: ${var.tenant_id}
-resource_group_name: ${var.resource_group_name}
-fence_agent_app_id: ${var.fence_agent_app_id}
-fence_agent_client_secret: ${var.fence_agent_client_secret}
 anf_mount_ip:
   data: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-data.*.mount_ip_addresses.0) : ""} ]
   log: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-log.*.mount_ip_addresses.0) : ""} ]
