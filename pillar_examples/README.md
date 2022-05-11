@@ -44,9 +44,9 @@ Pillars are expected to contain private data such as user passwords required for
 
 SaltStack GPG renderer provides a secure encryption/decryption of pillar data. The configuration of GPG keys and procedure for pillar encryption are described in the Saltstack documentation guide:
 
-- [SaltStack pillar encryption](https://docs.saltstack.com/en/latest/topics/pillar/#pillar-encryption)
+- [SaltStack pillar encryption🔗](https://docs.saltstack.com/en/latest/topics/pillar/#pillar-encryption)
 
-- [SALT GPG RENDERERS](https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html)
+- [SALT GPG RENDERERS🔗](https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html)
 
 **Note:**
 - Only passwordless gpg keys are supported, and the already existing keys cannot be used.

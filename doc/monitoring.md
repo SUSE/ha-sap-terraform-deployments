@@ -27,10 +27,10 @@ Prometheus: http://<monitoring_public_ip>:9090/
 
 These are the exporters installed in the cluster nodes, which provide metrics to be scraped by the Prometheus server:
 
-- [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
-- [ClusterLabs/ha_cluster_exporter](http://github.com/ClusterLabs/ha_cluster_exporter)
-- [SUSE/hanadb_exporter](https://github.com/SUSE/hanadb_exporter)
-- [SUSE/sap_host_exporter](https://github.com/SUSE/sap_host_exporter)
+- [prometheus/node_exporter🔗](https://github.com/prometheus/node_exporter)
+- [ClusterLabs/ha_cluster_exporter🔗](https://github.com/ClusterLabs/ha_cluster_exporter)
+- [SUSE/hanadb_exporter🔗](https://github.com/SUSE/hanadb_exporter)
+- [SUSE/sap_host_exporter🔗](https://github.com/SUSE/sap_host_exporter)
 
 
 ### Multi-cluster monitoring
