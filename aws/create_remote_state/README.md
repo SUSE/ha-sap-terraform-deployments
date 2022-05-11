@@ -11,7 +11,7 @@ If the state file is stored remotely so that many people can access it, then you
 
 ### Show me the code
 
-The Terraform configuration on this directory creates the S3 bucket and DynamoDB table for storing and locking the Terraform state file remotely.  This is known as the [S3 backend](https://www.terraform.io/docs/backends/types/s3.html).
+The Terraform configuration on this directory creates the S3 bucket and DynamoDB table for storing and locking the Terraform state file remotely.  This is known as the [S3 backend🔗](https://www.terraform.io/docs/backends/types/s3.html).
 
 The S3 bucket is created in a particular AWS region.  The name of the S3 must be globally unique.  You can check its availability by checking this URL:
 
