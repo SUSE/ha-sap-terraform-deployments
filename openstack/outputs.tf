@@ -99,3 +99,7 @@ output "netweaver_public_name" {
 output "bastion_public_ip" {
   value = module.bastion.public_ip
 }
+
+output "nfssrv_ip" {
+  value = module.nfs_server.nfssrv_ip
+}
