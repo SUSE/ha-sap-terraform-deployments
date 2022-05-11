@@ -224,10 +224,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_data
 
   export_policy_rule {
-    rule_index        = 1
-    protocols_enabled = ["NFSv4.1"]
-    allowed_clients   = ["0.0.0.0/0"]
-    unix_read_write   = true
+    rule_index          = 1
+    protocols_enabled   = ["NFSv4.1"]
+    allowed_clients     = ["0.0.0.0/0"]
+    unix_read_write     = true
+    root_access_enabled = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -259,10 +260,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_log
 
   export_policy_rule {
-    rule_index        = 1
-    protocols_enabled = ["NFSv4.1"]
-    allowed_clients   = ["0.0.0.0/0"]
-    unix_read_write   = true
+    rule_index          = 1
+    protocols_enabled   = ["NFSv4.1"]
+    allowed_clients     = ["0.0.0.0/0"]
+    unix_read_write     = true
+    root_access_enabled = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -294,10 +296,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_backup
 
   export_policy_rule {
-    rule_index        = 1
-    protocols_enabled = ["NFSv4.1"]
-    allowed_clients   = ["0.0.0.0/0"]
-    unix_read_write   = true
+    rule_index          = 1
+    protocols_enabled   = ["NFSv4.1"]
+    allowed_clients     = ["0.0.0.0/0"]
+    unix_read_write     = true
+    root_access_enabled = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
@@ -329,10 +332,11 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
   storage_quota_in_gb = var.hana_scale_out_anf_quota_shared
 
   export_policy_rule {
-    rule_index        = 1
-    protocols_enabled = ["NFSv4.1"]
-    allowed_clients   = ["0.0.0.0/0"]
-    unix_read_write   = true
+    rule_index          = 1
+    protocols_enabled   = ["NFSv4.1"]
+    allowed_clients     = ["0.0.0.0/0"]
+    unix_read_write     = true
+    root_access_enabled = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
