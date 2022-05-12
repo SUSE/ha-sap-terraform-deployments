@@ -98,15 +98,20 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Other deployment options
 ##########################
 
-# Repository url used to install HA/SAP deployment packages"
-# The latest RPM packages can be found at:
-# https://download.opensuse.org/repositories/network:/ha-clustering:/Factory/{YOUR OS VERSION}
-# Contains the salt formulas rpm packages.
+# Repository url used to install HA/SAP deployment packages
+# It contains the salt formulas rpm packages and other dependencies.
+#
+## Specific Release - for latest release look at https://github.com/SUSE/ha-sap-terraform-deployments/releases
+# To auto detect the SLE version
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8/"
+# Otherwise use a specific SLE version:
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8/SLE_15_SP3/"
+#
+## Development Release (use if on `develop` branch)
 # To auto detect the SLE version
 #ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/"
 # Otherwise use a specific SLE version:
-#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15/"
-#ha_sap_deployment_repo = ""
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15_SP3/"
 
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"

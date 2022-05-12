@@ -117,4 +117,5 @@ After downloading the described options, the files must be stored in the corresp
 - AWS - S3 bucket
 - Azure - Storage account
 - GCP - GCP storage
+- Openstack - NFS share
 - Libvirt - NFS share

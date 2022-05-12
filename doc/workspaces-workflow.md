@@ -4,7 +4,7 @@ We now have remote state in the Terraform configuration for the following provid
 
 This state is by definition shared, meaning that anyone with the correct credentials can destroy the infrastructure deployed by another user (or VM), whether we intend it or not.
 
-To avoid accidental destruction and to support multiple and different deployments (for production, testing, etc.), Terraform has the concept of [Terraform workspaces](https://www.terraform.io/docs/language/state/workspaces.html).
+To avoid accidental destruction and to support multiple and different deployments (for production, testing, etc.), Terraform has the concept of [Terraform workspaces🔗](https://www.terraform.io/docs/language/state/workspaces.html).
 
 Some excerpts:
 

@@ -4,9 +4,9 @@ Besides the default SAP HANA and HA cluster environment, the project can be tune
 
 The deployment will create 2 new virtual machines to host the NFS environment based on DRBD cluster. The DRBD cluster is managed by HA cluster to assure high availability of NFS backing device.
 
-More details in the official [SAP on SUSE HA NFS](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs).
+More details in the official [SAP on SUSE HA NFS🔗](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs).
 
-The deployment is performed using the [drbd-formula](https://github.com/SUSE/drbd-formula) and [habootstrap-formula](https://github.com/SUSE/habootstrap-formula).
+The deployment is performed using the [drbd-formula🔗](https://github.com/SUSE/drbd-formula) and [habootstrap-formula🔗](https://github.com/SUSE/habootstrap-formula).
 
 **Disclaimer: Only available for libvirt, azure and gcp by now.**
 
