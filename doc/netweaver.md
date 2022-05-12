@@ -13,11 +13,11 @@ Besides the standard installation, an additional HA cluster might be added in to
 
 More details in the official Suse documentation:
 
-[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50](https://documentation.suse.com/sbp/all/html/SAP-nw740-sle15-setupguide/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP-nw740-sle15-setupguide_color_en.pdf)
+[SAP NetWeaver Enqueue Replication 1 High Availability Cluster - Setup Guide for SAP NetWeaver 7.40 and 7.50🔗](https://documentation.suse.com/sbp/all/html/SAP-nw740-sle15-setupguide/index.html) [pdf (en)🔗](https://documentation.suse.com/sbp/all/pdf/SAP-nw740-sle15-setupguide_color_en.pdf)
 
-[SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide](https://documentation.suse.com/sbp/all/html/SAP-S4HA10-setupguide-sle15/index.html) [pdf (en)](https://documentation.suse.com/sbp/all/pdf/SAP-S4HA10-setupguide-sle15_color_en.pdf)
+[SAP S/4 HANA - Enqueue Replication 2 High Availability Cluster - Setup Guide🔗](https://documentation.suse.com/sbp/all/html/SAP-S4HA10-setupguide-sle15/index.html) [pdf (en)🔗](https://documentation.suse.com/sbp/all/pdf/SAP-S4HA10-setupguide-sle15_color_en.pdf)
 
-The deployment is performed using the [sapnwbootstrap-formula](https://github.com/SUSE/sapnwbootstrap-formula).
+The deployment is performed using the [sapnwbootstrap-formula🔗](https://github.com/SUSE/sapnwbootstrap-formula).
 
 Available for libvirt, azure, gcp and aws.
 

@@ -1,1 +1,1 @@
-venv,.git,**/.terraform,**/terraform.**
+venv,.direnv,.git,**/.terraform,**/terraform.**,*.svg

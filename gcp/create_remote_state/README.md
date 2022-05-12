@@ -6,9 +6,9 @@ If you are working on a team, then its best to store the terraform state file re
 
 ### Show me the code
 
-The Terraform configuration on this directory creates the GCS bucket for storing and locking the Terraform state file remotely.  This is known as the [GCS backend](https://www.terraform.io/docs/backends/types/gcs.html).
+The Terraform configuration on this directory creates the GCS bucket for storing and locking the Terraform state file remotely.  This is known as the [GCS backend🔗](https://www.terraform.io/docs/backends/types/gcs.html).
 
-The bucket name must be globally unique and conform to certain requirements described in [this document](https://cloud.google.com/storage/docs/naming#requirements).
+The bucket name must be globally unique and conform to certain requirements described in [this document🔗](https://cloud.google.com/storage/docs/naming#requirements).
 
 ## Procedure to create the GCP backend:
 

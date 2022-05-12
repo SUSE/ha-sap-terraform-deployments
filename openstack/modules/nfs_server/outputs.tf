@@ -12,20 +12,16 @@ data "openstack_compute_instance_v2" "nfssrv" {
 
 output "nfssrv_ip" {
   value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
-  # value = data.openstack_compute_instance_v2.nfssrv.*.access_ip_v4
 }
 
 output "nfssrv_public_ip" {
   value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
-  # value = data.openstack_compute_instance_v2.nfssrv.*.access_ip_v4
 }
 
 output "nfssrv_name" {
-  # value = join(",",openstack_compute_instance_v2.nfssrv.*.name)
   value = openstack_compute_instance_v2.nfssrv.*.name
 }
 
 output "nfssrv_public_name" {
-  # value = []
   value = openstack_compute_instance_v2.nfssrv.*.name
 }

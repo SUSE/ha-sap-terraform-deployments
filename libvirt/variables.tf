@@ -110,7 +110,7 @@ variable "reg_additional_modules" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-  default     = ""
+  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8"
 }
 
 variable "additional_packages" {

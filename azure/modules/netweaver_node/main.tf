@@ -299,10 +299,11 @@ resource "azurerm_netapp_volume" "netweaver-netapp-volume-sapmnt" {
   storage_quota_in_gb = var.netweaver_anf_quota_sapmnt
 
   export_policy_rule {
-    rule_index        = 1
-    protocols_enabled = ["NFSv4.1"]
-    allowed_clients   = ["0.0.0.0/0"]
-    unix_read_write   = true
+    rule_index          = 1
+    protocols_enabled   = ["NFSv4.1"]
+    allowed_clients     = ["0.0.0.0/0"]
+    unix_read_write     = true
+    root_access_enabled = true
   }
 
   # Following section is only required if deploying a data protection volume (secondary)
