@@ -166,7 +166,7 @@ The infrastructure deployed includes:
 - EC2 instances
 - EBS disks
 - shared EFS filesystems
-- SSH Keypairs
+- SSH key pairs
 
 By default it creates 3 instances in AWS: one for support services (mainly iSCSI as most other services - DHCP, NTP, etc - are provided by Amazon) and 2 cluster nodes, but this can be changed to deploy more cluster nodes as needed.
 
