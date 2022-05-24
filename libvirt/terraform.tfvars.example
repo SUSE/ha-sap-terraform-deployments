@@ -26,7 +26,7 @@ iprange = "192.168.XXX.Y/24"
 
 # Use an already existing image. The image must be in the same storage pool defined in `storage_pool` parameter
 # This option is way faster as the image must not be downloaded
-#volume_name = "SLES4SAP-15_SP1"
+#volume_name = "SLES4SAP-15_SP3"
 
 #################################
 # General configuration variables
@@ -108,15 +108,33 @@ iprange = "192.168.XXX.Y/24"
 # Hostname, without the domain part
 #hana_name = "vmhana"
 
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
+#hana_node_vcpu   = 4
+#hana_node_memory = 32768
+
 # Set specific image for HANA (it's the same for iscsi, monitoring, netweaver and drbd)
 # This option has preference over base image options
 # hana_source_image = "url-to-your-sles4sap-image"
 # hana_volume_name   = "SLES4SAP-15_SP0"
 
-# Disk size for HANA database content in bytes
-#hana_node_disk_size  = 68719476736 # 64GB
-# For S/4HANA set a big disk size
-#hana_node_disk_size  = 375809638400 # 350GB
+# enable to use HANA scale-out
+hana_scale_out_enabled = true
+
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
+
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site (currently not supported on GCP)
+#hana_scale_out_standby_count = 0 # default:0 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
 
 # The next variables define how the HANA installation software is obtained.
 # 'hana_inst_master' is a NFS share where HANA installation files (extracted or not) are stored
@@ -198,6 +216,49 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #scenario_type = "performance-optimized" # default
 # or
 #scenario_type = "cost-optimized"
+
+#########################
+# shared storage variables
+# Needed if HANA is deployed in scale-out scenario
+#########################
+#hana_scale_out_shared_storage_type    = "nfs"         # only nfs supported at the moment (default: "")
+
+# This defines the base mountpoint on the NFS server for /hana/* and its sub directories in scale-out scenarios.
+# It can be e.g. on the DRBD cluster (like for NetWeaver) or any other NFS share.
+#hana_scale_out_nfs = "192.168.XXX.Z:/srv/nfs/sapdata/PRD"
+
+# local disk configuration  - scale-up example
+#hana_data_disks_configuration = {
+#  disks_size       = "256,256,256,256,64,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "100#100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  disks_size       = "256,256,256,256,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
+
+# local Disk configuration - scale-out with standby nodes example
+# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "pd-ssd"
+#  disks_size       = "64"
+#  # The next variables are used during the provisioning
+#  luns        = "0"
+#  names       = "usrsap"
+#  lv_sizes    = "100"
+#  paths = "/usr/sap"
+#}
 
 #######################
 # SBD related variables

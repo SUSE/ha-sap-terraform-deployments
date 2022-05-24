@@ -142,15 +142,62 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # and example sizing at https://aws.amazon.com/sap/solutions/s4hana/ .
 #hana_instancetype = "r6i.xlarge"
 
-# Disk type for HANA
-#hana_data_disk_type = "gp2"
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+#hana_count = "2"
 
-# Disk size for HANA database content in GB
-# For S/4HANA a big disk size is required, at least 350GB
-#hana_data_disk_size  = 1024 # 1024GB
+# enable to use HANA scale-out
+hana_scale_out_enabled = true
+
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
+
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site (not recommended on AWS)
+#hana_scale_out_standby_count = 0 # default:0 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+
+#hana_majority_maker_instancetype = "t3.micro"
+#hana_majority_maker_ip =  "10.0.3.9"
+
+#########################
+# shared storage variables
+# Needed if HANA is deployed in scale-out scenario
+# see https://documentation.suse.com/sbp/all/html/SLES-SAP-hana-scaleOut-PerfOpt-12-AWS/index.html#id-create-efs-file-systems
+# for reference and minimum requirements
+#########################
+#hana_scale_out_shared_storage_type = "efs"      # only efs supported at the moment (default: "")
 
 # Number of nodes in the cluster
 #hana_count = "2"
+
+# local disk configuration  - scale-up example
+#hana_data_disks_configuration = {
+#  disks_type       = "gp2,gp2,gp2,gp2,gp2,gp2,gp2"
+#  disks_size       = "256,256,256,256,64,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "50#50#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "gp2,gp2,gp2,gp2,gp2,gp2"
+#  disks_size       = "256,256,256,256,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
 
 # HANA machines image. By default, PAYG images are used
 # BYOS example with sles4sap 15 sp1 (this value is a pattern, it will select the latest version that matches this name)

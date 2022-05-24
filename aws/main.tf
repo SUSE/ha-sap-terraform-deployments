@@ -8,6 +8,7 @@ module "local_execution" {
 # Iscsi server: 10.0.0.4
 # Monitoring: 10.0.0.5
 # Hana ips: 10.0.1.10, 10.0.2.11 (hana machines must be in different subnets)
+# Hana majority maker ip: 10.0.3.9 (majority maker machine must be in a third subnet)
 # Hana cluster vip: 192.168.1.10 (virtual ip address must be in a different range than the vpc)
 # Hana cluster vip secondary: 192.168.1.11
 # Netweaver ips: 10.0.3.30, 10.0.4.31, 10.0.3.32, 10.0.4.33 (netweaver ASCS and ERS must be in different subnets)
@@ -22,6 +23,7 @@ locals {
   # The next locals are used to map the ip index with the subnet range (something like python enumerate method)
   hana_ip_start              = 10
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for index in range(var.hana_count) : cidrhost(element(local.hana_subnet_address_range, index % 2), index + local.hana_ip_start)]
+  hana_majority_maker_ip     = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(element(local.hana_subnet_address_range, 2), local.hana_ip_start - 1)
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(var.virtual_address_range, local.hana_ip_start)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(var.virtual_address_range, local.hana_ip_start + 1)
 
@@ -58,6 +60,10 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+
+  create_scale_out = var.hana_scale_out_enabled ? 1 : 0
+  # check if scale-out is enabled and if "data/log" are local disks (not shared)
+  hana_basepath_shared = var.hana_scale_out_enabled && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? false : true
 }
 
 module "common_variables" {
@@ -112,6 +118,7 @@ module "common_variables" {
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   hana_scale_out_addhosts             = var.hana_scale_out_addhosts
   hana_scale_out_standby_count        = var.hana_scale_out_standby_count
+  hana_basepath_shared                = local.hana_basepath_shared
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -136,8 +143,8 @@ module "common_variables" {
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
-  monitoring_hana_targets             = local.hana_ips
-  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
@@ -245,30 +252,34 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  hana_count            = var.hana_count
-  instance_type         = var.hana_instancetype
-  aws_region            = var.aws_region
-  availability_zones    = data.aws_availability_zones.available.names
-  os_image              = local.hana_os_image
-  os_owner              = local.hana_os_owner
-  vpc_id                = local.vpc_id
-  subnet_address_range  = local.hana_subnet_address_range
-  key_name              = aws_key_pair.key-pair.key_name
-  security_group_id     = local.security_group_id
-  route_table_id        = aws_route_table.route-table.id
-  aws_credentials       = var.aws_credentials
-  aws_access_key_id     = var.aws_access_key_id
-  aws_secret_access_key = var.aws_secret_access_key
-  host_ips              = local.hana_ips
-  hana_data_disk_type   = var.hana_data_disk_type
-  hana_data_disk_size   = var.hana_data_disk_size
-  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
-  cluster_ssh_pub       = var.cluster_ssh_pub
-  cluster_ssh_key       = var.cluster_ssh_key
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  hana_count                    = var.hana_count
+  instance_type                 = var.hana_instancetype
+  aws_region                    = var.aws_region
+  availability_zones            = data.aws_availability_zones.available.names
+  os_image                      = local.hana_os_image
+  os_owner                      = local.hana_os_owner
+  vpc_id                        = local.vpc_id
+  subnet_address_range          = local.hana_subnet_address_range
+  key_name                      = aws_key_pair.key-pair.key_name
+  security_group_id             = local.security_group_id
+  route_table_id                = aws_route_table.route-table.id
+  efs_performance_mode          = var.hana_efs_performance_mode
+  aws_credentials               = var.aws_credentials
+  aws_access_key_id             = var.aws_access_key_id
+  aws_secret_access_key         = var.aws_secret_access_key
+  host_ips                      = local.hana_ips
+  block_devices                 = var.block_devices
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
+  # passed to majority_maker module
+  majority_maker_instancetype = var.hana_majority_maker_instancetype
+  majority_maker_ip           = local.hana_majority_maker_ip
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,

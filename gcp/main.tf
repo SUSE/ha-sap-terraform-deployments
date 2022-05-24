@@ -10,6 +10,7 @@ module "local_execution" {
 # Hana ips: 10.0.0.10, 10.0.0.11
 # Hana cluster vip: 10.0.0.12
 # Hana cluster vip secondary: 10.0.0.13
+# Hana majority maker ip: 10.0.0.9
 # DRBD ips: 10.0.0.20, 10.0.0.21
 # DRBD cluster vip: 10.0.0.22
 # Netweaver ips: 10.0.0.30, 10.0.0.31, 10.0.0.32, 10.0.0.33
@@ -19,8 +20,9 @@ locals {
   iscsi_srv_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.subnet_address_range, 4)
   monitoring_srv_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.subnet_address_range, 5)
 
-  hana_ip_start = 10
-  hana_ips      = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_ip_start          = 10
+  hana_ips               = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.subnet_address_range, ip_index)]
+  hana_majority_maker_ip = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(local.subnet_address_range, local.hana_ip_start - 1)
 
   # Virtual IP addresses if a load balancer is used. In this case the virtual ip address belongs to the same subnet than the machines
   hana_cluster_vip_lb           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.subnet_address_range, local.hana_ip_start + var.hana_count)
@@ -70,6 +72,9 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+
+  # check if scale-out is enabled and if "data/log" are local disks (not shared)
+  hana_basepath_shared = var.hana_scale_out_enabled && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? false : true
 }
 
 module "common_variables" {
@@ -128,6 +133,7 @@ module "common_variables" {
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   hana_scale_out_addhosts             = var.hana_scale_out_addhosts
   hana_scale_out_standby_count        = var.hana_scale_out_standby_count
+  hana_basepath_shared                = local.hana_basepath_shared
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -152,8 +158,8 @@ module "common_variables" {
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
-  monitoring_hana_targets             = local.hana_ips
-  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
@@ -195,25 +201,27 @@ module "drbd_node" {
 }
 
 module "netweaver_node" {
-  source                    = "./modules/netweaver_node"
-  common_variables          = module.common_variables.configuration
-  name                      = var.netweaver_name
-  network_domain            = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
-  bastion_host              = module.bastion.public_ip
-  xscs_server_count         = local.netweaver_xscs_server_count
-  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
-  machine_type              = var.netweaver_machine_type
-  compute_zones             = local.compute_zones
-  network_name              = local.vpc_name
-  network_subnet_name       = local.subnet_name
-  os_image                  = local.netweaver_os_image
-  gcp_credentials_file      = var.gcp_credentials_file
-  host_ips                  = local.netweaver_ips
-  iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
-  cluster_ssh_pub           = var.cluster_ssh_pub
-  cluster_ssh_key           = var.cluster_ssh_key
-  netweaver_software_bucket = var.netweaver_software_bucket
-  virtual_host_ips          = local.netweaver_virtual_ips
+  source                           = "./modules/netweaver_node"
+  common_variables                 = module.common_variables.configuration
+  name                             = var.netweaver_name
+  network_domain                   = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
+  bastion_host                     = module.bastion.public_ip
+  xscs_server_count                = local.netweaver_xscs_server_count
+  app_server_count                 = var.netweaver_enabled ? var.netweaver_app_server_count : 0
+  machine_type                     = var.netweaver_machine_type
+  compute_zones                    = data.google_compute_zones.available.names
+  network_name                     = local.vpc_name
+  network_subnet_name              = local.subnet_name
+  os_image                         = local.netweaver_os_image
+  gcp_credentials_file             = var.gcp_credentials_file
+  host_ips                         = local.netweaver_ips
+  iscsi_srv_ip                     = module.iscsi_server.iscsisrv_ip
+  cluster_ssh_pub                  = var.cluster_ssh_pub
+  cluster_ssh_key                  = var.cluster_ssh_key
+  netweaver_software_bucket        = var.netweaver_software_bucket
+  virtual_host_ips                 = local.netweaver_virtual_ips
+  filestore_tier                   = var.filestore_tier
+  netweaver_filestore_quota_sapmnt = var.netweaver_filestore_quota_sapmnt
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp,
     module.bastion
@@ -221,26 +229,31 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  bastion_host          = module.bastion.public_ip
-  hana_count            = var.hana_count
-  machine_type          = var.machine_type
-  compute_zones         = local.compute_zones
-  network_name          = local.vpc_name
-  network_subnet_name   = local.subnet_name
-  os_image              = local.hana_os_image
-  gcp_credentials_file  = var.gcp_credentials_file
-  host_ips              = local.hana_ips
-  iscsi_srv_ip          = module.iscsi_server.iscsisrv_ip
-  hana_data_disk_type   = var.hana_data_disk_type
-  hana_data_disk_size   = var.hana_data_disk_size
-  hana_backup_disk_type = var.hana_backup_disk_type
-  hana_backup_disk_size = var.hana_backup_disk_size
-  cluster_ssh_pub       = var.cluster_ssh_pub
-  cluster_ssh_key       = var.cluster_ssh_key
+  source                                = "./modules/hana_node"
+  common_variables                      = module.common_variables.configuration
+  name                                  = var.hana_name
+  network_domain                        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  bastion_host                          = module.bastion.public_ip
+  hana_count                            = var.hana_count
+  machine_type                          = var.machine_type
+  compute_zones                         = data.google_compute_zones.available.names
+  network_name                          = local.vpc_name
+  network_subnet_name                   = local.subnet_name
+  os_image                              = local.hana_os_image
+  gcp_credentials_file                  = var.gcp_credentials_file
+  host_ips                              = local.hana_ips
+  iscsi_srv_ip                          = module.iscsi_server.iscsisrv_ip
+  hana_data_disks_configuration         = var.hana_data_disks_configuration
+  filestore_tier                        = var.filestore_tier
+  hana_scale_out_filestore_quota_data   = var.hana_scale_out_filestore_quota_data
+  hana_scale_out_filestore_quota_log    = var.hana_scale_out_filestore_quota_log
+  hana_scale_out_filestore_quota_backup = var.hana_scale_out_filestore_quota_backup
+  hana_scale_out_filestore_quota_shared = var.hana_scale_out_filestore_quota_shared
+  cluster_ssh_pub                       = var.cluster_ssh_pub
+  cluster_ssh_key                       = var.cluster_ssh_key
+  # passed to majority_maker module
+  machine_type_majority_maker = var.machine_type_majority_maker
+  majority_maker_ip           = local.hana_majority_maker_ip
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp,
     google_compute_router_nat.nat,
