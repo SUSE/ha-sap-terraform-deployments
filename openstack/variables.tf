@@ -140,7 +140,7 @@ variable "bastion_data_disk_size" {
 }
 
 variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp2:gen2:latest"
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
   type        = string
   default     = ""
 }
@@ -180,7 +180,7 @@ variable "network_domain" {
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "suse-sap-cloud/sles-15-sp2-sap"
+  default     = "suse-sap-cloud/sles-15-sp3-sap"
 }
 
 variable "timezone" {
