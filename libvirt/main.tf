@@ -172,24 +172,25 @@ module "iscsi_server" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  source_image          = var.hana_source_image
-  volume_name           = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
-  hana_count            = var.hana_count
-  vcpu                  = var.hana_node_vcpu
-  memory                = var.hana_node_memory
-  bridge                = var.bridge_device
-  isolated_network_id   = local.internal_network_id
-  isolated_network_name = local.internal_network_name
-  storage_pool          = var.storage_pool
-  userdata              = libvirt_cloudinit_disk.userdata.id
-  host_ips              = local.hana_ips
-  hana_disk_size        = var.hana_node_disk_size
-  sbd_disk_id           = module.hana_sbd_disk.id
-  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  source_image                  = var.hana_source_image
+  volume_name                   = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
+  hana_count                    = var.hana_count
+  vcpu                          = var.hana_node_vcpu
+  memory                        = var.hana_node_memory
+  bridge                        = var.bridge_device
+  isolated_network_id           = local.internal_network_id
+  isolated_network_name         = local.internal_network_name
+  storage_pool                  = var.storage_pool
+  userdata                      = libvirt_cloudinit_disk.userdata.id
+  host_ips                      = local.hana_ips
+  block_devices                 = var.block_devices
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  sbd_disk_id                   = module.hana_sbd_disk.id
+  iscsi_srv_ip                  = module.iscsi_server.output_data.private_addresses.0
 }
 
 module "drbd_node" {

@@ -54,8 +54,7 @@ hostname: ${local.hostname}${format("%02d", count.index + 1)}
 network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 sbd_lun_index: 0
-hana_disk_device: /dev/sdc
-hana_backup_device: /dev/sdb
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", join(",", openstack_compute_instance_v2.hana[count.index].block_device.*.uuid)), )}}
 iscsi_srv_ip: ${var.iscsi_srv_ip}
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}

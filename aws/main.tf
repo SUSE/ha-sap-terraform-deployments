@@ -245,30 +245,30 @@ module "netweaver_node" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  hana_count            = var.hana_count
-  instance_type         = var.hana_instancetype
-  aws_region            = var.aws_region
-  availability_zones    = data.aws_availability_zones.available.names
-  os_image              = local.hana_os_image
-  os_owner              = local.hana_os_owner
-  vpc_id                = local.vpc_id
-  subnet_address_range  = local.hana_subnet_address_range
-  key_name              = aws_key_pair.key-pair.key_name
-  security_group_id     = local.security_group_id
-  route_table_id        = aws_route_table.route-table.id
-  aws_credentials       = var.aws_credentials
-  aws_access_key_id     = var.aws_access_key_id
-  aws_secret_access_key = var.aws_secret_access_key
-  host_ips              = local.hana_ips
-  hana_data_disk_type   = var.hana_data_disk_type
-  hana_data_disk_size   = var.hana_data_disk_size
-  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
-  cluster_ssh_pub       = var.cluster_ssh_pub
-  cluster_ssh_key       = var.cluster_ssh_key
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  hana_count                    = var.hana_count
+  instance_type                 = var.hana_instancetype
+  aws_region                    = var.aws_region
+  availability_zones            = data.aws_availability_zones.available.names
+  os_image                      = local.hana_os_image
+  os_owner                      = local.hana_os_owner
+  vpc_id                        = local.vpc_id
+  subnet_address_range          = local.hana_subnet_address_range
+  key_name                      = aws_key_pair.key-pair.key_name
+  security_group_id             = local.security_group_id
+  route_table_id                = aws_route_table.route-table.id
+  aws_credentials               = var.aws_credentials
+  aws_access_key_id             = var.aws_access_key_id
+  aws_secret_access_key         = var.aws_secret_access_key
+  host_ips                      = local.hana_ips
+  block_devices                 = var.block_devices
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  cluster_ssh_pub               = var.cluster_ssh_pub
+  cluster_ssh_key               = var.cluster_ssh_key
   on_destroy_dependencies = [
     aws_route.public,
     aws_security_group_rule.ssh,

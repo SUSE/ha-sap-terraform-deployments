@@ -142,15 +142,31 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # and example sizing at https://aws.amazon.com/sap/solutions/s4hana/ .
 #hana_instancetype = "r6i.xlarge"
 
-# Disk type for HANA
-#hana_data_disk_type = "gp2"
-
-# Disk size for HANA database content in GB
-# For S/4HANA a big disk size is required, at least 350GB
-#hana_data_disk_size  = 1024 # 1024GB
-
 # Number of nodes in the cluster
 #hana_count = "2"
+
+# local disk configuration  - scale-up example
+#hana_data_disks_configuration = {
+#  disks_type       = "gp2,gp2,gp2,gp2,gp2,gp2,gp2"
+#  disks_size       = "256,256,256,256,64,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "50#50#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "gp2,gp2,gp2,gp2,gp2,gp2"
+#  disks_size       = "256,256,256,256,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
 
 # HANA machines image. By default, PAYG images are used
 # BYOS example with sles4sap 15 sp1 (this value is a pattern, it will select the latest version that matches this name)

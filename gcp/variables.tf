@@ -305,28 +305,35 @@ variable "hana_client_extract_dir" {
   default     = "/sapmedia_extract/HANA_CLIENT"
 }
 
-variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
-  type        = string
-  default     = "pd-ssd"
-}
+variable "hana_data_disks_configuration" {
+  type = map(any)
+  default = {
+    disks_type = "pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd"
+    disks_size = "128,128,128,128,64,64,128"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
 
-variable "hana_data_disk_size" {
-  description = "Disk size of the disks used to store hana database content"
-  type        = string
-  default     = "896"
-}
+    disks_type and disks_size are used during the disks creation. The number of elements must match in all of them
+    "," is used to separate each disk.
 
-variable "hana_backup_disk_type" {
-  description = "Disk type of the disks used to store hana database backup content"
-  type        = string
-  default     = "pd-standard"
-}
+    disk_type = The disk type used to create disks. See https://cloud.google.com/compute/docs/disks and https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk for reference.
+    disk_size = The disk size in GB.
 
-variable "hana_backup_disk_size" {
-  description = "Disk size of the disks used to store hana database backup content"
-  type        = string
-  default     = "128"
+    luns, names, lv_sizes and paths are used during the provisioning to create/format/mount logical volumes and filesystems.
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups split by "#" must match in all of the entries.
+
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1#2,3#4#5#6)
+    names -> The names of the volume groups and logical volumes (example data#log#shared#usrsap#backup)
+    lv_sizes -> The size in % (from available space) dedicated for each logical volume and folder (example 50#50#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
 }
 
 variable "hana_fstype" {
@@ -465,9 +472,9 @@ variable "hana_scale_out_shared_storage_type" {
   default     = ""
   validation {
     condition = (
-      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|filestore)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: none."
+    error_message = "Invalid HANA scale out storage type. Options: filestore."
   }
 }
 

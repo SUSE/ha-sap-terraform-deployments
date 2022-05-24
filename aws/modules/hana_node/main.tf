@@ -3,6 +3,23 @@ locals {
   create_scale_out = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra  = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   hostname         = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+
+  disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type   = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  disks_name   = [for disk_name in split(",", var.block_devices) : trimspace(disk_name)]
+  disks = flatten([
+    for node in range(var.hana_count) : [
+      for disk in range(local.disks_number) : {
+        node_num    = node
+        node        = "${local.hostname}${format("%02d", node + 1)}"
+        disk_number = disk
+        disk_name   = element(local.disks_name, disk)
+        disk_size   = element(local.disks_size, disk)
+        disk_type   = element(local.disks_type, disk)
+      }
+    ]
+  ])
 }
 
 # Network resources: subnets, routes, etc
@@ -74,10 +91,13 @@ resource "aws_instance" "hana" {
     volume_size = "60"
   }
 
-  ebs_block_device {
-    volume_type = var.hana_data_disk_type
-    volume_size = var.hana_data_disk_size
-    device_name = "/dev/sdb"
+  dynamic "ebs_block_device" {
+    for_each = { for disk in local.disks : "${disk.disk_name}" => disk if disk.node_num == count.index }
+    content {
+      volume_type = ebs_block_device.value.disk_type
+      volume_size = ebs_block_device.value.disk_size
+      device_name = ebs_block_device.value.disk_name
+    }
   }
 
   volume_tags = {
