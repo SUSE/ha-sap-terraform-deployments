@@ -2,13 +2,14 @@
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
+  shared_storage_nfs         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "nfs" ? 1 : 0
   create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  create_volumes             = var.hana_data_disk_type == "volumes" && local.disks_number > 0 ? 1 : 0
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
-  provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
   hostname                   = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_nfs         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "nfs" ? 1 : 0
+  create_volumes             = var.hana_data_disk_type == "volumes" && local.disks_number > 0 ? 1 : 0
+  provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
+  sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
 
   disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]

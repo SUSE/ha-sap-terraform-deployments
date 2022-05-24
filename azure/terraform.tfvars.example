@@ -175,10 +175,10 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Number of nodes in the cluster
 # 2 nodes will always be scale-up
 # 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
-hana_count = "2"
+#hana_count = "2"
 
 # enable to use HANA scale-out
-# hana_scale_out_enabled             = false
+#hana_scale_out_enabled = true
 
 # HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
 # see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
@@ -190,7 +190,7 @@ hana_count = "2"
 # HANA scale-out roles
 # These role assignments are made per HANA site
 # Number of standby nodes per site
-#hana_scale_out_standby_count = 1 # default: 1
+#hana_scale_out_standby_count = 1 # default: 0
 
 # majority_maker_vm_size =  "Standard_D2s_v3"
 # majority_maker_ip =  "10.74.0.9"
@@ -207,15 +207,19 @@ hana_count = "2"
 # see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
 # for reference and minimum requirements
 #########################
-#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+#hana_scale_out_shared_storage_type = "anf"      # only anf supported at the moment (default: "")
 #anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
 #anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
-# min requirements Premium
+# min requirements Premium (without standby nodes)
+#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+# min requirements Ultra (without standby nodes)
+hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
+# min requirements Premium (with standby nodes)
 #hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
 #hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
-# min requirements Ultra
+# min requirements Ultra (with standby nodes)
 #hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)

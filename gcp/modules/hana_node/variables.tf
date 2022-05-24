@@ -23,6 +23,11 @@ variable "machine_type" {
   default = "n1-highmem-32"
 }
 
+variable "machine_type_majority_maker" {
+  description = "The instance type of the hana majority_maker"
+  type        = string
+}
+
 variable "compute_zones" {
   description = "gcp compute zones data"
   type        = list(string)
@@ -58,6 +63,17 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  validation {
+    condition = (
+      var.majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.majority_maker_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -85,6 +101,37 @@ variable "hana_data_disks_configuration" {
     lv_sizes -> The size in % (from available space) dedicated for each logical volume and folder (example 50#50#100#100#100)
     paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
   EOF
+}
+
+variable "filestore_tier" {
+  description = "service level / tier for filestore shared Storage"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(BASIC_SSD|ENTERPRISE)$", var.filestore_tier))
+    )
+    error_message = "Invalid filestore Pool service level. Options: BASIC_SSD|ENTERPRISE."
+  }
+}
+
+variable "hana_scale_out_filestore_quota_data" {
+  description = "Quota for filestore shared storage volume HANA scale-out data"
+  type        = number
+}
+
+variable "hana_scale_out_filestore_quota_log" {
+  description = "Quota for filestore shared storage volume HANA scale-out log"
+  type        = number
+}
+
+variable "hana_scale_out_filestore_quota_backup" {
+  description = "Quota for filestore shared storage volume HANA scale-out backup"
+  type        = number
+}
+
+variable "hana_scale_out_filestore_quota_shared" {
+  description = "Quota for filestore shared storage volume HANA scale-out shared"
+  type        = number
 }
 
 variable "cluster_ssh_pub" {

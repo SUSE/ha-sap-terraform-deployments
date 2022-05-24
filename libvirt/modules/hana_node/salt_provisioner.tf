@@ -11,7 +11,7 @@ resource "null_resource" "wait_after_cloud_init" {
 
   provisioner "remote-exec" {
     inline = [
-      "if which cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
+      "if command -v cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
     ]
   }
 
@@ -49,6 +49,10 @@ hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.h
 sbd_disk_device: "${var.common_variables["hana"]["sbd_storage_type"] == "shared-disk" ? "/dev/vdb" : ""}"
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
+nfs_mount_ip:
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [ ${element(split(":", var.scale_out_nfs), 0)}, ${element(split(":", var.scale_out_nfs), 0)} ]" : ""}
+nfs_mount_dir:
+  ${local.shared_storage_nfs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [ ${format("%s%s", element(split(":", var.scale_out_nfs), 1), "/site_1/shared")}, ${format("%s%s", element(split(":", var.scale_out_nfs), 1), "/site_2/shared")} ]" : ""}
 node_count: ${var.hana_count + local.create_scale_out}
 EOF
     destination = "/tmp/grains"
