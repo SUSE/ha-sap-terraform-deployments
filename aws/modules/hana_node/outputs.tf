@@ -18,19 +18,3 @@ output "cluster_nodes_name" {
 output "cluster_nodes_public_name" {
   value = data.aws_instance.hana.*.public_dns
 }
-
-output "majority_maker_ip" {
-  value = module.hana_majority_maker.majority_maker_ip
-}
-
-output "majority_maker_public_ip" {
-  value = module.hana_majority_maker.majority_maker_public_ip
-}
-
-output "majority_maker_name" {
-  value = module.hana_majority_maker.majority_maker_name
-}
-
-output "majority_maker_public_name" {
-  value = module.hana_majority_maker.majority_maker_public_name
-}

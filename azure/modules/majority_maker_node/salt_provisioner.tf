@@ -22,7 +22,7 @@ role: majority_maker_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
 name_prefix: vm${var.name}
-hostname: ${local.hostname}mm
+hostname: vm${var.name}mm
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
 storage_account_name: ${var.storage_account_name}
@@ -37,7 +37,7 @@ resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
 node_count: ${var.hana_count + var.node_count}
-majority_maker_node: ${local.hostname}mm
+majority_maker_node: vm${var.name}mm
 majority_maker_ip: ${var.majority_maker_ip}
 EOF
     destination = "/tmp/grains"

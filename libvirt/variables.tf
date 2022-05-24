@@ -187,16 +187,10 @@ variable "hana_node_memory" {
   default     = 32678
 }
 
-variable "majority_maker_node_vcpu" {
-  description = "Number of CPUs for the HANA machines"
+variable "hana_node_disk_size" {
+  description = "Disk size (in bytes) for the HANA machines"
   type        = number
-  default     = 1
-}
-
-variable "majority_maker_node_memory" {
-  description = "Memory (in MBs) for the HANA machines"
-  type        = number
-  default     = 1024
+  default     = 68719476736
 }
 
 variable "hana_fstype" {
@@ -212,18 +206,6 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
-    )
-    error_message = "Invalid IP address format."
-  }
-}
-
-variable "hana_majority_maker_ip" {
-  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
-  type        = string
-  default     = ""
-  validation {
-    condition = (
-      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -280,41 +262,6 @@ variable "hana_client_extract_dir" {
   description = "Absolute path to folder where SAP HANA Client archive will be extracted"
   type        = string
   default     = "/sapmedia_extract/HANA_CLIENT"
-}
-
-variable "block_devices" {
-  description = "List of devices that will be available inside the machines. These values are mapped later to hana_data_disks_configuration['devices']."
-  type        = string
-  default     = "/dev/vdc,/dev/vdd,/dev/vde,/dev/vdf,/dev/vdg,/dev/vdh,/dev/vdi,/dev/vdj,/dev/vdk,/dev/vdl,/dev/vdm,/dev/vdn,/dev/vdo,/dev/vdp,/dev/vdq,/dev/vdr,/dev/vds,/dev/vdt,/dev/vdu,/dev/vdv,/dev/vdw,/dev/vdx,/dev/vdy,/dev/vdz"
-}
-
-variable "hana_data_disks_configuration" {
-  type = map(any)
-  default = {
-    disks_size = "128,128,128,128,64,64,128"
-    # The next variables are used during the provisioning
-    luns     = "0,1#2,3#4#5#6"
-    names    = "data#log#shared#usrsap#backup"
-    lv_sizes = "100#100#100#100#100"
-    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
-  }
-  description = <<EOF
-    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
-
-    disks_size is used during the disks creation. The number of elements must match in all of them
-    "," is used to separate each disk.
-
-    disk_size = The disk size in GB.
-
-    luns, names, lv_sizes and paths are used during the provisioning to create/format/mount logical volumes and filesystems.
-    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
-    The number of groups split by "#" must match in all of the entries.
-
-    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1#2,3#4#5#6)
-    names -> The names of the volume groups and logical volumes (example data#log#shared#usrsap#backup)
-    lv_sizes -> The size in % (from available space) dedicated for each logical volume and folder (example 50#50#100#100#100)
-    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
-  EOF
 }
 
 variable "hana_sid" {
@@ -435,9 +382,9 @@ variable "hana_scale_out_shared_storage_type" {
   default     = ""
   validation {
     condition = (
-      can(regex("^(|nfs)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: nfs."
+    error_message = "Invalid HANA scale out storage type. Options: none."
   }
 }
 
@@ -452,13 +399,7 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "0"
-}
-
-variable "hana_scale_out_nfs" {
-  description = "This defines the base mountpoint on the NFS server for /hana/* and its sub directories in scale-out scenarios. It can be e.g. on the DRBD cluster (like for NetWeaver) or any other NFS share."
-  type        = string
-  default     = ""
+  default     = "1"
 }
 
 # SBD related variables
@@ -504,7 +445,7 @@ variable "iscsi_memory" {
 variable "sbd_disk_size" {
   description = "Disk size (in bytes) for the SBD disk. It's used to create the ISCSI server disk too"
   type        = number
-  default     = 10485760 # 10MB
+  default     = 10737418240
 }
 
 variable "iscsi_lun_count" {
@@ -881,8 +822,8 @@ variable "drbd_cluster_fencing_mechanism" {
   }
 }
 
-variable "nfs_mounting_point" {
-  description = "Mounting point of the NFS share created on the DRBD or NFS server (`/mnt` must not be used in Azure)"
+variable "drbd_nfs_mounting_point" {
+  description = "Mounting point of the NFS share created in to of DRBD (`/mnt` must not be used in Azure)"
   type        = string
   default     = "/mnt_permanent/sapdata"
 }

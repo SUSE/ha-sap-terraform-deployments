@@ -7,7 +7,7 @@ resource "null_resource" "wait_after_cloud_init" {
 
   provisioner "remote-exec" {
     inline = [
-      "if command -v cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
+      "if which cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
     ]
   }
 

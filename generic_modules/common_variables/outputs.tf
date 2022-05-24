@@ -72,7 +72,6 @@ output "configuration" {
       scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
       scale_out_addhosts             = var.hana_scale_out_addhosts
       scale_out_standby_count        = var.hana_scale_out_standby_count
-      basepath_shared                = var.hana_basepath_shared
     }
     netweaver = {
       ha_enabled            = var.netweaver_ha_enabled
@@ -161,7 +160,6 @@ hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
 hana_scale_out_standby_count: ${var.hana_scale_out_standby_count}
-hana_basepath_shared: ${var.hana_basepath_shared}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}

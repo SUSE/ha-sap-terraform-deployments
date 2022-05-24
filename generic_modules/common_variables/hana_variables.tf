@@ -183,9 +183,9 @@ variable "hana_scale_out_shared_storage_type" {
   type        = string
   validation {
     condition = (
-      can(regex("^(|anf|efs|filestore|nfs)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|anf|nfs)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: anf, efs, filestore, nfs."
+    error_message = "Invalid HANA scale out storage type. Options: anf, nfs."
   }
 }
 
@@ -199,10 +199,4 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-}
-
-variable "hana_basepath_shared" {
-  description = "Set persistence.basepath_shared in global.ini (SAP Note 2080991)."
-  type        = bool
-  default     = true
 }

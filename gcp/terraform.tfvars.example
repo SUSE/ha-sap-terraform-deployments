@@ -159,11 +159,6 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Hostname, without the domain part
 #hana_name = "vmhana"
 
-# Number of nodes in the cluster
-# 2 nodes will always be scale-up
-# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
-hana_count = "2"
-
 # HANA machine type
 #machine_type = "n1-highmem-32"
 
@@ -175,69 +170,18 @@ hana_count = "2"
 # BYOS images are usually available using `suse-byos-cloud` and adding `byos` suffix to the name
 #hana_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
-# enable to use HANA scale-out
-hana_scale_out_enabled = true
+# Disk type for HANA
+#hana_data_disk_type = "pd-ssd"
 
-# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
-# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
-#hana_scale_out_addhosts = {
-#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
-#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
-#}
+# Disk size for HANA database content in GB
+# For S/4HANA a big disk size is required, at least 350GB
+#hana_data_disk_size  = 896 # 896GB
 
-# HANA scale-out roles
-# These role assignments are made per HANA site
-# Number of standby nodes per site (currently not supported on GCP)
-#hana_scale_out_standby_count = 0 # default:0 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
+# Disk type for HANA backup
+#hana_backup_disk_type = "pd-standard"
 
-#########################
-# shared storage variables
-# Needed if HANA is deployed in scale-out scenario
-# see https://cloud.google.com/solutions/sap/docs/filers-for-sap
-# and https://cloud.google.com/filestore/docs/creating-instances
-# for reference and minimum requirements
-#########################
-#hana_scale_out_shared_storage_type = "filestore"      # only filestore supported at the moment (default: "")
-#filestore_tier                        = "BASIC_SSD"   # BASIC_SSD or ENTERPRISE are recommended
-# min requirements BASIC_SSD (withouth standby nodes)
-#hana_scale_out_filestore_quota_shared = "2560"        # deployed 2x (for each site)
-# min requirements Premium (without standby nodes)
-#hana_scale_out_anf_quota_shared       = "1024"        # deployed 2x (for each site)
-
-# local disk configuration  - scale-up example
-#hana_data_disks_configuration = {
-#  disks_type       = "pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd"
-#  disks_size       = "256,256,256,256,64,64,512"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5#6"
-#  names            = "data#log#shared#usrsap#backup"
-#  lv_sizes         = "100#100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
-#}
-
-# local disk configuration  - scale-out without standby nodes example
-# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
-#hana_data_disks_configuration = {
-#  disks_type       = "pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd"
-#  disks_size       = "256,256,256,256,64,512"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5"
-#  names            = "data#log#usrsap#backup"
-#  lv_sizes         = "100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
-#}
-
-# local Disk configuration - scale-out with standby nodes example
-# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
-#hana_data_disks_configuration = {
-#  disks_type       = "pd-ssd"
-#  disks_size       = "64"
-#  # The next variables are used during the provisioning
-#  luns        = "0"
-#  names       = "usrsap"
-#  lv_sizes    = "100"
-#  paths = "/usr/sap"
-#}
+# Disk size for HANA backup in GB
+#hana_backup_disk_size = "128" # 128GB
 
 # HANA cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
 # Options: "load-balancer" (default), "route"
@@ -316,9 +260,6 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # It will be extracted to hana_client_extract_dir path (optional, by default /sapmedia_extract/HANA_CLIENT)
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
-
-# Each host IP address (sequential order).
-#hana_ips = ["10.0.0.2", "10.0.0.3"]
 
 # HANA instance configuration
 # Find some references about the variables in:

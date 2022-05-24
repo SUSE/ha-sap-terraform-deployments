@@ -76,24 +76,6 @@ output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
 
-# NFS
-
-output "nfssrv_ip" {
-  value = module.nfs_server.nfssrv_ip
-}
-
-output "nfssrv_public_ip" {
-  value = module.nfs_server.nfssrv_public_ip
-}
-
-output "nfssrv_name" {
-  value = module.nfs_server.nfssrv_name
-}
-
-output "nfssrv_public_name" {
-  value = module.nfs_server.nfssrv_public_name
-}
-
 # netweaver
 
 output "netweaver_ip" {
@@ -116,4 +98,8 @@ output "netweaver_public_name" {
 
 output "bastion_public_ip" {
   value = module.bastion.public_ip
+}
+
+output "nfssrv_ip" {
+  value = module.nfs_server.nfssrv_ip
 }
