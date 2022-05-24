@@ -52,8 +52,8 @@ aws_credentials = "~/.aws/credentials"
 #}
 
 # Default os_image and os_owner. These values are not used if the specific values are set (e.g.: hana_os_image)
-# BYOS example with sles4sap 15 sp1 (this value is a pattern, it will select the latest version that matches this name)
-#os_image = "suse-sles-sap-15-sp1-byos"
+# BYOS example with sles4sap 15 sp3 (this value is a pattern, it will select the latest version that matches this name)
+#os_image = "suse-sles-sap-15-sp3-byos"
 #os_owner = "amazon"
 
 # The project requires a pair of SSH keys (public and private) to provision the machines
@@ -257,7 +257,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #iscsi_name = "vmiscsi"
 
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
-#iscsi_os_image = "suse-sles-sap-15-sp1-byos"
+#iscsi_os_image = "suse-sles-sap-15-sp3-byos"
 #iscsi_os_owner = "amazon"
 
 # iSCSI server address. It should be in same iprange as hana_ips
@@ -278,7 +278,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #monitoring_name = "vmmonitoring"
 
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
-#monitoring_os_image = "suse-sles-sap-15-sp1-byos"
+#monitoring_os_image = "suse-sles-sap-15-sp3-byos"
 #monitoring_os_owner = "amazon"
 
 # IP address of the machine where Prometheus and Grafana are running. Must be in 10.0.0.0/24 subnet
@@ -298,7 +298,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #drbd_instancetype = "t3.medium"
 
 # DRBD machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#drbd_os_image = "suse-sles-sap-15-sp1-byos"
+#drbd_os_image = "suse-sles-sap-15-sp3-byos"
 #drbd_os_owner = "amazon"
 
 #drbd_data_disk_size = 15
@@ -337,7 +337,7 @@ hana_inst_master = "s3://sapdata/sap_inst_media/51053381"
 #netweaver_instancetype = "r5.large"
 
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#netweaver_os_image = "suse-sles-sap-15-sp1-byos"
+#netweaver_os_image = "suse-sles-sap-15-sp3-byos"
 #netweaver_os_owner = "amazon"
 
 #netweaver_ips = ["10.0.2.7", "10.0.3.8", "10.0.2.9", "10.0.3.10"]

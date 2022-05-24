@@ -1,33 +1,26 @@
 # Install and configure gcloud to download files from google storage accounts
 # https://cloud.google.com/sdk/install
 {% macro download_from_google_storage(credentials_file, bucket_path, dest_folder) -%}
-{% set gcloud_dir = '/root' %}
-{% set gcloud_bin_dir = gcloud_dir~'/google-cloud-sdk/bin' %}
+{% set gcloud_inst_dir = '/opt' %}
+{% set gcloud_dir = gcloud_inst_dir~'/google-cloud-sdk' %}
+{% set gcloud_bin_dir = '/usr/local/bin' %}
 
 install_gcloud:
   cmd.run:
-    - name: curl https://sdk.cloud.google.com | bash -s -- '--disable-prompts' '--install-dir={{ gcloud_dir }}'
-    - unless: ls {{ gcloud_dir }}/google-cloud-sdk
+    - name: curl https://sdk.cloud.google.com | bash -s -- '--disable-prompts' '--install-dir={{ gcloud_inst_dir }}'
+    - unless: ls {{ gcloud_dir }}
 
-# The next 2 states are not really needed, but it's good to have gcloud configured in any case
-add_gcloud_path:
-  file.append:
-    - name: /root/.bashrc
-    - text: |
+/etc/profile.d/google-cloud-sdk.completion.sh:
+  file.symlink:
+  - target: {{ gcloud_dir }}/completion.bash.inc
 
-        # The next line updates PATH for the Google Cloud SDK.
-        if [ -f '{{ gcloud_dir }}/google-cloud-sdk/path.bash.inc' ]; then . '{{ gcloud_dir }}/google-cloud-sdk/path.bash.inc'; fi
+{{ gcloud_bin_dir }}/gcloud:
+  file.symlink:
+  - target: {{ gcloud_dir }}/bin/gcloud
 
-        # The next line enables shell command completion for gcloud.
-        if [ -f '{{ gcloud_dir }}/google-cloud-sdk/completion.bash.inc' ]; then . '{{ gcloud_dir }}/google-cloud-sdk/completion.bash.inc'; fi
-    - require:
-      - install_gcloud
-
-restart_shell:
-  cmd.run:
-    - name: exec $SHELL &
-    - require:
-      - install_gcloud
+{{ gcloud_bin_dir }}/gsutil:
+  file.symlink:
+  - target: {{ gcloud_dir }}/bin/gsutil
 
 # Fix for https://github.com/SUSE/ha-sap-terraform-deployments/issues/669
 # gcloud and gsutil don't support python3.4 usage

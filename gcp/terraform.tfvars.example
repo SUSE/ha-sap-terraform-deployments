@@ -55,7 +55,7 @@ region = "europe-west1"
 # gcloud compute images list --standard-images --filter=sles
 # Combine the project and name values. The version part can be ignored to get the latest version
 # BYOS images are usually available using `suse-byos-cloud` and addind `byos` sufix to the nanem
-#os_image = "suse-byos-cloud/sles-15-sp1-sap-byos"
+#os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 # The project requires a pair of SSH keys (public and private) to provision the machines
 # The private key is only used to create the SSH connection, it is not uploaded to the machines
@@ -145,7 +145,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 
 # Bastion machine os image. If it is not provided, the os_image variable data is used
 # BYOS example
-# bastion_os_image = """suse-byos-cloud/sles-15-sp2-sap-byos""
+# bastion_os_image = """suse-byos-cloud/sles-15-sp3-sap-byos""
 
 # Minimum ports per VM instance for the NAT router. Decreasing this value can compromise the deployment and make it fail
 # This value is a number between 1 and 1024
@@ -168,7 +168,7 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # gcloud compute images list --standard-images --filter=sles
 # Combine the project and name values. The version part can be ignored to get the latest version
 # BYOS images are usually available using `suse-byos-cloud` and adding `byos` suffix to the name
-#hana_os_image = "suse-byos-cloud/sles-15-sp1-sap-byos"
+#hana_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 # Disk type for HANA
 #hana_data_disk_type = "pd-ssd"
@@ -290,7 +290,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #iscsi_name = "vmiscsi"
 
 # iSCSI server image. By default, PAYG image is used. The usage is the same as the HANA images
-#iscsi_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
+#iscsi_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 # iSCSI server address
 #iscsi_srv_ip = "10.0.0.4"
@@ -313,7 +313,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #monitoring_name = "vmmonitoring"
 
 # Monitoring server image. By default, PAYG image is used. The usage is the same as the HANA images
-#monitoring_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
+#monitoring_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 # IP address of the machine where Prometheus and Grafana are running
 #monitoring_srv_ip = "10.0.0.5"
@@ -331,7 +331,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #drbd_machine_type = "n1-standard-4"
 
 # DRBD machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#drbd_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
+#drbd_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 #drbd_data_disk_size = 15
 
@@ -375,7 +375,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #netweaver_machine_type = "n1-standard-8"
 
 # Netweaver machines image. By default, PAYG image is used. The usage is the same as the HANA images
-#netweaver_os_image = "suse-byos-cloud/sles-15-sp2-sap-byos"
+#netweaver_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
 
 # Set the Netweaver product id. The 'HA' sufix means that the installation uses an ASCS/ERS cluster
 # Below are the supported SAP Netweaver product ids if using SWPM version 1.0:
