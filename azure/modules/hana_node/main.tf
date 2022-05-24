@@ -21,26 +21,6 @@ locals {
 
   hana_lb_rules_ports_secondary = local.create_active_active_infra == 1 ? local.hana_lb_rules_ports : toset([])
   hostname                      = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-
-  disks_number           = length(split(",", var.hana_data_disks_configuration["disks_size"]))
-  disks_size             = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
-  disks_type             = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
-  disks_caching          = [for caching in split(",", var.hana_data_disks_configuration["caching"]) : trimspace(caching)]
-  disks_writeaccelerator = [for writeaccelerator in split(",", var.hana_data_disks_configuration["writeaccelerator"]) : tobool(trimspace(writeaccelerator))]
-  disks = flatten([
-    for node in range(var.hana_count) : [
-      for disk in range(local.disks_number) : {
-        node_num              = node
-        node                  = "${local.hostname}${format("%02d", node + 1)}"
-        disk_number           = disk
-        disk_name             = "disk-${local.hostname}${format("%02d-%s%02d", node + 1, "Data", disk + 1)}"
-        disk_size             = element(local.disks_size, disk)
-        disk_type             = element(local.disks_type, disk)
-        disk_caching          = element(local.disks_caching, disk)
-        disk_writeaccelerator = element(local.disks_writeaccelerator, disk)
-      }
-    ]
-  ])
 }
 
 resource "azurerm_availability_set" "hana-availability-set" {
@@ -226,8 +206,7 @@ resource "azurerm_image" "sles4sap" {
 
 # ANF volumes
 resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
-  # check if local disk for "data" exists
-  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") ? local.shared_storage_anf * local.sites : 0
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -263,8 +242,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-data" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
-  # check if local disk for "log" exists
-  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? local.shared_storage_anf * local.sites : 0
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -300,8 +278,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-log" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
-  # check if local disk for "backup" exists
-  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "backup") ? local.shared_storage_anf * local.sites : 0
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -337,8 +314,7 @@ resource "azurerm_netapp_volume" "hana-netapp-volume-backup" {
 }
 
 resource "azurerm_netapp_volume" "hana-netapp-volume-shared" {
-  # check if local disk for "shared" exists
-  count = !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? local.shared_storage_anf * local.sites : 0
+  count = local.shared_storage_anf * local.sites
 
   lifecycle {
     prevent_destroy = false
@@ -381,6 +357,14 @@ module "os_image_reference" {
   os_image = var.os_image
 }
 
+locals {
+  disks_number           = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size             = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks_type             = [for disk_type in split(",", var.hana_data_disks_configuration["disks_type"]) : trimspace(disk_type)]
+  disks_caching          = [for caching in split(",", var.hana_data_disks_configuration["caching"]) : trimspace(caching)]
+  disks_writeaccelerator = [for writeaccelerator in split(",", var.hana_data_disks_configuration["writeaccelerator"]) : tobool(trimspace(writeaccelerator))]
+}
+
 resource "azurerm_virtual_machine" "hana" {
   count                            = var.hana_count
   name                             = "${var.name}${format("%02d", count.index + 1)}"
@@ -408,15 +392,15 @@ resource "azurerm_virtual_machine" "hana" {
   }
 
   dynamic "storage_data_disk" {
-    for_each = { for disk in local.disks : "${disk.disk_name}" => disk if disk.node_num == count.index }
+    for_each = [for v in range(local.disks_number) : { index = v }]
     content {
-      name                      = storage_data_disk.value.disk_name
-      managed_disk_type         = storage_data_disk.value.disk_type
+      name                      = "disk-${var.name}${format("%02d", count.index + 1)}-Data${format("%02d", storage_data_disk.value.index + 1)}"
+      managed_disk_type         = element(local.disks_type, storage_data_disk.value.index)
       create_option             = "Empty"
-      lun                       = storage_data_disk.value.disk_number
-      disk_size_gb              = storage_data_disk.value.disk_size
-      caching                   = storage_data_disk.value.disk_caching
-      write_accelerator_enabled = storage_data_disk.value.disk_writeaccelerator
+      lun                       = storage_data_disk.value.index
+      disk_size_gb              = element(local.disks_size, storage_data_disk.value.index)
+      caching                   = element(local.disks_caching, storage_data_disk.value.index)
+      write_accelerator_enabled = element(local.disks_writeaccelerator, storage_data_disk.value.index)
     }
   }
 

@@ -61,7 +61,6 @@ hana:
   saptune_solution: 'HANA'
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   ha_enabled: {{ grains['ha_enabled'] }}
-  basepath_shared: {{ grains['hana_basepath_shared']|default(True) }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: {{ grains['hana_sid'].lower() }}

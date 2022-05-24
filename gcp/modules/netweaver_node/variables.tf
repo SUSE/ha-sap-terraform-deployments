@@ -88,22 +88,6 @@ variable "virtual_host_ips" {
   type        = list(string)
 }
 
-variable "filestore_tier" {
-  description = "service level / tier for filestore shared Storage"
-  type        = string
-  validation {
-    condition = (
-      can(regex("^(BASIC_SSD|ENTERPRISE)$", var.filestore_tier))
-    )
-    error_message = "Invalid filestore Pool service level. Options: BASIC_SSD|ENTERPRISE."
-  }
-}
-
-variable "netweaver_filestore_quota_sapmnt" {
-  description = "Quota for filestore shared storage volume Netweaver"
-  type        = number
-}
-
 variable "on_destroy_dependencies" {
   description = "Resources objects need in the on_destroy script (everything that allows ssh connection)"
   type        = any

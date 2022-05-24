@@ -230,42 +230,22 @@ hana_count = "2"
 
 # Disk type for HANA
 # By default, volumes are created. To use ephemeral storage (configured in flavor) set to "ephemeral".
-#hana_data_disk_type = "volume"
+hana_data_disk_type = "volume"
 # or
 #hana_data_disk_type = "ephemeral"
 
-## only works if volumes are used
-# local disk configuration  - scale-up example
-#hana_data_disks_configuration = {
-#  disks_size       = "100,100,100,100,50,50,50"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5#6"
-#  names            = "data#log#shared#usrsap#backup"
-#  lv_sizes         = "100#100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
-#}
+# Volume size for HANA database content in GB (only used for volume, not ephemeral)
+# For S/4HANA a big disk size is required, at least 350GB
+#hana_data_disk_size  = 896 # 896GB
 
-# local disk configuration  - scale-out without standby nodes example
-# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
-#hana_data_disks_configuration = {
-#  disks_size       = "100,100,100,100,50,50"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5#6"
-#  names            = "data#log#usrsap#backup"
-#  lv_sizes         = "100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
-#}
+# Disk type for HANA backup
+# By default, volumes are created. To use ephemeral storage (configured in flavor) set to "ephemeral".
+#hana_backup_disk_type = "ephemeral"
+# or
+hana_backup_disk_type = "volume"
 
-# local Disk configuration - scale-out with standby nodes example
-# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
-#hana_data_disks_configuration = {
-#  disks_size       = "64"
-#  # The next variables are used during the provisioning
-#  luns        = "0"
-#  names       = "usrsap"
-#  lv_sizes    = "100"
-#  paths = "/usr/sap"
-#}
+# Disk size for HANA backup in GB
+#hana_backup_disk_size = 416 # 416GB
 
 # HANA cluster vip
 hana_cluster_vip           = "10.0.0.12"

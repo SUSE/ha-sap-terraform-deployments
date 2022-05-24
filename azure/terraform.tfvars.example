@@ -190,7 +190,7 @@ hana_count = "2"
 # HANA scale-out roles
 # These role assignments are made per HANA site
 # Number of standby nodes per site
-#hana_scale_out_standby_count = 1 # default: 0
+#hana_scale_out_standby_count = 1 # default: 1
 
 # majority_maker_vm_size =  "Standard_D2s_v3"
 # majority_maker_ip =  "10.74.0.9"
@@ -207,19 +207,15 @@ hana_count = "2"
 # see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
 # for reference and minimum requirements
 #########################
-#hana_scale_out_shared_storage_type = "anf"      # only anf supported at the moment (default: "")
+#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
 #anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
 #anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
-# min requirements Premium (without standby nodes)
-#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
-# min requirements Ultra (without standby nodes)
-hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
-# min requirements Premium (with standby nodes)
+# min requirements Premium
 #hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
 #hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
-# min requirements Ultra (with standby nodes)
+# min requirements Ultra
 #hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)
@@ -228,49 +224,27 @@ hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
 # local disk configuration  - scale-up example
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-#  disks_size       = "256,256,256,256,64,64,512"
+#  disks_size       = "512,512,512,512,64,1024"
 #  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
 #  writeaccelerator = "false,false,false,false,false,false"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5#6"
-#  names            = "data#log#shared#usrsap#backup"
-#  lv_sizes         = "100#100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#  luns             = "0,1,2#3#4#5"
+#  names            = "datalog#shared#usrsap#backup"
+#  lv_sizes         = "70,100#100#100#100"
+#  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
 #}
 
-# local disk configuration  - scale-out without standby nodes example
-# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
-#hana_data_disks_configuration = {
-#  #disks_size       = "100,100,100,100,50,50"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5#6"
-#  names            = "data#log#usrsap#backup"
-#  lv_sizes         = "100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
-#
-#  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-#  disks_size       = "256,256,256,256,64,512"
-#  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
-#  writeaccelerator = "false,false,false,false,false"
-#  # The next variables are used during the provisioning
-#  luns             = "0,1#2,3#4#5"
-#  names            = "data#log#usrsap#backup"
-#  lv_sizes         = "100#100#100#100"
-#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
-#}
-
-# local Disk configuration - scale-out with standby nodes example
-# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
+# local Disk configuration - scale-out example
+# on scale-out we need shared storage for data/log/backup/shared and fewer local disks
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS"
-#  disks_size       = "64"
+#  disks_size       = "10"
 #  caching          = "None"
 #  writeaccelerator = "false"
 #  # The next variables are used during the provisioning
 #  luns        = "0"
 #  names       = "usrsap"
 #  lv_sizes    = "100"
-#  paths = "/usr/sap"
+#  mount_paths = "/usr/sap"
 #}
 
 # SLES4SAP image information
