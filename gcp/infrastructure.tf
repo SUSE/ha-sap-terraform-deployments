@@ -117,7 +117,7 @@ resource "google_compute_router_nat" "nat" {
 
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
   subnetwork {
-    name                    = google_compute_subnetwork.ha_subnet.*.self_link[0]
+    name                    = local.subnet_name
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 
