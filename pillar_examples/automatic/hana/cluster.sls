@@ -90,6 +90,13 @@ cluster:
         instance: {{ hana.hana.nodes[0].instance }}
         scale_out: {{ grains['hana_scale_out_enabled']|default(False) }}
         majority_maker: {{ grains['majority_maker_node']|default("") }}
+        {% if grains['hana_scale_out_enabled']|default(False) %}
+        resources_maintenance:
+          - msl_SAPHanaController_{{ hana.hana.nodes[0].sid.upper() }}_HDB{{ '{:0>2}'.format(hana.hana.nodes[0].instance) }}
+        {% else %}
+        resources_maintenance:
+          - msl_SAPHana_{{ hana.hana.nodes[0].sid.upper() }}_HDB{{ '{:0>2}'.format(hana.hana.nodes[0].instance) }}
+        {% endif %}
         {% if grains['provider'] == 'aws' %}
         route_table: {{ grains['route_table'] }}
         cluster_profile: {{ grains['aws_cluster_profile'] }}
