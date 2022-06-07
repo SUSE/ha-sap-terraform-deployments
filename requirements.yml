@@ -4,7 +4,7 @@ hana_node:
   python3-shaptools: 0.3.13+git.1651505455.cee9bd8
   salt-shaptools: 0.3.17+git.1651504665.6e49c5b
   habootstrap-formula: 0.4.6+git.1654259322.51cd7c2
-  saphanabootstrap-formula: 0.10.0+git.1653313569.3accf7c
+  saphanabootstrap-formula: 0.10.1+git.1654591537.734ff97
 drbd_node:
   python-shaptools: 0.3.13+git.1651505455.cee9bd8
   python3-shaptools: 0.3.13+git.1651505455.cee9bd8
