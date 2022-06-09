@@ -26,3 +26,4 @@ shell.nix
 venv
 **/.envrc
 **/.direnv
+.vscode
