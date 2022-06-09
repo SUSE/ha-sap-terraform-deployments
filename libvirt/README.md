@@ -30,26 +30,15 @@ repository with libvirt. Looking for another provider? See
 
 2) **Network Requirements**
 
-   The deployment requires two separate networks, an internal, isolated network and a second network for external access.  Although the code can create both networks, for the most predictable results, you should create the networks in advance.
+   The deployment requires two separate networks. One for bootstrapping the machines via DHCP and a second dedicated/isolated network for the deployment itself.
   
+   The bootstrap network can use libvirts's 'default' network, which is usually the easiest option. 
+   A `sudo virsh net-dumpxml default | grep "bridge name"` will show you the bridge you can set as e.g. `bridge_device = virbr0` in `terraform.tfvars`.
+      
+   The dedicated/isolated network can either be already existing (set `network_name = "mynet"`) or being created based on the `iprange = ...` parameter.
+   Be sure to match a potentially existing network with the `iprange = ...` parameter.
+   The IPs addresses in this network will be set to static DHCP entries in libvirt's network config.
    
-   The isolated network can use KVM's 'default' network, which is usually the easiest option.  The IPs addresses in the isolated network will be set by the code and will be static.
-   
-   The network for external access is known in the code as bridge_device.  The IP addresses on this network are expected to be configured by DHCP.
- 
-   The following lines show an example of how the terraform.tfvars file can be configured for using the default network
-   and a bridge network named br0:
- 
-   ```HCL
-   # Use already existing network
-   network_name = "default"
- 
-   # Use bridge device on hypervisor
-   bridge_device = "br0"
-   ```
-
-  Ensure that network_name and bridge_device are not using the same underlying bridge, this will cause problems for clustered systems.
-
 3) **SBD**
 
   For libvirt based configurations, the code uses SBD as the STONITH method for clustering.  The SBD disk is created in the storage pool and therefore iSCSI is not required.  When configuring the terraform.tfvars file, ensure that iSCSI is not enabled.
@@ -67,9 +56,11 @@ repository with libvirt. Looking for another provider? See
   rm 99-disable-ipv6.conf
   ```
 
-  Copy the adapted image to the libvirt pool that you intend to use for the project.
+  Copy the adapted image to the libvirt pool that you intend to use for the project and that you referenced via `storage_pool = ...`.
 
-  Next, you must adapt the file cloud-config.tpl  so that the installation will register will the required repositories.  For this you'll need your SUSE for SAP registration code and the associated email address.  Edit the file so that it matches this, ensuring you replace <SubEmail> and <SubCode> with your details:
+  To register the SLES image as a SLES4SAP image you can use this little hack which is rolled out via cloud-init. **You do not have to do this if your image is already a SLES4SAP**.
+	
+  Adapt the file cloud-config.tpl  so that the installation will register will the required repositories for SLES4SAP.  For this you'll need your SUSE for SAP registration code and the associated email address.  Edit the file so that it matches this, ensuring you replace <SubEmail> and <SubCode> with your details:
 
   ```yaml
   #cloud-config
