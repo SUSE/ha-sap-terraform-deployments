@@ -22,9 +22,71 @@ repository with libvirt. Looking for another provider? See
 
 # Requirements
 
+1) **General KVM Requirements**
+
    You will need to have a working libvirt/kvm setup for using the libvirt-provider. (refer to upstream doc of [libvirt provider🔗](https://github.com/dmacvicar/terraform-provider-libvirt)).
 
    You need the xslt processor `xsltproc` installed on the system. With it terraform is able to process xsl files.
+
+2) **Network Requirements**
+
+   The deployment requires two separate networks. One for bootstrapping the machines via DHCP and a second dedicated/isolated network for the deployment itself.
+  
+   The bootstrap network can use libvirts's 'default' network, which is usually the easiest option. 
+   A `sudo virsh net-dumpxml default | grep "bridge name"` will show you the bridge you can set as e.g. `bridge_device = virbr0` in `terraform.tfvars`.
+      
+   The dedicated/isolated network can either be already existing (set `network_name = "mynet"`) or being created based on the `iprange = ...` parameter.
+   Be sure to match a potentially existing network with the `iprange = ...` parameter.
+   The IPs addresses in this network will be set to static DHCP entries in libvirt's network config.
+   
+3) **SBD**
+
+  For libvirt based configurations, the code uses SBD as the STONITH method for clustering.  The SBD disk is created in the storage pool and therefore iSCSI is not required.  When configuring the terraform.tfvars file, ensure that iSCSI is not enabled.
+
+4) **Image Preparation**
+
+  Image files in the qcow2 format are required for this deployment.  Currently, SUSE do not supply qcow2 images for SLES for SAP Application and therefore some preparation is required.  Download the latest openstack qcow2 image from [the SUSE download page](https://www.suse.com/download/sles/).
+
+  A series of commands are necessary to resize and sanitise the image.  Run the following commands in the same directory as the downloaded image ensure you replace <ImageFile> with the name of your image:
+
+  ```bash
+  echo 'net.ipv6.conf.all.disable_ipv6 = 1' > 99-disable-ipv6.conf
+  qemu-img resize <ImageFile> 20G
+  virt-sysprep --operations abrt-data,backup-files,bash-history,blkid-tab,crash-data,cron-spool,customize,dhcp-client-state,dhcp-server-state,dovecot-data,logfiles,machine-id,mail-spool,net-hostname,net-hwaddr,pacct-log,package-manager-cache,pam-data,passwd-backups,puppet-data-log,rh-subscription-manager,rhn-systemid,rpm-db,samba-db-log,script,smolt-uuid,ssh-hostkeys,ssh-userdir,sssd-db-log,tmp-files,udev-persistent-net,utmp,yum-uuid --root-password password:linux --copy-in 99-disable-ipv6.conf:/etc/sysctl.d -a <ImageFile>
+  rm 99-disable-ipv6.conf
+  ```
+
+  Copy the adapted image to the libvirt pool that you intend to use for the project and that you referenced via `storage_pool = ...`.
+
+  To register the SLES image as a SLES4SAP image you can use this little hack which is rolled out via cloud-init. **You do not have to do this if your image is already a SLES4SAP**.
+	
+  Adapt the file cloud-config.tpl  so that the installation will register will the required repositories for SLES4SAP.  For this you'll need your SUSE for SAP registration code and the associated email address.  Edit the file so that it matches this, ensuring you replace <SubEmail> and <SubCode> with your details:
+
+  ```yaml
+  #cloud-config
+
+  cloud_config_modules:
+    - runcmd
+  cloud_final_modules:
+    - scripts-user
+  runcmd:
+    - |
+      # add any command here
+      SUSEConnect -e <SubEmail> -r <SubCode>
+      /usr/sbin/SUSEConnect --de-register
+      /usr/sbin/SUSEConnect --cleanup
+      rpm -e --nodeps sles-release
+      rpm -e --nodeps sles-release-DVD
+      rpm -e --nodeps sles-release-POOL
+      SUSEConnect -p SLES_SAP/15.3/x86_64 -e <SubEmail> -r <SubCode>
+      SUSEConnect -p sle-module-basesystem/15.3/x86_64
+      SUSEConnect -p sle-module-desktop-applications/15.3/x86_64
+      SUSEConnect -p sle-module-server-applications/15.3/x86_64
+      SUSEConnect -p sle-ha/15.3/x86_64 -e <SubEmail> -r <SubCode>
+      SUSEConnect -p sle-module-sap-applications/15.3/x86_64
+      # make sure docs are installed (needed for prometheus-hanadb_exporter)
+      sed -i 's#rpm.install.excludedocs.*#rpm.install.excludedocs = no#g' /etc/zypp/zypp.conf 
+  ```
 
 # Quickstart
 
@@ -161,6 +223,25 @@ The default value of `10` is not sufficient because not all HANA cluster nodes w
 # Troubleshooting
 
 In case you have some issue, take a look at this [troubleshooting guide](../doc/troubleshooting.md).
+
+### Terraform fails shortly after deploy
+
+The images use cloud-init which can take a little time to return, so it is not unusual to see an error shortly after 'terraform deploy'.  You may see an error like this:
+
+  ```bash
+  Error: Invalid index
+     on modules/hana_node/salt_provisioner.tf line 66, in module "hana_provision":
+    66:   public_ips   = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
+   The given key does not identify an element in this collection value: the collection has no elements.
+  ```
+  
+  If this error occurs, simple re-run `terraform apply` after ~30 seconds.
+  
+  To get rid of the deployment, destroy the created infrastructure with:
+  
+  ```bash
+  terraform destroy
+  ```
 
 ### Resources have not been destroyed
 
