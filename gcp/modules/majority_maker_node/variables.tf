@@ -13,9 +13,16 @@ variable "name" {
   type        = string
 }
 
+variable "hana_count" {
+  type = string
+}
+
+variable "node_count" {
+  type = string
+}
+
 variable "machine_type" {
-  type    = string
-  default = "n1-standard-4"
+  type = string
 }
 
 variable "compute_zones" {
@@ -31,16 +38,6 @@ variable "network_name" {
 variable "network_subnet_name" {
   description = "Subnet name to attach the network interface of the nodes"
   type        = string
-}
-
-variable "xscs_server_count" {
-  type    = number
-  default = 2
-}
-
-variable "app_server_count" {
-  type    = number
-  default = 2
 }
 
 variable "os_image" {
@@ -63,6 +60,17 @@ variable "host_ips" {
   type        = list(string)
 }
 
+variable "majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. If it's not set the addresses will be auto generated from the provided vnet address range"
+  type        = string
+  validation {
+    condition = (
+      var.majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.majority_maker_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
 variable "iscsi_srv_ip" {
   description = "iscsi server address"
   type        = string
@@ -76,32 +84,6 @@ variable "cluster_ssh_pub" {
 variable "cluster_ssh_key" {
   description = "path for the private key needed by the cluster"
   type        = string
-}
-
-variable "netweaver_software_bucket" {
-  description = "gcp bucket where netweaver software is available"
-  type        = string
-}
-
-variable "virtual_host_ips" {
-  description = "virtual ip addresses to set to the nodes"
-  type        = list(string)
-}
-
-variable "filestore_tier" {
-  description = "service level / tier for filestore shared Storage"
-  type        = string
-  validation {
-    condition = (
-      can(regex("^(BASIC_SSD|ENTERPRISE)$", var.filestore_tier))
-    )
-    error_message = "Invalid filestore Pool service level. Options: BASIC_SSD|ENTERPRISE."
-  }
-}
-
-variable "netweaver_filestore_quota_sapmnt" {
-  description = "Quota for filestore shared storage volume Netweaver"
-  type        = number
 }
 
 variable "on_destroy_dependencies" {

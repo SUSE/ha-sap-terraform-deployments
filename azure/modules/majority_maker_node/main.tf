@@ -1,6 +1,7 @@
 locals {
   bastion_enabled      = var.common_variables["bastion_enabled"]
   provisioning_address = local.bastion_enabled ? data.azurerm_network_interface.majority_maker.*.private_ip_address : data.azurerm_public_ip.majority_maker.*.ip_address
+  hostname             = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 
