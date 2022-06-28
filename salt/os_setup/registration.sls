@@ -1,4 +1,4 @@
-{% if grains['os_family'] == 'Suse' %}
+{% if grains['osfullname'] == 'SLES' %}
 
 {% if grains['reg_code'] and (not grains.get('offline_mode') or '_node' not in grains.get('role')) %}
 {% set reg_code = grains['reg_code'] %}
