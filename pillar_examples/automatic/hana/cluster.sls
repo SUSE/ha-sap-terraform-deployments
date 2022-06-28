@@ -64,6 +64,13 @@ cluster:
       secauth: 'off'
       token: 20000
       consensus: 24000
+  {% elif grains['provider'] == 'aws' %}
+    totem:
+      secauth: 'on'
+      token: 30000
+      token_retransmits_before_loss_const: 6
+      join: 60
+      consensus: 36000
   {% else %}
     totem:
       secauth: 'on'
