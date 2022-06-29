@@ -31,21 +31,22 @@ cluster:
     overwrite: true
     password: linux
   {%- endif %}
-  {% if grains['provider'] == 'azure' %}
+  {% elif grains['provider'] == 'aws' %}
+  corosync:
+    totem:
+      secauth: 'on'
+      token: 30000
+      token_retransmits_before_loss_const: 6
+      join: 60
+      consensus: 36000
+  {% elif grains['provider'] == 'azure' %}
   corosync:
     totem:
       token: 30000
       token_retransmits_before_loss_const: 10
       join: 60
       consensus: 36000
-      max_messages: 20
-  {% elif grains['provider'] == 'aws' %}
-    totem:
-      secauth: 'on'
-      token: 30000
-      token_retransmits_before_loss_const: 6
-      join: 60
-      consensus: 36000 
+      max_messages: 20 
   {% elif grains['provider'] == 'gcp' %}
   corosync:
     totem:
