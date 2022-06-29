@@ -30,7 +30,6 @@ variable "hana_count" {
 variable "block_devices" {
   description = "List of devices that will be available inside the machines. These values are mapped later to hana_data_disks_configuration['devices']."
   type        = string
-  default     = "/dev/sdf,/dev/sdg,/dev/sdh,/dev/sdi,/dev/sdj,/dev/sdk,/dev/sdl,/dev/sdm,/dev/sdn,/dev/sdo,/dev/sdp,/dev/sdq,/dev/sdr,/dev/sds,/dev/sdt,/dev/sdu,/dev/sdv,/dev/sdw,/dev/sdx,/dev/sdy,/dev/sdz"
 }
 
 variable "hana_data_disks_configuration" {

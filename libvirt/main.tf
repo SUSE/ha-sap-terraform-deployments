@@ -51,6 +51,11 @@ locals {
 
   # check if scale-out is enabled and if "data/log" are local disks (not shared)
   hana_basepath_shared = var.hana_scale_out_enabled && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? false : true
+
+  # there is one block_device less if sbd+iscsi is used (no shared volume)
+  hana_block_devices = local.iscsi_enabled ? "/dev/vdb,/dev/vdc,/dev/vdd,/dev/vde,/dev/vdf,/dev/vdg,/dev/vdh,/dev/vdi,/dev/vdj,/dev/vdk,/dev/vdl,/dev/vdm,/dev/vdn,/dev/vdo,/dev/vdp,/dev/vdq,/dev/vdr,/dev/vds,/dev/vdt,/dev/vdu,/dev/vdv,/dev/vdw,/dev/vdx,/dev/vdy,/dev/vdz" : "/dev/vdc,/dev/vdd,/dev/vde,/dev/vdf,/dev/vdg,/dev/vdh,/dev/vdi,/dev/vdj,/dev/vdk,/dev/vdl,/dev/vdm,/dev/vdn,/dev/vdo,/dev/vdp,/dev/vdq,/dev/vdr,/dev/vds,/dev/vdt,/dev/vdu,/dev/vdv,/dev/vdw,/dev/vdx,/dev/vdy,/dev/vdz"
+
+
 }
 
 data "template_file" "userdata" {
@@ -193,7 +198,7 @@ module "hana_node" {
   storage_pool                  = var.storage_pool
   userdata                      = libvirt_cloudinit_disk.userdata.id
   host_ips                      = local.hana_ips
-  block_devices                 = var.block_devices
+  block_devices                 = local.hana_block_devices
   hana_data_disks_configuration = var.hana_data_disks_configuration
   sbd_disk_id                   = module.hana_sbd_disk.id
   iscsi_srv_ip                  = module.iscsi_server.output_data.private_addresses.0

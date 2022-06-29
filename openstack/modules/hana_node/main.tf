@@ -7,7 +7,7 @@ locals {
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
   hostname                   = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  create_volumes             = var.hana_data_disk_type == "volumes" && local.disks_number > 0 ? 1 : 0
+  create_volumes             = var.hana_data_disk_type == "volume" && local.disks_number > 0 ? 1 : 0
   provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
   sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
 

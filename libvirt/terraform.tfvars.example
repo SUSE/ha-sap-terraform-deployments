@@ -121,11 +121,6 @@ hana_count = "2"
 # hana_source_image = "url-to-your-sles4sap-image"
 # hana_volume_name   = "SLES4SAP-15_SP0"
 
-# Number of nodes in the cluster
-# 2 nodes will always be scale-up
-# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
-#hana_count = "2"
-
 # enable to use HANA scale-out
 #hana_scale_out_enabled = true
 
@@ -184,6 +179,9 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 
 # Enable system replication and HA cluster
 #hana_ha_enabled = true
+
+# Select SBD as fencing mechanism for the HANA cluster
+#hana_cluster_fencing_mechanism = "sbd"
 
 # Disable minimal memory checks for HANA. Useful to deploy development clusters.
 # Low memory usage can cause a failed deployment. Be aware that this option does
@@ -314,6 +312,8 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 # DRBD cluster will create the NFS export in /mnt_permanent/sapdata/{netweaver_sid} to be connected as {drbd_cluster_vip}:/{netweaver_sid} (e.g.: )192.168.1.20:/HA1
 #drbd_nfs_mounting_point = "/mnt_permanent/sapdata"
 
+# Select SBD as fencing mechanism for the DRBD cluster
+#drbd_cluster_fencing_mechanism = "sbd"
 #############################
 # Netweaver or S/4HANA related variables
 #############################
