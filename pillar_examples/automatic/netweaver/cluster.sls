@@ -40,10 +40,12 @@ cluster:
       consensus: 36000
       max_messages: 20
   {% elif grains['provider'] == 'aws' %}
+    totem:
+      secauth: 'on'
       token: 30000
       token_retransmits_before_loss_const: 6
       join: 60
-      consensus: 36000  
+      consensus: 36000 
   {% elif grains['provider'] == 'gcp' %}
   corosync:
     totem:
