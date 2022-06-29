@@ -31,7 +31,7 @@ cluster:
     overwrite: true
     password: linux
   {%- endif %}
-  {% elif grains['provider'] == 'aws' %}
+  {% if grains['provider'] == 'aws' %}
   corosync:
     totem:
       secauth: 'on'
@@ -46,7 +46,7 @@ cluster:
       token_retransmits_before_loss_const: 10
       join: 60
       consensus: 36000
-      max_messages: 20 
+      max_messages: 20
   {% elif grains['provider'] == 'gcp' %}
   corosync:
     totem:
