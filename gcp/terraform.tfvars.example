@@ -332,7 +332,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
+# HANA instance master password (length 8-64, 1 digit, 1 lowercase, 1 uppercase). For detailed password rules see: doc/sap_passwords.md
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -503,10 +503,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# NetWeaver or S/4HANA master password. 
-# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
-# It cannot start with special characters and must contain a combination of
-# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
+# NetWeaver or S/4HANA master password (length 6-40, ASCII prefered). For detailed password rules see: doc/sap_passwords.md
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers
