@@ -62,17 +62,15 @@ variable "netweaver_pas_instance_number" {
   }
 }
 
+# for password rules see: doc/sap_passwords.md
 variable "netweaver_master_password" {
   description = "Master password for the Netweaver system (sidadm user included)"
   type        = string
   validation {
     condition = (
-      can(regex("[0-9]+", var.netweaver_master_password)) &&
-      can(regex("[a-z]+", var.netweaver_master_password)) &&
-      can(regex("[A-Z]+", var.netweaver_master_password)) &&
-      can(regex("^[\\w]{8,}$", var.netweaver_master_password))
+      can(regex("^.{6,40}$", var.netweaver_master_password))
     )
-    error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
+    error_message = "The netweaver master password must contain at least 6 up to 40 characters. The password can only consist of digits, letters, and the ASCII special characters. Other non-ASCII characters will be mapped to the same special character. For more information see: 'doc/sap_passwords.md'."
   }
 }
 
@@ -153,18 +151,10 @@ variable "netweaver_hana_instance_number" {
   }
 }
 
+# this follows the same rules like hana_master_password in hana_variables.tf
 variable "netweaver_hana_master_password" {
   description = "Master password for the HANA system (sidadm user included)"
   type        = string
-  validation {
-    condition = (
-      can(regex("[0-9]+", var.netweaver_hana_master_password)) &&
-      can(regex("[a-z]+", var.netweaver_hana_master_password)) &&
-      can(regex("[A-Z]+", var.netweaver_hana_master_password)) &&
-      can(regex("^[\\w]{8,}$", var.netweaver_hana_master_password))
-    )
-    error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
-  }
 }
 
 variable "netweaver_shared_storage_type" {
