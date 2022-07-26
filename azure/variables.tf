@@ -1010,6 +1010,15 @@ variable "pre_deployment" {
   default     = false
 }
 
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
+  type        = bool
+  default     = false
+}
+
 # native fencing
 variable "fence_agent_app_id" {
   description = "ID of the azure service principal / application that is used for native fencing."

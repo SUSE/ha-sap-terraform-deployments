@@ -171,18 +171,14 @@ deploy () {
 }
 
 postdeploy () {
-    # Execute the states defined in /srv/salt/top.sls
-    # This execution is done after cluster installation
     # shellcheck disable=SC2046
-    #salt-call --local \
-    #    --log-level=$(get_grain provisioning_log_level) \
-    #    --log-file=/var/log/salt-postdeployment.log \
-    #    --log-file-level=debug \
-    #    --retcode-passthrough \
-    #    $(salt_color_flag) \
-    #    state.highstate saltenv=postdeployment || log_error "postdeployment failed"
-    rm -rf /salt/grains
-
+    salt-call --local \
+        --log-level=$(get_grain provisioning_log_level) \
+        --log-file=/var/log/salt-postdeployment.log \
+        --log-file-level=debug \
+        --retcode-passthrough \
+        $(salt_color_flag) \
+        state.highstate saltenv=postdeployment || log_error "postdeployment failed"
     log_ok "postdeployment done"
 }
 

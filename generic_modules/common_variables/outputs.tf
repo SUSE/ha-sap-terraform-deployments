@@ -41,6 +41,7 @@ output "configuration" {
     monitoring_enabled          = var.monitoring_enabled
     monitoring_srv_ip           = var.monitoring_srv_ip
     offline_mode                = var.offline_mode
+    cleanup_secrets             = var.cleanup_secrets
     hana = {
       sid                            = var.hana_sid
       instance_number                = var.hana_instance_number
@@ -132,6 +133,7 @@ monitoring_srv_ip: ${var.monitoring_srv_ip}
 offline_mode: ${var.offline_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
+cleanup_secrets: ${var.cleanup_secrets}
 ${local.requirements}
 EOF
     hana_grains_output       = <<EOF

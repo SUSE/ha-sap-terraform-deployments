@@ -16,6 +16,14 @@
             - /srv/salt
             - /usr/share/salt-formulas/states
 
+/etc/salt/minion.d/environment_postdeployment.conf:
+  file.managed:
+    - contents: |
+        file_roots:
+          postdeployment:
+            - /srv/salt
+            - /usr/share/salt-formulas/states
+
 # prevent "[WARNING ] top_file_merging_strategy is set to 'merge' and multiple top files were found."
 /etc/salt/minion.d/top_file_merging_strategy.conf:
   file.managed:

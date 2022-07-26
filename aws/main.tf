@@ -87,6 +87,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
   offline_mode                        = var.offline_mode
+  cleanup_secrets                     = var.cleanup_secrets
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
