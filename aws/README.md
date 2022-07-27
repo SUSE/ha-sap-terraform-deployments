@@ -87,8 +87,8 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
     In order to setup the IAM proper rights, 2 options are available:
 
-        - Set the `IAMFullAccess` policy to the user running the project (or to the group which the user belongs to). This is not recommended as this IAM policy give full IAM access to the user.
-        - A better and more secure option, is to create a new policy to give access to create roles with rights to only manage EC2 instances. This will make the project executable, but won't set any other IAM permission to the users. This option is the recommended one. To use this approach, create the next policy giving a meaningful name (`TerraformIAMPolicies` for example) and attach it to the users that will run the project (or the group the users belong to):
+    - Set the `IAMFullAccess` policy to the user running the project (or to the group which the user belongs to). This is not recommended as this IAM policy give full IAM access to the user.
+    - A better and more secure option, is to create a new policy to give access to create roles with rights to only manage EC2 instances. This will make the project executable, but won't set any other IAM permission to the users. This option is the recommended one. To use this approach, create the next policy giving a meaningful name (`TerraformIAMPolicies` for example) and attach it to the users that will run the project (or the group the users belong to):
 
         ```
         {
