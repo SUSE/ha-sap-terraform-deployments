@@ -4,7 +4,7 @@ The fencing mechanism is used to halt nodes that are in inconsistent state. The 
 
 The project provides the next fencing options:
 - SBD
-- Cloud native fencing (only available for AWS and GCP by now)
+- Cloud native fencing (see `../<provider>/README.md` for details).
 
 Usually the cloud native fence mechanism is recommended as it simpler and less expensive.
 
