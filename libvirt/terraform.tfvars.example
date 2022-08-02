@@ -83,6 +83,10 @@ iprange = "192.168.XXX.Y/24"
 # Enable pre deployment steps (disabled by default)
 #pre_deployment = true
 
+# Enable post deployment steps (disabled by default)
+# This e.g. deletes /etc/salt/grains after a successful deployment
+#cleanup_secrets = true
+
 # To disable the provisioning process
 #provisioner = ""
 

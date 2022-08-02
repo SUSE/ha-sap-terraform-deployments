@@ -951,3 +951,12 @@ variable "pre_deployment" {
   type        = bool
   default     = false
 }
+
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
+  type        = bool
+  default     = false
+}
