@@ -75,6 +75,11 @@ cluster:
         ascs_fstype: nfs4
         ers_device: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
         ers_fstype: nfs4
+        {%- elif grains['provider'] == 'gcp' and grains['netweaver_shared_storage_type'] == 'filestore' %}
+        ascs_device: {{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt/ASCS
+        ascs_fstype: nfs4
+        ers_device: {{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt/ERS
+        ers_fstype: nfs4
         {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
         ascs_device: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
         ascs_fstype: nfs4

@@ -129,6 +129,10 @@ resource "google_filestore_instance" "data" {
     modes        = ["MODE_IPV4"]
     connect_mode = "DIRECT_PEERING"
   }
+
+  timeouts {
+    create = "60m"
+  }
 }
 
 resource "google_filestore_instance" "log" {
@@ -155,6 +159,10 @@ resource "google_filestore_instance" "log" {
     network      = var.network_name
     modes        = ["MODE_IPV4"]
     connect_mode = "DIRECT_PEERING"
+  }
+
+  timeouts {
+    create = "60m"
   }
 }
 
@@ -183,6 +191,10 @@ resource "google_filestore_instance" "backup" {
     modes        = ["MODE_IPV4"]
     connect_mode = "DIRECT_PEERING"
   }
+
+  timeouts {
+    create = "60m"
+  }
 }
 
 resource "google_filestore_instance" "shared" {
@@ -209,6 +221,10 @@ resource "google_filestore_instance" "shared" {
     network      = var.network_name
     modes        = ["MODE_IPV4"]
     connect_mode = "DIRECT_PEERING"
+  }
+
+  timeouts {
+    create = "60m"
   }
 }
 
