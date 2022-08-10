@@ -202,26 +202,27 @@ module "drbd_node" {
 }
 
 module "netweaver_node" {
-  source                           = "./modules/netweaver_node"
-  common_variables                 = module.common_variables.configuration
-  name                             = var.netweaver_name
-  network_domain                   = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
-  bastion_host                     = module.bastion.public_ip
-  xscs_server_count                = local.netweaver_xscs_server_count
-  app_server_count                 = var.netweaver_enabled ? var.netweaver_app_server_count : 0
-  machine_type                     = var.netweaver_machine_type
-  compute_zones                    = data.google_compute_zones.available.names
-  network_name                     = local.vpc_name
-  network_subnet_name              = local.subnet_name
-  os_image                         = local.netweaver_os_image
-  gcp_credentials_file             = var.gcp_credentials_file
-  host_ips                         = local.netweaver_ips
-  iscsi_srv_ip                     = module.iscsi_server.iscsisrv_ip
-  cluster_ssh_pub                  = var.cluster_ssh_pub
-  cluster_ssh_key                  = var.cluster_ssh_key
-  netweaver_software_bucket        = var.netweaver_software_bucket
-  virtual_host_ips                 = local.netweaver_virtual_ips
-  filestore_tier                   = var.filestore_tier
+  source                    = "./modules/netweaver_node"
+  common_variables          = module.common_variables.configuration
+  name                      = var.netweaver_name
+  network_domain            = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
+  bastion_host              = module.bastion.public_ip
+  xscs_server_count         = local.netweaver_xscs_server_count
+  app_server_count          = var.netweaver_enabled ? var.netweaver_app_server_count : 0
+  machine_type              = var.netweaver_machine_type
+  compute_zones             = data.google_compute_zones.available.names
+  network_name              = local.vpc_name
+  network_subnet_name       = local.subnet_name
+  os_image                  = local.netweaver_os_image
+  gcp_credentials_file      = var.gcp_credentials_file
+  host_ips                  = local.netweaver_ips
+  iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
+  cluster_ssh_pub           = var.cluster_ssh_pub
+  cluster_ssh_key           = var.cluster_ssh_key
+  netweaver_software_bucket = var.netweaver_software_bucket
+  virtual_host_ips          = local.netweaver_virtual_ips
+  # always multi-zonal (ENTERPRISEon)
+  filestore_tier                   = "ENTERPRISE"
   netweaver_filestore_quota_sapmnt = var.netweaver_filestore_quota_sapmnt
   on_destroy_dependencies = [
     google_compute_firewall.ha_firewall_allow_tcp,

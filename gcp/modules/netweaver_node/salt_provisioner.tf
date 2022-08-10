@@ -47,7 +47,8 @@ vpc_network_name: ${var.network_name}
 ascs_route_name: ${join(",", google_compute_route.nw-ascs-route.*.name)}
 ers_route_name: ${join(",", google_compute_route.nw-ers-route.*.name)}
 app_server_count: ${var.app_server_count}
-
+filestore_mount_ip:
+  sapmnt: [ ${local.shared_storage_filestore == 1 ? join("", google_filestore_instance.sapmnt.*.networks.0.ip_addresses.0) : ""} ]
 EOF
     destination = "/tmp/grains"
   }

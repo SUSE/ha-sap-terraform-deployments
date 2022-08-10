@@ -2,7 +2,7 @@
 # https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs
 # Maybe it should go in the netweaver salt formula directly
 
-{% if grains['netweaver_nfs_share'] or grains['netweaver_shared_storage_type'] == "efs" or grains['netweaver_shared_storage_type'] == "anf" %}
+{% if grains['netweaver_nfs_share'] or grains['netweaver_shared_storage_type'] in ['anf', 'efs', 'filestore'] %}
 
 include:
   - shared_storage.nfs

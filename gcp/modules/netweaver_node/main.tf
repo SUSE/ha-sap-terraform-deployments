@@ -2,12 +2,13 @@
 # official documentation: https://cloud.google.com/solutions/sap/docs/netweaver-ha-planning-guide
 
 locals {
-  vm_count               = var.xscs_server_count + var.app_server_count
-  create_ha_infra        = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
-  app_start_index        = local.create_ha_infra == 1 ? 2 : 1
-  bastion_enabled        = var.common_variables["bastion_enabled"]
-  provisioning_addresses = local.bastion_enabled ? google_compute_instance.netweaver.*.network_interface.0.network_ip : google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
-  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  vm_count                 = var.xscs_server_count + var.app_server_count
+  create_ha_infra          = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index          = local.create_ha_infra == 1 ? 2 : 1
+  bastion_enabled          = var.common_variables["bastion_enabled"]
+  provisioning_addresses   = local.bastion_enabled ? google_compute_instance.netweaver.*.network_interface.0.network_ip : google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
+  hostname                 = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_filestore = var.common_variables["netweaver"]["shared_storage_type"] == "filestore" ? 1 : 0
 }
 
 resource "google_compute_disk" "netweaver-software" {
@@ -103,6 +104,38 @@ module "netweaver-load-balancer-ers" {
   tcp_health_check_port = tonumber("621${var.common_variables["netweaver"]["ers_instance_number"]}")
   target_tags           = ["nw-group"]
   ip_address            = element(var.virtual_host_ips, 1)
+}
+
+# Filestore Storage
+resource "google_filestore_instance" "sapmnt" {
+  count = local.shared_storage_filestore == 1 ? 1 : 0
+
+  provider = google-beta
+  name     = "${var.common_variables["deployment_name"]}-netweaver-sapmnt"
+  # region for multi-zonal (ENTERPRISE)
+  location = var.common_variables["region"]
+  tier     = var.filestore_tier
+
+  file_shares {
+    capacity_gb = var.netweaver_filestore_quota_sapmnt
+    name        = "netweaver_sapmnt"
+
+    nfs_export_options {
+      ip_ranges   = ["0.0.0.0/0"]
+      access_mode = "READ_WRITE"
+      squash_mode = "NO_ROOT_SQUASH"
+    }
+  }
+
+  networks {
+    network      = var.network_name
+    modes        = ["MODE_IPV4"]
+    connect_mode = "DIRECT_PEERING"
+  }
+
+  timeouts {
+    create = "60m"
+  }
 }
 
 resource "google_compute_instance" "netweaver" {

@@ -82,6 +82,12 @@ include:
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][0] %}
         {% set nfs_share = nfs_server_ip + ':/netweaver-' + mount %}
       {% endif %}
+    {% elif grains['provider'] == 'gcp' %}
+      {% if grains['netweaver_shared_storage_type'] == "filestore" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['filestore_mount_ip'][mount][0] %}
+        {% set nfs_share = nfs_server_ip + ':/netweaver_' + mount %}
+      {% endif %}
     {% elif grains['provider'] == 'libvirt' %}
       {% if grains['netweaver_shared_storage_type'] == "nfs" %}
         # define IPs and share

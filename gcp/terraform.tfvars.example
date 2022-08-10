@@ -464,6 +464,17 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
 
+#########################
+# shared storage variables
+# Needed if Netweaver is deployed HA
+# see https://cloud.google.com/solutions/sap/docs/filers-for-sap
+# and https://cloud.google.com/filestore/docs/creating-instances
+# for reference and minimum requirements
+#########################
+#netweaver_shared_storage_type          = "filestore"  # drbd,filestore supported at the moment (default: "drbd")
+#filestore_tier                         = "BASIC_SSD"  # BASIC_SSD or ENTERPRISE are recommended
+#netweaver_filestore_quota_sapmnt       = "1024"       # deployed 1x
+
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
