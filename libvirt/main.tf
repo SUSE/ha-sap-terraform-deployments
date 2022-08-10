@@ -10,6 +10,7 @@ module "local_execution" {
 # Hana ips: 192.168.135.10, 192.168.135.11
 # Hana cluster vip: 192.168.135.12
 # Hana cluster vip secondary: 192.168.135.13
+# Hana majority maker ip: 192.168.135.9
 # DRBD ips: 192.168.135.20, 192.168.135.21
 # DRBD cluster vip: 192.168.135.22
 # Netweaver ips: 192.168.135.30, 192.168.135.31, 192.168.135.32, 192.168.135.33
@@ -23,6 +24,7 @@ locals {
   hana_ips                   = length(var.hana_ips) != 0 ? var.hana_ips : [for ip_index in range(local.hana_ip_start, local.hana_ip_start + var.hana_count) : cidrhost(local.iprange, ip_index)]
   hana_cluster_vip           = var.hana_cluster_vip != "" ? var.hana_cluster_vip : cidrhost(local.iprange, local.hana_ip_start + var.hana_count)
   hana_cluster_vip_secondary = var.hana_cluster_vip_secondary != "" ? var.hana_cluster_vip_secondary : cidrhost(local.iprange, local.hana_ip_start + var.hana_count + 1)
+  hana_majority_maker_ip     = var.hana_majority_maker_ip != "" ? var.hana_majority_maker_ip : cidrhost(local.iprange, local.hana_ip_start - 1)
 
   # 2 is hardcoded for drbd because we always deploy 2 machines
   drbd_ip_start    = 20
@@ -46,6 +48,14 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+
+  # check if scale-out is enabled and if "data/log" are local disks (not shared)
+  hana_basepath_shared = var.hana_scale_out_enabled && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? false : true
+
+  # there is one block_device less if sbd+iscsi is used (no shared volume)
+  hana_block_devices = local.iscsi_enabled ? "/dev/vdb,/dev/vdc,/dev/vdd,/dev/vde,/dev/vdf,/dev/vdg,/dev/vdh,/dev/vdi,/dev/vdj,/dev/vdk,/dev/vdl,/dev/vdm,/dev/vdn,/dev/vdo,/dev/vdp,/dev/vdq,/dev/vdr,/dev/vds,/dev/vdt,/dev/vdu,/dev/vdv,/dev/vdw,/dev/vdx,/dev/vdy,/dev/vdz" : "/dev/vdc,/dev/vdd,/dev/vde,/dev/vdf,/dev/vdg,/dev/vdh,/dev/vdi,/dev/vdj,/dev/vdk,/dev/vdl,/dev/vdm,/dev/vdn,/dev/vdo,/dev/vdp,/dev/vdq,/dev/vdr,/dev/vds,/dev/vdt,/dev/vdu,/dev/vdv,/dev/vdw,/dev/vdx,/dev/vdy,/dev/vdz"
+
+
 }
 
 data "template_file" "userdata" {
@@ -81,6 +91,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_srv_ip : ""
   offline_mode                        = var.offline_mode
+  cleanup_secrets                     = var.cleanup_secrets
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
@@ -112,6 +123,7 @@ module "common_variables" {
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   hana_scale_out_addhosts             = var.hana_scale_out_addhosts
   hana_scale_out_standby_count        = var.hana_scale_out_standby_count
+  hana_basepath_shared                = local.hana_basepath_shared
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
@@ -136,8 +148,8 @@ module "common_variables" {
   netweaver_cluster_fencing_mechanism = var.netweaver_cluster_fencing_mechanism
   netweaver_sbd_storage_type          = var.sbd_storage_type
   netweaver_shared_storage_type       = var.netweaver_shared_storage_type
-  monitoring_hana_targets             = local.hana_ips
-  monitoring_hana_targets_ha          = var.hana_ha_enabled ? local.hana_ips : []
+  monitoring_hana_targets             = var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips
+  monitoring_hana_targets_ha          = var.hana_ha_enabled ? (var.hana_scale_out_enabled ? concat(local.hana_ips, [local.hana_majority_maker_ip]) : local.hana_ips) : []
   monitoring_hana_targets_vip         = var.hana_ha_enabled ? [local.hana_cluster_vip] : [local.hana_ips[0]] # we use the vip for HA scenario and 1st hana machine for non HA to target the active hana instance
   monitoring_drbd_targets             = var.drbd_enabled ? local.drbd_ips : []
   monitoring_drbd_targets_ha          = var.drbd_enabled ? local.drbd_ips : []
@@ -172,24 +184,30 @@ module "iscsi_server" {
 }
 
 module "hana_node" {
-  source                = "./modules/hana_node"
-  common_variables      = module.common_variables.configuration
-  name                  = var.hana_name
-  network_domain        = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
-  source_image          = var.hana_source_image
-  volume_name           = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
-  hana_count            = var.hana_count
-  vcpu                  = var.hana_node_vcpu
-  memory                = var.hana_node_memory
-  bridge                = var.bridge_device
-  isolated_network_id   = local.internal_network_id
-  isolated_network_name = local.internal_network_name
-  storage_pool          = var.storage_pool
-  userdata              = libvirt_cloudinit_disk.userdata.id
-  host_ips              = local.hana_ips
-  hana_disk_size        = var.hana_node_disk_size
-  sbd_disk_id           = module.hana_sbd_disk.id
-  iscsi_srv_ip          = module.iscsi_server.output_data.private_addresses.0
+  source                        = "./modules/hana_node"
+  common_variables              = module.common_variables.configuration
+  name                          = var.hana_name
+  network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  source_image                  = var.hana_source_image
+  volume_name                   = var.hana_source_image != "" ? "" : (var.hana_volume_name != "" ? var.hana_volume_name : local.generic_volume_name)
+  hana_count                    = var.hana_count
+  vcpu                          = var.hana_node_vcpu
+  memory                        = var.hana_node_memory
+  bridge                        = var.bridge_device
+  isolated_network_id           = local.internal_network_id
+  isolated_network_name         = local.internal_network_name
+  storage_pool                  = var.storage_pool
+  userdata                      = libvirt_cloudinit_disk.userdata.id
+  host_ips                      = local.hana_ips
+  block_devices                 = local.hana_block_devices
+  hana_data_disks_configuration = var.hana_data_disks_configuration
+  sbd_disk_id                   = module.hana_sbd_disk.id
+  iscsi_srv_ip                  = module.iscsi_server.output_data.private_addresses.0
+  scale_out_nfs                 = var.hana_scale_out_nfs
+  # passed to majority_maker module
+  majority_maker_node_vcpu   = var.majority_maker_node_vcpu
+  majority_maker_node_memory = var.majority_maker_node_memory
+  majority_maker_ip          = local.hana_majority_maker_ip
 }
 
 module "drbd_node" {
@@ -211,7 +229,7 @@ module "drbd_node" {
   isolated_network_name = local.internal_network_name
   storage_pool          = var.storage_pool
   userdata              = libvirt_cloudinit_disk.userdata.id
-  nfs_mounting_point    = var.drbd_nfs_mounting_point
+  nfs_mounting_point    = var.nfs_mounting_point
   nfs_export_name       = var.netweaver_sid
 }
 

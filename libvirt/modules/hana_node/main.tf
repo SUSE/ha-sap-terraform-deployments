@@ -9,8 +9,23 @@ terraform {
 }
 
 locals {
-  hostname         = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  create_scale_out = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  create_scale_out   = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  shared_storage_nfs = var.common_variables["hana"]["scale_out_shared_storage_type"] == "nfs" ? 1 : 0
+
+  disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks = flatten([
+    for node in range(var.hana_count) : [
+      for disk in range(local.disks_number) : {
+        node_num    = node
+        node        = "${local.hostname}${format("%02d", node + 1)}"
+        disk_number = disk
+        disk_name   = "${local.hostname}${format("%02d-%s-%02d", node + 1, "disk", disk + 1)}"
+        disk_size   = element(local.disks_size, disk) * 1024 * 1024 * 1024 # has to be passed in bytes instead of gigabytes
+      }
+    ]
+  ])
 }
 
 resource "libvirt_volume" "hana_image_disk" {
@@ -19,13 +34,15 @@ resource "libvirt_volume" "hana_image_disk" {
   source           = var.source_image
   base_volume_name = var.volume_name
   pool             = var.storage_pool
+  size             = 64424509440 # 60GB
 }
 
 resource "libvirt_volume" "hana_data_disk" {
-  name  = "${var.common_variables["deployment_name"]}-${var.name}-${count.index + 1}-hana-disk"
-  pool  = var.storage_pool
-  count = var.hana_count
-  size  = var.hana_disk_size
+  for_each = { for disk in local.disks : "${disk.disk_name}" => disk }
+
+  name = each.value.disk_name
+  pool = var.storage_pool
+  size = each.value.disk_size
 }
 
 resource "libvirt_domain" "hana_domain" {
@@ -35,13 +52,12 @@ resource "libvirt_domain" "hana_domain" {
   count      = var.hana_count
   cloudinit  = var.userdata
   qemu_agent = true
+
+  // handle root disk
   dynamic "disk" {
     for_each = [
       {
         "vol_id" = element(libvirt_volume.hana_image_disk.*.id, count.index)
-      },
-      {
-        "vol_id" = element(libvirt_volume.hana_data_disk.*.id, count.index)
       },
     ]
     content {
@@ -49,7 +65,7 @@ resource "libvirt_domain" "hana_domain" {
     }
   }
 
-  // handle additional disks
+  // handle sbd disks
   dynamic "disk" {
     for_each = slice(
       [
@@ -61,6 +77,14 @@ resource "libvirt_domain" "hana_domain" {
     )
     content {
       volume_id = disk.value.volume_id
+    }
+  }
+
+  // handle hana disks
+  dynamic "disk" {
+    for_each = { for disk in local.disks : "${disk.disk_name}" => disk if disk.node_num == count.index }
+    content {
+      volume_id = libvirt_volume.hana_data_disk[disk.value.disk_name].id
     }
   }
 
@@ -112,6 +136,28 @@ output "output_data" {
     private_addresses = var.host_ips
     addresses         = libvirt_domain.hana_domain.*.network_interface.0.addresses.0
   }
+}
+
+module "hana_majority_maker" {
+  source                = "../majority_maker_node"
+  common_variables      = var.common_variables
+  node_count            = local.create_scale_out
+  name                  = var.name
+  network_domain        = var.network_domain
+  source_image          = var.source_image
+  volume_name           = var.source_image != "" ? "" : var.volume_name
+  hana_count            = var.hana_count
+  vcpu                  = var.majority_maker_node_vcpu
+  memory                = var.majority_maker_node_memory
+  bridge                = var.bridge
+  isolated_network_id   = var.isolated_network_id
+  isolated_network_name = var.isolated_network_name
+  storage_pool          = var.storage_pool
+  userdata              = var.userdata
+  host_ips              = var.host_ips
+  sbd_disk_id           = var.sbd_disk_id
+  iscsi_srv_ip          = var.iscsi_srv_ip
+  majority_maker_ip     = var.majority_maker_ip
 }
 
 module "hana_on_destroy" {

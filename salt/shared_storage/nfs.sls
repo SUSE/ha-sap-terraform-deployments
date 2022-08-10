@@ -34,13 +34,25 @@ include:
   {% set mount_base = "/tmp" %}
   {% set persist = False %}
 {% elif grains['role'] == "hana_node" %}
-  {% set mounts = ["data", "log", "backup", "shared"] %}
+  {% if grains['provider'] == 'aws' and grains['hana_scale_out_shared_storage_type'] == "efs" %}
+    {% set mounts = grains["efs_mount_ip"] %}
+  {% elif grains['provider'] == 'azure' and grains['hana_scale_out_shared_storage_type'] == "anf" %}
+    {% set mounts = grains["anf_mount_ip"] %}
+  {% elif grains['provider'] == 'gcp' and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% elif grains['provider'] == 'libvirt' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% elif grains['provider'] == 'openstack' and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+    {% set mounts = grains["nfs_mount_ip"] %}
+  {% else %}
+    {% set mounts = [] %}
+  {% endif %}
   {% set mount_base = "/hana" %}
   {% set persist = True %}
   {% set hana_sid = grains['hana_sid'].upper() %}
   {% set hana_instance = '{:0>2}'.format(grains['hana_instance_number']) %}
   # define sites based on even/odd hostname
-  {% set host_num = grains['host']|replace(grains['name_prefix'], '') %}
+  {% set host_num = grains['hostname']|replace(grains['name_prefix'], '') %}
   {% if (host_num|int % 2) == 1 %}
     {% set site = 1 %}
   {% elif (host_num|int % 2) == 0 %}
@@ -70,6 +82,12 @@ include:
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][0] %}
         {% set nfs_share = nfs_server_ip + ':/netweaver-' + mount %}
       {% endif %}
+    {% elif grains['provider'] == 'libvirt' %}
+      {% if grains['netweaver_shared_storage_type'] == "nfs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][0] %}
+        {% set nfs_share = grains['netweaver_nfs_share'] + '/' + mount %}
+      {% endif %}
     {% elif grains['provider'] == 'openstack' %}
       {% if grains['netweaver_shared_storage_type'] == "nfs" %}
         # define IPs and share
@@ -82,13 +100,26 @@ include:
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "efs" %}
         # define IPs and share
         {% set nfs_server_ip = grains['efs_mount_ip'][mount][site - 1] %}
-        {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+        {% set nfs_share = nfs_server_ip + ':/' %}
       {% endif %}
     {% elif grains['provider'] == 'azure' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "anf" %}
         # define IPs and share
         {% set nfs_server_ip = grains['anf_mount_ip'][mount][site - 1] %}
         {% set nfs_share = nfs_server_ip + ':/' + grains['name_prefix'] + '-' + mount + '-' + site|string %}
+      {% endif %}
+    {% elif grains['provider'] == 'gcp' %}
+      {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "filestore" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][site - 1] %}
+        {% set nfs_share = nfs_server_ip + ':/' + mount + '_' + site|string %}
+      {% endif %}
+    {% elif grains['provider'] == 'libvirt' %}
+      {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
+        # define IPs and share
+        {% set nfs_server_ip = grains['nfs_mount_ip'][mount][site - 1] %}
+        {% set nfs_dir = grains['nfs_mount_dir'][mount][site - 1] %}
+        {% set nfs_share = nfs_server_ip + ':' + nfs_dir %}
       {% endif %}
     {% elif grains['provider'] == 'openstack' %}
       {% if grains['hana_scale_out_enabled'] and grains['hana_scale_out_shared_storage_type'] == "nfs" %}
@@ -99,7 +130,7 @@ include:
     {% endif %}
   {% endif %}
 
-wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}:
+wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   cmd.run:
     - name: until nc -zvw5 {{ nfs_server_ip }} 2049;do sleep 30;done
     - output_loglevel: quiet
@@ -108,14 +139,14 @@ wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}:
       - pkg: netcat-openbsd
 
 # Add a delay to the folder creation https://github.com/SUSE/ha-sap-terraform-deployments/issues/633
-wait_before_mount_{{ grains['role'] }}_{{ mount }}:
+wait_before_mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   module.run:
     - test.sleep:
       - length: 3
     - require:
-      - wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}
+      - wait_until_nfs_is_ready_{{ grains['role'] }}_{{ mount }}_site{{ site }}
 
-mount_{{ grains['role'] }}_{{ mount }}:
+mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   file.directory:
     - name: {{ mount_base }}/{{ mount }}
     - user: root
@@ -129,18 +160,18 @@ mount_{{ grains['role'] }}_{{ mount }}:
     - persist: {{ persist }}
     - opts: {{ nfs_options }}
     - require:
-      - wait_before_mount_{{ grains['role'] }}_{{ mount }}
+      - wait_before_mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}
       {%- if grains['provider'] == 'azure' %}
       - sls: provider.azure.nfsv4
       {% endif %}
 
-permissions_{{ grains['role'] }}_{{ mount }}:
+permissions_{{ grains['role'] }}_{{ mount }}_site{{ site }}:
   file.directory:
     - name: {{ mount_base }}/{{ mount }}
     - user: root
     - mode: "0755"
     - makedirs: True
     - require:
-      - mount_{{ grains['role'] }}_{{ mount }}
+      - mount_{{ grains['role'] }}_{{ mount }}_site{{ site }}
 
 {%- endfor %}

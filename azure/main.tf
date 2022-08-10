@@ -55,6 +55,9 @@ locals {
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
   netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+
+  # check if scale-out is enabled and if "data/log" are local disks (not shared)
+  hana_basepath_shared = var.hana_scale_out_enabled && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") && contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? false : true
 }
 
 module "common_variables" {
@@ -81,6 +84,7 @@ module "common_variables" {
   monitoring_enabled                  = var.monitoring_enabled
   monitoring_srv_ip                   = var.monitoring_enabled ? local.monitoring_ip : ""
   offline_mode                        = var.offline_mode
+  cleanup_secrets                     = var.cleanup_secrets
   hana_hwcct                          = var.hwcct
   hana_sid                            = var.hana_sid
   hana_instance_number                = var.hana_instance_number
@@ -112,6 +116,7 @@ module "common_variables" {
   hana_scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
   hana_scale_out_addhosts             = var.hana_scale_out_addhosts
   hana_scale_out_standby_count        = var.hana_scale_out_standby_count
+  hana_basepath_shared                = local.hana_basepath_shared
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number

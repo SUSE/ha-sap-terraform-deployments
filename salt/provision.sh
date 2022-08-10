@@ -170,6 +170,18 @@ deploy () {
     fi
 }
 
+postdeploy () {
+    # shellcheck disable=SC2046
+    salt-call --local \
+        --log-level=$(get_grain provisioning_log_level) \
+        --log-file=/var/log/salt-postdeployment.log \
+        --log-file-level=debug \
+        --retcode-passthrough \
+        $(salt_color_flag) \
+        state.highstate saltenv=postdeployment || log_error "postdeployment failed"
+    log_ok "postdeployment done"
+}
+
 run_tests () {
     [[ "$(get_grain hwcct)" == "true" ]] && hwcct_mode=1
     if [[ ${hwcct_mode} && $(get_grain role) == hana_node ]]; then
@@ -201,6 +213,7 @@ Supported Options (if no options are provided (excluding -l) all the steps will 
   -o               Execute OS setup operations. Register to SCC, updated the packages, etc
   -p               Execute predeployment operations (update hosts and hostnames, install support packages, etc)
   -d               Execute deployment operations (install sap, ha, drbd, etc)
+  -P               Execute postdeployment operations (delete grains, etc)
   -q               Execute qa tests
   -l [LOG_FILE]    Append the log output to the provided file
   -h               Show this help.
@@ -208,7 +221,7 @@ EOF
 }
 
 argument_number=0
-while getopts ":hsopdql:" opt; do
+while getopts ":hsopdPql:" opt; do
     argument_number=$((argument_number + 1))
     case $opt in
         h)
@@ -216,19 +229,22 @@ while getopts ":hsopdql:" opt; do
             exit 0
             ;;
         s)
-            excute_bootstrap_salt=1
+            execute_bootstrap_salt=1
             ;;
         o)
-            excute_os_setup=1
+            execute_os_setup=1
             ;;
         p)
-            excute_predeploy=1
+            execute_predeploy=1
             ;;
         d)
-            excute_deploy=1
+            execute_deploy=1
             ;;
         q)
-            excute_run_tests=1
+            execute_run_tests=1
+            ;;
+        P)
+            execute_postdeploy=1
             ;;
         l)
             log_to_file=$OPTARG
@@ -253,11 +269,13 @@ if [ $argument_number -eq 0 ]; then
     predeploy
     deploy
     run_tests
+    postdeploy
 else
-    [[ -n $excute_bootstrap_salt ]] && bootstrap_salt
-    [[ -n $excute_os_setup ]] && os_setup
-    [[ -n $excute_predeploy ]] && predeploy
-    [[ -n $excute_deploy ]] && deploy
-    [[ -n $excute_run_tests ]] && run_tests
+    [[ -n $execute_bootstrap_salt ]] && bootstrap_salt
+    [[ -n $execute_os_setup ]] && os_setup
+    [[ -n $execute_predeploy ]] && predeploy
+    [[ -n $execute_deploy ]] && deploy
+    [[ -n $execute_run_tests ]] && run_tests
+    [[ -n $execute_postdeploy ]] && postdeploy
 fi
 exit 0
