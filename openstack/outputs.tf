@@ -6,19 +6,19 @@
 
 # iSCSI server
 
-output "iscsisrv_ip" {
-  value = module.iscsi_server.iscsisrv_ip
+output "iscsi_ip" {
+  value = module.iscsi_server.iscsi_ip
 }
 
-output "iscsisrv_public_ip" {
-  value = module.iscsi_server.iscsisrv_public_ip
+output "iscsi_public_ip" {
+  value = module.iscsi_server.iscsi_public_ip
 }
 
-output "iscsisrv_name" {
-  value = module.iscsi_server.iscsisrv_name
+output "iscsi_name" {
+  value = module.iscsi_server.iscsi_name
 }
 
-output "iscsisrv_public_name" {
+output "iscsi_public_name" {
   value = []
 }
 
@@ -78,20 +78,20 @@ output "drbd_public_name" {
 
 # NFS
 
-output "nfssrv_ip" {
-  value = module.nfs_server.nfssrv_ip
+output "nfs_ip" {
+  value = module.nfs_server.nfs_ip
 }
 
-output "nfssrv_public_ip" {
-  value = module.nfs_server.nfssrv_public_ip
+output "nfs_public_ip" {
+  value = module.nfs_server.nfs_public_ip
 }
 
-output "nfssrv_name" {
-  value = module.nfs_server.nfssrv_name
+output "nfs_name" {
+  value = module.nfs_server.nfs_name
 }
 
-output "nfssrv_public_name" {
-  value = module.nfs_server.nfssrv_public_name
+output "nfs_public_name" {
+  value = module.nfs_server.nfs_public_name
 }
 
 # netweaver

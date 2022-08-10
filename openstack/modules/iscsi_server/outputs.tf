@@ -10,22 +10,22 @@ data "openstack_compute_instance_v2" "iscsisrv" {
   depends_on = [openstack_compute_instance_v2.iscsisrv]
 }
 
-output "iscsisrv_ip" {
+output "iscsi_ip" {
   value = join(",", openstack_compute_instance_v2.iscsisrv.*.access_ip_v4)
   # value = data.openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
 }
 
-output "iscsisrv_public_ip" {
+output "iscsi_public_ip" {
   value = join(",", openstack_compute_instance_v2.iscsisrv.*.access_ip_v4)
   # value = data.openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
 }
 
-output "iscsisrv_name" {
+output "iscsi_name" {
   # value = join(",",openstack_compute_instance_v2.iscsisrv.*.name)
   value = openstack_compute_instance_v2.iscsisrv.*.name
 }
 
-output "iscsisrv_public_name" {
+output "iscsi_public_name" {
   # value = []
   value = openstack_compute_instance_v2.iscsisrv.*.name
 }

@@ -190,7 +190,7 @@ module "drbd_node" {
   drbd_data_disk_type  = var.drbd_data_disk_type
   gcp_credentials_file = var.gcp_credentials_file
   host_ips             = local.drbd_ips
-  iscsi_srv_ip         = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip         = module.iscsi_server.iscsi_ip
   cluster_ssh_pub      = var.cluster_ssh_pub
   cluster_ssh_key      = var.cluster_ssh_key
   nfs_mounting_point   = var.drbd_nfs_mounting_point
@@ -216,7 +216,7 @@ module "netweaver_node" {
   os_image                  = local.netweaver_os_image
   gcp_credentials_file      = var.gcp_credentials_file
   host_ips                  = local.netweaver_ips
-  iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip              = module.iscsi_server.iscsi_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
@@ -244,7 +244,7 @@ module "hana_node" {
   os_image                              = local.hana_os_image
   gcp_credentials_file                  = var.gcp_credentials_file
   host_ips                              = local.hana_ips
-  iscsi_srv_ip                          = module.iscsi_server.iscsisrv_ip
+  iscsi_srv_ip                          = module.iscsi_server.iscsi_ip
   hana_data_disks_configuration         = var.hana_data_disks_configuration
   filestore_tier                        = var.filestore_tier
   hana_scale_out_filestore_quota_data   = var.hana_scale_out_filestore_quota_data

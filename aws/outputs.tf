@@ -6,36 +6,36 @@
 
 # Cluster nodes
 
-output "cluster_nodes_ip" {
-  value = module.hana_node.cluster_nodes_ip
+output "hana_ip" {
+  value = module.hana_node.hana_ip
 }
 
-output "cluster_nodes_public_ip" {
-  value = module.hana_node.cluster_nodes_public_ip
+output "hana_public_ip" {
+  value = module.hana_node.hana_public_ip
 }
 
-output "cluster_nodes_name" {
-  value = module.hana_node.cluster_nodes_name
+output "hana_name" {
+  value = module.hana_node.hana_name
 }
 
-output "cluster_nodes_public_name" {
-  value = module.hana_node.cluster_nodes_public_name
+output "hana_public_name" {
+  value = module.hana_node.hana_public_name
 }
 
-output "majority_maker_ip" {
+output "hana_majority_maker_ip" {
   value = module.hana_node.majority_maker_ip
 }
 
-output "majority_maker_public_ip" {
-  value = module.hana_node.majority_maker_public_ip
+output "hana_majority_maker_public_ip" {
+  value = module.hana_node.hana_majority_maker_public_ip
 }
 
-output "majority_maker_name" {
-  value = module.hana_node.majority_maker_name
+output "hana_majority_maker_name" {
+  value = module.hana_node.hana_majority_maker_name
 }
 
-output "majority_maker_public_name" {
-  value = module.hana_node.majority_maker_public_name
+output "hana_majority_maker_public_name" {
+  value = module.hana_node.hana_majority_maker_public_name
 }
 
 # Monitoring
@@ -76,20 +76,20 @@ output "netweaver_public_name" {
 
 # iSCSI server
 
-output "iscsisrv_ip" {
-  value = join("", module.iscsi_server.iscsisrv_ip)
+output "iscsi_ip" {
+  value = join("", module.iscsi_server.iscsi_ip)
 }
 
-output "iscsisrv_public_ip" {
-  value = join("", module.iscsi_server.iscsisrv_public_ip)
+output "iscsi_public_ip" {
+  value = join("", module.iscsi_server.iscsi_public_ip)
 }
 
-output "iscsisrv_name" {
-  value = join("", module.iscsi_server.iscsisrv_name)
+output "iscsi_name" {
+  value = join("", module.iscsi_server.iscsi_name)
 }
 
-output "iscsisrv_public_name" {
-  value = join("", module.iscsi_server.iscsisrv_public_name)
+output "iscsi_public_name" {
+  value = join("", module.iscsi_server.iscsi_public_name)
 }
 
 # DRBD

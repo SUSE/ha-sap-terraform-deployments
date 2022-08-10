@@ -1,18 +1,18 @@
 # Outputs: IP address and port where the service will be listening on
 
-output "cluster_nodes_ip" {
+output "hana_ip" {
   value = module.hana_node.output_data.private_addresses
 }
 
-output "cluster_nodes_public_ip" {
+output "hana_public_ip" {
   value = module.hana_node.output_data.addresses
 }
 
-output "cluster_nodes_name" {
+output "hana_name" {
   value = module.hana_node.output_data.name
 }
 
-output "cluster_nodes_public_name" {
+output "hana_public_name" {
   value = []
 }
 
@@ -32,19 +32,19 @@ output "drbd_public_name" {
   value = []
 }
 
-output "iscsisrv_ip" {
+output "iscsi_ip" {
   value = module.iscsi_server.output_data.private_addresses
 }
 
-output "iscsisrv_public_ip" {
+output "iscsi_public_ip" {
   value = module.iscsi_server.output_data.addresses
 }
 
-output "iscsisrv_name" {
+output "iscsi_name" {
   value = module.iscsi_server.output_data.name
 }
 
-output "iscsisrv_public_name" {
+output "iscsi_public_name" {
   value = []
 }
 
@@ -64,18 +64,18 @@ output "monitoring_public_name" {
   value = ""
 }
 
-output "netweaver_nodes_ip" {
+output "netweaver_ip" {
   value = module.netweaver_node.output_data.private_addresses
 }
 
-output "netweaver_nodes_public_ip" {
+output "netweaver_public_ip" {
   value = module.netweaver_node.output_data.addresses
 }
 
-output "netweaver_nodes_name" {
+output "netweaver_name" {
   value = module.netweaver_node.output_data.name
 }
 
-output "netweaver_nodes_public_name" {
+output "netweaver_public_name" {
   value = []
 }

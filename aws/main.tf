@@ -183,7 +183,7 @@ module "drbd_node" {
   drbd_data_disk_type   = var.drbd_data_disk_type
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
-  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsi_ip)
   nfs_mounting_point    = var.drbd_nfs_mounting_point
   nfs_export_name       = var.netweaver_sid
   on_destroy_dependencies = [
@@ -242,7 +242,7 @@ module "netweaver_node" {
   s3_bucket             = var.netweaver_s3_bucket
   host_ips              = local.netweaver_ips
   virtual_host_ips      = local.netweaver_virtual_ips
-  iscsi_srv_ip          = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip          = join("", module.iscsi_server.iscsi_ip)
   cluster_ssh_pub       = var.cluster_ssh_pub
   cluster_ssh_key       = var.cluster_ssh_key
   on_destroy_dependencies = [
@@ -275,7 +275,7 @@ module "hana_node" {
   host_ips                      = local.hana_ips
   block_devices                 = var.block_devices
   hana_data_disks_configuration = var.hana_data_disks_configuration
-  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsi_ip)
   cluster_ssh_pub               = var.cluster_ssh_pub
   cluster_ssh_key               = var.cluster_ssh_key
   # passed to majority_maker module

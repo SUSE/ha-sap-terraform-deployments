@@ -173,7 +173,7 @@ module "drbd_node" {
   cluster_ssh_pub     = var.cluster_ssh_pub
   cluster_ssh_key     = var.cluster_ssh_key
   host_ips            = local.drbd_ips
-  iscsi_srv_ip        = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip        = join("", module.iscsi_server.iscsi_ip)
   nfs_mounting_point  = var.drbd_nfs_mounting_point
   nfs_export_name     = var.netweaver_sid
   # only used by azure fence agent (native fencing)
@@ -214,7 +214,7 @@ module "netweaver_node" {
   storage_account_path        = var.netweaver_storage_account
   host_ips                    = local.netweaver_ips
   virtual_host_ips            = local.netweaver_virtual_ips
-  iscsi_srv_ip                = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip                = join("", module.iscsi_server.iscsi_ip)
   # ANF specific
   anf_account_name           = local.anf_account_name
   anf_pool_name              = local.anf_pool_name
@@ -250,7 +250,7 @@ module "hana_node" {
   cluster_ssh_key               = var.cluster_ssh_key
   hana_data_disks_configuration = var.hana_data_disks_configuration
   os_image                      = local.hana_os_image
-  iscsi_srv_ip                  = join("", module.iscsi_server.iscsisrv_ip)
+  iscsi_srv_ip                  = join("", module.iscsi_server.iscsi_ip)
   # ANF specific
   anf_account_name                = local.anf_account_name
   anf_pool_name                   = local.anf_pool_name
