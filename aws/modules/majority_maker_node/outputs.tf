@@ -7,14 +7,14 @@ output "majority_maker_ip" {
   value = data.aws_instance.majority_maker.*.private_ip
 }
 
-output "majority_maker_public_ip" {
+output "hana_majority_maker_public_ip" {
   value = data.aws_instance.majority_maker.*.public_ip
 }
 
-output "majority_maker_name" {
+output "hana_majority_maker_name" {
   value = data.aws_instance.majority_maker.*.id
 }
 
-output "majority_maker_public_name" {
+output "hana_majority_maker_public_name" {
   value = data.aws_instance.majority_maker.*.public_dns
 }

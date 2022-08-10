@@ -81,7 +81,7 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
 	```
 	terraform apply -target="module.nfs_server"
-	rsync -avPc --delete -e "ssh -l sles -i id_rsa -J sles@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfssrv_ip):/mnt_permanent/sapdata/sapinst/
+	rsync -avPc --delete -e "ssh -l sles -i id_rsa -J sles@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfs_ip):/mnt_permanent/sapdata/sapinst/
 
 	```
 
