@@ -92,7 +92,7 @@ This repository supports deployment with following products:
 | Vendor      | Product                                                  |
 | ----------- | -------------------------------------------------------- |
 | SUSE        | SUSE Linux Enterprise Server for SAP Applications 12 SP5 <br> Certification: [SLES for SAP🔗](https://www.suse.com/products/sles-for-sap/) and [SAP Process Automation🔗](https://store.sap.com/dcp/en/product/display-0000059520_live_v1/SUSE%20Linux%20Enterprise%20Server%20for%20SAP%20applications)  |
-| SUSE        | SUSE Linux Enterprise Server for SAP Applications 15 SP 3<br> Certification: [SLES for SAP🔗](https://www.suse.com/products/sles-for-sap/) and [SAP Process Automation🔗](https://store.sap.com/dcp/en/product/display-0000059520_live_v1/SUSE%20Linux%20Enterprise%20Server%20for%20SAP%20applications)  |
+| SUSE        | SUSE Linux Enterprise Server for SAP Applications 15 SP4 (or older)<br> Certification: [SLES for SAP🔗](https://www.suse.com/products/sles-for-sap/) and [SAP Process Automation🔗](https://store.sap.com/dcp/en/product/display-0000059520_live_v1/SUSE%20Linux%20Enterprise%20Server%20for%20SAP%20applications)  |
 | SAP         | SAP HANA 2.0 with SPS >= 02   |
 | SAP         | SAP NETWEAVER 7.5 (and later) |
 | SAP         | SAP S/4HANA 1610              |
