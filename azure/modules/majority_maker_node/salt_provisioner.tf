@@ -21,7 +21,7 @@ resource "null_resource" "majority_maker_provisioner" {
 role: majority_maker_node
 ${var.common_variables["grains_output"]}
 ${var.common_variables["hana_grains_output"]}
-name_prefix: vm${var.name}
+name_prefix: ${local.hostname}
 hostname: ${local.hostname}mm
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: "tf.local"
