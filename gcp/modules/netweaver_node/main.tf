@@ -8,7 +8,7 @@ locals {
   bastion_enabled          = var.common_variables["bastion_enabled"]
   provisioning_addresses   = local.bastion_enabled ? google_compute_instance.netweaver.*.network_interface.0.network_ip : google_compute_instance.netweaver.*.network_interface.0.access_config.0.nat_ip
   hostname                 = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_filestore = var.common_variables["netweaver"]["shared_storage_type"] == "filestore" ? 1 : 0
+  shared_storage_filestore = local.vm_count > 0 && var.common_variables["netweaver"]["shared_storage_type"] == "filestore" ? 1 : 0
 }
 
 resource "google_compute_disk" "netweaver-software" {
