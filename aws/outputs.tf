@@ -22,6 +22,10 @@ output "hana_public_name" {
   value = module.hana_node.hana_public_name
 }
 
+output "hana_vip" {
+  value = var.hana_active_active == true ? [module.common_variables.configuration["hana"]["cluster_vip"], module.common_variables.configuration["hana"]["cluster_vip_secondary"]] : [module.common_variables.configuration["hana"]["cluster_vip"]]
+}
+
 output "hana_majority_maker_ip" {
   value = module.hana_node.majority_maker_ip
 }
@@ -74,6 +78,10 @@ output "netweaver_public_name" {
   value = module.netweaver_node.netweaver_public_name
 }
 
+output "netweaver_vip" {
+  value = var.netweaver_enabled == true ? local.netweaver_virtual_ips : []
+}
+
 # iSCSI server
 
 output "iscsi_ip" {
@@ -110,6 +118,10 @@ output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
 
+output "drbd_vip" {
+  value = var.drbd_enabled == true ? [module.common_variables.configuration["drbd"]["cluster_vip"]] : []
+}
+
 # bastion
 
 output "bastion_ip" {
@@ -126,4 +138,26 @@ output "bastion_name" {
 
 output "bastion_public_name" {
   value = module.bastion.bastion_public_name
+}
+
+# ssh variables
+
+output "ssh_user" {
+  value = var.admin_user
+}
+
+output "ssh_private_key" {
+  value = var.private_key
+}
+
+output "ssh_public_key" {
+  value = var.public_key
+}
+
+output "ssh_bastion_private_key" {
+  value = var.bastion_private_key == "" ? var.private_key : var.bastion_private_key
+}
+
+output "ssh_bastion_public_key" {
+  value = var.bastion_public_key == "" ? var.public_key : var.bastion_public_key
 }

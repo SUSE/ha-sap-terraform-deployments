@@ -59,6 +59,12 @@ variable "authorized_keys" {
   default     = ["~/.ssh/id_rsa.pub"]
 }
 
+variable "admin_user" {
+  description = "User used to connect to machines and bastion"
+  type        = string
+  default     = "root"
+}
+
 # Deployment variables
 #
 variable "deployment_name" {
