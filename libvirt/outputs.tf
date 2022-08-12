@@ -16,6 +16,10 @@ output "hana_public_name" {
   value = []
 }
 
+output "hana_vip" {
+  value = var.hana_active_active == true ? [module.common_variables.configuration["hana"]["cluster_vip"], module.common_variables.configuration["hana"]["cluster_vip_secondary"]] : [module.common_variables.configuration["hana"]["cluster_vip"]]
+}
+
 output "drbd_ip" {
   value = module.drbd_node.output_data.private_addresses
 }
@@ -30,6 +34,10 @@ output "drbd_name" {
 
 output "drbd_public_name" {
   value = []
+}
+
+output "drbd_vip" {
+  value = var.drbd_enabled == true ? [module.common_variables.configuration["drbd"]["cluster_vip"]] : []
 }
 
 output "iscsi_ip" {
@@ -79,3 +87,31 @@ output "netweaver_name" {
 output "netweaver_public_name" {
   value = []
 }
+
+output "netweaver_vip" {
+  value = var.netweaver_enabled == true ? local.netweaver_virtual_ips : []
+}
+
+# ssh variables
+
+output "ssh_user" {
+  value = var.admin_user
+}
+
+# no ssh key used to connect
+#output "ssh_private_key" {
+#  value = var.private_key
+#}
+#
+#output "ssh_public_key" {
+#  value = var.public_key
+#}
+
+# no bastion implemented
+#output "ssh_bastion_private_key" {
+#  value = var.bastion_private_key == "" ? var.private_key : var.bastion_private_key
+#}
+#
+#output "ssh_bastion_public_key" {
+#  value = var.bastion_public_key == "" ? var.public_key : var.bastion_public_key
+#}

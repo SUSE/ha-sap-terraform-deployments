@@ -79,7 +79,7 @@ module "common_variables" {
   public_key                          = var.public_key
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
-  authorized_user                     = "ec2-user"
+  authorized_user                     = var.admin_user
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored

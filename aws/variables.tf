@@ -81,6 +81,12 @@ variable "authorized_keys" {
   default     = []
 }
 
+variable "admin_user" {
+  description = "User used to connect to machines and bastion"
+  type        = string
+  default     = "ec2-user"
+}
+
 # Deployment variables
 
 variable "deployment_name" {

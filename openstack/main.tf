@@ -94,7 +94,7 @@ module "common_variables" {
   public_key                          = var.public_key
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
-  authorized_user                     = "sles"
+  authorized_user                     = var.admin_user
   bastion_enabled                     = var.bastion_enabled
   bastion_public_key                  = var.bastion_public_key
   bastion_private_key                 = var.bastion_private_key
