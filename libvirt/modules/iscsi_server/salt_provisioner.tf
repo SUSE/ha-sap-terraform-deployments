@@ -7,7 +7,7 @@ resource "null_resource" "wait_after_cloud_init" {
 
   provisioner "remote-exec" {
     inline = [
-      "if which cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
+      "if command -v cloud-init; then cloud-init status --wait; else echo no cloud-init installed; fi"
     ]
   }
 
@@ -37,6 +37,8 @@ role: iscsi_srv
 ${var.common_variables["grains_output"]}
 name_prefix: ${local.hostname}
 hostname: ${local.hostname}${format("%02d", count.index + 1)}
+network_domain: ${var.network_domain}
+timezone: ${var.timezone}
 host_ip: ${element(var.host_ips, count.index)}
 iscsi_srv_ip: ${element(var.host_ips, count.index)}
 iscsidev: /dev/vdb

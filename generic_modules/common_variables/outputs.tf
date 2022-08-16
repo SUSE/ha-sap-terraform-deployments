@@ -41,6 +41,7 @@ output "configuration" {
     monitoring_enabled          = var.monitoring_enabled
     monitoring_srv_ip           = var.monitoring_srv_ip
     offline_mode                = var.offline_mode
+    cleanup_secrets             = var.cleanup_secrets
     hana = {
       sid                            = var.hana_sid
       instance_number                = var.hana_instance_number
@@ -72,6 +73,7 @@ output "configuration" {
       scale_out_shared_storage_type  = var.hana_scale_out_shared_storage_type
       scale_out_addhosts             = var.hana_scale_out_addhosts
       scale_out_standby_count        = var.hana_scale_out_standby_count
+      basepath_shared                = var.hana_basepath_shared
     }
     netweaver = {
       ha_enabled            = var.netweaver_ha_enabled
@@ -131,6 +133,7 @@ monitoring_srv_ip: ${var.monitoring_srv_ip}
 offline_mode: ${var.offline_mode}
 provisioning_log_level: ${var.provisioning_log_level}
 provisioning_output_colored: ${var.provisioning_output_colored}
+cleanup_secrets: ${var.cleanup_secrets}
 ${local.requirements}
 EOF
     hana_grains_output       = <<EOF
@@ -160,6 +163,7 @@ hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
 hana_scale_out_standby_count: ${var.hana_scale_out_standby_count}
+hana_basepath_shared: ${var.hana_basepath_shared}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}

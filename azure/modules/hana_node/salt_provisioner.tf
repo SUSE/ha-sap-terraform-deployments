@@ -25,7 +25,7 @@ name_prefix: ${local.hostname}
 hostname: ${local.hostname}${format("%02d", count.index + 1)}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 network_domain: ${var.network_domain}
-hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), )}}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", join(",", azurerm_virtual_machine.hana[count.index].storage_data_disk.*.lun)), )}}
 storage_account_name: ${var.storage_account_name}
 storage_account_key: ${var.storage_account_key}
 sbd_lun_index: 0
@@ -38,12 +38,12 @@ resource_group_name: ${var.resource_group_name}
 fence_agent_app_id: ${var.fence_agent_app_id}
 fence_agent_client_secret: ${var.fence_agent_client_secret}
 anf_mount_ip:
-  data: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-data.*.mount_ip_addresses.0) : ""} ]
-  log: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-log.*.mount_ip_addresses.0) : ""} ]
-  backup: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-backup.*.mount_ip_addresses.0) : ""} ]
-  shared: [ ${local.shared_storage_anf == 1 ? join(", ", azurerm_netapp_volume.hana-netapp-volume-shared.*.mount_ip_addresses.0) : ""} ]
+  ${local.shared_storage_anf == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "data") ? "data: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-data.*.mount_ip_addresses.0)} ]" : ""}
+  ${local.shared_storage_anf == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "log") ? "log: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-log.*.mount_ip_addresses.0)} ]" : ""}
+  ${local.shared_storage_anf == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "backup") ? "backup: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-backup.*.mount_ip_addresses.0)} ]" : ""}
+  ${local.shared_storage_anf == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [ ${join(", ", azurerm_netapp_volume.hana-netapp-volume-shared.*.mount_ip_addresses.0)} ]" : ""}
 node_count: ${var.hana_count + local.create_scale_out}
-majority_maker_node: ${local.create_scale_out == 1 ? "${var.name}mm" : ""}
+majority_maker_node: ${local.create_scale_out == 1 ? "${local.hostname}mm" : ""}
 majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"

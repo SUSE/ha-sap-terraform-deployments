@@ -119,6 +119,10 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Enable pre deployment steps (disabled by default)
 #pre_deployment = true
 
+# Enable post deployment steps (disabled by default)
+# This e.g. deletes /etc/salt/grains after a successful deployment
+#cleanup_secrets = true
+
 # To disable the provisioning process
 #provisioner = ""
 
@@ -175,10 +179,10 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Number of nodes in the cluster
 # 2 nodes will always be scale-up
 # 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
-hana_count = "2"
+#hana_count = "2"
 
 # enable to use HANA scale-out
-# hana_scale_out_enabled             = false
+#hana_scale_out_enabled = true
 
 # HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
 # see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
@@ -190,7 +194,7 @@ hana_count = "2"
 # HANA scale-out roles
 # These role assignments are made per HANA site
 # Number of standby nodes per site
-#hana_scale_out_standby_count = 1 # default: 1
+#hana_scale_out_standby_count = 1 # default: 0
 
 # majority_maker_vm_size =  "Standard_D2s_v3"
 # majority_maker_ip =  "10.74.0.9"
@@ -207,15 +211,19 @@ hana_count = "2"
 # see https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-vm-operations-netapp
 # for reference and minimum requirements
 #########################
-#hana_scale_out_shared_storage_type = ""      # only anf supported at the moment (default: "")
+#hana_scale_out_shared_storage_type = "anf"      # only anf supported at the moment (default: "")
 #anf_pool_size                      = "15"    # min 30TB on Premium, min 15TB on Ultra
 #anf_pool_service_level             = "Ultra" # Standard (does not meet KPI), Premium, Ultra
-# min requirements Premium
+# min requirements Premium (without standby nodes)
+#hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
+# min requirements Ultra (without standby nodes)
+hana_scale_out_anf_quota_shared    = "2000"  # deployed 2x (for each site)
+# min requirements Premium (with standby nodes)
 #hana_scale_out_anf_quota_data      = "4000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "4000"  # deployed 2x (for each site)  
 #hana_scale_out_anf_quota_backup    = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_shared    = "4000"  # deployed 2x (for each site)
-# min requirements Ultra
+# min requirements Ultra (with standby nodes)
 #hana_scale_out_anf_quota_data      = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_log       = "2000"  # deployed 2x (for each site)
 #hana_scale_out_anf_quota_backup    = "1000"  # deployed 2x (for each site)
@@ -224,27 +232,49 @@ hana_count = "2"
 # local disk configuration  - scale-up example
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-#  disks_size       = "512,512,512,512,64,1024"
+#  disks_size       = "256,256,256,256,64,64,512"
 #  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
 #  writeaccelerator = "false,false,false,false,false,false"
-#  luns             = "0,1,2#3#4#5"
-#  names            = "datalog#shared#usrsap#backup"
-#  lv_sizes         = "70,100#100#100#100"
-#  paths            = "/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "100#100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
 #}
 
-# local Disk configuration - scale-out example
-# on scale-out we need shared storage for data/log/backup/shared and fewer local disks
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  #disks_size       = "100,100,100,100,50,50"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#
+#  disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
+#  disks_size       = "256,256,256,256,64,512"
+#  caching          = "ReadOnly,ReadOnly,ReadOnly,ReadOnly,None"
+#  writeaccelerator = "false,false,false,false,false"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
+
+# local Disk configuration - scale-out with standby nodes example
+# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
 #hana_data_disks_configuration = {
 #  disks_type       = "Premium_LRS"
-#  disks_size       = "10"
+#  disks_size       = "64"
 #  caching          = "None"
 #  writeaccelerator = "false"
 #  # The next variables are used during the provisioning
 #  luns        = "0"
 #  names       = "usrsap"
 #  lv_sizes    = "100"
-#  mount_paths = "/usr/sap"
+#  paths = "/usr/sap"
 #}
 
 # SLES4SAP image information
@@ -332,7 +362,7 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
+# HANA instance master password (length 8-64, 1 digit, 1 lowercase, 1 uppercase). For detailed password rules see: doc/sap_passwords.md
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -449,10 +479,7 @@ hana_inst_master = "//YOUR_STORAGE_ACCOUNT_NAME.file.core.windows.net/sapdata/sa
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# NetWeaver or S/4HANA master password. 
-# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
-# It cannot start with special characters and must contain a combination of
-# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
+# NetWeaver or S/4HANA master password (length 6-40, ASCII prefered). For detailed password rules see: doc/sap_passwords.md
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster

@@ -1,7 +1,8 @@
-# This state is executed at the end of iscsi_initiator.sls state
-{% set sbd_disk_id_pattern = '/^\[[0-9]\:[0-9]\:[0-9]\:'~grains['sbd_lun_index']~'\].*/' %}
-{% set sbd_disk_device = salt['cmd.run']('lsscsi -i | grep "LIO-ORG" | awk "'~sbd_disk_id_pattern~'{print \$NF }"', python_shell=true) %}
-{% set sbd_disk_device = '/dev/disk/by-id/scsi-'~sbd_disk_device %}
+# This state is executed at the end of iscsi_initiator.sls state. /etc/iscsi is already populated at this point.
+# Use "by-path+IP+IQN" as these are persistent even after an iscsi server reboot.
+# The wwn cannot be used as it will change after an iscsi server reboot.
+{% set iscsi_connection = salt['cmd.run']('ls -1 /etc/iscsi/nodes | head -1', python_shell=true) %}
+{% set sbd_disk_device = '/dev/disk/by-path/ip-'~grains['iscsi_srv_ip']~':3260-iscsi-'~iscsi_connection~'-lun-'~grains['sbd_lun_index'] %}
 
 sbd_disk_device:
   grains.present:

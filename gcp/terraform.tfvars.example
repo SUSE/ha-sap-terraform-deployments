@@ -113,6 +113,10 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Enable pre deployment steps (disabled by default)
 #pre_deployment = true
 
+# Enable post deployment steps (disabled by default)
+# This e.g. deletes /etc/salt/grains after a successful deployment
+#cleanup_secrets = true
+
 # To disable the provisioning process
 #provisioner = ""
 
@@ -159,6 +163,11 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Hostname, without the domain part
 #hana_name = "vmhana"
 
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+hana_count = "2"
+
 # HANA machine type
 #machine_type = "n1-highmem-32"
 
@@ -169,19 +178,75 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # Combine the project and name values. The version part can be ignored to get the latest version
 # BYOS images are usually available using `suse-byos-cloud` and adding `byos` suffix to the name
 #hana_os_image = "suse-byos-cloud/sles-15-sp3-sap-byos"
+#
+# Number of nodes in the cluster
+# 2 nodes will always be scale-up
+# 4+ nodes are needed for scale-out (also set hana_scale_out_enabled=true)
+#hana_count = "2"
 
-# Disk type for HANA
-#hana_data_disk_type = "pd-ssd"
+# enable to use HANA scale-out
+#hana_scale_out_enabled = true
 
-# Disk size for HANA database content in GB
-# For S/4HANA a big disk size is required, at least 350GB
-#hana_data_disk_size  = 896 # 896GB
+# HANA scale-out role assignments (optional, this can be defined automatically based on "hana_scale_out_standby_count")
+# see https://help.sap.com/viewer/6b94445c94ae495c83a19646e7c3fd56/2.0.03/en-US/0d9fe701e2214e98ad4f8721f6558c34.html for reference
+#hana_scale_out_addhosts = {
+#  site1 = "vmhana03:role=standby:group=default:workergroup=default,vmhana05:role=worker:group=default:workergroup=default"
+#  site2 = "vmhana04:role=standby:group=default:workergroup=default,vmhana06:role=worker:group=default:workergroup=default"
+#}
 
-# Disk type for HANA backup
-#hana_backup_disk_type = "pd-standard"
+# HANA scale-out roles
+# These role assignments are made per HANA site
+# Number of standby nodes per site (currently not supported on GCP)
+#hana_scale_out_standby_count = 0 # default:0 - Deploy X standby nodes per site. The rest of the nodes will be worker nodes.
 
-# Disk size for HANA backup in GB
-#hana_backup_disk_size = "128" # 128GB
+#########################
+# shared storage variables
+# Needed if HANA is deployed in scale-out scenario
+# see https://cloud.google.com/solutions/sap/docs/filers-for-sap
+# and https://cloud.google.com/filestore/docs/creating-instances
+# for reference and minimum requirements
+#########################
+#hana_scale_out_shared_storage_type = "filestore"      # only filestore supported at the moment (default: "")
+#filestore_tier                        = "BASIC_SSD"   # BASIC_SSD or ENTERPRISE are recommended
+# min requirements BASIC_SSD (withouth standby nodes)
+#hana_scale_out_filestore_quota_shared = "2560"        # deployed 2x (for each site)
+# min requirements Premium (without standby nodes)
+#hana_scale_out_anf_quota_shared       = "1024"        # deployed 2x (for each site)
+
+# local disk configuration  - scale-up example
+#hana_data_disks_configuration = {
+#  disks_type       = "pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd"
+#  disks_size       = "256,256,256,256,64,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5#6"
+#  names            = "data#log#shared#usrsap#backup"
+#  lv_sizes         = "100#100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+#}
+
+# local disk configuration  - scale-out without standby nodes example
+# on scale-out without standby nodes, we need shared storage for shared only and everything else on local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd,pd-ssd"
+#  disks_size       = "256,256,256,256,64,512"
+#  # The next variables are used during the provisioning
+#  luns             = "0,1#2,3#4#5"
+#  names            = "data#log#usrsap#backup"
+#  lv_sizes         = "100#100#100#100"
+#  paths            = "/hana/data#/hana/log#/usr/sap#/hana/backup"
+#}
+
+# local Disk configuration - scale-out with standby nodes example
+# on scale-out with standby nodes, we need shared storage for data/log/backup/shared and fewer local disks
+#hana_data_disks_configuration = {
+#  disks_type       = "pd-ssd"
+#  disks_size       = "64"
+#  # The next variables are used during the provisioning
+#  luns        = "0"
+#  names       = "usrsap"
+#  lv_sizes    = "100"
+#  paths = "/usr/sap"
+#}
 
 # HANA cluster vip mechanism. This option decides whether to use a load-balancer or routes to forward the traffic to the virtual ip address.
 # Options: "load-balancer" (default), "route"
@@ -261,6 +326,9 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_client_archive_file = "IMDB_CLIENT20_003_144-80002090.SAR"
 #hana_client_extract_dir = "/sapmedia_extract/HANA_CLIENT"
 
+# Each host IP address (sequential order).
+#hana_ips = ["10.0.0.2", "10.0.0.3"]
+
 # HANA instance configuration
 # Find some references about the variables in:
 # https://help.sap.com
@@ -268,7 +336,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #hana_sid = "PRD"
 # HANA instance number. It's composed of 2 integers string
 #hana_instance_number = "00"
-# HANA instance master password. The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters.
+# HANA instance master password (length 8-64, 1 digit, 1 lowercase, 1 uppercase). For detailed password rules see: doc/sap_passwords.md
 #hana_master_password = "YourPassword1234"
 # HANA primary site name. Only used if HANA's system replication feature is enabled (hana_ha_enabled to true)
 #hana_primary_site = "Site1"
@@ -396,6 +464,17 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 # Example:
 #netweaver_product_id = "NW750.HDB.ABAPHA"
 
+#########################
+# shared storage variables
+# Needed if Netweaver is deployed HA
+# see https://cloud.google.com/solutions/sap/docs/filers-for-sap
+# and https://cloud.google.com/filestore/docs/creating-instances
+# for reference and minimum requirements
+#########################
+#netweaver_shared_storage_type          = "filestore"  # drbd,filestore supported at the moment (default: "drbd")
+#filestore_tier                         = "BASIC_SSD"  # BASIC_SSD or ENTERPRISE are recommended
+#netweaver_filestore_quota_sapmnt       = "1024"       # deployed 1x
+
 # NFS share to store the Netweaver shared files. Only used if drbd_enabled is not set. For single machine deployments (ASCS and PAS in the same machine) set an empty string
 #netweaver_nfs_share = "url-to-your-netweaver-sapmnt-nfs-share"
 
@@ -439,10 +518,7 @@ hana_inst_master = "MyHanaBucket/sapdata/sap_inst_media/51053381"
 #netweaver_ers_instance_number = "10"
 # Netweaver PAS instance number. If additional AAS machines are deployed, they get the next number starting from the PAS instance number. It's composed of 2 integers string
 #netweaver_pas_instance_number = "01"
-# NetWeaver or S/4HANA master password. 
-# It must follow the SAP Password policies such as having 8 - 14 characters for NetWeaver or 10 - 14 characters for S/4HANA.
-# It cannot start with special characters and must contain a combination of
-# upper and lower case characters and numbers (Invalid characters are backslash and double quote).
+# NetWeaver or S/4HANA master password (length 6-40, ASCII prefered). For detailed password rules see: doc/sap_passwords.md
 #netweaver_master_password = "SuSE1234"
 
 # Enabling this option will create a ASCS/ERS HA available cluster together with a PAS and AAS application servers

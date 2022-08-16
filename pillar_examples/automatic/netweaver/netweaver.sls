@@ -44,7 +44,9 @@ netweaver:
   {%- if grains['provider'] == 'aws' and grains['netweaver_shared_storage_type'] == 'efs' %}
   sapmnt_inst_media: "{{ grains['efs_mount_ip']['sapmnt'][0] }}:/"
   {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
-  sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt"
+  sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt"
+  {%- elif grains['provider'] == 'gcp' and grains['netweaver_shared_storage_type'] == 'filestore' %}
+  sapmnt_inst_media: "{{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt"
   {%- else %}
   sapmnt_inst_media: "{{ grains['netweaver_nfs_share'] }}"
   {%- endif %}
@@ -114,6 +116,8 @@ netweaver:
       shared_disk_dev: {{ grains['efs_mount_ip']['sapmnt'][0] }}:/ASCS
       {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ASCS
+      {%- elif grains['provider'] == 'gcp' and grains['netweaver_shared_storage_type'] == 'filestore' %}
+      shared_disk_dev: {{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt/ASCS
       {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ASCS{{ '{:0>2}'.format(grains['ascs_instance_number']) }}
       {%- else %}
@@ -138,6 +142,8 @@ netweaver:
       shared_disk_dev: {{ grains['efs_mount_ip']['sapmnt'][0] }}:/ERS
       {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
       shared_disk_dev: {{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt/ERS
+      {%- elif grains['provider'] == 'gcp' and grains['netweaver_shared_storage_type'] == 'filestore' %}
+      shared_disk_dev: {{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt/ERS
       {%- elif grains['provider'] == 'openstack' and grains['netweaver_shared_storage_type'] == 'nfs' %}
       shared_disk_dev: {{ grains['netweaver_nfs_share'] }}/ERS{{ '{:0>2}'.format(grains['ers_instance_number']) }}
       {%- else %}

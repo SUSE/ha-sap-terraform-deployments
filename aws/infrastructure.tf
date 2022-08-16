@@ -21,16 +21,18 @@ locals {
 
   infra_subnet_address_range = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(local.vpc_address_range, 8, 0)
 
+  # The +1 is added in case we have a HANA scale-out setup
   hana_subnet_address_range = length(var.hana_subnet_address_range) != 0 ? var.hana_subnet_address_range : [
-  for index in range(var.hana_count) : cidrsubnet(local.vpc_address_range, 8, index + 1)]
+  for index in range(var.hana_count + local.create_scale_out) : cidrsubnet(local.vpc_address_range, 8, index + 1)]
 
   # The 2 is hardcoded because we create 2 subnets for NW always
+  # The +1 is added in case we have a HANA scale-out setup
   netweaver_subnet_address_range = length(var.netweaver_subnet_address_range) != 0 ? var.netweaver_subnet_address_range : [
-  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 1)]
+  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 1 + local.create_scale_out)]
 
   # The 2 is hardcoded considering we create 2 subnets for NW always
   drbd_subnet_address_range = length(var.drbd_subnet_address_range) != 0 ? var.drbd_subnet_address_range : [
-  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 2 + 1)]
+  for index in range(2) : cidrsubnet(local.vpc_address_range, 8, index + var.hana_count + 2 + 1 + local.create_scale_out)]
 }
 
 # AWS key pair
