@@ -1,4 +1,6 @@
 locals {
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? aws_instance.netweaver.*.private_ip : aws_instance.netweaver.*.public_ip
   vm_count           = var.xscs_server_count + var.app_server_count
   create_ha_infra    = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
   app_start_index    = local.create_ha_infra == 1 ? 2 : 1
@@ -8,20 +10,21 @@ locals {
 
 # Network resources: subnets, routes, etc
 
-resource "aws_subnet" "netweaver-subnet" {
+resource "aws_subnet" "netweaver" {
   count             = min(local.vm_count, 2) # Create 2 subnets max
   vpc_id            = var.vpc_id
   cidr_block        = element(var.subnet_address_range, count.index)
-  availability_zone = element(var.availability_zones, count.index)
+  availability_zone = element(var.availability_zones, count.index % 2)
+
   tags = {
     Name      = "${var.common_variables["deployment_name"]}-netweaver-subnet-${count.index + 1}"
     Workspace = var.common_variables["deployment_name"]
   }
 }
 
-resource "aws_route_table_association" "netweaver-subnet-route-association" {
+resource "aws_route_table_association" "netweaver" {
   count          = min(local.vm_count, 2)
-  subnet_id      = element(aws_subnet.netweaver-subnet.*.id, count.index)
+  subnet_id      = element(aws_subnet.netweaver.*.id, count.index)
   route_table_id = var.route_table_id
 }
 
@@ -70,7 +73,7 @@ resource "aws_efs_file_system" "netweaver-efs" {
 resource "aws_efs_mount_target" "netweaver-efs-mount-target" {
   count           = local.vm_count > 0 && local.shared_storage_efs == 1 ? min(local.vm_count, 2) : 0
   file_system_id  = aws_efs_file_system.netweaver-efs.0.id
-  subnet_id       = element(aws_subnet.netweaver-subnet.*.id, count.index)
+  subnet_id       = element(aws_subnet.netweaver.*.id, count.index)
   security_groups = [var.security_group_id]
 }
 
@@ -95,8 +98,8 @@ resource "aws_instance" "netweaver" {
   ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  associate_public_ip_address = true
-  subnet_id                   = element(aws_subnet.netweaver-subnet.*.id, count.index % 2) # %2 is used because there are not more than 2 subnets
+  associate_public_ip_address = local.bastion_enabled ? false : true
+  subnet_id                   = element(aws_subnet.netweaver.*.id, count.index % 2) # %2 is used because there are not more than 2 subnets
   private_ip                  = element(var.host_ips, count.index)
   vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index % 2)
@@ -130,11 +133,13 @@ module "netweaver_on_destroy" {
   source       = "../../../generic_modules/on_destroy"
   node_count   = local.vm_count
   instance_ids = aws_instance.netweaver.*.id
-  user         = "ec2-user"
+  user         = var.common_variables["authorized_user"]
   private_key  = var.common_variables["private_key"]
-  public_ips   = aws_instance.netweaver.*.public_ip
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips   = local.provisioning_addresses
   dependencies = concat(
-    [aws_route_table_association.netweaver-subnet-route-association],
+    [aws_route_table_association.netweaver],
     var.on_destroy_dependencies
   )
 }
