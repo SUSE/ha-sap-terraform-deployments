@@ -59,6 +59,12 @@ variable "virtual_address_range" {
   }
 }
 
+variable "public_subnet_address_range" {
+  description = "Address range to create the subnet for the public services (bastion) machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = string
+  default     = ""
+}
+
 variable "infra_subnet_address_range" {
   description = "Address range to create the subnet for the infrastructure (iscsi, monitoring, etc) machines. If not given the addresses will be generated based on vpc_address_range"
   type        = string
@@ -212,6 +218,68 @@ variable "hana_count" {
   default     = 2
 }
 
+## Bastion variables
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmbastion"
+}
+
+variable "bastion_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_os_owner" {
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_instancetype" {
+  description = "The instance type of the bastion server node."
+  type        = string
+  default     = "t3.small"
+}
+
+variable "bastion_ip" {
+  description = "bastion server address. It should be in same iprange as host_ips"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.bastion_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.bastion_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "bastion_public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
+  type        = string
+  default     = ""
+}
+
+## Hana variables
 variable "hana_os_image" {
   description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
   type        = string

@@ -109,3 +109,21 @@ output "drbd_name" {
 output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
+
+# bastion
+
+output "bastion_ip" {
+  value = module.bastion.bastion_ip
+}
+
+output "bastion_public_ip" {
+  value = module.bastion.bastion_public_ip
+}
+
+output "bastion_name" {
+  value = module.bastion.bastion_name
+}
+
+output "bastion_public_name" {
+  value = module.bastion.bastion_public_name
+}

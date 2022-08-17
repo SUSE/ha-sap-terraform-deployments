@@ -2,6 +2,12 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
+variable "bastion_host" {
+  description = "Bastion host address"
+  type        = string
+  default     = ""
+}
+
 variable "name" {
   description = "hostname, without the domain part"
   type        = string

@@ -134,6 +134,22 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 # true or false (default)
 #hwcct = false
 
+##########################
+# Bastion (jumpbox) machine variables
+##########################
+
+# Enable bastion usage. If this option is enabled, it will create a unique public ip address that is attached to the bastion machine.
+# The rest of the machines won't have a public ip address and the SSH connection must be done through the bastion
+#bastion_enabled = false
+
+# Bastion SSH keys. If they are not set the public_key and private_key are used
+#bastion_public_key  = "/home/myuser/.ssh/id_rsa_bastion.pub"
+#bastion_private_key = "/home/myuser/.ssh/id_rsa_bastion"
+
+# bastion server image. By default, PAYG image is used. The usage is the same as the HANA images
+#bastion_os_image = "suse-sles-sap-15-sp1-byos"
+#bastion_os_owner = "amazon"
+
 #########################
 # HANA machines variables
 #########################
