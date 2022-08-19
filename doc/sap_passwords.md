@@ -11,6 +11,7 @@
 ## SAP HANA
 
   The password for SAP HANA supports password lengths between 8 up to 64 characters.
+  We enforce 10 to 14 characters to be compatible with the Netweaver and S/4HANA deployments, though.
   It can be composed of lowercase letters (`a-z`), uppercase letters (`A-Z`) and numerical
   digits (`0-9`). All other characters are considered as special character.
   The default configuration requires passwords to contain at least one uppercase letter,
@@ -25,7 +26,7 @@
 
 ## SAP NetWeaver/SAP S/4HANA
 
-  The password for SAP NetWeaver supports password lengths between 6 and 40 characters.
+  The password for SAP NetWeaver supports password lengths between 10 and 14 characters.
   The password can only consist of digits, letters, and the following (ASCII) special characters: `!"@ $%&/()=?'*+~#-_.,;:{[]}<>`, and space and the grave accent.
   The password can consist of any characters including national special characters (such as `ä`, `ç`, `ß` from ISO Latin-1, 8859-1).
   However, all characters that aren’t contained in the set above are mapped to the same special character, and the system therefore doesn’t differentiate between them.

@@ -51,9 +51,9 @@ variable "hana_master_password" {
       can(regex("[0-9]+", var.hana_master_password)) &&
       can(regex("[a-z]+", var.hana_master_password)) &&
       can(regex("[A-Z]+", var.hana_master_password)) &&
-      can(regex("^.{8,64}$", var.hana_master_password))
+      can(regex("^.{10,14}$", var.hana_master_password))
     )
-    error_message = "The hana master password in default configuration must contain at least 8 up to 64 characters. It must contain at least 1 digit, 1 upper-case character, 1 lower-case character and optional special characters. For more information see: 'doc/sap_passwords.md'."
+    error_message = "The hana master password in default configuration must contain at least 8 up to 64 characters. To be compatible with our Netweaver and S/4HANA deployment we set it to 10 to 14 characters, though. It must contain at least 1 digit, 1 upper-case character, 1 lower-case character and optional special characters. For more information see: 'doc/sap_passwords.md'."
   }
 }
 

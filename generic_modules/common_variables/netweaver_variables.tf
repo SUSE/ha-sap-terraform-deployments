@@ -68,9 +68,9 @@ variable "netweaver_master_password" {
   type        = string
   validation {
     condition = (
-      can(regex("^.{6,40}$", var.netweaver_master_password))
+      can(regex("^.{10,14}$", var.netweaver_master_password))
     )
-    error_message = "The netweaver master password must contain at least 6 up to 40 characters. The password can only consist of digits, letters, and the ASCII special characters. Other non-ASCII characters will be mapped to the same special character. For more information see: 'doc/sap_passwords.md'."
+    error_message = "The netweaver master password must contain at least 10 up to 14 characters. The password can only consist of digits, letters, and the ASCII special characters. Other non-ASCII characters will be mapped to the same special character. For more information see: 'doc/sap_passwords.md'."
   }
 }
 
