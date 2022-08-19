@@ -1,11 +1,11 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? aws_instance.netweaver.*.private_ip : aws_instance.netweaver.*.public_ip
-  vm_count           = var.xscs_server_count + var.app_server_count
-  create_ha_infra    = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
-  app_start_index    = local.create_ha_infra == 1 ? 2 : 1
-  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_efs = var.common_variables["netweaver"]["shared_storage_type"] == "efs" ? 1 : 0
+  vm_count               = var.xscs_server_count + var.app_server_count
+  create_ha_infra        = local.vm_count > 1 && var.common_variables["netweaver"]["ha_enabled"] ? 1 : 0
+  app_start_index        = local.create_ha_infra == 1 ? 2 : 1
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_efs     = var.common_variables["netweaver"]["shared_storage_type"] == "efs" ? 1 : 0
 }
 
 # Network resources: subnets, routes, etc
@@ -130,14 +130,14 @@ resource "aws_instance" "netweaver" {
 }
 
 module "netweaver_on_destroy" {
-  source       = "../../../generic_modules/on_destroy"
-  node_count   = local.vm_count
-  instance_ids = aws_instance.netweaver.*.id
-  user         = var.common_variables["authorized_user"]
-  private_key  = var.common_variables["private_key"]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = local.vm_count
+  instance_ids        = aws_instance.netweaver.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips   = local.provisioning_addresses
+  public_ips          = local.provisioning_addresses
   dependencies = concat(
     [aws_route_table_association.netweaver],
     var.on_destroy_dependencies

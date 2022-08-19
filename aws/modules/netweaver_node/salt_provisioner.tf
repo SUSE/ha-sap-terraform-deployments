@@ -54,13 +54,13 @@ efs_mount_ip:
 }
 
 module "netweaver_provision" {
-  source       = "../../../generic_modules/salt_provisioner"
-  node_count   = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
-  instance_ids = null_resource.netweaver_provisioner.*.id
+  source              = "../../../generic_modules/salt_provisioner"
+  node_count          = var.common_variables["provisioner"] == "salt" ? local.vm_count : 0
+  instance_ids        = null_resource.netweaver_provisioner.*.id
   user                = var.common_variables["authorized_user"]
-  private_key  = var.common_variables["private_key"]
-  public_ips   = local.provisioning_addresses
+  private_key         = var.common_variables["private_key"]
+  public_ips          = local.provisioning_addresses
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  background   = var.common_variables["background"]
+  background          = var.common_variables["background"]
 }

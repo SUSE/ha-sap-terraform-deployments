@@ -3,7 +3,7 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? aws_instance.iscsisrv.*.private_ip : aws_instance.iscsisrv.*.public_ip
-  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 module "get_os_image" {
@@ -45,13 +45,13 @@ resource "aws_instance" "iscsisrv" {
 }
 
 module "iscsi_on_destroy" {
-  source       = "../../../generic_modules/on_destroy"
-  node_count   = var.iscsi_count
-  instance_ids = aws_instance.iscsisrv.*.id
-  user         = var.common_variables["authorized_user"]
-  private_key  = var.common_variables["private_key"]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.iscsi_count
+  instance_ids        = aws_instance.iscsisrv.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips   = local.provisioning_addresses
-  dependencies = var.on_destroy_dependencies
+  public_ips          = local.provisioning_addresses
+  dependencies        = var.on_destroy_dependencies
 }

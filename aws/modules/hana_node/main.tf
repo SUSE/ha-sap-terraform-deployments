@@ -1,11 +1,11 @@
 locals {
   bastion_enabled        = var.common_variables["bastion_enabled"]
   provisioning_addresses = local.bastion_enabled ? aws_instance.hana.*.private_ip : aws_instance.hana.*.public_ip
-  create_scale_out   = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
-  create_ha_infra    = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_efs = var.common_variables["hana"]["scale_out_shared_storage_type"] == "efs" ? 1 : 0
-  sites              = local.create_ha_infra == 1 ? 2 : 1
+  create_scale_out       = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  create_ha_infra        = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_efs     = var.common_variables["hana"]["scale_out_shared_storage_type"] == "efs" ? 1 : 0
+  sites                  = local.create_ha_infra == 1 ? 2 : 1
 
   disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
@@ -161,14 +161,14 @@ module "hana_majority_maker" {
 }
 
 module "hana_on_destroy" {
-  source       = "../../../generic_modules/on_destroy"
-  node_count   = var.hana_count
-  instance_ids = aws_instance.hana.*.id
-  user         = "ec2-user"
-  private_key  = var.common_variables["private_key"]
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.hana_count
+  instance_ids        = aws_instance.hana.*.id
+  user                = "ec2-user"
+  private_key         = var.common_variables["private_key"]
   bastion_host        = var.bastion_host
   bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips   = aws_instance.hana.*.public_ip
+  public_ips          = aws_instance.hana.*.public_ip
   dependencies = concat(
     [aws_route_table_association.hana],
     var.on_destroy_dependencies
