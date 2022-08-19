@@ -20,7 +20,7 @@ locals {
   vpc_address_range = var.vpc_id == "" ? var.vpc_address_range : (var.vpc_address_range == "" ? data.aws_vpc.current-vpc.0.cidr_block : var.vpc_address_range)
 
   public_subnet_address_range = var.public_subnet_address_range != "" ? var.public_subnet_address_range : cidrsubnet(local.vpc_address_range, 8, 254)
-  infra_subnet_address_range = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(local.vpc_address_range, 8, 0)
+  infra_subnet_address_range  = var.infra_subnet_address_range != "" ? var.infra_subnet_address_range : cidrsubnet(local.vpc_address_range, 8, 0)
 
   # The +1 is added in case we have a HANA scale-out setup
   hana_subnet_address_range = length(var.hana_subnet_address_range) != 0 ? var.hana_subnet_address_range : [
@@ -82,7 +82,7 @@ resource "aws_subnet" "infra" {
 }
 
 resource "aws_route_table" "private" {
-  count   = var.bastion_enabled ? 1 : 0
+  count  = var.bastion_enabled ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = {
@@ -94,10 +94,10 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "private" {
-  count   = var.bastion_enabled ? 1 : 0
+  count                  = var.bastion_enabled ? 1 : 0
   route_table_id         = aws_route_table.private.0.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id             = aws_nat_gateway.ngw.0.id
+  nat_gateway_id         = aws_nat_gateway.ngw.0.id
 }
 
 resource "aws_route_table_association" "infra" {
@@ -107,8 +107,8 @@ resource "aws_route_table_association" "infra" {
 
 # Network resources: NAT Gateway, subnets and routes when deploying the bastion host setup
 resource "aws_eip" "ngw" {
-  count       = var.bastion_enabled ? 1 : 0
-  vpc      = true
+  count = var.bastion_enabled ? 1 : 0
+  vpc   = true
 
   tags = {
     Name      = "${local.deployment_name}-eip-ngw"
@@ -119,10 +119,10 @@ resource "aws_eip" "ngw" {
 }
 
 resource "aws_nat_gateway" "ngw" {
-  count  = var.vpc_id == "" && var.bastion_enabled ? 1 : 0
+  count             = var.vpc_id == "" && var.bastion_enabled ? 1 : 0
   connectivity_type = "public"
-  allocation_id = aws_eip.ngw.0.id
-  subnet_id = aws_subnet.public.id
+  allocation_id     = aws_eip.ngw.0.id
+  subnet_id         = aws_subnet.public.id
 
   tags = {
     Name      = "${local.deployment_name}-ngw"
@@ -131,9 +131,9 @@ resource "aws_nat_gateway" "ngw" {
 }
 
 resource "aws_subnet" "public" {
-  vpc_id            = local.vpc_id
-  cidr_block        = local.public_subnet_address_range
-  availability_zone = element(data.aws_availability_zones.available.names, 0)
+  vpc_id                  = local.vpc_id
+  cidr_block              = local.public_subnet_address_range
+  availability_zone       = element(data.aws_availability_zones.available.names, 0)
   map_public_ip_on_launch = true
 
   tags = {
@@ -329,7 +329,7 @@ module "bastion" {
   os_owner           = local.bastion_os_owner
   instance_type      = var.bastion_instancetype
   key_name           = aws_key_pair.key-pair.key_name
-  security_group_id = local.security_group_id
+  security_group_id  = local.security_group_id
   host_ips           = [local.bastion_ip]
   on_destroy_dependencies = [
     aws_route_table_association.public,
