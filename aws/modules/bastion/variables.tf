@@ -2,12 +2,6 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
 variable "aws_region" {
   type        = string
   description = "AWS region where the deployment machines will be created"
@@ -33,9 +27,9 @@ variable "network_domain" {
   type        = string
 }
 
-variable "iscsi_count" {
+variable "bastion_count" {
   type        = number
-  description = "Number of iscsi machines to deploy"
+  description = "Number of bastion machines to deploy"
 }
 
 variable "instance_type" {
@@ -57,18 +51,6 @@ variable "security_group_id" {
 variable "host_ips" {
   description = "List of ip addresses to set to the machines"
   type        = list(string)
-}
-
-variable "iscsi_disk_size" {
-  description = "Disk size in GB used to create the LUNs and partitions to be served by the ISCSI service"
-  type        = number
-  default     = 10
-}
-
-variable "lun_count" {
-  description = "Number of LUN (logical units) to serve with the iscsi server. Each LUN can be used as a unique sbd disk"
-  type        = number
-  default     = 3
 }
 
 variable "on_destroy_dependencies" {

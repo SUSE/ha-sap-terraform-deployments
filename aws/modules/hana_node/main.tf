@@ -1,9 +1,11 @@
 locals {
-  create_scale_out   = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
-  create_ha_infra    = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  hostname           = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_efs = var.common_variables["hana"]["scale_out_shared_storage_type"] == "efs" ? 1 : 0
-  sites              = local.create_ha_infra == 1 ? 2 : 1
+  bastion_enabled        = var.common_variables["bastion_enabled"]
+  provisioning_addresses = local.bastion_enabled ? aws_instance.hana.*.private_ip : aws_instance.hana.*.public_ip
+  create_scale_out       = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
+  create_ha_infra        = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
+  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  shared_storage_efs     = var.common_variables["hana"]["scale_out_shared_storage_type"] == "efs" ? 1 : 0
+  sites                  = local.create_ha_infra == 1 ? 2 : 1
 
   disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
   disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
@@ -25,11 +27,11 @@ locals {
 
 # Network resources: subnets, routes, etc
 
-resource "aws_subnet" "hana-subnet" {
+resource "aws_subnet" "hana" {
   count             = local.sites
   vpc_id            = var.vpc_id
   cidr_block        = element(var.subnet_address_range, count.index)
-  availability_zone = element(var.availability_zones, count.index)
+  availability_zone = element(var.availability_zones, count.index % 2)
 
   tags = {
     Name      = "${var.common_variables["deployment_name"]}-hana-subnet-${count.index + 1}"
@@ -37,9 +39,9 @@ resource "aws_subnet" "hana-subnet" {
   }
 }
 
-resource "aws_route_table_association" "hana-subnet-route-association" {
+resource "aws_route_table_association" "hana" {
   count          = local.sites
-  subnet_id      = element(aws_subnet.hana-subnet.*.id, count.index)
+  subnet_id      = element(aws_subnet.hana.*.id, count.index)
   route_table_id = var.route_table_id
 }
 
@@ -71,7 +73,7 @@ resource "aws_efs_file_system" "scale-out-efs-shared" {
 resource "aws_efs_mount_target" "scale-out-efs-mount-target" {
   count           = local.create_scale_out == 1 && local.shared_storage_efs == 1 ? local.sites : 0
   file_system_id  = aws_efs_file_system.scale-out-efs-shared[count.index].id
-  subnet_id       = element(aws_subnet.hana-subnet.*.id, count.index)
+  subnet_id       = element(aws_subnet.hana.*.id, count.index)
   security_groups = [var.security_group_id]
 }
 
@@ -97,8 +99,8 @@ resource "aws_instance" "hana" {
   ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  associate_public_ip_address = true
-  subnet_id                   = element(aws_subnet.hana-subnet.*.id, count.index % 2)
+  associate_public_ip_address = local.bastion_enabled ? false : true
+  subnet_id                   = element(aws_subnet.hana.*.id, count.index % 2)
   private_ip                  = element(var.host_ips, count.index)
   vpc_security_group_ids      = [var.security_group_id]
   availability_zone           = element(var.availability_zones, count.index % 2)
@@ -159,14 +161,16 @@ module "hana_majority_maker" {
 }
 
 module "hana_on_destroy" {
-  source       = "../../../generic_modules/on_destroy"
-  node_count   = var.hana_count
-  instance_ids = aws_instance.hana.*.id
-  user         = "ec2-user"
-  private_key  = var.common_variables["private_key"]
-  public_ips   = aws_instance.hana.*.public_ip
+  source              = "../../../generic_modules/on_destroy"
+  node_count          = var.hana_count
+  instance_ids        = aws_instance.hana.*.id
+  user                = "ec2-user"
+  private_key         = var.common_variables["private_key"]
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  public_ips          = aws_instance.hana.*.public_ip
   dependencies = concat(
-    [aws_route_table_association.hana-subnet-route-association],
+    [aws_route_table_association.hana],
     var.on_destroy_dependencies
   )
 }

@@ -17,6 +17,7 @@ module "local_execution" {
 # DRBD cluster vip: 192.168.1.20 (virtual ip address must be in a different range than the vpc)
 # If the addresses are provided by the user will always have preference
 locals {
+  bastion_ip    = var.bastion_ip != "" ? var.bastion_ip : cidrhost(local.public_subnet_address_range, 254)
   iscsi_ip      = var.iscsi_srv_ip != "" ? var.iscsi_srv_ip : cidrhost(local.infra_subnet_address_range, 4)
   monitoring_ip = var.monitoring_srv_ip != "" ? var.monitoring_srv_ip : cidrhost(local.infra_subnet_address_range, 5)
 
@@ -44,6 +45,8 @@ locals {
   iscsi_enabled = var.sbd_storage_type == "iscsi" && ((var.hana_count > 1 && var.hana_ha_enabled) || var.drbd_enabled || (local.netweaver_count > 1 && var.netweaver_ha_enabled)) && local.use_sbd ? true : false
 
   # Obtain machines os_image and os_owner values
+  bastion_os_image    = var.bastion_os_image != "" ? var.bastion_os_image : var.os_image
+  bastion_os_owner    = var.bastion_os_owner != "" ? var.bastion_os_owner : var.os_owner
   hana_os_image       = var.hana_os_image != "" ? var.hana_os_image : var.os_image
   hana_os_owner       = var.hana_os_owner != "" ? var.hana_os_owner : var.os_owner
   iscsi_os_image      = var.iscsi_os_image != "" ? var.iscsi_os_image : var.os_image
@@ -80,6 +83,9 @@ module "common_variables" {
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
   authorized_user                     = var.admin_user
+  bastion_enabled                     = var.bastion_enabled
+  bastion_public_key                  = var.bastion_public_key
+  bastion_private_key                 = var.bastion_private_key
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored
@@ -164,6 +170,7 @@ module "drbd_node" {
   common_variables      = module.common_variables.configuration
   name                  = var.drbd_name
   network_domain        = var.drbd_network_domain == "" ? var.network_domain : var.drbd_network_domain
+  bastion_host          = module.bastion.bastion_public_ip
   drbd_count            = var.drbd_enabled == true ? 2 : 0
   instance_type         = var.drbd_instancetype
   aws_region            = var.aws_region
@@ -174,7 +181,7 @@ module "drbd_node" {
   subnet_address_range  = local.drbd_subnet_address_range
   key_name              = aws_key_pair.key-pair.key_name
   security_group_id     = local.security_group_id
-  route_table_id        = aws_route_table.route-table.id
+  route_table_id        = var.bastion_enabled ? aws_route_table.private.0.id : aws_route_table.public.id
   aws_credentials       = var.aws_credentials
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
@@ -198,10 +205,11 @@ module "iscsi_server" {
   common_variables   = module.common_variables.configuration
   name               = var.iscsi_name
   network_domain     = var.iscsi_network_domain == "" ? var.network_domain : var.iscsi_network_domain
+  bastion_host       = module.bastion.bastion_public_ip
   iscsi_count        = local.iscsi_enabled == true ? 1 : 0
   aws_region         = var.aws_region
   availability_zones = data.aws_availability_zones.available.names
-  subnet_ids         = aws_subnet.infra-subnet.*.id
+  subnet_ids         = aws_subnet.infra.*.id
   os_image           = local.iscsi_os_image
   os_owner           = local.iscsi_os_owner
   instance_type      = var.iscsi_instancetype
@@ -211,8 +219,7 @@ module "iscsi_server" {
   lun_count          = var.iscsi_lun_count
   iscsi_disk_size    = var.iscsi_disk_size
   on_destroy_dependencies = [
-    aws_route_table_association.infra-subnet-route-association,
-    aws_route.public,
+    aws_route_table_association.infra,
     aws_security_group_rule.ssh,
     aws_security_group_rule.outall
   ]
@@ -223,6 +230,7 @@ module "netweaver_node" {
   common_variables      = module.common_variables.configuration
   name                  = var.netweaver_name
   network_domain        = var.netweaver_network_domain == "" ? var.network_domain : var.netweaver_network_domain
+  bastion_host          = module.bastion.bastion_public_ip
   xscs_server_count     = local.netweaver_xscs_server_count
   app_server_count      = var.netweaver_enabled ? var.netweaver_app_server_count : 0
   instance_type         = var.netweaver_instancetype
@@ -234,7 +242,7 @@ module "netweaver_node" {
   subnet_address_range  = local.netweaver_subnet_address_range
   key_name              = aws_key_pair.key-pair.key_name
   security_group_id     = local.security_group_id
-  route_table_id        = aws_route_table.route-table.id
+  route_table_id        = var.bastion_enabled ? aws_route_table.private.0.id : aws_route_table.public.id
   efs_performance_mode  = var.netweaver_efs_performance_mode
   aws_credentials       = var.aws_credentials
   aws_access_key_id     = var.aws_access_key_id
@@ -257,6 +265,7 @@ module "hana_node" {
   common_variables              = module.common_variables.configuration
   name                          = var.hana_name
   network_domain                = var.hana_network_domain == "" ? var.network_domain : var.hana_network_domain
+  bastion_host                  = module.bastion.bastion_public_ip
   hana_count                    = var.hana_count
   instance_type                 = var.hana_instancetype
   aws_region                    = var.aws_region
@@ -267,7 +276,7 @@ module "hana_node" {
   subnet_address_range          = local.hana_subnet_address_range
   key_name                      = aws_key_pair.key-pair.key_name
   security_group_id             = local.security_group_id
-  route_table_id                = aws_route_table.route-table.id
+  route_table_id                = var.bastion_enabled ? aws_route_table.private.0.id : aws_route_table.public.id
   efs_performance_mode          = var.hana_efs_performance_mode
   aws_credentials               = var.aws_credentials
   aws_access_key_id             = var.aws_access_key_id
@@ -293,6 +302,7 @@ module "monitoring" {
   common_variables   = module.common_variables.configuration
   name               = var.monitoring_name
   network_domain     = var.monitoring_network_domain == "" ? var.network_domain : var.monitoring_network_domain
+  bastion_host       = module.bastion.bastion_public_ip
   monitoring_enabled = var.monitoring_enabled
   instance_type      = var.monitor_instancetype
   key_name           = aws_key_pair.key-pair.key_name
@@ -302,11 +312,10 @@ module "monitoring" {
   availability_zones = data.aws_availability_zones.available.names
   os_image           = local.monitoring_os_image
   os_owner           = local.monitoring_os_owner
-  subnet_ids         = aws_subnet.infra-subnet.*.id
+  subnet_ids         = aws_subnet.infra.*.id
   timezone           = var.timezone
   on_destroy_dependencies = [
-    aws_route_table_association.infra-subnet-route-association,
-    aws_route.public,
+    aws_route_table_association.infra,
     aws_security_group_rule.ssh,
     aws_security_group_rule.outall
   ]
