@@ -81,7 +81,7 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
 	```
 	terraform apply -target="module.nfs_server"
-	rsync -avPc --delete -e "ssh -l sles -i id_rsa -J sles@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfs_ip):/mnt_permanent/sapdata/sapinst/
+	rsync -avPc --delete -e "ssh -l $(terraform output -raw ssh_user) -i $(terraform output -raw ssh_private_key) -J $(terraform output -raw ssh_user)@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfs_ip):/mnt_permanent/sapdata/sapinst/
 
 	```
 
@@ -105,11 +105,25 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
 ## Bastion
 
-By default, the bastion machine is enabled in OpenStack (it can be disabled for private deployments), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with: ```ssh {admin_user}@{bastion_ip} -i {private_key_location}```
+By default, the bastion machine is enabled in OpenStack (it can be disabled for private deployments), which will have the unique public IP address of the deployed resource group. Connect using ssh and the selected admin user with:
+
+```
+ssh -i $(terraform output -raw ssh_bastion_private_key) -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(terraform output -raw ssh_user)@$(terraform output -raw bastion_public_ip)
+```
 
 To log to hana and others instances, use:
 ```
-ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{private_hana_instance_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+SSH_USER=$(terraform output -raw ssh_user)
+BASTION=$(terraform output -raw bastion_public_ip)
+SSH_BASTION_PRIVATE_KEY=$(terraform output -raw ssh_bastion_private_key)
+SSH_PRIVATE_KEY=$(terraform output -raw ssh_private_key)
+SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+IP=$(terraform output -json hana_ip | jq '.[0]') # change to match the host you want to connect to
+ssh -o ProxyCommand="ssh -W %h:%p ${SSH_USER}@${BASTION} -i ${SSH_BASTION_PRIVATE_KEY} ${SSH_OPTIONS}" -i ${SSH_PRIVATE_KEY} ${SSH_OPTIONS} ${SSH_USER}@${IP}
+
+# OR in one single command
+
+ssh -o ProxyCommand="ssh -W %h:%p $(terraform output -raw ssh_user)@$(terraform output -raw bastion_public_ip) -i $(terraform output -raw ssh_bastion_private_key)  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" -i $(terraform output -raw ssh_private_key) -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(terraform output -raw ssh_user)@$(terraform output -json hana_ip | jq '.[0]')
 ```
 
 To disable the bastion use:
