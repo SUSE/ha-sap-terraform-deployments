@@ -4,10 +4,16 @@ data "openstack_networking_floatingip_v2" "bastion" {
   depends_on = [openstack_compute_instance_v2.bastion]
 }
 
+data "openstack_compute_instance_v2" "bastion" {
+  count      = local.bastion_count
+  id         = openstack_compute_instance_v2.bastion.0.id
+  depends_on = [openstack_compute_instance_v2.bastion]
+}
+
 output "public_ip" {
   value = join("", data.openstack_networking_floatingip_v2.bastion.*.address)
 }
 
 output "bastion_ip" {
-  value = join(",", openstack_networking_port_v2.bastion.0.all_fixed_ips)
+  value = data.openstack_compute_instance_v2.bastion.*.access_ip_v4
 }

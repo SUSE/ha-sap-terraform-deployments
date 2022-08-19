@@ -1,15 +1,15 @@
 # Outputs: IP address and port where the service will be listening on
 
 output "hana_ip" {
-  value = module.hana_node.output_data.private_addresses
+  value = compact(module.hana_node.output_data.private_addresses)
 }
 
 output "hana_public_ip" {
-  value = module.hana_node.output_data.addresses
+  value = compact(module.hana_node.output_data.addresses)
 }
 
 output "hana_name" {
-  value = module.hana_node.output_data.name
+  value = compact(module.hana_node.output_data.name)
 }
 
 output "hana_public_name" {
@@ -21,19 +21,15 @@ output "hana_vip" {
 }
 
 output "drbd_ip" {
-  value = module.drbd_node.output_data.private_addresses
+  value = compact(module.drbd_node.output_data.private_addresses)
 }
 
 output "drbd_public_ip" {
-  value = module.drbd_node.output_data.addresses
+  value = compact(module.drbd_node.output_data.addresses)
 }
 
 output "drbd_name" {
-  value = module.drbd_node.output_data.name
-}
-
-output "drbd_public_name" {
-  value = []
+  value = compact(module.drbd_node.output_data.name)
 }
 
 output "drbd_vip" {
@@ -73,15 +69,15 @@ output "monitoring_public_name" {
 }
 
 output "netweaver_ip" {
-  value = module.netweaver_node.output_data.private_addresses
+  value = compact(module.netweaver_node.output_data.private_addresses)
 }
 
 output "netweaver_public_ip" {
-  value = module.netweaver_node.output_data.addresses
+  value = compact(module.netweaver_node.output_data.addresses)
 }
 
 output "netweaver_name" {
-  value = module.netweaver_node.output_data.name
+  value = compact(module.netweaver_node.output_data.name)
 }
 
 output "netweaver_public_name" {

@@ -11,21 +11,17 @@ data "openstack_compute_instance_v2" "iscsisrv" {
 }
 
 output "iscsi_ip" {
-  value = join(",", openstack_compute_instance_v2.iscsisrv.*.access_ip_v4)
-  # value = data.openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
+  value = join("", data.openstack_compute_instance_v2.iscsisrv.*.access_ip_v4)
 }
 
 output "iscsi_public_ip" {
-  value = join(",", openstack_compute_instance_v2.iscsisrv.*.access_ip_v4)
-  # value = data.openstack_compute_instance_v2.iscsisrv.*.access_ip_v4
+  value = []
 }
 
 output "iscsi_name" {
-  # value = join(",",openstack_compute_instance_v2.iscsisrv.*.name)
-  value = openstack_compute_instance_v2.iscsisrv.*.name
+  value = data.openstack_compute_instance_v2.iscsisrv.*.name
 }
 
 output "iscsi_public_name" {
-  # value = []
-  value = openstack_compute_instance_v2.iscsisrv.*.name
+  value = []
 }

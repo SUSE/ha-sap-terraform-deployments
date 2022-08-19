@@ -11,17 +11,17 @@ data "openstack_compute_instance_v2" "nfssrv" {
 }
 
 output "nfs_ip" {
-  value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
+  value = data.openstack_compute_instance_v2.nfssrv.*.access_ip_v4
 }
 
 output "nfs_public_ip" {
-  value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
+  value = []
 }
 
 output "nfs_name" {
-  value = openstack_compute_instance_v2.nfssrv.*.name
+  value = data.openstack_compute_instance_v2.nfssrv.*.name
 }
 
 output "nfs_public_name" {
-  value = openstack_compute_instance_v2.nfssrv.*.name
+  value = []
 }

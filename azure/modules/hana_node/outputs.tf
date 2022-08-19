@@ -15,17 +15,17 @@ data "azurerm_network_interface" "hana" {
 }
 
 output "hana_ip" {
-  value = [data.azurerm_network_interface.hana.*.private_ip_address]
+  value = data.azurerm_network_interface.hana.*.private_ip_address
 }
 
 output "hana_public_ip" {
-  value = [data.azurerm_public_ip.hana.*.ip_address]
+  value = data.azurerm_public_ip.hana.*.ip_address
 }
 
 output "hana_name" {
-  value = [azurerm_virtual_machine.hana.*.name]
+  value = azurerm_virtual_machine.hana.*.name
 }
 
 output "hana_public_name" {
-  value = [data.azurerm_public_ip.hana.*.fqdn]
+  value = data.azurerm_public_ip.hana.*.fqdn
 }
