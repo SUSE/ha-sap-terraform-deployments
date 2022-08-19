@@ -146,27 +146,27 @@ output "drbd_vip" {
   value = var.drbd_enabled == true ? [module.common_variables.configuration["drbd"]["cluster_vip"]] : []
 }
 
-# bastion
+# no bastion on AWS yet
 
-output "bastion_ip" {
-  value = module.bastion.bastion_ip
-}
-
-output "bastion_public_ip" {
-  value = module.bastion.bastion_public_ip
-}
-
-output "bastion_name" {
-  value = module.bastion.bastion_name
-}
-
-output "bastion_id" {
-  value = module.bastion.bastion_id
-}
-
-output "bastion_public_name" {
-  value = module.bastion.bastion_public_name
-}
+#output "bastion_ip" {
+#  value = module.bastion.bastion_ip
+#}
+#
+#output "bastion_public_ip" {
+#  value = module.bastion.bastion_public_ip
+#}
+#
+#output "bastion_name" {
+#  value = module.bastion.bastion_name
+#}
+#
+#output "bastion_id" {
+#  value = module.bastion.bastion_id
+#}
+#
+#output "bastion_public_name" {
+#  value = module.bastion.bastion_public_name
+#}
 
 # ssh variables
 
@@ -182,10 +182,11 @@ output "ssh_public_key" {
   value = var.public_key
 }
 
-output "ssh_bastion_private_key" {
-  value = var.bastion_private_key == "" ? var.private_key : var.bastion_private_key
-}
-
-output "ssh_bastion_public_key" {
-  value = var.bastion_public_key == "" ? var.public_key : var.bastion_public_key
-}
+# no bastion on AWS yet
+#output "ssh_bastion_private_key" {
+#  value = var.bastion_private_key == "" ? var.private_key : var.bastion_private_key
+#}
+#
+#output "ssh_bastion_public_key" {
+#  value = var.bastion_public_key == "" ? var.public_key : var.bastion_public_key
+#}
