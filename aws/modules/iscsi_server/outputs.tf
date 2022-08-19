@@ -12,6 +12,10 @@ output "iscsi_public_ip" {
 }
 
 output "iscsi_name" {
+  value = data.aws_instance.iscsisrv.*.tags.Name
+}
+
+output "iscsi_id" {
   value = data.aws_instance.iscsisrv.*.id
 }
 

@@ -12,6 +12,10 @@ output "hana_majority_maker_public_ip" {
 }
 
 output "hana_majority_maker_name" {
+  value = data.aws_instance.majority_maker.*.tags.Name
+}
+
+output "hana_majority_maker_id" {
   value = data.aws_instance.majority_maker.*.id
 }
 

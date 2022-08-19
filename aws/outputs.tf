@@ -18,6 +18,10 @@ output "hana_name" {
   value = module.hana_node.hana_name
 }
 
+output "hana_id" {
+  value = module.hana_node.hana_id
+}
+
 output "hana_public_name" {
   value = module.hana_node.hana_public_name
 }
@@ -38,6 +42,10 @@ output "hana_majority_maker_name" {
   value = module.hana_node.hana_majority_maker_name
 }
 
+output "hana_majority_maker_id" {
+  value = module.hana_node.hana_majority_maker_id
+}
+
 output "hana_majority_maker_public_name" {
   value = module.hana_node.hana_majority_maker_public_name
 }
@@ -56,6 +64,10 @@ output "monitoring_name" {
   value = module.monitoring.monitoring_name
 }
 
+output "monitoring_id" {
+  value = module.monitoring.monitoring_id
+}
+
 output "monitoring_public_name" {
   value = module.monitoring.monitoring_public_name
 }
@@ -72,6 +84,10 @@ output "netweaver_public_ip" {
 
 output "netweaver_name" {
   value = module.netweaver_node.netweaver_name
+}
+
+output "netweaver_id" {
+  value = module.netweaver_node.netweaver_id
 }
 
 output "netweaver_public_name" {
@@ -96,6 +112,10 @@ output "iscsi_name" {
   value = join("", module.iscsi_server.iscsi_name)
 }
 
+output "iscsi_id" {
+  value = join("", module.iscsi_server.iscsi_id)
+}
+
 output "iscsi_public_name" {
   value = join("", module.iscsi_server.iscsi_public_name)
 }
@@ -112,6 +132,10 @@ output "drbd_public_ip" {
 
 output "drbd_name" {
   value = module.drbd_node.drbd_name
+}
+
+output "drbd_id" {
+  value = module.drbd_node.drbd_id
 }
 
 output "drbd_public_name" {
@@ -134,6 +158,10 @@ output "bastion_public_ip" {
 
 output "bastion_name" {
   value = module.bastion.bastion_name
+}
+
+output "bastion_id" {
+  value = module.bastion.bastion_id
 }
 
 output "bastion_public_name" {
