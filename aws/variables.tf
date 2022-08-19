@@ -301,7 +301,7 @@ variable "hana_os_owner" {
 variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
-  default     = "r6i.xlarge"
+  default     = "r5b.xlarge"
 }
 
 variable "hana_majority_maker_instancetype" {
@@ -779,7 +779,7 @@ variable "monitoring_os_owner" {
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 variable "monitoring_srv_ip" {
