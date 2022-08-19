@@ -596,7 +596,7 @@ When the process is completed, the `describe-import-snapshot-tasks` command will
 
 Notice the **completed** status in the above JSON output.
 
-Also notice tne `SnapshotId` which will be used in the next step to register the AMI.
+Also notice the `SnapshotId` which will be used in the next step to register the AMI.
 
 Once the snapshot is completely imported, the next step is to register an AMI with the command:
 
