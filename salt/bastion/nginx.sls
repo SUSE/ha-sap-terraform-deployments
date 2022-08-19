@@ -1,3 +1,15 @@
+{% if grains['osfullname'] == 'SLES' %}
+{% if grains['osmajorrelease'] == 12 %}
+# nginx package is only available in Packagehub on SLES12
+packagehub_registration:
+  cmd.run:
+    - name: /usr/bin/SUSEConnect -p PackageHub/{{ grains['osrelease'] }}/{{ grains['osarch'] }}
+    - retry:
+        attempts: 3
+        interval: 15
+{% endif %}
+{% endif %}
+
 nginx:
   pkg.installed
 

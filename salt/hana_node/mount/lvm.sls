@@ -1,21 +1,20 @@
-{%- set devices = [] %}
 {%- set tf_devices = grains['hana_data_disks_configuration']['devices'].split(',')|default([]) %}
-{%- for tf_device in tf_devices %}
-  {% if grains['provider'] == 'aws' %}
-    {%- set devices = devices.append(tf_device | regex_replace('^vol-', '/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol')) %}
-  {% elif grains['provider'] == 'azure' %}
-    {%- set devices = devices.append(tf_device | regex_replace('^', '/dev/disk/azure/scsi1/lun')) %}
-  {% elif grains['provider'] == 'gcp' %}
-    {%- set devices = devices.append(tf_device | regex_replace('^', '/dev/disk/by-id/google-')) %}
-  {% elif grains['provider'] == 'openstack' %}
-    # first element is root disk
-    {% if loop.index0 != 0 %}
-      {%- set devices = devices.append(tf_device | regex_replace('^', '/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_')) %}
-    {% endif %}
-  {% else %}
-    {%- set devices = devices.append(tf_device) %}
+
+# define device naming scheme based on cloud provider
+{% if grains['provider'] == 'aws' %}
+  {%- set device_path = '/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol' %}
+{% elif grains['provider'] == 'azure' %}
+  {%- set device_path = '/dev/disk/azure/scsi1/lun' %}
+{% elif grains['provider'] == 'gcp' %}
+  {%- set device_path = '/dev/disk/by-id/google-' %}
+{% elif grains['provider'] == 'openstack' %}
+  # first element is root disk
+  {% if loop.index0 != 0 %}
+    {%- set device_path = '/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_' %}
   {% endif %}
-{% endfor %}
+{% else %}
+  {%- set device_path = "" %}
+{% endif %}
 
 lvm2_package:
   pkg.installed:
@@ -28,16 +27,15 @@ lvm2_package:
 
 {%- set vg_index = loop.index0 %}
 {%- set vg_lun_indices = grains['hana_data_disks_configuration']['luns'].split('#')[vg_index].split(',') %}
-{%- set vg_devices = [] %}
 
 {%- for index in vg_lun_indices %}
 # Configure physical volumes
 {%- set vg_lun_index = index|int %}
-{%- set vg_device = devices[vg_lun_index] %}
-{%- set vg_devices = vg_devices.append(vg_device) %}
+{%- set vg_device = tf_devices[vg_lun_index] %}
+
 hana_lvm_pvcreate_{{ vg_lun_index }}_{{ vg_device }}:
   lvm.pv_present:
-    - name: {{ vg_device }}
+    - name: {{ device_path }}{{ vg_device }}
 {%- endfor %}
 
 # Configure volume groups
@@ -45,12 +43,14 @@ hana_lvm_vgcreate_{{ vg }}:
   lvm.vg_present:
     - name: vg_hana_{{ vg }}
     - devices:
-      {%- for vg_device in vg_devices %}
-      - {{ vg_device }}
-      {%- endfor %}
+    {%- for index in vg_lun_indices %}
+      {%- set vg_lun_index = index|int %}
+      {%- set vg_device = tf_devices[vg_lun_index] %}
+      - {{ device_path }}{{ vg_device }}
+    {%- endfor %}
 
 # Configure the logical volumes
-{%- set vg_device_count = vg_devices|length %}
+{%- set vg_device_count = vg_lun_indices|length %}
 {%- for lv_size in grains['hana_data_disks_configuration']['lv_sizes'].split('#')[vg_index].split(',') %}
 hana_lvm_lvcreate_{{ vg }}_{{ loop.index0 }}:
   lvm.lv_present:
