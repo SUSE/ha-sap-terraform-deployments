@@ -12,6 +12,10 @@ output "hana_public_ip" {
 }
 
 output "hana_name" {
+  value = data.aws_instance.hana.*.tags.Name
+}
+
+output "hana_id" {
   value = data.aws_instance.hana.*.id
 }
 
@@ -29,6 +33,10 @@ output "hana_majority_maker_public_ip" {
 
 output "hana_majority_maker_name" {
   value = module.hana_majority_maker.hana_majority_maker_name
+}
+
+output "hana_majority_maker_id" {
+  value = module.hana_majority_maker.hana_majority_maker_id
 }
 
 output "hana_majority_maker_public_name" {
