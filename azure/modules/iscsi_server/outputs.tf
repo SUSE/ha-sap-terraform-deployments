@@ -14,18 +14,18 @@ data "azurerm_network_interface" "iscsisrv" {
   depends_on = [azurerm_virtual_machine.iscsisrv]
 }
 
-output "iscsi_ip" {
+output "iscsisrv_ip" {
   value = data.azurerm_network_interface.iscsisrv.*.private_ip_address
 }
 
-output "iscsi_public_ip" {
+output "iscsisrv_public_ip" {
   value = data.azurerm_public_ip.iscsisrv.*.ip_address
 }
 
-output "iscsi_name" {
+output "iscsisrv_name" {
   value = azurerm_virtual_machine.iscsisrv.*.name
 }
 
-output "iscsi_public_name" {
+output "iscsisrv_public_name" {
   value = data.azurerm_public_ip.iscsisrv.*.fqdn
 }

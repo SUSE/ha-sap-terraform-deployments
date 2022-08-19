@@ -10,18 +10,18 @@ data "openstack_compute_instance_v2" "nfssrv" {
   depends_on = [openstack_compute_instance_v2.nfssrv]
 }
 
-output "nfs_ip" {
+output "nfssrv_ip" {
   value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
 }
 
-output "nfs_public_ip" {
+output "nfssrv_public_ip" {
   value = join(",", openstack_compute_instance_v2.nfssrv.*.access_ip_v4)
 }
 
-output "nfs_name" {
+output "nfssrv_name" {
   value = openstack_compute_instance_v2.nfssrv.*.name
 }
 
-output "nfs_public_name" {
+output "nfssrv_public_name" {
   value = openstack_compute_instance_v2.nfssrv.*.name
 }

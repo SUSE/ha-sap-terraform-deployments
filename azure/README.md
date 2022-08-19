@@ -178,7 +178,6 @@ Example based on `10.74.0.0/16` vnet address range and `10.74.0.0/24` subnet add
 
 | Service                          | Variable                     | Addresses                                                  | Comments                                                                                               |
 | ----                             | --------                     | ---------                                                  | --------                                                                                               |
-| Bastion                          | -                            | `10.74.2.5`                                         |                                                                                                        |
 | iSCSI server                     | `iscsi_srv_ip`               | `10.74.0.4`                                                |                                                                                                        |
 | Monitoring                       | `monitoring_srv_ip`          | `10.74.0.5`                                                |                                                                                                        |
 | HANA ips                         | `hana_ips`                   | `10.74.0.10`, `10.74.0.11`                                 |                                                                                                        |

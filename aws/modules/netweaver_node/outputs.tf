@@ -12,10 +12,6 @@ output "netweaver_public_ip" {
 }
 
 output "netweaver_name" {
-  value = data.aws_instance.netweaver.*.tags.Name
-}
-
-output "netweaver_id" {
   value = data.aws_instance.netweaver.*.id
 }
 
