@@ -2,12 +2,6 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
 variable "aws_region" {
   type        = string
   description = "AWS region where the deployment machines will be created"

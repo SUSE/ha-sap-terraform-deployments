@@ -1,8 +1,6 @@
 # drbd resources
 locals {
-  bastion_enabled        = var.common_variables["bastion_enabled"]
-  provisioning_addresses = local.bastion_enabled ? aws_instance.drbd.*.private_ip : aws_instance.drbd.*.public_ip
-  hostname               = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
+  hostname = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
 }
 
 resource "aws_subnet" "drbd-subnet" {
@@ -52,7 +50,7 @@ resource "aws_instance" "drbd" {
   ami                         = module.get_os_image.image_id
   instance_type               = var.instance_type
   key_name                    = var.key_name
-  associate_public_ip_address = local.bastion_enabled ? false : true
+  associate_public_ip_address = true
   subnet_id                   = element(aws_subnet.drbd-subnet.*.id, count.index)
   private_ip                  = element(var.host_ips, count.index)
   vpc_security_group_ids      = [var.security_group_id]
@@ -83,13 +81,11 @@ resource "aws_instance" "drbd" {
 }
 
 module "drbd_on_destroy" {
-  source              = "../../../generic_modules/on_destroy"
-  node_count          = var.drbd_count
-  instance_ids        = aws_instance.drbd.*.id
-  user                = var.common_variables["authorized_user"]
-  private_key         = var.common_variables["private_key"]
-  bastion_host        = var.bastion_host
-  bastion_private_key = var.common_variables["bastion_private_key"]
-  public_ips          = local.provisioning_addresses
-  dependencies        = var.on_destroy_dependencies
+  source       = "../../../generic_modules/on_destroy"
+  node_count   = var.drbd_count
+  instance_ids = aws_instance.drbd.*.id
+  user         = "ec2-user"
+  private_key  = var.common_variables["private_key"]
+  public_ips   = aws_instance.drbd.*.public_ip
+  dependencies = var.on_destroy_dependencies
 }

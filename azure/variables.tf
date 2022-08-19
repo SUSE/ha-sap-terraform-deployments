@@ -66,6 +66,11 @@ variable "subnet_netapp_address_range" {
   }
 }
 
+variable "admin_user" {
+  description = "Administration user used to create the machines"
+  type        = string
+}
+
 variable "storage_account_name" {
   description = "Azure storage account name where HANA installation software is available"
   type        = string
@@ -90,12 +95,6 @@ variable "authorized_keys" {
   description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (admin_user variable in this case)"
   type        = list(string)
   default     = []
-}
-
-variable "admin_user" {
-  description = "User used to connect to machines and bastion"
-  type        = string
-  default     = "sles"
 }
 
 variable "bastion_name" {

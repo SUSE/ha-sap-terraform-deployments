@@ -2,12 +2,6 @@ variable "common_variables" {
   description = "Output of the common_variables module"
 }
 
-variable "bastion_host" {
-  description = "Bastion host address"
-  type        = string
-  default     = ""
-}
-
 variable "monitoring_enabled" {
   description = "enable the host to be monitored by exporters, e.g node_exporter"
   type        = bool

@@ -81,7 +81,7 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
 	```
 	terraform apply -target="module.nfs_server"
-	rsync -avPc --delete -e "ssh -l sles -i id_rsa -J sles@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfs_ip):/mnt_permanent/sapdata/sapinst/
+	rsync -avPc --delete -e "ssh -l sles -i id_rsa -J sles@$(terraform output -raw bastion_public_ip)" --rsync-path="sudo rsync" ~/Downloads/SAP/sapinst/ $(terraform output -raw nfssrv_ip):/mnt_permanent/sapdata/sapinst/
 
 	```
 
@@ -174,11 +174,10 @@ Example based on `10.0.0.0/24` address range.
 
 | Service                          | Variable                     | Addresses                                          | Comments                                                                                               |
 | ----                             | --------------------         | ---------                                          | --------                                                                                               |
-| Bastion                          | -                            | `10.0.0.3`                                         |                                                                                                        |
 | iSCSI server                     | `iscsi_srv_ip`               | `10.0.0.4`                                         |                                                                                                        |
 | Monitoring                       | `monitoring_srv_ip`          | `10.0.0.5`                                         |                                                                                                        |
 | HANA IPs                         | `hana_ips`                   | `10.0.0.10`, `10.0.0.11`                           |                                                                                                        |
-| HANA cluster vIP                 | `hana_cluster_vip`           | `10.0.0.12`                                        | Only used if HA is enabled in HANA                                                                     |
+| HANA cluster vIP                 | `hana_cluster_vip`           | `10.0.2.12`                                        | Only used if HA is enabled in HANA                                                                     |
 | HANA cluster vIP secondary       | `hana_cluster_vip_secondary` | `10.0.0.13`                                        | Only used if the Active/Active setup is used                                                           |
 | DRBD IPs                         | `drbd_ips`                   | `10.0.0.20`, `10.0.0.21`                           |                                                                                                        |
 | DRBD cluster vIP                 | `drbd_cluster_vip`           | `10.0.0.22`                                        |                                                                                                        |

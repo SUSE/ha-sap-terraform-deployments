@@ -149,29 +149,7 @@ For detailed information and deployment options have a look at `terraform.tfvars
 
 ## Bastion
 
-By default, the bastion machine is enabled in AWS (it can be disabled), which will have the unique public IP address of the deployment. Connect using ssh and the selected admin user with:
-
-```
-ssh {admin_user}@{bastion_ip} -i {private_key_location}
-```
-
-To log to hana and others instances, use:
-
-```
-ssh -o ProxyCommand="ssh -W %h:%p {admin_user}@{bastion_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" {admin_user}@{private_hana_instance_ip} -i {private_key_location} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
-```
-
-To disable the bastion use:
-
-```
-bastion_enabled = false
-```
-
-Destroy the created infrastructure with:
-
-```
-terraform destroy
-```
+A bastion host is not implemented for AWS. 
 
 # Highlevel description
 
@@ -240,7 +218,6 @@ Example based on `10.0.0.0/16` address range (VPC address range) and `192.168.1.
 
 | Service                          | Variable                     | Addresses                                                      | Comments                                                                                            |
 | ----                             | --------                     | ---------                                                      | --------                                                                                            |
-| Bastion                          | -                            | `10.0.254.254`                                         |                                                                                                        |
 | iSCSI server                     | `iscsi_srv_ip`               | `10.0.0.4`                                                     |                                                                                                     |
 | Monitoring                       | `monitoring_srv_ip`          | `10.0.0.5`                                                     |                                                                                                     |
 | HANA ips                         | `hana_ips`                   | `10.0.1.10`, `10.0.2.11`                                       |                                                                                                     |

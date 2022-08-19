@@ -94,7 +94,7 @@ module "common_variables" {
   public_key                          = var.public_key
   private_key                         = var.private_key
   authorized_keys                     = var.authorized_keys
-  authorized_user                     = var.admin_user
+  authorized_user                     = "sles"
   bastion_enabled                     = var.bastion_enabled
   bastion_public_key                  = var.bastion_public_key
   bastion_private_key                 = var.bastion_private_key
@@ -201,7 +201,7 @@ module "drbd_node" {
   firewall_internal   = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image            = local.drbd_os_image
   host_ips            = local.drbd_ips
-  iscsi_srv_ip        = module.iscsi_server.iscsi_ip
+  iscsi_srv_ip        = module.iscsi_server.iscsisrv_ip
   drbd_data_disk_type = var.drbd_data_disk_type
   drbd_data_disk_size = var.drbd_data_disk_size
   cluster_ssh_pub     = var.cluster_ssh_pub
@@ -231,7 +231,7 @@ module "netweaver_node" {
   network_subnet_id         = local.subnet_id
   firewall_internal         = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image                  = local.netweaver_os_image
-  iscsi_srv_ip              = module.iscsi_server.iscsi_ip
+  iscsi_srv_ip              = module.iscsi_server.iscsisrv_ip
   cluster_ssh_pub           = var.cluster_ssh_pub
   cluster_ssh_key           = var.cluster_ssh_key
   netweaver_software_bucket = var.netweaver_software_bucket
@@ -263,7 +263,7 @@ module "hana_node" {
   firewall_internal             = openstack_networking_secgroup_v2.ha_firewall_internal.id
   os_image                      = local.hana_os_image
   host_ips                      = local.hana_ips
-  iscsi_srv_ip                  = module.iscsi_server.iscsi_ip
+  iscsi_srv_ip                  = module.iscsi_server.iscsisrv_ip
   hana_data_disk_type           = var.hana_data_disk_type
   hana_data_disks_configuration = var.hana_data_disks_configuration
   cluster_ssh_pub               = var.cluster_ssh_pub

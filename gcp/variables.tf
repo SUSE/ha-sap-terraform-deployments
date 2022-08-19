@@ -61,12 +61,6 @@ variable "authorized_keys" {
   default     = []
 }
 
-variable "admin_user" {
-  description = "User used to connect to machines and bastion"
-  type        = string
-  default     = "root"
-}
-
 variable "bastion_name" {
   description = "hostname, without the domain part"
   type        = string
