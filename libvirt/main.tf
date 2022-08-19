@@ -83,7 +83,7 @@ module "common_variables" {
   ha_sap_deployment_repo              = var.ha_sap_deployment_repo
   additional_packages                 = var.additional_packages
   authorized_keys                     = var.authorized_keys
-  authorized_user                     = "root"
+  authorized_user                     = var.admin_user
   provisioner                         = var.provisioner
   provisioning_log_level              = var.provisioning_log_level
   provisioning_output_colored         = var.provisioning_output_colored

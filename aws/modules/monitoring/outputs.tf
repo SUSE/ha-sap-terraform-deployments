@@ -12,6 +12,10 @@ output "monitoring_public_ip" {
 }
 
 output "monitoring_name" {
+  value = join("", data.aws_instance.monitoring.*.tags.Name)
+}
+
+output "monitoring_id" {
   value = join("", data.aws_instance.monitoring.*.id)
 }
 

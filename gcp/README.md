@@ -167,9 +167,9 @@ Example based on `10.0.0.0/24` VPC address range. The virtual addresses must be 
 
 | Service                          | Variable                     | Addresses                                          | Comments                                                                                               |
 | ----                             | --------                     | ---------                                          | --------                                                                                               |
+| Bastion                          | -                            | `10.0.2.5`                                         |                                                                                                        |
 | iSCSI server                     | `iscsi_srv_ip`               | `10.0.0.4`                                         |                                                                                                        |
 | Monitoring                       | `monitoring_srv_ip`          | `10.0.0.5`                                         |                                                                                                        |
-| Bastion                          | -                            | `10.0.2.5`                                         |                                                                                                        |
 | HANA IPs                         | `hana_ips`                   | `10.0.0.10`, `10.0.0.11`                           |                                                                                                        |
 | HANA cluster vIP                 | `hana_cluster_vip`           | `10.0.1.12`                                        | Only used if HA is enabled in HANA                                                                     |
 | HANA cluster vIP secondary       | `hana_cluster_vip_secondary` | `10.0.1.13`                                        | Only used if the Active/Active setup is used                                                           |

@@ -6,19 +6,19 @@
 
 # iSCSI server
 
-output "iscsisrv_ip" {
-  value = module.iscsi_server.iscsisrv_ip
+output "iscsi_ip" {
+  value = module.iscsi_server.iscsi_ip
 }
 
-output "iscsisrv_public_ip" {
-  value = module.iscsi_server.iscsisrv_public_ip
+output "iscsi_public_ip" {
+  value = module.iscsi_server.iscsi_public_ip
 }
 
-output "iscsisrv_name" {
-  value = module.iscsi_server.iscsisrv_name
+output "iscsi_name" {
+  value = module.iscsi_server.iscsi_name
 }
 
-output "iscsisrv_public_name" {
+output "iscsi_public_name" {
   value = []
 }
 
@@ -38,6 +38,10 @@ output "hana_name" {
 
 output "hana_public_name" {
   value = []
+}
+
+output "hana_vip" {
+  value = var.hana_active_active == true ? [module.common_variables.configuration["hana"]["cluster_vip"], module.common_variables.configuration["hana"]["cluster_vip_secondary"]] : [module.common_variables.configuration["hana"]["cluster_vip"]]
 }
 
 # Monitoring
@@ -76,22 +80,26 @@ output "drbd_public_name" {
   value = module.drbd_node.drbd_public_name
 }
 
+output "drbd_vip" {
+  value = var.drbd_enabled == true ? [module.common_variables.configuration["drbd"]["cluster_vip"]] : []
+}
+
 # NFS
 
-output "nfssrv_ip" {
-  value = module.nfs_server.nfssrv_ip
+output "nfs_ip" {
+  value = module.nfs_server.nfs_ip
 }
 
-output "nfssrv_public_ip" {
-  value = module.nfs_server.nfssrv_public_ip
+output "nfs_public_ip" {
+  value = module.nfs_server.nfs_public_ip
 }
 
-output "nfssrv_name" {
-  value = module.nfs_server.nfssrv_name
+output "nfs_name" {
+  value = module.nfs_server.nfs_name
 }
 
-output "nfssrv_public_name" {
-  value = module.nfs_server.nfssrv_public_name
+output "nfs_public_name" {
+  value = module.nfs_server.nfs_public_name
 }
 
 # netweaver
@@ -112,8 +120,34 @@ output "netweaver_public_name" {
   value = module.netweaver_node.netweaver_public_name
 }
 
+output "netweaver_vip" {
+  value = var.netweaver_enabled == true ? local.netweaver_virtual_ips : []
+}
+
 # bastion
 
 output "bastion_public_ip" {
   value = module.bastion.public_ip
+}
+
+# ssh variables
+
+output "ssh_user" {
+  value = var.admin_user
+}
+
+output "ssh_private_key" {
+  value = var.private_key
+}
+
+output "ssh_public_key" {
+  value = var.public_key
+}
+
+output "ssh_bastion_private_key" {
+  value = var.bastion_private_key == "" ? var.private_key : var.bastion_private_key
+}
+
+output "ssh_bastion_public_key" {
+  value = var.bastion_public_key == "" ? var.public_key : var.bastion_public_key
 }

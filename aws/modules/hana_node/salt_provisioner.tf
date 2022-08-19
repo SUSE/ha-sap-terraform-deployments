@@ -6,10 +6,14 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   connection {
-    host        = element(aws_instance.hana.*.public_ip, count.index)
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.common_variables["private_key"]
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.common_variables["authorized_user"]
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -49,11 +53,13 @@ EOF
 }
 
 module "hana_provision" {
-  source       = "../../../generic_modules/salt_provisioner"
-  node_count   = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
-  instance_ids = null_resource.hana_node_provisioner.*.id
-  user         = "ec2-user"
-  private_key  = var.common_variables["private_key"]
-  public_ips   = aws_instance.hana.*.public_ip
-  background   = var.common_variables["background"]
+  source              = "../../../generic_modules/salt_provisioner"
+  node_count          = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
+  instance_ids        = null_resource.hana_node_provisioner.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  public_ips          = local.provisioning_addresses
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  background          = var.common_variables["background"]
 }
