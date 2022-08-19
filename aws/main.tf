@@ -62,7 +62,7 @@ locals {
   # If Netweaver is not enabled, a dummy password is passed to pass the variable validation and not require
   # a password in this case
   # Otherwise, the validation will fail unless a correct password is provided
-  netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPassword1234"
+  netweaver_master_password = var.netweaver_enabled ? var.netweaver_master_password : "DummyPass1234"
 
   create_scale_out = var.hana_scale_out_enabled ? 1 : 0
   # check if scale-out is enabled and if "data/log" are local disks (not shared)
