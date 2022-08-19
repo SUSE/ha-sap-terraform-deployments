@@ -14,18 +14,18 @@ data "azurerm_network_interface" "majority_maker" {
   depends_on = [azurerm_virtual_machine.majority_maker]
 }
 
-output "cluster_nodes_ip" {
+output "hana_ip" {
   value = [data.azurerm_network_interface.majority_maker.*.private_ip_address]
 }
 
-output "cluster_nodes_public_ip" {
+output "hana_public_ip" {
   value = [data.azurerm_public_ip.majority_maker.*.ip_address]
 }
 
-output "cluster_nodes_name" {
+output "hana_name" {
   value = [azurerm_virtual_machine.majority_maker.*.name]
 }
 
-output "cluster_nodes_public_name" {
+output "hana_public_name" {
   value = [data.azurerm_public_ip.majority_maker.*.fqdn]
 }

@@ -12,6 +12,10 @@ output "drbd_public_ip" {
 }
 
 output "drbd_name" {
+  value = data.aws_instance.drbd.*.tags.Name
+}
+
+output "drbd_id" {
   value = data.aws_instance.drbd.*.id
 }
 

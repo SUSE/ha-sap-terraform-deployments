@@ -11,15 +11,15 @@ data "openstack_compute_instance_v2" "hana" {
 }
 
 output "hana_ip" {
-  value = join(",", openstack_compute_instance_v2.hana.*.access_ip_v4)
+  value = data.openstack_compute_instance_v2.hana.*.access_ip_v4
 }
 
 output "hana_public_ip" {
-  value = join(",", openstack_compute_instance_v2.hana.*.access_ip_v4)
+  value = []
 }
 
 output "hana_name" {
-  value = openstack_compute_instance_v2.hana.*.name
+  value = data.openstack_compute_instance_v2.hana.*.name
 }
 
 output "hana_public_name" {
