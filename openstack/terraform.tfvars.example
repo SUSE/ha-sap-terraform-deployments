@@ -103,15 +103,15 @@ cluster_ssh_key = "salt://sshkeys/cluster.id_rsa"
 #
 ## Specific Release - for latest release look at https://github.com/SUSE/ha-sap-terraform-deployments/releases
 # To auto detect the SLE version
-#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8/"
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v9/"
 # Otherwise use a specific SLE version:
-#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8/SLE_15_SP3/"
-#
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v9/SLE_15_SP4/"
+
 ## Development Release (use if on `develop` branch)
 # To auto detect the SLE version
 #ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/"
 # Otherwise use a specific SLE version:
-#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15_SP3/"
+#ha_sap_deployment_repo = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:devel/SLE_15_SP4/"
 
 # Provisioning log level (error by default)
 #provisioning_log_level = "info"
