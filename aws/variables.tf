@@ -116,7 +116,7 @@ variable "network_domain" {
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "suse-sles-sap-15-sp3"
+  default     = "suse-sles-sap-15-sp4"
 }
 
 variable "os_owner" {
@@ -287,7 +287,7 @@ variable "bastion_private_key" {
 
 ## Hana variables
 variable "hana_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -601,7 +601,7 @@ variable "drbd_enabled" {
 }
 
 variable "drbd_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -710,7 +710,7 @@ variable "iscsi_network_domain" {
 }
 
 variable "iscsi_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -765,7 +765,7 @@ variable "monitoring_network_domain" {
 }
 
 variable "monitoring_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -827,7 +827,7 @@ variable "netweaver_app_server_count" {
 }
 
 variable "netweaver_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
