@@ -44,7 +44,7 @@ netweaver:
   {%- if grains['provider'] == 'aws' and grains['netweaver_shared_storage_type'] == 'efs' %}
   sapmnt_inst_media: "{{ grains['efs_mount_ip']['sapmnt'][0] }}:/"
   {%- elif grains['provider'] == 'azure' and grains['netweaver_shared_storage_type'] == 'anf' %}
-  sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt"
+  sapmnt_inst_media: "{{ grains['anf_mount_ip']['sapmnt'][0] }}:/netweaver-sapmnt"
   {%- elif grains['provider'] == 'gcp' and grains['netweaver_shared_storage_type'] == 'filestore' %}
   sapmnt_inst_media: "{{ grains['filestore_mount_ip']['sapmnt'][0] }}:/netweaver_sapmnt"
   {%- else %}
