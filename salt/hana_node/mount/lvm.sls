@@ -2,7 +2,7 @@
 
 # define device naming scheme based on cloud provider
 {% if grains['provider'] == 'aws' %}
-  {%- set device_path = '/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol' %}
+  {%- set device_path = '/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_' %}
 {% elif grains['provider'] == 'azure' %}
   {%- set device_path = '/dev/disk/azure/scsi1/lun' %}
 {% elif grains['provider'] == 'gcp' %}
