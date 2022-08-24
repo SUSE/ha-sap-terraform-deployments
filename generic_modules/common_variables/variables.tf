@@ -143,3 +143,12 @@ variable "provisioning_output_colored" {
   type        = bool
   default     = true
 }
+
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
+  type        = bool
+  default     = false
+}

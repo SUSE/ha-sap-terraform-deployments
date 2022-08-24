@@ -59,6 +59,12 @@ variable "virtual_address_range" {
   }
 }
 
+variable "public_subnet_address_range" {
+  description = "Address range to create the subnet for the public services (bastion) machines. If not given the addresses will be generated based on vpc_address_range"
+  type        = string
+  default     = ""
+}
+
 variable "infra_subnet_address_range" {
   description = "Address range to create the subnet for the infrastructure (iscsi, monitoring, etc) machines. If not given the addresses will be generated based on vpc_address_range"
   type        = string
@@ -79,6 +85,12 @@ variable "authorized_keys" {
   description = "List of additional authorized SSH public keys content or path to already existing SSH public keys to access the created machines with the used admin user (ec2-user in this case)"
   type        = list(string)
   default     = []
+}
+
+variable "admin_user" {
+  description = "User used to connect to machines and bastion"
+  type        = string
+  default     = "ec2-user"
 }
 
 # Deployment variables
@@ -104,7 +116,7 @@ variable "network_domain" {
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "suse-sles-sap-15-sp3"
+  default     = "suse-sles-sap-15-sp4"
 }
 
 variable "os_owner" {
@@ -166,7 +178,7 @@ variable "additional_packages" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8"
+  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v9"
 }
 
 variable "provisioner" {
@@ -212,8 +224,70 @@ variable "hana_count" {
   default     = 2
 }
 
+## Bastion variables
+variable "bastion_enabled" {
+  description = "Create a VM to work as a bastion to avoid the usage of public ip addresses and manage the ssh connection to the other machines"
+  type        = bool
+  default     = true
+}
+
+variable "bastion_name" {
+  description = "hostname, without the domain part"
+  type        = string
+  default     = "vmbastion"
+}
+
+variable "bastion_network_domain" {
+  description = "hostname's network domain"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_os_image" {
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp1-byos)"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_os_owner" {
+  description = "OS image owner. For BYOS images the owner usually is 'amazon'"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_instancetype" {
+  description = "The instance type of the bastion server node."
+  type        = string
+  default     = "t3.small"
+}
+
+variable "bastion_ip" {
+  description = "bastion server address. It should be in same iprange as host_ips"
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.bastion_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.bastion_ip))
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "bastion_public_key" {
+  description = "Content of a SSH public key or path to an already existing SSH public key to the bastion. If it's not set the key provided in public_key will be used"
+  type        = string
+  default     = ""
+}
+
+variable "bastion_private_key" {
+  description = "Content of a SSH private key or path to an already existing SSH private key to the bastion. If it's not set the key provided in private_key will be used"
+  type        = string
+  default     = ""
+}
+
+## Hana variables
 variable "hana_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -227,13 +301,56 @@ variable "hana_os_owner" {
 variable "hana_instancetype" {
   description = "The instance type of the hana nodes"
   type        = string
-  default     = "r6i.xlarge"
+  default     = "r5b.xlarge"
+}
+
+variable "hana_majority_maker_instancetype" {
+  description = "The instance type of the hana majority maker node"
+  type        = string
+  default     = "t3.micro"
 }
 
 variable "hana_subnet_address_range" {
   description = "List of address ranges to create the subnets for the hana machines. If not given the addresses will be generated based on vpc_address_range"
   type        = list(string)
   default     = []
+}
+
+variable "block_devices" {
+  description = "List of devices that will be available to attach as an ebs volume. These values are mapped later between the values in terraform and in the operating system (see e.g. hana_data_disks_configuration['devices']."
+  type        = string
+  default     = "/dev/sdf,/dev/sdg,/dev/sdh,/dev/sdi,/dev/sdj,/dev/sdk,/dev/sdl,/dev/sdm,/dev/sdn,/dev/sdo,/dev/sdp,/dev/sdq,/dev/sdr,/dev/sds,/dev/sdt,/dev/sdu,/dev/sdv,/dev/sdw,/dev/sdx,/dev/sdy,/dev/sdz"
+}
+
+variable "hana_data_disks_configuration" {
+  type = map(any)
+  default = {
+    disks_type = "gp2,gp2,gp2,gp2,gp2,gp2,gp2"
+    disks_size = "128,128,128,128,64,64,128"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
+
+    disks_type and disks_size are used during the disks creation. The number of elements must match in all of them
+    "," is used to separate each disk.
+
+    disk_type = The disk type used to create disks. See https://aws.amazon.com/ebs/volume-types/ and https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume for reference.
+    disk_size = The disk size in GB.
+
+    luns, names, lv_sizes and paths are used during the provisioning to create/format/mount logical volumes and filesystems.
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups split by "#" must match in all of the entries.
+
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1#2,3#4#5#6)
+    names -> The names of the volume groups and logical volumes (example data#log#shared#usrsap#backup)
+    lv_sizes -> The size in % (from available space) dedicated for each logical volume and folder (example 50#50#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
 }
 
 variable "hana_ips" {
@@ -243,6 +360,18 @@ variable "hana_ips" {
   validation {
     condition = (
       can([for v in var.hana_ips : regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", v)])
+    )
+    error_message = "Invalid IP address format."
+  }
+}
+
+variable "hana_majority_maker_ip" {
+  description = "ip address to set to the HANA Majority Maker node. Must be in a third subnet."
+  type        = string
+  default     = ""
+  validation {
+    condition = (
+      var.hana_majority_maker_ip == "" || can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$", var.hana_majority_maker_ip))
     )
     error_message = "Invalid IP address format."
   }
@@ -299,18 +428,6 @@ variable "hana_client_extract_dir" {
   description = "Absolute path to folder where SAP HANA Client archive will be extracted"
   type        = string
   default     = "/sapmedia_extract/HANA_CLIENT"
-}
-
-variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store HANA database content"
-  type        = string
-  default     = "gp2"
-}
-
-variable "hana_data_disk_size" {
-  description = "Disk size in GB for the disk used to store HANA database content"
-  type        = number
-  default     = 1024
 }
 
 variable "hana_fstype" {
@@ -434,12 +551,12 @@ variable "hana_scale_out_enabled" {
 variable "hana_scale_out_shared_storage_type" {
   description = "Storage type to use for HANA scale out deployment - not supported for this cloud provider yet"
   type        = string
-  default     = ""
+  default     = "efs"
   validation {
     condition = (
-      can(regex("^(|)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|efs)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: none."
+    error_message = "Invalid HANA scale out storage type. Options: efs."
   }
 }
 
@@ -454,7 +571,13 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
+}
+
+variable "hana_efs_performance_mode" {
+  type        = string
+  description = "Performance mode of the EFS storage used by HANA"
+  default     = "generalPurpose"
 }
 
 # DRBD related variables
@@ -478,7 +601,7 @@ variable "drbd_enabled" {
 }
 
 variable "drbd_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -587,7 +710,7 @@ variable "iscsi_network_domain" {
 }
 
 variable "iscsi_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -642,7 +765,7 @@ variable "monitoring_network_domain" {
 }
 
 variable "monitoring_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -656,7 +779,7 @@ variable "monitoring_os_owner" {
 variable "monitor_instancetype" {
   description = "The instance type of the monitoring node."
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 variable "monitoring_srv_ip" {
@@ -704,7 +827,7 @@ variable "netweaver_app_server_count" {
 }
 
 variable "netweaver_os_image" {
-  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp3-byos)"
+  description = "sles4sap AMI image identifier or a pattern used to find the image name (e.g. suse-sles-sap-15-sp4-byos)"
   type        = string
   default     = ""
 }
@@ -905,6 +1028,15 @@ variable "hwcct" {
 
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
+  type        = bool
+  default     = false
+}
+
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
   type        = bool
   default     = false
 }

@@ -66,11 +66,6 @@ variable "subnet_netapp_address_range" {
   }
 }
 
-variable "admin_user" {
-  description = "Administration user used to create the machines"
-  type        = string
-}
-
 variable "storage_account_name" {
   description = "Azure storage account name where HANA installation software is available"
   type        = string
@@ -97,6 +92,12 @@ variable "authorized_keys" {
   default     = []
 }
 
+variable "admin_user" {
+  description = "User used to connect to machines and bastion"
+  type        = string
+  default     = "sles"
+}
+
 variable "bastion_name" {
   description = "hostname, without the domain part"
   type        = string
@@ -116,7 +117,7 @@ variable "bastion_enabled" {
 }
 
 variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -154,9 +155,9 @@ variable "network_domain" {
 }
 
 variable "os_image" {
-  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp3:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
+  description = "Default OS image for all the machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: 'SUSE:sles-sap-15-sp4:gen2:latest'. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "SUSE:sles-sap-15-sp3:gen2:latest"
+  default     = "SUSE:sles-sap-15-sp4:gen2:latest"
 }
 
 variable "timezone" {
@@ -212,7 +213,7 @@ variable "additional_packages" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8"
+  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v9"
 }
 
 variable "provisioner" {
@@ -259,7 +260,7 @@ variable "hana_count" {
 }
 
 variable "hana_os_image" {
-  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the HANA machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -289,7 +290,7 @@ variable "hana_data_disks_configuration" {
   type = map(any)
   default = {
     disks_type       = "Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS,Premium_LRS"
-    disks_size       = "128,128,128,128,128,128,128"
+    disks_size       = "128,128,128,128,64,64,128"
     caching          = "None,None,None,None,None,None,None"
     writeaccelerator = "false,false,false,false,false,false,false"
     # The next variables are used during the provisioning
@@ -300,13 +301,22 @@ variable "hana_data_disks_configuration" {
   }
   description = <<EOF
     This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
-    disks_type, disks_size, caching and writeaccelerator are used during the disks creation. The number of elements must match in all of them
+
+    disks_type, disks_size, caching and writeaccelerator are used during the disks creation.
+    "," is used to separate each disk.
+
+    disk_type = The disk type used to create disks. See https://docs.microsoft.com/en-us/azure/virtual-machines/disks-enable-ultra-ssd and https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk for reference.
+    disk_size = The disk size in GB.
+    caching   = Sets the disk caching (None, ReadOnly, ReadWrite).
+    writeaccelerator = Enable Write Accelerator (false/true, depends on disk_type).
+
     "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
-    The number of groups split by "#" must match in all of the entries
-    names -> The names of the volume groups (example datalog#shared#usrsap#backup#sapmnt)
-    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1,2#3#4#5#6)
-    sizes -> The size dedicated for each logical volume and folder (example 70,100#100#100#100#100)
-    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+    The number of groups split by "#" must match in all of the entries.
+
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables. Striped logical volumes will be created for each volume group split by "#" (example 0,1#2,3#4#5#6).
+    names -> The names of the volume groups (example data#log#shared#usrsap#backup)
+    sizes -> The size dedicated for each logical volume and folder (example 50#50#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup)
   EOF
 }
 
@@ -534,7 +544,7 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
 }
 
 # SBD related variables
@@ -569,7 +579,7 @@ variable "iscsi_network_domain" {
 }
 
 variable "iscsi_os_image" {
-  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the ISCSI machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -636,7 +646,7 @@ variable "monitoring_vm_size" {
 }
 
 variable "monitoring_os_image" {
-  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the Monitoring server machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -692,7 +702,7 @@ variable "drbd_ips" {
 }
 
 variable "drbd_os_image" {
-  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the DRBD machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -760,7 +770,7 @@ variable "netweaver_app_server_count" {
 }
 
 variable "netweaver_os_image" {
-  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the Netweaver machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -997,6 +1007,15 @@ variable "hwcct" {
 
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
+  type        = bool
+  default     = false
+}
+
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
   type        = bool
   default     = false
 }

@@ -11,15 +11,15 @@ data "openstack_compute_instance_v2" "drbd" {
 }
 
 output "drbd_ip" {
-  value = join(",", openstack_compute_instance_v2.drbd.*.access_ip_v4)
+  value = data.openstack_compute_instance_v2.drbd.*.access_ip_v4
 }
 
 output "drbd_public_ip" {
-  value = join(",", openstack_compute_instance_v2.drbd.*.access_ip_v4)
+  value = []
 }
 
 output "drbd_name" {
-  value = openstack_compute_instance_v2.drbd.*.name
+  value = data.openstack_compute_instance_v2.drbd.*.name
 }
 
 output "drbd_public_name" {

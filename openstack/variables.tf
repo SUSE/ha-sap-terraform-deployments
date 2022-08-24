@@ -91,6 +91,12 @@ variable "authorized_keys" {
   default     = []
 }
 
+variable "admin_user" {
+  description = "User used to connect to machines and bastion"
+  type        = string
+  default     = "sles"
+}
+
 variable "bastion_name" {
   description = "hostname, without the domain part"
   type        = string
@@ -140,7 +146,7 @@ variable "bastion_data_disk_size" {
 }
 
 variable "bastion_os_image" {
-  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp3:gen2:latest"
+  description = "sles4sap image used to create the bastion machines. Composed by 'Publisher:Offer:Sku:Version' syntax. Example: SUSE:sles-sap-15-sp4:gen2:latest"
   type        = string
   default     = ""
 }
@@ -180,7 +186,7 @@ variable "network_domain" {
 variable "os_image" {
   description = "Default OS image for all the machines. This value is not used if the specific nodes os_image is set (e.g. hana_os_image)"
   type        = string
-  default     = "suse-sap-cloud/sles-15-sp3-sap"
+  default     = "suse-sap-cloud/sles-15-sp4-sap"
 }
 
 variable "timezone" {
@@ -226,7 +232,7 @@ variable "additional_packages" {
 variable "ha_sap_deployment_repo" {
   description = "Repository url used to install development versions of HA/SAP deployment packages. If the SLE version is not present in the URL, it will be automatically detected"
   type        = string
-  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v8"
+  default     = "https://download.opensuse.org/repositories/network:ha-clustering:sap-deployments:v9"
 }
 
 variable "cluster_ssh_pub" {
@@ -431,27 +437,38 @@ variable "hana_cluster_vip_secondary" {
 }
 
 variable "hana_data_disk_type" {
-  description = "Disk type of the disks used to store hana database content"
+  description = "By default, volumes are created. To use ephemeral storage (configured in flavor) set to ephemeral."
   type        = string
-  default     = "pd-ssd"
+  default     = "volumes"
 }
 
-variable "hana_data_disk_size" {
-  description = "Disk size of the disks used to store hana database content"
-  type        = string
-  default     = "896"
-}
+variable "hana_data_disks_configuration" {
+  type = map(any)
+  default = {
+    disks_size = "128,128,128,128,64,64,128"
+    # The next variables are used during the provisioning
+    luns     = "0,1#2,3#4#5#6"
+    names    = "data#log#shared#usrsap#backup"
+    lv_sizes = "100#100#100#100#100"
+    paths    = "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup"
+  }
+  description = <<EOF
+    This map describes how the disks will be formatted to create the definitive configuration during the provisioning.
 
-variable "hana_backup_disk_type" {
-  description = "Disk type of the disks used to store hana database backup content"
-  type        = string
-  default     = "pd-standard"
-}
+    disks_size is used during the disks creation. The number of elements must match in all of them
+    "," is used to separate each disk.
 
-variable "hana_backup_disk_size" {
-  description = "Disk size of the disks used to store hana database backup content"
-  type        = string
-  default     = "128"
+    disk_size = The disk size in GB.
+
+    luns, names, lv_sizes and paths are used during the provisioning to create/format/mount logical volumes and filesystems.
+    "#" character is used to split the volume groups, while "," is used to define the logical volumes for each group
+    The number of groups split by "#" must match in all of the entries.
+
+    luns  -> The luns or disks used for each volume group. The number of luns must match with the configured in the previous disks variables (example 0,1#2,3#4#5#6)
+    names -> The names of the volume groups and logical volumes (example data#log#shared#usrsap#backup)
+    lv_sizes -> The size in % (from available space) dedicated for each logical volume and folder (example 50#50#100#100#100)
+    paths -> Folder where each volume group will be mounted (example /hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/)
+  EOF
 }
 
 variable "hana_fstype" {
@@ -500,7 +517,7 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
-  default     = "1"
+  default     = "0"
 }
 
 
@@ -937,6 +954,15 @@ variable "hwcct" {
 
 variable "pre_deployment" {
   description = "Enable pre deployment local execution. Only available for clients running Linux"
+  type        = bool
+  default     = false
+}
+
+#
+# Post deployment
+#
+variable "cleanup_secrets" {
+  description = "Enable salt states that cleanup secrets, e.g. delete /etc/salt/grains"
   type        = bool
   default     = false
 }

@@ -2,44 +2,38 @@
 
 locals {
   bastion_enabled            = var.common_variables["bastion_enabled"]
+  shared_storage_nfs         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "nfs" ? 1 : 0
   create_scale_out           = var.hana_count > 1 && var.common_variables["hana"]["scale_out_enabled"] ? 1 : 0
   create_ha_infra            = var.hana_count > 1 && var.common_variables["hana"]["ha_enabled"] ? 1 : 0
-  create_data_volumes        = var.hana_count > 1 && var.hana_data_disk_type != "ephemeral" && var.hana_data_disk_type != "nfs" ? true : false
-  create_backup_volumes      = var.hana_count > 1 && var.hana_backup_disk_type != "ephemeral" && var.hana_data_disk_type != "nfs" ? true : false
   create_active_active_infra = local.create_ha_infra == 1 && var.common_variables["hana"]["cluster_vip_secondary"] != "" ? 1 : 0
-  provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
   hostname                   = var.common_variables["deployment_name_in_hostname"] ? format("%s-%s", var.common_variables["deployment_name"], var.name) : var.name
-  shared_storage_nfs         = var.common_variables["hana"]["scale_out_enabled"] && var.common_variables["hana"]["scale_out_shared_storage_type"] == "nfs" ? 1 : 0
+  create_volumes             = var.hana_data_disk_type == "volume" && local.disks_number > 0 ? 1 : 0
+  provisioning_addresses     = openstack_compute_instance_v2.hana.*.access_ip_v4
+  sites                      = var.common_variables["hana"]["ha_enabled"] ? 2 : 1
+
+  disks_number = length(split(",", var.hana_data_disks_configuration["disks_size"]))
+  disks_size   = [for disk_size in split(",", var.hana_data_disks_configuration["disks_size"]) : tonumber(trimspace(disk_size))]
+  disks = flatten([
+    for node in range(var.hana_count) : [
+      for disk in range(local.disks_number) : {
+        node_number = node
+        node        = "${local.hostname}${format("%02d", node + 1)}"
+        disk_number = disk
+        disk_name   = "${local.hostname}${format("%02d-%s-%02d", node + 1, "disk", disk + 1)}"
+        disk_size   = element(local.disks_size, disk)
+      }
+    ]
+  ])
 }
 
-resource "openstack_blockstorage_volume_v3" "data" {
-  # only deploy if hana_data_disk_type is not set to ephemeral
-  count                = local.create_data_volumes ? var.hana_count : 0
-  name                 = "${var.common_variables["deployment_name"]}-hana-data-${count.index}"
-  size                 = var.hana_data_disk_size
+resource "openstack_blockstorage_volume_v3" "disk" {
+  # only deploy if hana_data_disk_type is set to volume
+  for_each = { for disk in local.disks : "${disk.disk_name}" => disk if local.create_volumes == 1 }
+
   availability_zone    = var.region
+  name                 = each.value.disk_name
+  size                 = each.value.disk_size
   enable_online_resize = true
-}
-
-resource "openstack_compute_volume_attach_v2" "data_attached" {
-  count       = local.create_data_volumes ? var.hana_count : 0
-  instance_id = openstack_compute_instance_v2.hana.*.id[count.index]
-  volume_id   = openstack_blockstorage_volume_v3.data.*.id[count.index]
-}
-
-resource "openstack_blockstorage_volume_v3" "backup" {
-  # only deploy if hana_backup_disk_type is not set to ephemeral
-  count                = local.create_backup_volumes ? var.hana_count : 0
-  name                 = "${var.common_variables["deployment_name"]}-hana-backup-${count.index}"
-  size                 = var.hana_backup_disk_size
-  availability_zone    = var.region
-  enable_online_resize = true
-}
-
-resource "openstack_compute_volume_attach_v2" "backup_attached" {
-  count       = local.create_backup_volumes ? var.hana_count : 0
-  instance_id = openstack_compute_instance_v2.hana.*.id[count.index]
-  volume_id   = openstack_blockstorage_volume_v3.backup.*.id[count.index]
 }
 
 resource "openstack_networking_port_v2" "hana" {
@@ -74,6 +68,25 @@ resource "openstack_compute_instance_v2" "hana" {
     port = openstack_networking_port_v2.hana[count.index].id
   }
   availability_zone = var.region
+
+  block_device {
+    source_type           = "image"
+    destination_type      = "local"
+    uuid                  = var.os_image
+    boot_index            = 0
+    delete_on_termination = true
+  }
+
+  dynamic "block_device" {
+    # only deploy if hana_data_disk_type is set to volume and node_number matches
+    for_each = { for disk in local.disks : "${disk.disk_name}" => disk if local.create_volumes == 1 && disk.node_number == count.index }
+    content {
+      uuid             = openstack_blockstorage_volume_v3.disk[block_device.value.disk_name].id
+      source_type      = "volume"
+      destination_type = "volume"
+      boot_index       = 1 + block_device.value.disk_number
+    }
+  }
 }
 
 module "hana_majority_maker" {

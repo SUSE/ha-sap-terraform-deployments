@@ -27,6 +27,11 @@ variable "lun_count" {
   default     = 3
 }
 
+variable "timezone" {
+  description = "Timezone setting for all VMs"
+  default     = "Europe/Berlin"
+}
+
 variable "iscsi_disk_size" {
   description = "Disk size in Bytes used to create the LUNs and partitions to be served by the ISCSI service"
   type        = number

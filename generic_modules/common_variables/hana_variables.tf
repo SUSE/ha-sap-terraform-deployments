@@ -42,6 +42,7 @@ variable "hana_cost_optimized_instance_number" {
   }
 }
 
+# for password rules see: doc/sap_passwords.md
 variable "hana_master_password" {
   description = "Master password for the HANA system (sidadm user included)"
   type        = string
@@ -50,9 +51,9 @@ variable "hana_master_password" {
       can(regex("[0-9]+", var.hana_master_password)) &&
       can(regex("[a-z]+", var.hana_master_password)) &&
       can(regex("[A-Z]+", var.hana_master_password)) &&
-      can(regex("^[\\w]{8,}$", var.hana_master_password))
+      can(regex("^.{10,14}$", var.hana_master_password))
     )
-    error_message = "The password must contain at least 8 characters, comprising 1 digit, 1 upper-case character, 1 lower-case character and no special characters."
+    error_message = "The hana master password in default configuration must contain at least 8 up to 64 characters. To be compatible with our Netweaver and S/4HANA deployment we set it to 10 to 14 characters, though. It must contain at least 1 digit, 1 upper-case character, 1 lower-case character and optional special characters. For more information see: 'doc/sap_passwords.md'."
   }
 }
 
@@ -183,9 +184,9 @@ variable "hana_scale_out_shared_storage_type" {
   type        = string
   validation {
     condition = (
-      can(regex("^(|anf|nfs)$", var.hana_scale_out_shared_storage_type))
+      can(regex("^(|anf|efs|filestore|nfs)$", var.hana_scale_out_shared_storage_type))
     )
-    error_message = "Invalid HANA scale out storage type. Options: anf, nfs."
+    error_message = "Invalid HANA scale out storage type. Options: anf, efs, filestore, nfs."
   }
 }
 
@@ -199,4 +200,10 @@ variable "hana_scale_out_addhosts" {
 variable "hana_scale_out_standby_count" {
   description = "Number of HANA scale-out standby nodes to be deployed per site"
   type        = number
+}
+
+variable "hana_basepath_shared" {
+  description = "Set persistence.basepath_shared in global.ini (SAP Note 2080991)."
+  type        = bool
+  default     = true
 }

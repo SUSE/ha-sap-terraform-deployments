@@ -11,15 +11,15 @@ data "openstack_compute_instance_v2" "monitoring" {
 }
 
 output "monitoring_ip" {
-  value = join(",", openstack_compute_instance_v2.monitoring.*.access_ip_v4)
+  value = data.openstack_compute_instance_v2.monitoring.*.access_ip_v4
 }
 
 output "monitoring_public_ip" {
-  value = join(",", openstack_compute_instance_v2.monitoring.*.access_ip_v4)
+  value = []
 }
 
 output "monitoring_name" {
-  value = openstack_compute_instance_v2.monitoring.*.name
+  value = data.openstack_compute_instance_v2.monitoring.*.name
 }
 
 output "monitoring_public_name" {

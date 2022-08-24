@@ -11,15 +11,15 @@ data "openstack_compute_instance_v2" "netweaver" {
 }
 
 output "netweaver_ip" {
-  value = join(",", openstack_compute_instance_v2.netweaver.*.access_ip_v4)
+  value = data.openstack_compute_instance_v2.netweaver.*.access_ip_v4
 }
 
 output "netweaver_public_ip" {
-  value = join(",", openstack_compute_instance_v2.netweaver.*.access_ip_v4)
+  value = []
 }
 
 output "netweaver_name" {
-  value = openstack_compute_instance_v2.netweaver.*.name
+  value = data.openstack_compute_instance_v2.netweaver.*.name
 }
 
 output "netweaver_public_name" {

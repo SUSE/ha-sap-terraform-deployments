@@ -6,10 +6,14 @@ resource "null_resource" "hana_node_provisioner" {
   }
 
   connection {
-    host        = element(aws_instance.hana.*.public_ip, count.index)
+    host        = element(local.provisioning_addresses, count.index)
     type        = "ssh"
     user        = "ec2-user"
     private_key = var.common_variables["private_key"]
+
+    bastion_host        = var.bastion_host
+    bastion_user        = var.common_variables["authorized_user"]
+    bastion_private_key = var.common_variables["bastion_private_key"]
   }
 
   provisioner "file" {
@@ -35,21 +39,27 @@ network_domain: ${var.network_domain}
 host_ips: [${join(", ", formatlist("'%s'", var.host_ips))}]
 sbd_lun_index: 0
 iscsi_srv_ip: ${var.iscsi_srv_ip}
-hana_disk_device: /dev/nvme1n1
 cluster_ssh_pub:  ${var.cluster_ssh_pub}
 cluster_ssh_key: ${var.cluster_ssh_key}
 node_count: ${var.hana_count + local.create_scale_out}
+hana_data_disks_configuration: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_data_disks_configuration), values(var.hana_data_disks_configuration), ), formatlist("'%s': '%s'", "devices", replace(join(",", aws_instance.hana[count.index].ebs_block_device.*.volume_id), "-", "")), )}}
+efs_mount_ip:
+  ${local.shared_storage_efs == 1 && !contains(split("#", lookup(var.hana_data_disks_configuration, "names", "")), "shared") ? "shared: [ ${join(", ", aws_efs_file_system.scale-out-efs-shared.*.dns_name)} ]" : ""}
+majority_maker_node: ${local.create_scale_out == 1 ? "${local.hostname}mm" : ""}
+majority_maker_ip: ${local.create_scale_out == 1 ? var.majority_maker_ip : ""}
 EOF
     destination = "/tmp/grains"
   }
 }
 
 module "hana_provision" {
-  source       = "../../../generic_modules/salt_provisioner"
-  node_count   = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
-  instance_ids = null_resource.hana_node_provisioner.*.id
-  user         = "ec2-user"
-  private_key  = var.common_variables["private_key"]
-  public_ips   = aws_instance.hana.*.public_ip
-  background   = var.common_variables["background"]
+  source              = "../../../generic_modules/salt_provisioner"
+  node_count          = var.common_variables["provisioner"] == "salt" ? var.hana_count : 0
+  instance_ids        = null_resource.hana_node_provisioner.*.id
+  user                = var.common_variables["authorized_user"]
+  private_key         = var.common_variables["private_key"]
+  public_ips          = local.provisioning_addresses
+  bastion_host        = var.bastion_host
+  bastion_private_key = var.common_variables["bastion_private_key"]
+  background          = var.common_variables["background"]
 }

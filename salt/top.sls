@@ -66,3 +66,7 @@ predeployment:
   'role:nfs_srv':
     - match: grain
     - nfs_srv
+
+postdeployment:
+  '*':
+    - postdeployment
