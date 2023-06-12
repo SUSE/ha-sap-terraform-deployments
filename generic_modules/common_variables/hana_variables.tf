@@ -159,9 +159,19 @@ variable "hana_ha_enabled" {
   type        = bool
 }
 
-variable "hana_ignore_min_mem_check" {
-  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
-  type        = bool
+variable "hana_extra_parameters" {
+  type        = map(any)
+  description = <<EOF
+    This map allows to add any extra parameters to the HANA installation.
+
+    Have a look at the Parameter Reference:
+    https://help.sap.com/docs/SAP_HANA_PLATFORM/2c1988d620e04368aa4103bf26f17727/c16432a77b6144dcb75aace2b4fcacff.html
+
+    hana_extra_parameters = {
+      ignore = "check_min_mem,check_version",
+      install_execution_mode = "optimized"
+    }
+  EOF
 }
 
 variable "hana_cluster_fencing_mechanism" {

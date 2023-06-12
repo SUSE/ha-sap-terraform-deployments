@@ -66,7 +66,7 @@ output "configuration" {
       cluster_vip                    = var.hana_cluster_vip
       cluster_vip_secondary          = var.hana_cluster_vip_secondary
       ha_enabled                     = var.hana_ha_enabled
-      ignore_min_mem_check           = var.hana_ignore_min_mem_check
+      extra_parameters               = var.hana_extra_parameters
       fencing_mechanism              = var.hana_cluster_fencing_mechanism
       sbd_storage_type               = var.hana_sbd_storage_type
       scale_out_enabled              = var.hana_scale_out_enabled
@@ -158,7 +158,7 @@ hana_client_extract_dir: ${var.hana_client_extract_dir}
 hana_cluster_vip_mechanism: ${var.hana_cluster_vip_mechanism}
 hana_cluster_vip: ${var.hana_cluster_vip}
 hana_cluster_vip_secondary: ${var.hana_cluster_vip_secondary}
-hana_ignore_min_mem_check: ${var.hana_ignore_min_mem_check}
+hana_extra_parameters: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_extra_parameters), values(var.hana_extra_parameters), ), )}}
 hana_scale_out_enabled: ${var.hana_scale_out_enabled}
 hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}

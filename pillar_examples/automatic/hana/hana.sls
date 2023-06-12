@@ -76,11 +76,11 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] or grains['hana_scale_out_enabled'] %}
+        {% if grains['hana_extra_parameters'] or grains['hana_scale_out_enabled'] %}
         extra_parameters:
-        {% if grains['hana_ignore_min_mem_check'] %}
-          ignore: check_min_mem
-        {% endif %}
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
         {% if grains['hana_scale_out_enabled'] %}
           addhosts: {{ addhosts.site1 }}
         {% endif %}
@@ -125,11 +125,11 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] or grains['hana_scale_out_enabled'] %}
+        {% if grains['hana_extra_parameters'] or grains['hana_scale_out_enabled'] %}
         extra_parameters:
-        {% if grains['hana_ignore_min_mem_check'] %}
-          ignore: check_min_mem
-        {% endif %}
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
         {% if grains['hana_scale_out_enabled'] %}
           addhosts: {{ addhosts.site2 }}
         {% endif %}
@@ -171,9 +171,11 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_cost_optimized_master_password'] }}
         sapadm_password: {{ grains['hana_cost_optimized_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] %}
+        {% if grains['hana_extra_parameters'] %}
         extra_parameters:
-          ignore: check_min_mem
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
         {% endif %}
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
