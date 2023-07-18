@@ -163,6 +163,7 @@ deploy () {
         source /etc/os-release
         if [[ $VERSION_ID =~ ^12\.? ]]; then
             sleep 10
+            # shellcheck disable=SC2046
             salt-call --local \
                 --log-level=info \
                 --log-file=/var/log/salt-deployment-sync.log \
