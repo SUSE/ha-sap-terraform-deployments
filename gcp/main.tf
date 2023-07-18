@@ -127,7 +127,7 @@ module "common_variables" {
   hana_cluster_vip                    = local.hana_cluster_vip
   hana_cluster_vip_secondary          = var.hana_active_active ? local.hana_cluster_vip_secondary : ""
   hana_ha_enabled                     = var.hana_ha_enabled
-  hana_ignore_min_mem_check           = var.hana_ignore_min_mem_check
+  hana_extra_parameters               = var.hana_extra_parameters
   hana_cluster_fencing_mechanism      = var.hana_cluster_fencing_mechanism
   hana_sbd_storage_type               = var.sbd_storage_type
   hana_scale_out_enabled              = var.hana_scale_out_enabled
