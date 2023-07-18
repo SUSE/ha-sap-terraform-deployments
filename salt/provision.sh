@@ -158,6 +158,19 @@ predeploy () {
 deploy () {
     # Execute SAP and HA installation with the salt formulas
     if [[ $(get_grain role) =~ .*_node ]]; then
+        # make sure salt-shaptools states and modules are found
+        # workaround for SLES12
+        source /etc/os-release
+        if [[ $VERSION_ID =~ ^12\.? ]]; then
+            sleep 10
+            salt-call --local \
+                --log-level=info \
+                --log-file=/var/log/salt-deployment-sync.log \
+                --log-file-level=info \
+                --retcode-passthrough \
+                $(salt_color_flag) \
+                saltutil.sync_all
+        fi
         # shellcheck disable=SC2046
         salt-call --local \
             --log-level=$(get_grain provisioning_log_level) \
