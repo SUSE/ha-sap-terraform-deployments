@@ -76,14 +76,14 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] or grains['hana_scale_out_enabled'] %}
         extra_parameters:
-        {% if grains['hana_ignore_min_mem_check'] %}
-          ignore: check_min_mem
-        {% endif %}
+          lss_user_password: {{ grains['hana_master_password'] }}
+          lss_backup_password: {{ grains['hana_master_password'] }}
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
         {% if grains['hana_scale_out_enabled'] %}
           addhosts: {{ addhosts.site1 }}
-        {% endif %}
         {% endif %}
       {%- if grains.get('ha_enabled') %}
       primary:
@@ -125,14 +125,14 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_master_password'] }}
         sapadm_password: {{ grains['hana_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] or grains['hana_scale_out_enabled'] %}
         extra_parameters:
-        {% if grains['hana_ignore_min_mem_check'] %}
-          ignore: check_min_mem
-        {% endif %}
+          lss_user_password: {{ grains['hana_master_password'] }}
+          lss_backup_password: {{ grains['hana_master_password'] }}
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
         {% if grains['hana_scale_out_enabled'] %}
           addhosts: {{ addhosts.site2 }}
-        {% endif %}
         {% endif %}
       {%- if grains.get('ha_enabled') %}
       secondary:
@@ -171,10 +171,12 @@ hana:
         {% endif %}
         system_user_password: {{ grains['hana_cost_optimized_master_password'] }}
         sapadm_password: {{ grains['hana_cost_optimized_master_password'] }}
-        {% if grains['hana_ignore_min_mem_check'] %}
         extra_parameters:
-          ignore: check_min_mem
-        {% endif %}
+          lss_user_password: {{ grains['hana_master_password'] }}
+          lss_backup_password: {{ grains['hana_master_password'] }}
+        {% for key, val in grains['hana_extra_parameters'].items() %}
+          {{ key }}: {{ val }}
+        {% endfor %}
       {% if grains.get('monitoring_enabled', False) %}
       exporter:
         exposition_port: 9669

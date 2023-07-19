@@ -473,10 +473,20 @@ variable "hana_cluster_vip_secondary" {
   }
 }
 
-variable "hana_ignore_min_mem_check" {
-  description = "Disable the min mem check imposed by hana allowing it to run with under 24 GiB"
-  type        = bool
-  default     = false
+variable "hana_extra_parameters" {
+  type        = map(any)
+  default     = {}
+  description = <<EOF
+    This map allows to add any extra parameters to the HANA installation (inside the installation configfile).
+    For more details about the parameters, have a look at the Parameter Reference, e.g.
+    https://help.sap.com/docs/SAP_HANA_PLATFORM/2c1988d620e04368aa4103bf26f17727/c16432a77b6144dcb75aace2b4fcacff.html
+
+    Some examples:
+    hana_extra_parameters = {
+      ignore = "check_min_mem",
+      install_execution_mode = "optimized"
+    }
+  EOF
 }
 
 variable "scenario_type" {
