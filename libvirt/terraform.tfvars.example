@@ -276,6 +276,16 @@ hana_inst_master = "url-to-your-nfs-share:/sapdata/sap_inst_media/51053381"
 #  paths = "/usr/sap"
 #}
 
+# HANA HA/DR provider configuration
+# See https://documentation.suse.com/sbp/all/single-html/SLES4SAP-hana-sr-guide-PerfOpt-15/#cha.s4s.hana-hook for details.
+# The SAPHanaSR hook is always enabled.
+# enable susTkOver hook (disabled by default)
+# hana_ha_dr_sustkover_enabled = true
+# enable susChkSrv hook (disabled by default)
+# hana_ha_dr_suschksrv_enabled = true
+# susChkSrv action on lost, see `man 7 susChkSrv.py` (Options: stop [default], fence)
+# hana_ha_dr_suschksrv_action_on_lost = "fence"
+
 #######################
 # SBD related variables
 #######################

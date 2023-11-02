@@ -74,6 +74,9 @@ output "configuration" {
       scale_out_addhosts             = var.hana_scale_out_addhosts
       scale_out_standby_count        = var.hana_scale_out_standby_count
       basepath_shared                = var.hana_basepath_shared
+      ha_dr_sustkover_enabled        = var.hana_ha_dr_sustkover_enabled
+      ha_dr_suschksrv_enabled        = var.hana_ha_dr_suschksrv_enabled
+      ha_dr_suschksrv_action_on_lost = var.hana_ha_dr_suschksrv_action_on_lost
     }
     netweaver = {
       ha_enabled            = var.netweaver_ha_enabled
@@ -164,6 +167,9 @@ hana_scale_out_shared_storage_type: ${var.hana_scale_out_shared_storage_type}
 hana_scale_out_addhosts: {${join(", ", formatlist("'%s': '%s'", keys(var.hana_scale_out_addhosts), values(var.hana_scale_out_addhosts), ), )}}
 hana_scale_out_standby_count: ${var.hana_scale_out_standby_count}
 hana_basepath_shared: ${var.hana_basepath_shared}
+hana_ha_dr_sustkover_enabled: ${var.hana_ha_dr_sustkover_enabled}
+hana_ha_dr_suschksrv_enabled: ${var.hana_ha_dr_suschksrv_enabled}
+hana_ha_dr_suschksrv_action_on_lost: ${var.hana_ha_dr_suschksrv_action_on_lost}
 scenario_type: ${var.hana_scenario_type}
 hwcct: ${var.hana_hwcct}
 ha_enabled: ${var.hana_ha_enabled}

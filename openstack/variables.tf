@@ -549,6 +549,24 @@ variable "hana_majority_maker_ip" {
   }
 }
 
+variable "hana_ha_dr_sustkover_enabled" {
+  description = "enable susTkOver hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_enabled" {
+  description = "enable susChkSrv hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_action_on_lost" {
+  description = "define action on lost for susChkSrv, see `man 7 susChkSrv.py`"
+  type        = string
+  default     = "stop"
+}
+
 # Monitoring related variables
 
 variable "monitoring_name" {
