@@ -24,7 +24,7 @@ The proposed workflow is the following:
 
 To create a new workspace:
 
-`terraform worspace new $USER-test-amazing-stuff`
+`terraform workspace new $USER-test-amazing-stuff`
 
 Show current workspace:
 
