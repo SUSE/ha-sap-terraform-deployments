@@ -80,7 +80,8 @@ test-mlc:
 			./terraform.tvars.example \
 			../pillar/*/* \
 			https://github.com/SUSE/ha-sap-terraform-deployments/actions \
-			https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg
+			https://github.com/SUSE/ha-sap-terraform-deployments/workflows/CI%20tests/badge.svg \
+			https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/#/solutions*
 
 # test-salt-lint: @ Run linting on all salt files
 test-salt-lint:

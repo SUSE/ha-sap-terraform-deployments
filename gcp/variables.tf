@@ -526,6 +526,24 @@ variable "hana_scale_out_standby_count" {
   default     = "0"
 }
 
+variable "hana_ha_dr_sustkover_enabled" {
+  description = "enable susTkOver hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_enabled" {
+  description = "enable susChkSrv hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_action_on_lost" {
+  description = "define action on lost for susChkSrv, see `man 7 susChkSrv.py`"
+  type        = string
+  default     = "stop"
+}
+
 variable "filestore_tier" {
   description = "service level / tier for filestore shared Storage"
   type        = string

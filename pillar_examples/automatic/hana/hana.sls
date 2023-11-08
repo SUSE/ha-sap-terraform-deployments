@@ -62,6 +62,9 @@ hana:
   monitoring_enabled: {{ grains['monitoring_enabled']|default(False) }}
   ha_enabled: {{ grains['ha_enabled'] }}
   basepath_shared: {{ grains['hana_basepath_shared']|default(True) }}
+  ha_dr_sustkover_enabled: {{ grains['hana_ha_dr_sustkover_enabled']|default(False) }}
+  ha_dr_suschksrv_enabled: {{ grains['hana_ha_dr_suschksrv_enabled']|default(False) }}
+  ha_dr_suschksrv_action_on_lost: {{ grains['hana_ha_dr_suschksrv_action_on_lost']|default('stop') }}
   nodes:
     - host: {{ grains['name_prefix'] }}01
       sid: {{ grains['hana_sid'].lower() }}

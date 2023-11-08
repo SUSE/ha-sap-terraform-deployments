@@ -217,3 +217,24 @@ variable "hana_basepath_shared" {
   type        = bool
   default     = true
 }
+
+variable "hana_ha_dr_sustkover_enabled" {
+  description = "enable susTkOver hook"
+  type        = bool
+}
+
+variable "hana_ha_dr_suschksrv_enabled" {
+  description = "enable susChkSrv hook"
+  type        = bool
+}
+
+variable "hana_ha_dr_suschksrv_action_on_lost" {
+  description = "define action on lost for susChkSrv, see `man 7 susChkSrv.py`"
+  type        = string
+  validation {
+    condition = (
+      can(regex("^(stop|fence)$", var.hana_ha_dr_suschksrv_action_on_lost))
+    )
+    error_message = "Invalid action on lost for susChkrSrv. Options: stop, fence."
+  }
+}

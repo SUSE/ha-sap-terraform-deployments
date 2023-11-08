@@ -477,6 +477,24 @@ variable "hana_scale_out_nfs" {
   default     = ""
 }
 
+variable "hana_ha_dr_sustkover_enabled" {
+  description = "enable susTkOver hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_enabled" {
+  description = "enable susChkSrv hook"
+  type        = bool
+  default     = false
+}
+
+variable "hana_ha_dr_suschksrv_action_on_lost" {
+  description = "define action on lost for susChkSrv, see `man 7 susChkSrv.py`"
+  type        = string
+  default     = "stop"
+}
+
 # SBD related variables
 # In order to enable SBD, an ISCSI server is needed as right now is the unique option
 # All the clusters will use the same mechanism

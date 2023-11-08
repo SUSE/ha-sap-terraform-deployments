@@ -124,6 +124,9 @@ module "common_variables" {
   hana_scale_out_addhosts             = var.hana_scale_out_addhosts
   hana_scale_out_standby_count        = var.hana_scale_out_standby_count
   hana_basepath_shared                = local.hana_basepath_shared
+  hana_ha_dr_sustkover_enabled        = var.hana_ha_dr_sustkover_enabled
+  hana_ha_dr_suschksrv_enabled        = var.hana_ha_dr_suschksrv_enabled
+  hana_ha_dr_suschksrv_action_on_lost = var.hana_ha_dr_suschksrv_action_on_lost
   netweaver_sid                       = var.netweaver_sid
   netweaver_ascs_instance_number      = var.netweaver_ascs_instance_number
   netweaver_ers_instance_number       = var.netweaver_ers_instance_number
